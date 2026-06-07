@@ -23,42 +23,34 @@
         </p>
       </header>
 
-      <section class="panel">
-        <h2>I &middot; The Lock</h2>
-        <div id="controls" class="controls"></div>
-      </section>
+      <div class="app-input">
+        <section class="panel panel--lock">
+          <h2>I &middot; The Lock</h2>
+          <div id="controls" class="controls"></div>
+        </section>
 
-      <section class="panel">
-        <h2>II &middot; Starting Pins</h2>
-        <p class="panel-note">
-          Mark each pin's position as you read it in-game. Dead-center (<strong>0</strong>) is
-          the goal; <strong>-3</strong> and <strong>+3</strong> are the two walls. The turn
-          arrows in the solution already point the way you physically turn each plate in-game.
-        </p>
-        <div id="positions" class="positions"></div>
-      </section>
+        <section class="panel panel--tumblers">
+          <h2>II &middot; Tumblers</h2>
+          <p class="panel-note">
+            Locks are numbered <strong>1 (front)</strong> to <strong>N (back)</strong>,
+            matching the in-game stack. For each lock, mark its starting hole and how
+            turning it moves the others. Hole <strong>4</strong> is the notch (goal);
+            holes <strong>1</strong> and <strong>7</strong> are the walls.
+          </p>
+          <div id="tumblers" class="tumblers"></div>
+        </section>
+      </div>
 
-      <section class="panel">
-        <h2>III &middot; Coupled Tumblers</h2>
-        <p class="panel-note">
-          Pick the <strong>column</strong> of the tumbler you turn, then mark how each
-          other tumbler (its row) reacts. Leave a cell <strong>blank</strong> if it
-          stays put; <span class="tag link-same">With</span> means it turns the same way;
-          <span class="tag link-opp">Against</span> means it turns the opposite way.
-        </p>
-        <div id="matrix" class="matrix"></div>
-      </section>
-
-      <section class="panel">
-        <h2>IV &middot; The Sequence</h2>
+      <section class="panel panel--sequence">
+        <h2>III &middot; The Sequence</h2>
         <button id="solve-btn" class="solve-btn">Break the Lock</button>
         <div id="solution" class="solution"></div>
       </section>
 
-      <footer class="app-foot">
-        This lock travels in the page link and your browser, ready to revisit or hand off.
-      </footer>
+      <footer id="app-foot" class="app-foot"></footer>
     </main>
+
+    <div id="aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
     <script type="module" src="src/app.js"></script>
   </body>

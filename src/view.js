@@ -13,6 +13,7 @@ import {
   MAX_PLATES,
   isInBounds,
 } from "./domain.js";
+import { CHANGELOG_URL } from "./version.js";
 
 const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
@@ -38,8 +39,12 @@ function el(tag, props = {}, children = []) {
   return node;
 }
 
-function tumblerLabel(index) {
-  return `T${index + 1}`;
+function lockLabel(plate) {
+  return `L${plate + 1}`;
+}
+
+function holeLabel(value) {
+  return String(value + 4);
 }
 
 // Danger of a pin by distance from the notch: at a wall (breaks the pick if
@@ -51,12 +56,12 @@ function dangerClass(value) {
   return "";
 }
 
-// Tumblers render top-down highest-first to match the in-game stack layout.
-function platesTopDown(plateCount) {
-  return Array.from({ length: plateCount }, (_, i) => plateCount - 1 - i);
+// Locks 1 (front) through N (back), top to bottom.
+function platesFrontFirst(plateCount) {
+  return Array.from({ length: plateCount }, (_, i) => i);
 }
 
-export function renderControls(container, state, handlers) {
+export function renderControls(container, state, handlers, ui = {}) {
   const counts = [];
   for (let n = MIN_PLATES; n <= MAX_PLATES; n++) {
     counts.push(
@@ -68,8 +73,13 @@ export function renderControls(container, state, handlers) {
     );
   }
   container.replaceChildren(
-    el("span", { class: "field-label", text: "Tumblers" }),
+    el("span", { class: "field-label", text: "Locks" }),
     el("div", { class: "pill-row" }, counts),
+    el("button", {
+      class: `pill pill-ghost ${ui.copyCopied ? "is-copied" : ""}`,
+      text: ui.copyCopied ? "Copied!" : "Copy link",
+      onClick: handlers.onCopyShareLink,
+    }),
     el("button", {
       class: "pill pill-ghost",
       text: "Reset pins",
@@ -83,71 +93,72 @@ export function renderControls(container, state, handlers) {
   );
 }
 
-export function renderMatrix(container, state, handlers) {
-  const { plateCount, matrix } = state;
-
-  // Convention: a column is the tumbler you TURN; each marked cell down that
-  // column is a tumbler (its row) that REACTS. Cells map to matrix[row][col],
-  // matching domain's matrix[reactor][turned], so stored locks render unchanged.
-  const header = el("div", { class: "matrix-row matrix-head" }, [
-    el("div", { class: "matrix-corner", text: "Turn ▸" }),
-    ...Array.from({ length: plateCount }, (_, turned) =>
-      el("div", { class: "matrix-colhead", text: tumblerLabel(turned) }),
-    ),
-  ]);
-
-  const rows = platesTopDown(plateCount).map((reactor) => {
-    const cells = Array.from({ length: plateCount }, (_, turned) => {
-      if (reactor === turned) {
-        return el("div", { class: "cell cell-self", text: "•" });
-      }
-      const link = matrix[reactor][turned];
-      return el("button", {
-        class: `cell ${LINK_CLASS[link]}`,
-        text: LINK_LABEL[link],
+function linkChips(turned, plateCount, matrix, handlers) {
+  const chips = [];
+  for (let reactor = 0; reactor < plateCount; reactor++) {
+    if (reactor === turned) continue;
+    const link = matrix[reactor][turned];
+    chips.push(
+      el("button", {
+        class: `link-chip ${LINK_CLASS[link]}`,
+        text: `${lockLabel(reactor)} ${LINK_LABEL[link]}`,
         onClick: () => handlers.onCycleCell(reactor, turned),
-      });
-    });
-    return el("div", { class: "matrix-row" }, [
-      el("div", { class: "matrix-rowhead", text: tumblerLabel(reactor) }),
-      ...cells,
-    ]);
-  });
-
-  container.style.setProperty("--cols", String(plateCount));
-  container.replaceChildren(header, ...rows);
+      }),
+    );
+  }
+  return chips;
 }
 
-function positionRow(plate, value, handlers) {
-  const buttons = [];
+function positionGroove(plate, value, handlers) {
+  const holes = [];
   for (let v = POS_MIN; v <= POS_MAX; v++) {
-    buttons.push(
+    const hole = holeLabel(v);
+    holes.push(
       el("button", {
-        class: `pos ${v === value ? "is-active" : ""} ${v === CENTER ? "is-center" : ""}`,
-        text: v > 0 ? `+${v}` : String(v),
+        class: `hole ${v === value ? "is-active" : ""} ${v === CENTER ? "is-notch" : ""} ${v === POS_MIN || v === POS_MAX ? "is-wall" : ""}`,
+        text: hole,
+        "aria-label": `Hole ${hole}`,
         onClick: () => handlers.onSetPosition(plate, v),
       }),
     );
   }
-  return el("div", { class: `pos-card ${dangerClass(value)}` }, [
-    el("div", { class: "pos-title", text: `Tumbler ${plate + 1}` }),
-    el("div", { class: "pos-row" }, buttons),
+  return el("div", { class: "plate-holes" }, holes);
+}
+
+function tumblerCard(plate, state, handlers) {
+  const value = state.positions[plate];
+  return el("article", { class: `tumbler-card ${dangerClass(value)}` }, [
+    el("header", { class: "tumbler-head" }, [
+      el("h3", { class: "tumbler-title", text: `Lock ${plate + 1}` }),
+      el("span", {
+        class: "tumbler-sub",
+        text: plate === 0 ? "front plate" : plate === state.plateCount - 1 ? "back plate" : "",
+      }),
+    ]),
+    el("div", { class: "tumbler-start" }, [
+      el("span", { class: "tumbler-field-label", text: "Start hole" }),
+      positionGroove(plate, value, handlers),
+    ]),
+    el("div", { class: "tumbler-links" }, [
+      el("span", { class: "tumbler-field-label", text: "Turning this moves" }),
+      el("div", { class: "link-chip-row" }, linkChips(plate, state.plateCount, state.matrix, handlers)),
+    ]),
   ]);
 }
 
-function wallLegend() {
-  return el("div", { class: "pos-legend" }, [
-    el("span", { class: "pos-legend-wall", text: "-3 · wall" }),
-    el("span", { class: "pos-legend-mid", text: "0 · notch" }),
-    el("span", { class: "pos-legend-wall", text: "wall · +3" }),
+function holeLegend() {
+  return el("div", { class: "hole-legend" }, [
+    el("span", { class: "hole-legend-wall", text: "1 · wall" }),
+    el("span", { class: "hole-legend-notch", text: "4 · notch" }),
+    el("span", { class: "hole-legend-wall", text: "wall · 7" }),
   ]);
 }
 
-export function renderPositions(container, state, handlers) {
-  const rows = platesTopDown(state.plateCount).map((plate) =>
-    positionRow(plate, state.positions[plate], handlers),
+export function renderTumblers(container, state, handlers) {
+  const cards = platesFrontFirst(state.plateCount).map((plate) =>
+    tumblerCard(plate, state, handlers),
   );
-  container.replaceChildren(wallLegend(), ...rows);
+  container.replaceChildren(holeLegend(), ...cards);
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
@@ -179,7 +190,6 @@ export function renderSolution(container, solution, walkthrough, handlers) {
   const { stepIndex, showAll } = walkthrough;
   const steps = solution.map((move, i) => {
     const status = i < stepIndex ? "is-done" : i === stepIndex ? "is-current" : "is-upcoming";
-    // Tap an undone step to check it (and all before) off; tap a done one to undo.
     const target = i < stepIndex ? i : i + 1;
     const jump = () => handlers.onJumpTo(target);
     return el(
@@ -200,7 +210,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
         el("span", { class: "step-num", text: status === "is-done" ? "✓" : String(i + 1) }),
         el("span", {
           class: "step-text",
-          text: `${tumblerLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
+          text: `${lockLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
         }),
       ],
     );
@@ -229,16 +239,17 @@ function renderWalkthrough(walkthrough, handlers) {
   const { states, stepIndex, move } = walkthrough;
   const board = states[stepIndex];
 
-  const pins = board.map((value, plate) => {
+  const pins = platesFrontFirst(board.length).map((plate) => {
+    const value = board[plate];
     const moving = move && move.plate === plate;
     return el(
       "div",
       { class: `wt-plate ${moving ? "is-moving" : ""} ${dangerClass(value)}` },
       [
-        el("span", { class: "wt-label", text: tumblerLabel(plate) }),
+        el("span", { class: "wt-label", text: lockLabel(plate) }),
         el("span", {
           class: `wt-value ${value === CENTER ? "is-center" : ""}`,
-          text: value > 0 ? `+${value}` : String(value),
+          text: holeLabel(value),
         }),
       ],
     );
@@ -248,7 +259,7 @@ function renderWalkthrough(walkthrough, handlers) {
   const pct = total === 0 ? 100 : Math.round((stepIndex / total) * 100);
   const counter = move ? `Step ${stepIndex + 1} of ${total}` : `${total} of ${total} done`;
   const headline = move
-    ? `${tumblerLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`
+    ? `${lockLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`
     : "Lock open — every pin in the notch.";
 
   return el("div", { class: "walkthrough", "data-inbounds": String(isInBounds(board)) }, [
@@ -275,4 +286,22 @@ function renderWalkthrough(walkthrough, handlers) {
       }),
     ]),
   ]);
+}
+
+export function renderFooter(container, version) {
+  container.replaceChildren(
+    el("p", {
+      class: "app-foot-note",
+      text: "This lock travels in the page link and your browser, ready to revisit or hand off.",
+    }),
+    el("p", { class: "app-foot-meta" }, [
+      el("a", {
+        class: "app-foot-version",
+        href: CHANGELOG_URL,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        text: `v${version}`,
+      }),
+    ]),
+  );
 }

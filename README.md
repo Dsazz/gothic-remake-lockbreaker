@@ -18,11 +18,17 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
+![Version](https://img.shields.io/badge/version-1.1.0-e9b969?style=for-the-badge)
+&nbsp;
 ![No dependencies](https://img.shields.io/badge/dependencies-none-7fb47a?style=for-the-badge)
 &nbsp;
 ![Vanilla JS](https://img.shields.io/badge/built%20with-vanilla%20JS-f4cf85?style=for-the-badge)
 &nbsp;
 ![Works on iPhone](https://img.shields.io/badge/runs%20on-your%20phone-d68a76?style=for-the-badge)
+
+<br />
+
+**Current release: v1.1.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -52,7 +58,7 @@ glow red, so you can watch the sequence stay clear of every wall as you go.
 
 ## How it works
 
-- Every pin sits at a position from `-3` to `+3`. The lock opens when **all pins reach the notch (`0`)**.
+- Every pin sits in one of **seven holes (1–7)** on its plate. The lock opens when **all pins reach hole 4** (the center notch). Holes 1 and 7 are the walls.
 - Turning a tumbler one notch also turns its coupled tumblers one notch — `With` (same
   way) or `Against` (opposite way). Each tumbler's drag effects live in **its column**:
   reading down column A tells you what turning A drags. Coupling is directional, so turning
@@ -71,16 +77,16 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 
 <br />
 
-1. **The Lock** — choose how many tumblers the lock has (4–7).
-2. **Coupled Tumblers** — pick the **column** of the tumbler you turn, then mark how each
-   other tumbler (its row) reacts: blank for independent, `With` for the same way,
-   `Against` for the opposite way.
-3. **Starting Pins** — mark where each pin rests right now.
-4. **Break the Lock** — read the numbered turns, then use **Prev / Next** to walk the
-   board one turn at a time and watch every pin stay clear of the frame.
+1. **The Lock** — choose how many locks the mechanism has (4–7). Use **Copy link** to
+   share the current setup.
+2. **Tumblers** — for each lock (numbered 1 front through N back), mark its **start hole**
+   and which other locks move when you turn it: `·` none, `With` same way, `Against`
+   opposite.
+3. **Break the Lock** — read the focus card, then use **Done — next** to walk the
+   sequence one turn at a time. Expand **Show all steps** if you want the full list.
 
 Your lock is saved locally and encoded in the page URL, so you can bookmark a tricky
-lock or hand it to a friend.
+lock or paste the copied link to a friend.
 
 ## Running locally
 
@@ -92,10 +98,16 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-Run the test suite (pure logic, zero dependencies, includes the real Old Camp case):
+Run the test suite (solver logic + version drift check, zero dependencies):
 
 ```bash
 node --test
+```
+
+Verify version strings stay in sync across `src/version.js`, `CHANGELOG.md`, and this README:
+
+```bash
+node scripts/check-version.js
 ```
 
 ## Architecture

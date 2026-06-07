@@ -4,14 +4,16 @@
 
 import { createStore } from "./store.js";
 import { solve, statesAlong } from "./solver.js";
+import { VERSION } from "./version.js";
 import * as view from "./view.js";
 
 const els = {
   controls: document.getElementById("controls"),
-  matrix: document.getElementById("matrix"),
-  positions: document.getElementById("positions"),
+  tumblers: document.getElementById("tumblers"),
   solution: document.getElementById("solution"),
   solveBtn: document.getElementById("solve-btn"),
+  foot: document.getElementById("app-foot"),
+  ariaLive: document.getElementById("aria-live"),
 };
 
 const store = createStore();
@@ -19,7 +21,9 @@ const store = createStore();
 // Transient UI state — the solution is derived, not part of the lock definition.
 let solution; // undefined | null | Move[]
 let stepIndex = 0;
-let showAllSteps = false; // collapsed by default: players follow the focus card
+let showAllSteps = false;
+let copyCopied = false;
+let copyTimer;
 
 function buildWalkthrough(state) {
   if (!solution || solution.length === 0) return null;
@@ -34,16 +38,44 @@ function renderSolutionArea(state) {
 }
 
 function renderAll(state) {
-  view.renderControls(els.controls, state, handlers);
-  view.renderMatrix(els.matrix, state, handlers);
-  view.renderPositions(els.positions, state, handlers);
+  view.renderControls(els.controls, state, handlers, { copyCopied });
+  view.renderTumblers(els.tumblers, state, handlers);
   renderSolutionArea(state);
+  view.renderFooter(els.foot, VERSION);
 }
 
-// Any change to the lock definition invalidates the previous solution.
 function invalidateSolution() {
   solution = undefined;
   stepIndex = 0;
+}
+
+async function copyShareUrl(url) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(url);
+    return;
+  }
+  const area = document.createElement("textarea");
+  area.value = url;
+  area.setAttribute("readonly", "");
+  area.style.position = "fixed";
+  area.style.left = "-9999px";
+  document.body.append(area);
+  area.select();
+  const ok = document.execCommand("copy");
+  area.remove();
+  if (!ok) throw new Error("copy failed");
+}
+
+function showCopyFeedback() {
+  copyCopied = true;
+  if (els.ariaLive) els.ariaLive.textContent = "Link copied to clipboard.";
+  renderAll(store.getState());
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(() => {
+    copyCopied = false;
+    if (els.ariaLive) els.ariaLive.textContent = "";
+    renderAll(store.getState());
+  }, 2000);
 }
 
 const handlers = {
@@ -66,6 +98,14 @@ const handlers = {
   onClearAll() {
     invalidateSolution();
     store.clearAll();
+  },
+  async onCopyShareLink() {
+    try {
+      await copyShareUrl(location.href);
+      showCopyFeedback();
+    } catch {
+      if (els.ariaLive) els.ariaLive.textContent = "Could not copy link.";
+    }
   },
   onWalk(delta) {
     stepIndex += delta;
