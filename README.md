@@ -72,7 +72,7 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 ## Using it
 
 <div align="center">
-<img src="assets/app-screenshot.png" alt="The Gothic Lock Breaker v1.1 interface: lock count, per-tumbler plate cards with holes 1–7 and link chips, and the sequence panel" width="62%" />
+<img src="assets/app-screenshot.png" alt="Gothic Lock Breaker on desktop: per-tumbler plate cards with holes 1–7 and link chips, plus a solved 45-step sequence with every pin in the notch" width="62%" />
 </div>
 
 <br />
