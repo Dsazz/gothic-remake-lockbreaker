@@ -70,6 +70,11 @@ const handlers = {
     stepIndex += delta;
     renderSolutionArea(store.getState());
   },
+  onJumpTo(index) {
+    const total = solution?.length ?? 0;
+    stepIndex = Math.max(0, Math.min(index, total));
+    renderSolutionArea(store.getState());
+  },
 };
 
 function onSolve() {

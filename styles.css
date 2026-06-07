@@ -489,11 +489,37 @@ body {
   border-radius: var(--radius-sm);
   background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
   border: 1px solid var(--iron);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.12s, box-shadow 0.12s, opacity 0.12s;
+}
+
+.step:hover {
+  border-color: var(--bronze-deep);
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 2px;
 }
 
 .step.is-current {
   border-color: var(--bronze);
   box-shadow: 0 0 14px var(--bronze-glow);
+}
+
+/* finished turns: checked off and dimmed so the eye skips them */
+.step.is-done {
+  opacity: 0.55;
+}
+
+.step.is-done .step-text {
+  text-decoration: line-through;
+  color: var(--parchment-dim);
+}
+
+.step.is-upcoming {
+  opacity: 0.82;
 }
 
 .step-num {
@@ -509,6 +535,19 @@ body {
   font-weight: 700;
   font-size: 0.85rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.step.is-done .step-num {
+  background: radial-gradient(circle at 50% 38%, var(--patina), #3f6b50);
+  border-color: var(--patina);
+  color: #0c160f;
+}
+
+.step.is-upcoming .step-num {
+  background: linear-gradient(180deg, var(--iron), var(--iron-dark));
+  border-color: var(--iron-light);
+  color: var(--parchment-dim);
+  box-shadow: none;
 }
 
 .step-text {
@@ -531,7 +570,17 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-top: 14px;
+}
+
+.wt-nav .pill {
+  flex: 1;
+}
+
+.wt-progress {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .wt-counter {
@@ -540,6 +589,28 @@ body {
   color: var(--parchment-dim);
   font-weight: 700;
   font-size: 0.85rem;
+}
+
+.wt-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--stone-raised);
+  border: 1px solid var(--iron);
+  overflow: hidden;
+}
+
+.wt-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bronze-deep), var(--bronze-bright));
+  transition: width 0.18s ease;
+}
+
+.pill-primary {
+  background: linear-gradient(180deg, var(--bronze-bright), var(--bronze-deep));
+  border-color: var(--bronze-bright);
+  color: #1a1206;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 14px var(--bronze-glow), var(--bevel);
 }
 
 .wt-board {
@@ -604,12 +675,20 @@ body {
   box-shadow: 0 0 12px var(--bronze-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-.wt-caption {
-  margin-top: 14px;
+/* big "do this now" headline — readable at arm's length on a phone */
+.wt-current {
+  margin: 14px 0;
   font-family: var(--display);
   letter-spacing: 0.5px;
   color: var(--bronze-bright);
   font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.wt-current.is-open {
+  color: var(--patina);
 }
 
 .app-foot {

@@ -176,15 +176,35 @@ export function renderSolution(container, solution, walkthrough, handlers) {
     return;
   }
 
-  const steps = solution.map((move, i) =>
-    el("li", { class: `step ${i === walkthrough.stepIndex ? "is-current" : ""}` }, [
-      el("span", { class: "step-num", text: String(i + 1) }),
-      el("span", {
-        class: "step-text",
-        text: `${tumblerLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
-      }),
-    ]),
-  );
+  const { stepIndex } = walkthrough;
+  const steps = solution.map((move, i) => {
+    const status = i < stepIndex ? "is-done" : i === stepIndex ? "is-current" : "is-upcoming";
+    // Tap an undone step to check it (and all before) off; tap a done one to undo.
+    const target = i < stepIndex ? i : i + 1;
+    const jump = () => handlers.onJumpTo(target);
+    return el(
+      "li",
+      {
+        class: `step ${status}`,
+        role: "button",
+        tabindex: "0",
+        onClick: jump,
+        onKeydown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            jump();
+          }
+        },
+      },
+      [
+        el("span", { class: "step-num", text: status === "is-done" ? "✓" : String(i + 1) }),
+        el("span", {
+          class: "step-text",
+          text: `${tumblerLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
+        }),
+      ],
+    );
+  });
 
   container.replaceChildren(
     el("p", {
@@ -216,27 +236,34 @@ function renderWalkthrough(walkthrough, handlers) {
   });
 
   const total = states.length - 1;
-  const caption = move
-    ? `Up next: ${tumblerLabel(move.plate)} turns ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`
-    : "The lock gives — open.";
+  const pct = total === 0 ? 100 : Math.round((stepIndex / total) * 100);
+  const counter = move ? `Step ${stepIndex + 1} of ${total}` : `${total} of ${total} done`;
+  const headline = move
+    ? `${tumblerLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`
+    : "Lock open — every pin in the notch.";
 
   return el("div", { class: "walkthrough", "data-inbounds": String(isInBounds(board)) }, [
+    el("div", { class: "wt-progress" }, [
+      el("span", { class: "wt-counter", text: counter }),
+      el("div", { class: "wt-bar" }, [
+        el("div", { class: "wt-bar-fill", style: `width:${pct}%` }),
+      ]),
+    ]),
+    el("div", { class: `wt-current ${move ? "" : "is-open"}`, text: headline }),
+    el("div", { class: "wt-board" }, pins),
     el("div", { class: "wt-nav" }, [
       el("button", {
         class: "pill",
-        text: "‹ Prev",
+        text: "‹ Back",
         disabled: stepIndex === 0 ? "" : null,
         onClick: () => handlers.onWalk(-1),
       }),
-      el("span", { class: "wt-counter", text: `Turn ${stepIndex} / ${total}` }),
       el("button", {
-        class: "pill",
-        text: "Next ›",
+        class: "pill pill-primary",
+        text: move ? "Done — next ›" : "Done",
         disabled: stepIndex === total ? "" : null,
         onClick: () => handlers.onWalk(1),
       }),
     ]),
-    el("div", { class: "wt-board" }, pins),
-    el("div", { class: "wt-caption", text: caption }),
   ]);
 }
