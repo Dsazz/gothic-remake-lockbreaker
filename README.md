@@ -112,15 +112,16 @@ node scripts/check-version.js
 
 ## Architecture
 
-Native ES modules, strict one-way dependencies `ui -> state -> domain`:
+Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `view` stay pure and all depend on `domain`:
 
 | File | Responsibility |
 | --- | --- |
 | `src/domain.js` | Constants (`POS_MIN/MAX`, `CENTER`, `LINK`, `DIR`) and pure helpers. No DOM, no storage. |
 | `src/solver.js` | Pure `solve()` BFS + `statesAlong()`. Depends only on the domain. |
-| `src/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. |
-| `src/view.js` | Pure `state -> DOM` rendering; handlers injected. |
-| `src/app.js` | The only seam wiring events to the store and solver output to the view. |
+| `src/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. Depends only on the domain. |
+| `src/view.js` | Pure `state -> DOM` rendering; handlers injected. Reads domain constants; no store access. |
+| `src/app.js` | Wires DOM events to the store and solver output to the view. |
+| `src/version.js` | Release version and changelog URL for the footer badge. |
 | `index.html`, `styles.css` | Shell and theme. |
 
 ## Deploy your own
