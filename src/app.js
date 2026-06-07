@@ -12,6 +12,7 @@ const els = {
   tumblers: document.getElementById("tumblers"),
   solution: document.getElementById("solution"),
   solveBtn: document.getElementById("solve-btn"),
+  version: document.getElementById("app-version"),
   foot: document.getElementById("app-foot"),
   ariaLive: document.getElementById("aria-live"),
 };
@@ -38,6 +39,7 @@ function renderSolutionArea(state) {
 }
 
 function renderAll(state) {
+  view.renderVersionBadge(els.version, VERSION);
   view.renderControls(els.controls, state, handlers, { copyCopied });
   view.renderTumblers(els.tumblers, state, handlers);
   renderSolutionArea(state);

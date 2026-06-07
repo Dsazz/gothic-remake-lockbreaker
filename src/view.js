@@ -288,20 +288,26 @@ function renderWalkthrough(walkthrough, handlers) {
   ]);
 }
 
+function versionLink(version) {
+  return el("a", {
+    class: "app-version",
+    href: CHANGELOG_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    text: `v${version}`,
+  });
+}
+
+export function renderVersionBadge(container, version) {
+  container.replaceChildren(versionLink(version));
+}
+
 export function renderFooter(container, version) {
   container.replaceChildren(
     el("p", {
       class: "app-foot-note",
       text: "This lock travels in the page link and your browser, ready to revisit or hand off.",
     }),
-    el("p", { class: "app-foot-meta" }, [
-      el("a", {
-        class: "app-foot-version",
-        href: CHANGELOG_URL,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        text: `v${version}`,
-      }),
-    ]),
+    el("p", { class: "app-foot-meta" }, [versionLink(version)]),
   );
 }
