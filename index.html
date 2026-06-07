@@ -18,41 +18,41 @@
       <header class="app-head">
         <h1>Gothic Lock Breaker</h1>
         <p class="tagline">
-          Edge-safe solver for the Gothic 1 Remake lockpicking puzzle. Centers every
-          pin without slamming one into a wall.
+          A clean-path solver for the Gothic 1 Remake locks. Drives every pin to the
+          notch without ever grinding one against the frame.
         </p>
       </header>
 
       <section class="panel">
-        <h2>1. Lock setup</h2>
+        <h2>I &middot; The Lock</h2>
         <div id="controls" class="controls"></div>
       </section>
 
       <section class="panel">
-        <h2>2. Interactions</h2>
+        <h2>II &middot; Coupled Tumblers</h2>
         <p class="panel-note">
-          Read each row as: <strong>when I move Plate X, what happens to the others?</strong>
-          Tap a cell to cycle: <span class="tag link-none">—</span> none,
-          <span class="tag link-same">Same</span> direction,
-          <span class="tag link-opp">Opp.</span> opposite.
+          Pick a tumbler row, then mark how turning it drags each other tumbler.
+          Leave it <strong>blank</strong> if they move apart;
+          <span class="tag link-same">With</span> means the other turns the same way;
+          <span class="tag link-opp">Against</span> means it turns the opposite way.
         </p>
         <div id="matrix" class="matrix"></div>
       </section>
 
       <section class="panel">
-        <h2>3. Current pins</h2>
-        <p class="panel-note">Set where each pin sits right now. Center is 0.</p>
+        <h2>III &middot; Starting Pins</h2>
+        <p class="panel-note">Mark where each pin rests before you begin. Dead-center is 0.</p>
         <div id="positions" class="positions"></div>
       </section>
 
       <section class="panel">
-        <h2>4. Solution</h2>
-        <button id="solve-btn" class="solve-btn">Solve</button>
+        <h2>IV &middot; The Sequence</h2>
+        <button id="solve-btn" class="solve-btn">Break the Lock</button>
         <div id="solution" class="solution"></div>
       </section>
 
       <footer class="app-foot">
-        Your lock is saved locally and in the page link, so you can bookmark or share it.
+        This lock travels in the page link and your browser, ready to revisit or hand off.
       </footer>
     </main>
 

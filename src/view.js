@@ -12,9 +12,9 @@ import {
   isInBounds,
 } from "./domain.js";
 
-const LINK_LABEL = { [LINK.NONE]: "—", [LINK.SAME]: "Same", [LINK.OPP]: "Opp." };
+const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
-const DIR_LABEL = { [DIR.LEFT]: "Left", [DIR.RIGHT]: "Right" };
+const DIR_LABEL = { [DIR.LEFT]: "left", [DIR.RIGHT]: "right" };
 const DIR_ARROW = { [DIR.LEFT]: "←", [DIR.RIGHT]: "→" };
 
 function el(tag, props = {}, children = []) {
@@ -34,11 +34,11 @@ function el(tag, props = {}, children = []) {
   return node;
 }
 
-function plateLabel(index) {
-  return `P${index + 1}`;
+function tumblerLabel(index) {
+  return `T${index + 1}`;
 }
 
-// Plates render top-down highest-first to match the in-game stack layout.
+// Tumblers render top-down highest-first to match the in-game stack layout.
 function platesTopDown(plateCount) {
   return Array.from({ length: plateCount }, (_, i) => plateCount - 1 - i);
 }
@@ -55,16 +55,16 @@ export function renderControls(container, state, handlers) {
     );
   }
   container.replaceChildren(
-    el("span", { class: "field-label", text: "Plates" }),
+    el("span", { class: "field-label", text: "Tumblers" }),
     el("div", { class: "pill-row" }, counts),
     el("button", {
       class: "pill pill-ghost",
-      text: "Reset positions",
+      text: "Reset pins",
       onClick: handlers.onResetPositions,
     }),
     el("button", {
       class: "pill pill-ghost",
-      text: "Clear all",
+      text: "Wipe lock",
       onClick: handlers.onClearAll,
     }),
   );
@@ -74,16 +74,16 @@ export function renderMatrix(container, state, handlers) {
   const { plateCount, matrix } = state;
 
   const header = el("div", { class: "matrix-row matrix-head" }, [
-    el("div", { class: "matrix-corner", text: "Plate ↓" }),
+    el("div", { class: "matrix-corner", text: "Turn ▾" }),
     ...Array.from({ length: plateCount }, (_, j) =>
-      el("div", { class: "matrix-colhead", text: plateLabel(j) }),
+      el("div", { class: "matrix-colhead", text: tumblerLabel(j) }),
     ),
   ]);
 
   const rows = platesTopDown(plateCount).map((mover) => {
     const cells = Array.from({ length: plateCount }, (_, affected) => {
       if (mover === affected) {
-        return el("div", { class: "cell cell-self", text: "Self" });
+        return el("div", { class: "cell cell-self", text: "•" });
       }
       const link = matrix[mover][affected];
       return el("button", {
@@ -93,7 +93,7 @@ export function renderMatrix(container, state, handlers) {
       });
     });
     return el("div", { class: "matrix-row" }, [
-      el("div", { class: "matrix-rowhead", text: plateLabel(mover) }),
+      el("div", { class: "matrix-rowhead", text: tumblerLabel(mover) }),
       ...cells,
     ]);
   });
@@ -114,7 +114,7 @@ function positionRow(plate, value, handlers) {
     );
   }
   return el("div", { class: "pos-card" }, [
-    el("div", { class: "pos-title", text: `Plate ${plate + 1}` }),
+    el("div", { class: "pos-title", text: `Tumbler ${plate + 1}` }),
     el("div", { class: "pos-row" }, buttons),
   ]);
 }
@@ -130,7 +130,7 @@ export function renderPositions(container, state, handlers) {
 export function renderSolution(container, solution, walkthrough, handlers) {
   if (solution === undefined) {
     container.replaceChildren(
-      el("p", { class: "hint", text: "Set your lock above, then press Solve." }),
+      el("p", { class: "hint", text: "Map the lock above, then crack it open." }),
     );
     return;
   }
@@ -139,7 +139,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
     container.replaceChildren(
       el("p", {
         class: "alert",
-        text: "No edge-safe solution from this position. Double-check the interactions and current pins.",
+        text: "No clean path from here — some pin would hit the frame. Re-check the coupling and the starting pins.",
       }),
     );
     return;
@@ -147,7 +147,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
 
   if (solution.length === 0) {
     container.replaceChildren(
-      el("p", { class: "success", text: "Already solved — every pin is centered." }),
+      el("p", { class: "success", text: "Nothing to do — every pin already rests in the notch." }),
     );
     return;
   }
@@ -157,7 +157,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
       el("span", { class: "step-num", text: String(i + 1) }),
       el("span", {
         class: "step-text",
-        text: `Plate ${move.plate + 1}: nudge ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
+        text: `${tumblerLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
       }),
     ]),
   );
@@ -165,7 +165,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
   container.replaceChildren(
     el("p", {
       class: "success",
-      text: `Solved in ${solution.length} edge-safe move${solution.length === 1 ? "" : "s"}.`,
+      text: `Clean path found — ${solution.length} turn${solution.length === 1 ? "" : "s"}, none against the frame.`,
     }),
     renderWalkthrough(walkthrough, handlers),
     el("ol", { class: "step-list" }, steps),
@@ -183,7 +183,7 @@ function renderWalkthrough(walkthrough, handlers) {
       "div",
       { class: `wt-plate ${moving ? "is-moving" : ""} ${atEdge ? "at-edge" : ""}` },
       [
-        el("span", { class: "wt-label", text: `P${plate + 1}` }),
+        el("span", { class: "wt-label", text: tumblerLabel(plate) }),
         el("span", {
           class: `wt-value ${value === CENTER ? "is-center" : ""}`,
           text: value > 0 ? `+${value}` : String(value),
@@ -194,8 +194,8 @@ function renderWalkthrough(walkthrough, handlers) {
 
   const total = states.length - 1;
   const caption = move
-    ? `Next: Plate ${move.plate + 1} ${DIR_ARROW[move.dir]} ${DIR_LABEL[move.dir]}`
-    : "Done — lock open.";
+    ? `Up next: ${tumblerLabel(move.plate)} turns ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`
+    : "The lock gives — open.";
 
   return el("div", { class: "walkthrough", "data-inbounds": String(isInBounds(board)) }, [
     el("div", { class: "wt-nav" }, [
@@ -205,7 +205,7 @@ function renderWalkthrough(walkthrough, handlers) {
         disabled: stepIndex === 0 ? "" : null,
         onClick: () => handlers.onWalk(-1),
       }),
-      el("span", { class: "wt-counter", text: `Step ${stepIndex} / ${total}` }),
+      el("span", { class: "wt-counter", text: `Turn ${stepIndex} / ${total}` }),
       el("button", {
         class: "pill",
         text: "Next ›",

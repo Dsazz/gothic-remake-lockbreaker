@@ -6,9 +6,9 @@
 
 ### An edge-safe solver for the Gothic 1 Remake lockpicking puzzle
 
-Stop snapping picks on the Old Camp tower door. Transcribe the lock, hit **Solve**,
-and get the exact sequence of nudges that centers every pin — without ever ramming
-one into a wall.
+Stop snapping picks on the Old Camp tower door. Map the lock, hit **Break the Lock**,
+and get the exact run of turns that seats every pin in the notch — without ever grinding
+one against the frame.
 
 <br />
 
@@ -45,13 +45,13 @@ state space and only ever returns moves that keep every pin in range.
 
 ## How it works
 
-- Every pin sits at a position from `-3` to `+3`. The lock opens when **all pins are at `0`**.
-- Moving a plate one notch also moves its linked plates one notch — `Same` direction or
-  `Opp.` (opposite). Links are directional: moving A can affect B even if moving B does
-  nothing to A.
+- Every pin sits at a position from `-3` to `+3`. The lock opens when **all pins reach the notch (`0`)**.
+- Turning a tumbler one notch also turns its coupled tumblers one notch — `With` (same
+  way) or `Against` (opposite way). Coupling is directional: turning A can move B even if
+  turning B does nothing to A.
 - The solver runs a breadth-first search over the bounded state space and **discards any
-  move that would push a linked pin past `±3`**. You get the shortest fully-safe sequence,
-  or an honest "no safe path from here" if one truly doesn't exist.
+  turn that would grind a coupled pin past `±3`**. You get the shortest fully-safe
+  sequence, or an honest "no clean path from here" if one truly doesn't exist.
 
 State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 
@@ -63,15 +63,15 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 
 <br />
 
-1. **Plates** — choose how many plates the lock has (4–7).
-2. **Interactions** — for each row "when I move Plate X", tap the cell under every other
-   plate to record what you saw in-game: `—` none, `Same`, or `Opp.`
-3. **Current pins** — set where each pin sits right now.
-4. **Solve** — read the numbered steps, then use **Prev / Next** to walk the board one
-   move at a time and watch every pin stay safely off the walls.
+1. **The Lock** — choose how many tumblers the lock has (4–7).
+2. **Coupled Tumblers** — for each tumbler row, mark how turning it drags every other
+   tumbler: blank for independent, `With` for the same way, `Against` for the opposite way.
+3. **Starting Pins** — mark where each pin rests right now.
+4. **Break the Lock** — read the numbered turns, then use **Prev / Next** to walk the
+   board one turn at a time and watch every pin stay clear of the frame.
 
 Your lock is saved locally and encoded in the page URL, so you can bookmark a tricky
-lock or share it with a friend.
+lock or hand it to a friend.
 
 ## Running locally
 
