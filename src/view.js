@@ -16,8 +16,10 @@ import {
 
 const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
-const DIR_LABEL = { [DIR.LEFT]: "left", [DIR.RIGHT]: "right" };
-const DIR_ARROW = { [DIR.LEFT]: "←", [DIR.RIGHT]: "→" };
+// Game's horizontal axis is mirrored vs the solver's number line: increasing a
+// pin's value (dir +1, toward +3) is a physical LEFT turn in-game, and vice versa.
+const DIR_LABEL = { [DIR.LEFT]: "right", [DIR.RIGHT]: "left" };
+const DIR_ARROW = { [DIR.LEFT]: "→", [DIR.RIGHT]: "←" };
 
 function el(tag, props = {}, children = []) {
   const node = document.createElement(tag);
@@ -135,9 +137,9 @@ function positionRow(plate, value, handlers) {
 
 function wallLegend() {
   return el("div", { class: "pos-legend" }, [
-    el("span", { class: "pos-legend-wall", text: "◄ wall (-3)" }),
-    el("span", { class: "pos-legend-mid", text: "notch (0)" }),
-    el("span", { class: "pos-legend-wall", text: "(+3) wall ►" }),
+    el("span", { class: "pos-legend-wall", text: "-3 · wall" }),
+    el("span", { class: "pos-legend-mid", text: "0 · notch" }),
+    el("span", { class: "pos-legend-wall", text: "wall · +3" }),
   ]);
 }
 
