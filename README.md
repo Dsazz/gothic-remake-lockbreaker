@@ -47,7 +47,7 @@ halfway through and snaps your pick. **This one never does that.** It searches t
 state space and only ever returns moves that keep every pin in range.
 
 <div align="center">
-<img src="assets/walkthrough.png" alt="Old Camp lock solved: focus card with L1 — turn left, hole positions 1–7, and step navigation" width="62%" />
+<img src="assets/walkthrough.png" alt="Walkthrough focus card: Step 1 of 45 — L1 turn left, with hole positions 1–7 for each lock" width="62%" />
 </div>
 
 You get a numbered run of turns and a step-through board. Pins resting against the frame
