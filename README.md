@@ -47,22 +47,22 @@ halfway through and snaps your pick. **This one never does that.** It searches t
 state space and only ever returns moves that keep every pin in range.
 
 <div align="center">
-<img src="assets/walkthrough.png" alt="A solved lock: numbered turns and a step-through board that flags any pin sitting against the frame" width="62%" />
+<img src="assets/walkthrough.png" alt="Old Camp lock solved: focus card with L1 — turn left, hole positions 1–7, and step navigation" width="62%" />
 </div>
 
 You get a numbered run of turns and a step-through board. Pins resting against the frame
 glow red, so you can watch the sequence stay clear of every wall as you go.
 
 > Garbage in, garbage out: the solver is only as good as the couplings you feed it.
-> If a step doesn't match the game, a coupling in your grid is wrong — re-check that row.
+> If a step doesn't match the game, a link on one of the lock cards is wrong — re-check that lock.
 
 ## How it works
 
 - Every pin sits in one of **seven holes (1–7)** on its plate. The lock opens when **all pins reach hole 4** (the center notch). Holes 1 and 7 are the walls.
-- Turning a tumbler one notch also turns its coupled tumblers one notch — `With` (same
-  way) or `Against` (opposite way). Each tumbler's drag effects live in **its column**:
-  reading down column A tells you what turning A drags. Coupling is directional, so turning
-  A can move B even if turning B does nothing to A.
+- Turning a lock one notch also turns its coupled locks one notch — `With` (same
+  way) or `Against` (opposite way). On each lock's card, **Turning this moves** lists
+  every other lock that reacts when you turn that one. Coupling is directional, so turning
+  lock A can move B even if turning B does nothing to A.
 - The solver runs a breadth-first search over the bounded state space and **discards any
   turn that would grind a coupled pin past `±3`**. You get the shortest fully-safe
   sequence, or an honest "no clean path from here" if one truly doesn't exist.
@@ -72,7 +72,7 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 ## Using it
 
 <div align="center">
-<img src="assets/app-screenshot.png" alt="The Gothic Lock Breaker interface: tumbler count, the coupling grid, and per-tumbler pin tracks" width="62%" />
+<img src="assets/app-screenshot.png" alt="The Gothic Lock Breaker v1.1 interface: lock count, per-tumbler plate cards with holes 1–7 and link chips, and the sequence panel" width="62%" />
 </div>
 
 <br />
