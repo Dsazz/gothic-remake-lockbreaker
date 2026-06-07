@@ -40,8 +40,15 @@ useless in practice, because executing it in the wrong order drives a pin into t
 halfway through and snaps your pick. **This one never does that.** It searches the real
 state space and only ever returns moves that keep every pin in range.
 
-> Garbage in, garbage out: the solver is only as good as the interactions you feed it.
-> If a step doesn't match the game, a link in your matrix is wrong — re-check that row.
+<div align="center">
+<img src="assets/walkthrough.png" alt="A solved lock: numbered turns and a step-through board that flags any pin sitting against the frame" width="62%" />
+</div>
+
+You get a numbered run of turns and a step-through board. Pins resting against the frame
+glow red, so you can watch the sequence stay clear of every wall as you go.
+
+> Garbage in, garbage out: the solver is only as good as the couplings you feed it.
+> If a step doesn't match the game, a coupling in your grid is wrong — re-check that row.
 
 ## How it works
 
@@ -58,7 +65,7 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 ## Using it
 
 <div align="center">
-<img src="assets/app-screenshot.png" alt="The solver interface" width="80%" />
+<img src="assets/app-screenshot.png" alt="The Gothic Lock Breaker interface: tumbler count, the coupling grid, and per-tumbler pin tracks" width="62%" />
 </div>
 
 <br />
