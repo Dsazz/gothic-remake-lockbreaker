@@ -19,13 +19,14 @@ const store = createStore();
 // Transient UI state — the solution is derived, not part of the lock definition.
 let solution; // undefined | null | Move[]
 let stepIndex = 0;
+let showAllSteps = false; // collapsed by default: players follow the focus card
 
 function buildWalkthrough(state) {
   if (!solution || solution.length === 0) return null;
   const states = statesAlong(state.positions, state.matrix, solution);
   const clamped = Math.min(stepIndex, states.length - 1);
   stepIndex = clamped;
-  return { states, stepIndex: clamped, move: solution[clamped] ?? null };
+  return { states, stepIndex: clamped, move: solution[clamped] ?? null, showAll: showAllSteps };
 }
 
 function renderSolutionArea(state) {
@@ -75,12 +76,17 @@ const handlers = {
     stepIndex = Math.max(0, Math.min(index, total));
     renderSolutionArea(store.getState());
   },
+  onToggleSteps() {
+    showAllSteps = !showAllSteps;
+    renderSolutionArea(store.getState());
+  },
 };
 
 function onSolve() {
   const state = store.getState();
   solution = solve(state.positions, state.matrix);
   stepIndex = 0;
+  showAllSteps = false;
   renderSolutionArea(state);
 }
 

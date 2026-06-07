@@ -176,7 +176,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
     return;
   }
 
-  const { stepIndex } = walkthrough;
+  const { stepIndex, showAll } = walkthrough;
   const steps = solution.map((move, i) => {
     const status = i < stepIndex ? "is-done" : i === stepIndex ? "is-current" : "is-upcoming";
     // Tap an undone step to check it (and all before) off; tap a done one to undo.
@@ -206,14 +206,23 @@ export function renderSolution(container, solution, walkthrough, handlers) {
     );
   });
 
-  container.replaceChildren(
+  const toggle = el("button", {
+    class: "pill pill-ghost step-toggle",
+    text: showAll ? "Hide full list ▲" : `Show all ${solution.length} steps ▼`,
+    onClick: () => handlers.onToggleSteps(),
+  });
+
+  const children = [
     el("p", {
       class: "success",
       text: `Clean path found — ${solution.length} turn${solution.length === 1 ? "" : "s"}, none against the frame.`,
     }),
     renderWalkthrough(walkthrough, handlers),
-    el("ol", { class: "step-list" }, steps),
-  );
+    toggle,
+  ];
+  if (showAll) children.push(el("ol", { class: "step-list" }, steps));
+
+  container.replaceChildren(...children);
 }
 
 function renderWalkthrough(walkthrough, handlers) {

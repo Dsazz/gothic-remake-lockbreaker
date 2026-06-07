@@ -473,9 +473,14 @@ body {
   font-weight: 700;
 }
 
+.step-toggle {
+  width: 100%;
+  margin-top: 12px;
+}
+
 .step-list {
   list-style: none;
-  margin: 14px 0 0;
+  margin: 10px 0 0;
   padding: 0;
   display: grid;
   gap: 7px;
