@@ -5,6 +5,11 @@ export const POS_MIN = -3;
 export const POS_MAX = 3;
 export const CENTER = 0;
 
+// A pin AT a wall (EDGE) breaks the pick if pushed further; NEAR_EDGE is one
+// nudge from the wall. Used for danger highlighting in the view.
+export const EDGE = POS_MAX;
+export const NEAR_EDGE = POS_MAX - 1;
+
 export const MIN_PLATES = 4;
 export const MAX_PLATES = 7;
 export const DEFAULT_PLATES = 6;
@@ -29,13 +34,14 @@ export function createPositions(plateCount) {
 }
 
 // Result of nudging `plate` by `dir`. The moved plate always shifts by `dir`;
-// every other plate shifts by `dir` times its link value. Pure: returns a new array.
+// every other plate `i` shifts by `dir` times its link to the moved plate.
+// Convention: matrix[i][j] = how plate `i` reacts when plate `j` is turned, so
+// the COLUMN of the moved plate holds its drag effects. Pure: returns a new array.
 export function applyMove(state, matrix, plate, dir) {
   const next = state.slice();
-  const row = matrix[plate];
-  for (let j = 0; j < next.length; j++) {
-    const effect = j === plate ? dir : dir * row[j];
-    next[j] += effect;
+  for (let i = 0; i < next.length; i++) {
+    const effect = i === plate ? dir : dir * matrix[i][plate];
+    next[i] += effect;
   }
   return next;
 }

@@ -31,6 +31,11 @@
   --blood-bg: rgba(160, 45, 38, 0.16);
   --blood-line: rgba(192, 70, 60, 0.5);
 
+  /* amber = "one nudge from the wall" warning, distinct from bronze (good/center) */
+  --amber: #d9913f;
+  --amber-bg: rgba(217, 145, 63, 0.14);
+  --amber-line: rgba(217, 145, 63, 0.5);
+
   --radius: 6px;
   --radius-sm: 5px;
 
@@ -327,6 +332,43 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 7px;
+  border-left: 3px solid transparent;
+  padding-left: 8px;
+}
+
+/* danger: this pin sits on a wall; near-edge: one nudge from one */
+.pos-card.at-edge {
+  border-left-color: var(--blood);
+}
+.pos-card.at-edge .pos-title {
+  color: var(--blood-bright);
+}
+.pos-card.near-edge {
+  border-left-color: var(--amber);
+}
+.pos-card.near-edge .pos-title {
+  color: var(--amber);
+}
+
+.pos-legend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px 2px;
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  color: var(--parchment-dim);
+  text-transform: uppercase;
+}
+
+.pos-legend-wall {
+  color: var(--blood-bright);
+  font-weight: 700;
+}
+
+.pos-legend-mid {
+  color: var(--bronze);
+  font-weight: 700;
 }
 
 .pos-title {
@@ -528,6 +570,11 @@ body {
 .wt-plate.at-edge {
   border-color: var(--blood);
   box-shadow: 0 0 12px var(--blood-bg);
+}
+
+.wt-plate.near-edge {
+  border-color: var(--amber-line);
+  box-shadow: 0 0 10px var(--amber-bg);
 }
 
 .wt-label {

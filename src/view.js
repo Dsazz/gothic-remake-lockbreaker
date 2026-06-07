@@ -7,6 +7,8 @@ import {
   POS_MIN,
   POS_MAX,
   CENTER,
+  EDGE,
+  NEAR_EDGE,
   MIN_PLATES,
   MAX_PLATES,
   isInBounds,
@@ -36,6 +38,15 @@ function el(tag, props = {}, children = []) {
 
 function tumblerLabel(index) {
   return `T${index + 1}`;
+}
+
+// Danger of a pin by distance from the notch: at a wall (breaks the pick if
+// pushed further) vs one nudge from a wall. Symmetric across both walls.
+function dangerClass(value) {
+  const distance = Math.abs(value);
+  if (distance >= EDGE) return "at-edge";
+  if (distance === NEAR_EDGE) return "near-edge";
+  return "";
 }
 
 // Tumblers render top-down highest-first to match the in-game stack layout.
@@ -73,27 +84,30 @@ export function renderControls(container, state, handlers) {
 export function renderMatrix(container, state, handlers) {
   const { plateCount, matrix } = state;
 
+  // Convention: a column is the tumbler you TURN; each marked cell down that
+  // column is a tumbler (its row) that REACTS. Cells map to matrix[row][col],
+  // matching domain's matrix[reactor][turned], so stored locks render unchanged.
   const header = el("div", { class: "matrix-row matrix-head" }, [
-    el("div", { class: "matrix-corner", text: "Turn ▾" }),
-    ...Array.from({ length: plateCount }, (_, j) =>
-      el("div", { class: "matrix-colhead", text: tumblerLabel(j) }),
+    el("div", { class: "matrix-corner", text: "Turn ▸" }),
+    ...Array.from({ length: plateCount }, (_, turned) =>
+      el("div", { class: "matrix-colhead", text: tumblerLabel(turned) }),
     ),
   ]);
 
-  const rows = platesTopDown(plateCount).map((mover) => {
-    const cells = Array.from({ length: plateCount }, (_, affected) => {
-      if (mover === affected) {
+  const rows = platesTopDown(plateCount).map((reactor) => {
+    const cells = Array.from({ length: plateCount }, (_, turned) => {
+      if (reactor === turned) {
         return el("div", { class: "cell cell-self", text: "•" });
       }
-      const link = matrix[mover][affected];
+      const link = matrix[reactor][turned];
       return el("button", {
         class: `cell ${LINK_CLASS[link]}`,
         text: LINK_LABEL[link],
-        onClick: () => handlers.onCycleCell(mover, affected),
+        onClick: () => handlers.onCycleCell(reactor, turned),
       });
     });
     return el("div", { class: "matrix-row" }, [
-      el("div", { class: "matrix-rowhead", text: tumblerLabel(mover) }),
+      el("div", { class: "matrix-rowhead", text: tumblerLabel(reactor) }),
       ...cells,
     ]);
   });
@@ -113,9 +127,17 @@ function positionRow(plate, value, handlers) {
       }),
     );
   }
-  return el("div", { class: "pos-card" }, [
+  return el("div", { class: `pos-card ${dangerClass(value)}` }, [
     el("div", { class: "pos-title", text: `Tumbler ${plate + 1}` }),
     el("div", { class: "pos-row" }, buttons),
+  ]);
+}
+
+function wallLegend() {
+  return el("div", { class: "pos-legend" }, [
+    el("span", { class: "pos-legend-wall", text: "◄ wall (-3)" }),
+    el("span", { class: "pos-legend-mid", text: "notch (0)" }),
+    el("span", { class: "pos-legend-wall", text: "(+3) wall ►" }),
   ]);
 }
 
@@ -123,7 +145,7 @@ export function renderPositions(container, state, handlers) {
   const rows = platesTopDown(state.plateCount).map((plate) =>
     positionRow(plate, state.positions[plate], handlers),
   );
-  container.replaceChildren(...rows);
+  container.replaceChildren(wallLegend(), ...rows);
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
@@ -177,11 +199,10 @@ function renderWalkthrough(walkthrough, handlers) {
   const board = states[stepIndex];
 
   const pins = board.map((value, plate) => {
-    const atEdge = value === POS_MIN || value === POS_MAX;
     const moving = move && move.plate === plate;
     return el(
       "div",
-      { class: `wt-plate ${moving ? "is-moving" : ""} ${atEdge ? "at-edge" : ""}` },
+      { class: `wt-plate ${moving ? "is-moving" : ""} ${dangerClass(value)}` },
       [
         el("span", { class: "wt-label", text: tumblerLabel(plate) }),
         el("span", {

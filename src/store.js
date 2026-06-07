@@ -157,10 +157,10 @@ export function createStore() {
       });
     },
 
-    cycleMatrixCell(mover, affected) {
-      if (mover === affected) return; // diagonal is "Self", not editable
-      const matrix = state.matrix.map((row) => row.slice());
-      matrix[mover][affected] = NEXT_LINK[matrix[mover][affected]];
+    cycleMatrixCell(row, col) {
+      if (row === col) return; // diagonal is "Self", not editable
+      const matrix = state.matrix.map((cells) => cells.slice());
+      matrix[row][col] = NEXT_LINK[matrix[row][col]];
       commit({ ...state, matrix });
     },
 
