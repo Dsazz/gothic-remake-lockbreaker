@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.3.3] - 2026-06-08
+
+### Changed
+
+- Section III walkthrough: the lock being turned this step is highlighted with a bronze border and glow on its row, matching the focus card.
+
 ## [1.3.2] - 2026-06-08
 
 ### Changed

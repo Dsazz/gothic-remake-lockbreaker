@@ -514,7 +514,7 @@ function renderWalkthrough(walkthrough, handlers) {
     const moving = move && move.plate === plate;
     return el(
       "div",
-      { class: "wt-plate" },
+      { class: `wt-plate${moving ? " is-current" : ""}` },
       [
         el("span", { class: "wt-label", text: lockLabel(plate) }),
         holeGrooveReadout(value, { moving }),

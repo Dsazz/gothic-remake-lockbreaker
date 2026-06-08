@@ -1163,6 +1163,15 @@ button {
   box-shadow: var(--bevel);
 }
 
+.wt-plate.is-current {
+  border-color: var(--bronze);
+  box-shadow: var(--bevel), 0 0 14px var(--bronze-glow);
+}
+
+.wt-plate.is-current .wt-label {
+  color: var(--bronze-bright);
+}
+
 .wt-label {
   font-family: var(--display);
   color: var(--parchment-faint);
