@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.2.0] - 2026-06-08
+
+### Added
+
+- Gothic-style favicon (SVG, 32px PNG, apple-touch-icon) for browser tabs.
+- Version badge in the page header (changelog link), in addition to the footer.
+- Compact move commands with round arrow badges in the sequence panel.
+- Minimizable sticky sequence bar with back/next step navigation.
+- Icon toolbar buttons with hover tooltips on sequence panel actions.
+- Makefile dev workflow (`make serve`, `make test`, `make check-version`).
+
+### Changed
+
+- Sequence walkthrough uses compact turn counts instead of verbose step copy.
+- README: custom hero banner, refreshed screenshots, controls/danger-color docs, corrected architecture section.
+- Local dev docs switched from `python3 -m http.server` to Makefile targets.
+
 ## [1.1.0] - 2026-06-07
 
 ### Added
