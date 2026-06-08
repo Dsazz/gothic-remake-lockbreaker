@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.3.1] - 2026-06-08
+
+### Fixed
+
+- Walkthrough readout: every active pin now shows a visible ring (was missing on safe positions).
+- Walkthrough readout: pins at wall holes 1 and 7 use red danger styling even when that lock is the current turn; moving highlight no longer overrides edge danger.
+
 ## [1.3.0] - 2026-06-08
 
 ### Added

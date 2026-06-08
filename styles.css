@@ -438,17 +438,19 @@ button {
   width: 100%;
 }
 
-/* Walkthrough readout: only hole 4 (notch) gets gold; active pin stays recessed */
+/* Walkthrough readout: active pin recessed with a visible ring; notch gets bronze */
 .plate-holes--readout .hole.is-active {
   background: radial-gradient(circle at 50% 55%, #08090c 0%, #151820 70%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    0 0 6px rgba(255, 255, 255, 0.08);
   color: var(--parchment);
   transform: none;
 }
 
 .plate-holes--readout .hole.is-active.is-notch {
   background: radial-gradient(circle at 42% 32%, var(--bronze-bright), var(--bronze-deep));
+  border-color: var(--bronze-bright);
   box-shadow: 0 0 10px var(--bronze-glow),
     inset 0 -2px 4px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
@@ -456,10 +458,10 @@ button {
   transform: translateY(-1px);
 }
 
-.plate-holes--readout .hole.is-active.is-moving:not(.is-notch) {
-  border: 1px solid var(--iron-light);
+.plate-holes--readout .hole.is-active.is-moving:not(.is-notch):not(.at-edge):not(.near-edge) {
+  border-color: var(--parchment);
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    0 0 8px rgba(255, 255, 255, 0.1);
+    0 0 12px rgba(255, 255, 255, 0.22);
 }
 
 .plate-holes--readout .hole.is-active.is-moving.is-notch {
@@ -469,16 +471,30 @@ button {
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
-.plate-holes--readout .hole.is-active.at-edge {
-  border: 1px solid var(--blood);
+.plate-holes--readout .hole.is-active.at-edge,
+.plate-holes--readout .hole.is-active.is-wall {
+  border-color: var(--blood);
+  color: var(--blood-bright);
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
     0 0 10px var(--blood-bg);
 }
 
+.plate-holes--readout .hole.is-active.is-moving.at-edge,
+.plate-holes--readout .hole.is-active.is-moving.is-wall {
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
+    0 0 14px var(--blood-bg);
+}
+
 .plate-holes--readout .hole.is-active.near-edge {
-  border: 1px solid var(--amber-line);
+  border-color: var(--amber-line);
+  color: var(--amber-line);
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
     0 0 8px var(--amber-bg);
+}
+
+.plate-holes--readout .hole.is-active.is-moving.near-edge {
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
+    0 0 12px var(--amber-bg);
 }
 
 @media (min-width: 900px) {

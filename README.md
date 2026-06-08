@@ -18,7 +18,7 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.3.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.3.1-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -28,7 +28,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.3.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.3.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
