@@ -101,11 +101,8 @@ const handlers = {
     invalidateSolution();
     store.setPosition(plate, value);
   },
-  onResetPositions() {
-    invalidateSolution();
-    store.resetPositions();
-  },
   onClearAll() {
+    if (!confirm("Wipe the lock? Couplings, pins, and count will reset.")) return;
     invalidateSolution();
     store.clearAll();
   },

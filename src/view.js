@@ -115,15 +115,70 @@ function toolIconSvg(kind) {
   svg.setAttribute("stroke-width", "2");
   svg.setAttribute("stroke-linecap", "round");
   svg.setAttribute("stroke-linejoin", "round");
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
   if (kind === "expand") {
-    path.setAttribute("d", "M4 10 V4h6M14 4h6v6M10 20H4v-6M20 14v6h-6");
-  } else if (kind === "minimize") {
-    path.setAttribute("d", "M4 14h6v6M10 10h4M14 4h6v6M20 10v4h-6");
-  } else {
-    path.setAttribute("d", "M6 6l12 12M18 6L6 18");
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M6 15l6-6 6 6");
+    svg.append(path);
+    return svg;
   }
-  svg.append(path);
+
+  if (kind === "minimize") {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M6 9l6 6 6-6");
+    svg.append(path);
+    return svg;
+  }
+
+  const body = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  body.setAttribute(
+    "d",
+    "m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21",
+  );
+  const base = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  base.setAttribute("d", "M22 21H7");
+  svg.append(body, base);
+  return svg;
+}
+
+function controlsIconSvg(kind) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  if (kind === "link") {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute(
+      "d",
+      "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71",
+    );
+    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path2.setAttribute(
+      "d",
+      "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+    );
+    svg.append(path, path2);
+  } else {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute(
+      "d",
+      "M3 6h18M8 6V4h8v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
+    );
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", "10");
+    line.setAttribute("y1", "11");
+    line.setAttribute("x2", "10");
+    line.setAttribute("y2", "17");
+    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line2.setAttribute("x1", "14");
+    line2.setAttribute("y1", "11");
+    line2.setAttribute("x2", "14");
+    line2.setAttribute("y2", "17");
+    svg.append(path, line, line2);
+  }
   return svg;
 }
 
@@ -140,9 +195,9 @@ function dangerClass(value) {
   return "";
 }
 
-// Locks 1 (front) through N (back), top to bottom.
-function platesFrontFirst(plateCount) {
-  return Array.from({ length: plateCount }, (_, i) => i);
+// Locks N (back) through 1 (front), top to bottom — matches in-game view.
+function platesDisplayOrder(plateCount) {
+  return Array.from({ length: plateCount }, (_, i) => plateCount - 1 - i);
 }
 
 export function renderControls(container, state, handlers, ui = {}) {
@@ -159,21 +214,20 @@ export function renderControls(container, state, handlers, ui = {}) {
   container.replaceChildren(
     el("span", { class: "field-label", text: "Locks" }),
     el("div", { class: "pill-row" }, counts),
-    el("button", {
-      class: `pill pill-ghost ${ui.copyCopied ? "is-copied" : ""}`,
-      text: ui.copyCopied ? "Copied!" : "Copy link",
-      onClick: handlers.onCopyShareLink,
-    }),
-    el("button", {
-      class: "pill pill-ghost",
-      text: "Reset pins",
-      onClick: handlers.onResetPositions,
-    }),
-    el("button", {
-      class: "pill pill-ghost",
-      text: "Wipe lock",
-      onClick: handlers.onClearAll,
-    }),
+    el("div", { class: "controls-actions" }, [
+      iconBtn({
+        label: ui.copyCopied ? "Copied!" : "Copy link",
+        className: `icon-btn--tool ${ui.copyCopied ? "is-copied" : ""}`,
+        onClick: handlers.onCopyShareLink,
+        svg: controlsIconSvg("link"),
+      }),
+      iconBtn({
+        label: "Wipe lock",
+        className: "icon-btn--tool",
+        onClick: handlers.onClearAll,
+        svg: controlsIconSvg("wipe"),
+      }),
+    ]),
   );
 }
 
@@ -193,20 +247,61 @@ function linkChips(turned, plateCount, matrix, handlers) {
   return chips;
 }
 
-function positionGroove(plate, value, handlers) {
+function holeClassList(v, value, { moving = false } = {}) {
+  const active = v === value;
+  return [
+    "hole",
+    active ? "is-active" : "",
+    v === CENTER ? "is-notch" : "",
+    v === POS_MIN || v === POS_MAX ? "is-wall" : "",
+    active ? dangerClass(value) : "",
+    active && moving ? "is-moving" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function holeGrooveElements(value, { interactive, plate, handlers, moving = false } = {}) {
   const holes = [];
   for (let v = POS_MIN; v <= POS_MAX; v++) {
     const hole = holeLabel(v);
-    holes.push(
-      el("button", {
-        class: `hole ${v === value ? "is-active" : ""} ${v === CENTER ? "is-notch" : ""} ${v === POS_MIN || v === POS_MAX ? "is-wall" : ""}`,
-        text: hole,
-        "aria-label": `Hole ${hole}`,
-        onClick: () => handlers.onSetPosition(plate, v),
-      }),
-    );
+    const className = holeClassList(v, value, { moving });
+    if (interactive) {
+      holes.push(
+        el("button", {
+          class: className,
+          text: hole,
+          "aria-label": `Hole ${hole}`,
+          onClick: () => handlers.onSetPosition(plate, v),
+        }),
+      );
+    } else {
+      holes.push(
+        el("span", {
+          class: className,
+          text: hole,
+          "aria-hidden": "true",
+        }),
+      );
+    }
   }
-  return el("div", { class: "plate-holes" }, holes);
+  return holes;
+}
+
+function positionGroove(plate, value, handlers) {
+  return el(
+    "div",
+    { class: "plate-holes" },
+    holeGrooveElements(value, { interactive: true, plate, handlers }),
+  );
+}
+
+function holeGrooveReadout(value, { moving = false } = {}) {
+  return el(
+    "div",
+    { class: "plate-holes plate-holes--readout" },
+    holeGrooveElements(value, { moving }),
+  );
 }
 
 function tumblerCard(plate, state, handlers) {
@@ -239,7 +334,7 @@ function holeLegend() {
 }
 
 export function renderTumblers(container, state, handlers) {
-  const cards = platesFrontFirst(state.plateCount).map((plate) =>
+  const cards = platesDisplayOrder(state.plateCount).map((plate) =>
     tumblerCard(plate, state, handlers),
   );
   container.replaceChildren(holeLegend(), ...cards);
@@ -387,18 +482,15 @@ function renderWalkthrough(walkthrough, handlers) {
   const { states, stepIndex, move } = walkthrough;
   const board = states[stepIndex];
 
-  const pins = platesFrontFirst(board.length).map((plate) => {
+  const pins = platesDisplayOrder(board.length).map((plate) => {
     const value = board[plate];
     const moving = move && move.plate === plate;
     return el(
       "div",
-      { class: `wt-plate ${moving ? "is-moving" : ""} ${dangerClass(value)}` },
+      { class: "wt-plate" },
       [
         el("span", { class: "wt-label", text: lockLabel(plate) }),
-        el("span", {
-          class: `wt-value ${value === CENTER ? "is-center" : ""}`,
-          text: holeLabel(value),
-        }),
+        holeGrooveReadout(value, { moving }),
       ],
     );
   });

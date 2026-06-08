@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.3.0] - 2026-06-08
+
+### Added
+
+- Walkthrough readout: 7-hole plate grooves per lock (read-only, matching Section II).
+- Section I icon toolbar: link (copy) and trash (wipe lock, with confirm).
+- Sequence panel icons: chevron minimize/expand and eraser clear (replaces confusing cross).
+
+### Changed
+
+- Desktop: sticky sequence sidebar with scrollable solution; horizontal tumbler rows (title left, holes + chips right).
+- Mobile: viewport-capped sequence panel; compact walkthrough grooves; internal `.solution` scroll.
+- Tumblers and walkthrough: locks shown back-to-front (N at top, 1 at bottom) to match in-game stack.
+- Walkthrough styling: iron-bordered rows; raised bronze on active pin at hole 4; recessed elsewhere.
+- Move-arrow badges sized up so the chevron fits inside the circle.
+- Removed **Reset pins** control.
+- README screenshots refreshed (mobile walkthrough + desktop layout).
+
 ## [1.2.0] - 2026-06-08
 
 ### Added

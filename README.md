@@ -18,7 +18,7 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.2.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.3.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -28,7 +28,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.2.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.3.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -47,7 +47,7 @@ halfway through and snaps your pick. **This one never does that.** It searches t
 state space and only ever returns moves that keep every pin in range.
 
 <div align="center">
-<img src="assets/walkthrough.png" alt="Walkthrough focus card: Step 1 of 45 — L1 turn left, with hole positions 1–7 for each lock" width="62%" />
+<img src="assets/walkthrough.png" alt="Mobile sequence walkthrough: step 6 of 15 — L2 turn left, with 7-hole readout grooves for each lock" width="62%" />
 </div>
 
 You get a numbered run of turns and a step-through board. Pins against the frame glow
@@ -73,20 +73,21 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 ## Using it
 
 <div align="center">
-<img src="assets/app-screenshot.png" alt="Gothic Lock Breaker on desktop: per-tumbler plate cards with holes 1–7 and link chips, plus a solved 45-step sequence with every pin in the notch" width="62%" />
+<img src="assets/app-screenshot.png" alt="Gothic Lock Breaker on desktop: horizontal tumbler rows with start holes and coupling chips, sticky sequence sidebar with groove readout walkthrough" width="62%" />
 </div>
 
 <br />
 
 1. **The Lock** — choose how many locks the mechanism has (4–7; defaults to **6**).
-   **Copy link** shares the current setup; **Reset pins** centers every start hole;
-   **Wipe lock** clears couplings and returns the count to 6.
+   **Copy link** (link icon) shares the current setup; **Wipe lock** (trash icon)
+   clears couplings and returns the count to 6 — with a confirm prompt.
 2. **Tumblers** — for each lock (numbered 1 front through N back), mark its **start hole**
    and which other locks move when you turn it: `·` none, `With` same way, `Against`
    opposite.
-3. **Break the Lock** — read the focus card, then **Done — next** to walk the sequence
-   one turn at a time. Open **Show all N steps** for the full list; **Hide full list** to
-   collapse it.
+3. **Break the Lock** — read the focus card, then **Next** to walk the sequence one turn
+   at a time. Each lock row shows a read-only 7-hole groove (like the tumbler cards).
+   **Minimize** collapses the panel to a compact bar; **Clear** (eraser) drops the
+   solved sequence. Open **Show all N steps** for the full list.
 
 Your lock is saved locally and encoded in the page URL, so you can bookmark a tricky
 lock or paste the copied link to a friend. The footer shows the running version and
