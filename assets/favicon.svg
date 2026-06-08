@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Gothic Lock Breaker">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#221a12"/>
+      <stop offset="50%" stop-color="#0e0f12"/>
+      <stop offset="100%" stop-color="#060708"/>
+    </radialGradient>
+    <radialGradient id="plateMetal" cx="35%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#524638"/>
+      <stop offset="40%" stop-color="#2a2218"/>
+      <stop offset="100%" stop-color="#100e0c"/>
+    </radialGradient>
+    <linearGradient id="rimBronze" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0d080"/>
+      <stop offset="40%" stop-color="#c79a4b"/>
+      <stop offset="100%" stop-color="#6b4a18"/>
+    </linearGradient>
+    <linearGradient id="tumblerGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a05818"/>
+      <stop offset="25%" stop-color="#f0b040"/>
+      <stop offset="50%" stop-color="#ffe090"/>
+      <stop offset="75%" stop-color="#f0b040"/>
+      <stop offset="100%" stop-color="#a05818"/>
+    </linearGradient>
+    <linearGradient id="pickSteel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d8dce4"/>
+      <stop offset="45%" stop-color="#a0a8b0"/>
+      <stop offset="100%" stop-color="#585e68"/>
+    </linearGradient>
+    <filter id="emberGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="lockFace">
+      <circle cx="32" cy="32" r="20"/>
+    </clipPath>
+  </defs>
+
+  <rect width="64" height="64" rx="8" fill="url(#bgGlow)"/>
+  <ellipse cx="32" cy="31" rx="20" ry="18" fill="#d9913f" opacity="0.1"/>
+
+  <!-- lockpicks behind plate, clipped to face -->
+  <g clip-path="url(#lockFace)">
+    <line x1="18" y1="44" x2="46" y2="20" stroke="#0a0b0e" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="18" y1="44" x2="46" y2="20" stroke="url(#pickSteel)" stroke-width="1.1" stroke-linecap="round"/>
+    <line x1="18" y1="20" x2="46" y2="44" stroke="#0a0b0e" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="18" y1="20" x2="46" y2="44" stroke="url(#pickSteel)" stroke-width="1.1" stroke-linecap="round"/>
+  </g>
+
+  <!-- ornate lock plate -->
+  <circle cx="32" cy="32" r="22" fill="url(#plateMetal)"/>
+  <circle cx="32" cy="32" r="22" fill="none" stroke="url(#rimBronze)" stroke-width="2.4"/>
+  <circle cx="32" cy="32" r="18.8" fill="none" stroke="#3a3024" stroke-width="0.7" opacity="0.85"/>
+  <circle cx="32" cy="11.5" r="1.5" fill="#e6bd6b"/>
+  <circle cx="32" cy="52.5" r="1.5" fill="#8a6a2f"/>
+  <circle cx="11.5" cy="32" r="1.5" fill="#8a6a2f"/>
+  <circle cx="52.5" cy="32" r="1.5" fill="#e6bd6b"/>
+
+  <!-- mechanism slit -->
+  <rect x="23.5" y="17" width="17" height="30" rx="2.2" fill="#050608" stroke="#241e16" stroke-width="0.7"/>
+
+  <!-- ember-lit tumbler stack -->
+  <g filter="url(#emberGlow)">
+    <rect x="25.5" y="20" width="13" height="2.6" rx="0.7" fill="url(#tumblerGlow)"/>
+    <rect x="25.5" y="24.8" width="13" height="2.6" rx="0.7" fill="url(#tumblerGlow)" opacity="0.95"/>
+    <rect x="25.5" y="29.6" width="13" height="3" rx="0.7" fill="url(#tumblerGlow)"/>
+    <rect x="25.5" y="34.8" width="13" height="2.6" rx="0.7" fill="url(#tumblerGlow)" opacity="0.95"/>
+    <rect x="25.5" y="39.6" width="13" height="2.6" rx="0.7" fill="url(#tumblerGlow)" opacity="0.88"/>
+  </g>
+
+  <!-- pick tips over face -->
+  <g clip-path="url(#lockFace)">
+    <line x1="18" y1="44" x2="46" y2="20" stroke="url(#pickSteel)" stroke-width="1.1" stroke-linecap="round"/>
+    <line x1="18" y1="20" x2="46" y2="44" stroke="url(#pickSteel)" stroke-width="1.1" stroke-linecap="round"/>
+  </g>
+</svg>
