@@ -20,7 +20,7 @@ one against the frame.
 &nbsp;
 ![Version](https://img.shields.io/badge/version-1.1.0-e9b969?style=for-the-badge)
 &nbsp;
-![No npm deps](https://img.shields.io/badge/npm-none-7fb47a?style=for-the-badge)
+![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
 ![Vanilla JS](https://img.shields.io/badge/built%20with-vanilla%20JS-f4cf85?style=for-the-badge)
 &nbsp;
@@ -94,26 +94,17 @@ links to the changelog.
 
 ## Running locally
 
-Plain static files — no build, no npm install. The page loads Cinzel from Google Fonts;
-everything else is self-contained.
+Plain static files — no build step. Run `make install` once for the local dev server.
+The page loads Cinzel from Google Fonts; everything else is self-contained.
 
 ```bash
-# serve the folder any way you like
-python3 -m http.server 8000
-# then open http://localhost:8000
+make install        # first time only
+make serve          # http://localhost:8000
+make test
+make check-version
 ```
 
-Run the test suite (solver logic + version drift check, zero dependencies):
-
-```bash
-node --test
-```
-
-Verify version strings stay in sync across `src/version.js`, `CHANGELOG.md`, and this README:
-
-```bash
-node scripts/check-version.js
-```
+Override the port with `make serve PORT=3000`. Run `make` with no args to list targets.
 
 ## Architecture
 

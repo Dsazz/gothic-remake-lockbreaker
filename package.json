@@ -1,0 +1,13 @@
+{
+  "name": "gothic-remake-lockbreaker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "serve",
+    "test": "node --test",
+    "check-version": "node scripts/check-version.js"
+  },
+  "devDependencies": {
+    "serve": "14.2.4"
+  }
+}
