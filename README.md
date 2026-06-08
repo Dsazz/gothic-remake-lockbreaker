@@ -128,6 +128,10 @@ Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `vi
    branch **`main`**, folder **`/ (root)`**.
 3. It goes live at `https://<your-user>.github.io/<repo>/`.
 
+## License
+
+MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Stanislav Stepanenko (Dsazz).
+
 ## Credits
 
 A fan-made helper for the [Gothic 1 Remake](https://gothicremake.com/) by Alkimia
