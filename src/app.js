@@ -10,6 +10,7 @@ import * as view from "./view.js";
 const els = {
   controls: document.getElementById("controls"),
   tumblers: document.getElementById("tumblers"),
+  sequencePanel: document.querySelector(".panel--sequence"),
   solution: document.getElementById("solution"),
   solveBtn: document.getElementById("solve-btn"),
   version: document.getElementById("app-version"),
@@ -23,6 +24,7 @@ const store = createStore();
 let solution; // undefined | null | Move[]
 let stepIndex = 0;
 let showAllSteps = false;
+let sequenceMinimized = false;
 let copyCopied = false;
 let copyTimer;
 
@@ -35,7 +37,11 @@ function buildWalkthrough(state) {
 }
 
 function renderSolutionArea(state) {
-  view.renderSolution(els.solution, solution, buildWalkthrough(state), handlers);
+  const walkthrough = buildWalkthrough(state);
+  const hasMoves = Array.isArray(solution) && solution.length > 0;
+  const minimized = sequenceMinimized && hasMoves;
+  view.renderSequencePanel(els.sequencePanel, solution, { minimized }, handlers);
+  view.renderSolution(els.solution, solution, walkthrough, { minimized }, handlers);
 }
 
 function renderAll(state) {
@@ -49,6 +55,8 @@ function renderAll(state) {
 function invalidateSolution() {
   solution = undefined;
   stepIndex = 0;
+  showAllSteps = false;
+  sequenceMinimized = false;
 }
 
 async function copyShareUrl(url) {
@@ -121,6 +129,20 @@ const handlers = {
   onToggleSteps() {
     showAllSteps = !showAllSteps;
     renderSolutionArea(store.getState());
+  },
+  onMinimizeSequence() {
+    sequenceMinimized = true;
+    showAllSteps = false;
+    renderSolutionArea(store.getState());
+  },
+  onExpandSequence() {
+    sequenceMinimized = false;
+    renderSolutionArea(store.getState());
+    els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  },
+  onClearSolution() {
+    invalidateSolution();
+    renderAll(store.getState());
   },
 };
 

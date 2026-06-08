@@ -20,7 +20,6 @@ const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.O
 // Game's horizontal axis is mirrored vs the solver's number line: increasing a
 // pin's value (dir +1, toward +3) is a physical LEFT turn in-game, and vice versa.
 const DIR_LABEL = { [DIR.LEFT]: "right", [DIR.RIGHT]: "left" };
-const DIR_ARROW = { [DIR.LEFT]: "→", [DIR.RIGHT]: "←" };
 
 function el(tag, props = {}, children = []) {
   const node = document.createElement(tag);
@@ -41,6 +40,91 @@ function el(tag, props = {}, children = []) {
 
 function lockLabel(plate) {
   return `L${plate + 1}`;
+}
+
+const ARROW_PATH = {
+  right: "M2 10 H11 V6 L22 12 L11 18 V14 H2 Z",
+  left: "M22 10 H13 V6 L2 12 L13 18 V14 H22 Z",
+};
+
+function arrowSvg(isRight) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", isRight ? ARROW_PATH.right : ARROW_PATH.left);
+  svg.append(path);
+  return svg;
+}
+
+// size: "focus" | "list" | "min"
+function renderMoveCmd(move, size = "focus") {
+  const isRight = move.dir === DIR.LEFT;
+  return el(
+    "span",
+    {
+      class: `move-cmd move-cmd--${size}`,
+      "aria-label": `Lock ${move.plate + 1}, turn ${DIR_LABEL[move.dir]}`,
+    },
+    [
+      el("span", { class: "move-lock", text: lockLabel(move.plate) }),
+      el(
+        "span",
+        {
+          class: `move-arrow move-arrow--${isRight ? "right" : "left"}`,
+          "aria-hidden": "true",
+        },
+        [arrowSvg(isRight)],
+      ),
+    ],
+  );
+}
+
+function stepCounter(stepIndex, total, done) {
+  if (done) return `${total}/${total}`;
+  return `${stepIndex + 1}/${total}`;
+}
+
+function iconBtn({ label, className = "", onClick, disabled, svg }) {
+  return el(
+    "button",
+    {
+      class: className ? `icon-btn ${className}` : "icon-btn",
+      "aria-label": label,
+      title: label,
+      disabled: disabled ? "" : null,
+      onClick,
+    },
+    [svg],
+  );
+}
+
+function navChevronSvg(dir) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", dir === "back" ? "M14 6 L8 12 L14 18 Z" : "M10 6 L16 12 L10 18 Z");
+  svg.append(path);
+  return svg;
+}
+
+function toolIconSvg(kind) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  if (kind === "expand") {
+    path.setAttribute("d", "M4 10 V4h6M14 4h6v6M10 20H4v-6M20 14v6h-6");
+  } else if (kind === "minimize") {
+    path.setAttribute("d", "M4 14h6v6M10 10h4M14 4h6v6M20 10v4h-6");
+  } else {
+    path.setAttribute("d", "M6 6l12 12M18 6L6 18");
+  }
+  svg.append(path);
+  return svg;
 }
 
 function holeLabel(value) {
@@ -162,7 +246,7 @@ export function renderTumblers(container, state, handlers) {
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
-export function renderSolution(container, solution, walkthrough, handlers) {
+export function renderSolution(container, solution, walkthrough, ui, handlers) {
   if (solution === undefined) {
     container.replaceChildren(
       el("p", { class: "hint", text: "Map the lock above, then crack it open." }),
@@ -187,6 +271,11 @@ export function renderSolution(container, solution, walkthrough, handlers) {
     return;
   }
 
+  if (ui?.minimized) {
+    container.replaceChildren(renderMinimizedSummary(walkthrough, handlers));
+    return;
+  }
+
   const { stepIndex, showAll } = walkthrough;
   const steps = solution.map((move, i) => {
     const status = i < stepIndex ? "is-done" : i === stepIndex ? "is-current" : "is-upcoming";
@@ -208,10 +297,7 @@ export function renderSolution(container, solution, walkthrough, handlers) {
       },
       [
         el("span", { class: "step-num", text: status === "is-done" ? "✓" : String(i + 1) }),
-        el("span", {
-          class: "step-text",
-          text: `${lockLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`,
-        }),
+        el("span", { class: "step-text" }, [renderMoveCmd(move, "list")]),
       ],
     );
   });
@@ -224,8 +310,8 @@ export function renderSolution(container, solution, walkthrough, handlers) {
 
   const children = [
     el("p", {
-      class: "success",
-      text: `Clean path found — ${solution.length} turn${solution.length === 1 ? "" : "s"}, none against the frame.`,
+      class: "success solution-count",
+      text: `${solution.length} turn${solution.length === 1 ? "" : "s"}`,
     }),
     renderWalkthrough(walkthrough, handlers),
     toggle,
@@ -233,6 +319,68 @@ export function renderSolution(container, solution, walkthrough, handlers) {
   if (showAll) children.push(el("ol", { class: "step-list" }, steps));
 
   container.replaceChildren(...children);
+}
+
+export function renderSequencePanel(panel, solution, ui, handlers) {
+  if (!panel) return;
+  const actions = panel.querySelector("#sequence-actions");
+  const hasMoves = Array.isArray(solution) && solution.length > 0;
+  const minimized = Boolean(ui?.minimized && hasMoves);
+  panel.classList.toggle("is-minimized", minimized);
+  panel.classList.toggle("has-solution", hasMoves);
+  panel.setAttribute("aria-expanded", String(!minimized));
+
+  if (!actions) return;
+  if (!hasMoves) {
+    actions.replaceChildren();
+    return;
+  }
+
+  const panelTool = minimized
+    ? { label: "Expand", kind: "expand", onClick: handlers.onExpandSequence }
+    : { label: "Minimize", kind: "minimize", onClick: handlers.onMinimizeSequence };
+
+  actions.replaceChildren(
+    iconBtn({
+      label: panelTool.label,
+      className: "icon-btn--tool",
+      onClick: panelTool.onClick,
+      svg: toolIconSvg(panelTool.kind),
+    }),
+    iconBtn({
+      label: "Clear",
+      className: "icon-btn--tool",
+      onClick: handlers.onClearSolution,
+      svg: toolIconSvg("clear"),
+    }),
+  );
+}
+
+function renderMinimizedSummary(walkthrough, handlers) {
+  const { states, stepIndex, move } = walkthrough;
+  const total = states.length - 1;
+  const counter = stepCounter(stepIndex, total, !move);
+
+  return el("div", { class: "sequence-min" }, [
+    el("span", { class: "sequence-min-step", text: counter }),
+    el("div", { class: "sequence-min-nav" }, [
+      iconBtn({
+        label: "Back",
+        onClick: () => handlers.onWalk(-1),
+        disabled: stepIndex === 0,
+        svg: navChevronSvg("back"),
+      }),
+      move
+        ? renderMoveCmd(move, "min")
+        : el("span", { class: "sequence-min-done", text: "Lock open" }),
+      iconBtn({
+        label: move ? "Next" : "Done",
+        onClick: () => handlers.onWalk(1),
+        disabled: stepIndex === total,
+        svg: navChevronSvg("next"),
+      }),
+    ]),
+  ]);
 }
 
 function renderWalkthrough(walkthrough, handlers) {
@@ -257,10 +405,13 @@ function renderWalkthrough(walkthrough, handlers) {
 
   const total = states.length - 1;
   const pct = total === 0 ? 100 : Math.round((stepIndex / total) * 100);
-  const counter = move ? `Step ${stepIndex + 1} of ${total}` : `${total} of ${total} done`;
-  const headline = move
-    ? `${lockLabel(move.plate)} — turn ${DIR_LABEL[move.dir]} ${DIR_ARROW[move.dir]}`
-    : "Lock open — every pin in the notch.";
+  const counter = stepCounter(stepIndex, total, !move);
+  const current = move
+    ? el("div", { class: "wt-current" }, [renderMoveCmd(move, "focus")])
+    : el("div", {
+        class: "wt-current is-open",
+        text: "Lock open — every pin in the notch.",
+      });
 
   return el("div", { class: "walkthrough", "data-inbounds": String(isInBounds(board)) }, [
     el("div", { class: "wt-progress" }, [
@@ -269,7 +420,7 @@ function renderWalkthrough(walkthrough, handlers) {
         el("div", { class: "wt-bar-fill", style: `width:${pct}%` }),
       ]),
     ]),
-    el("div", { class: `wt-current ${move ? "" : "is-open"}`, text: headline }),
+    current,
     el("div", { class: "wt-board" }, pins),
     el("div", { class: "wt-nav" }, [
       el("button", {
@@ -280,7 +431,7 @@ function renderWalkthrough(walkthrough, handlers) {
       }),
       el("button", {
         class: "pill pill-primary",
-        text: move ? "Done — next ›" : "Done",
+        text: move ? "Next ›" : "Done",
         disabled: stepIndex === total ? "" : null,
         onClick: () => handlers.onWalk(1),
       }),
