@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.4.0] - 2026-06-08
+
+### Added
+
+- PostHog EU analytics: pageviews and autocaptured clicks on production; custom events for solve result, share-link copy, and lock wipe.
+- `src/analytics/` module — layered facade (`events`, `transport`, `track`, `index`); PostHog isolated to `transport.js`, init in `index.html`.
+- Analytics disabled on `localhost` / `127.0.0.1` during local dev.
+
+### Changed
+
+- README: architecture table and short analytics section.
+
 ## [1.3.3] - 2026-06-08
 
 ### Changed

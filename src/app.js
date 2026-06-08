@@ -6,6 +6,11 @@ import { createStore } from "./store.js";
 import { solve, statesAlong } from "./solver.js";
 import { VERSION } from "./version.js";
 import * as view from "./view.js";
+import {
+  trackLockCleared,
+  trackShareLinkCopied,
+  trackSolveResult,
+} from "./analytics/index.js";
 
 const els = {
   controls: document.getElementById("controls"),
@@ -105,11 +110,13 @@ const handlers = {
     if (!confirm("Wipe the lock? Couplings, pins, and count will reset.")) return;
     invalidateSolution();
     store.clearAll();
+    trackLockCleared();
   },
   async onCopyShareLink() {
     try {
       await copyShareUrl(location.href);
       showCopyFeedback();
+      trackShareLinkCopied({ plateCount: store.getState().plateCount });
     } catch {
       if (els.ariaLive) els.ariaLive.textContent = "Could not copy link.";
     }
@@ -146,6 +153,7 @@ const handlers = {
 function onSolve() {
   const state = store.getState();
   solution = solve(state.positions, state.matrix);
+  trackSolveResult({ plateCount: state.plateCount, moveCount: solution?.length ?? 0 });
   stepIndex = 0;
   showAllSteps = false;
   renderSolutionArea(state);
