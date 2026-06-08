@@ -456,8 +456,37 @@ function renderMinimizedSummary(walkthrough, handlers) {
   const total = states.length - 1;
   const counter = stepCounter(stepIndex, total, !move);
 
+  const arrowColChildren = [el("span", { class: "sequence-min-step", text: counter })];
+
+  if (move) {
+    const isRight = move.dir === DIR.LEFT;
+    arrowColChildren.push(
+      el(
+        "span",
+        {
+          class: `move-arrow move-arrow--${isRight ? "right" : "left"}`,
+          "aria-hidden": "true",
+        },
+        [arrowSvg(isRight)],
+      ),
+    );
+  } else {
+    arrowColChildren.push(el("span", { class: "sequence-min-done", text: "Lock open" }));
+  }
+
+  const coreChildren = [
+    move ? el("span", { class: "move-lock", text: lockLabel(move.plate) }) : null,
+    el("div", { class: "sequence-min-arrow-col" }, arrowColChildren),
+  ];
+
+  const coreProps = { class: "sequence-min-core" };
+  if (move) {
+    coreProps["aria-label"] = `Lock ${move.plate + 1}, turn ${DIR_LABEL[move.dir]}`;
+  }
+
+  const core = el("div", coreProps, coreChildren);
+
   return el("div", { class: "sequence-min" }, [
-    el("span", { class: "sequence-min-step", text: counter }),
     el("div", { class: "sequence-min-nav" }, [
       iconBtn({
         label: "Back",
@@ -465,9 +494,7 @@ function renderMinimizedSummary(walkthrough, handlers) {
         disabled: stepIndex === 0,
         svg: navChevronSvg("back"),
       }),
-      move
-        ? renderMoveCmd(move, "min")
-        : el("span", { class: "sequence-min-done", text: "Lock open" }),
+      core,
       iconBtn({
         label: move ? "Next" : "Done",
         onClick: () => handlers.onWalk(1),

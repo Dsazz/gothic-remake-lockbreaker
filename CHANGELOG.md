@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.3.2] - 2026-06-08
+
+### Changed
+
+- Minimized sequence bar: single-line nav — Back, lock label, move arrow, and Next on one row; step counter centered above the arrow.
+
+### Fixed
+
+- Minimized bar: L1 label vertically aligned with chevrons and move arrow.
+- Minimized bar: step label and move-arrow glow no longer clipped by panel overflow.
+
 ## [1.3.1] - 2026-06-08
 
 ### Fixed

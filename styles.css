@@ -523,6 +523,16 @@ button {
     overflow: hidden;
   }
 
+  .panel--sequence.is-minimized {
+    overflow: visible;
+    max-height: none;
+  }
+
+  .panel--sequence.is-minimized .solution {
+    flex: none;
+    overflow: visible;
+  }
+
   .panel--sequence.has-solution .solve-btn {
     display: none;
   }
@@ -739,20 +749,22 @@ button {
   margin-top: 16px;
 }
 
-.sequence-min {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 0;
+.panel--sequence.is-minimized {
+  overflow: visible;
 }
 
-.sequence-min-step {
-  font-family: var(--display);
-  font-size: 0.82rem;
-  color: var(--parchment-dim);
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+.panel--sequence.is-minimized .sequence-head {
+  margin-bottom: 6px;
+}
+
+.panel--sequence.is-minimized .solution {
+  margin-top: 0;
+  overflow: visible;
+}
+
+.sequence-min {
+  padding: 0 0 14px;
+  overflow: visible;
 }
 
 .sequence-min-nav {
@@ -760,13 +772,68 @@ button {
   align-items: center;
   justify-content: center;
   gap: 12px;
+  padding-top: 14px;
+  overflow: visible;
+}
+
+.sequence-min-core {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.sequence-min-arrow-col {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.sequence-min-step {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--parchment-dim);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.sequence-min-core .move-lock {
+  display: flex;
+  align-items: center;
+  height: 2.75rem;
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--bronze-bright);
+  font-size: 1.1rem;
 }
 
 .sequence-min-done {
+  display: flex;
+  align-items: center;
+  height: 2.75rem;
+  text-align: center;
   font-family: var(--display);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--patina);
+}
+
+.sequence-min-core .move-arrow {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.sequence-min-core .move-arrow svg {
+  width: 2rem;
+  height: 2rem;
 }
 
 .icon-btn {
