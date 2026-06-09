@@ -12,17 +12,17 @@ one against the frame.
 
 <br />
 
-[**Open the solver →**](https://dsazz.github.io/gothic-remake-lockbreaker/)
+[**Open the solver →**](https://gothiclockbreaker.com/)
 
 <br />
 
-[![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
+[![Play online](https://img.shields.io/badge/play-gothiclockbreaker.com-e9b969?style=for-the-badge)](https://gothiclockbreaker.com/)
 &nbsp;
 [![Discuss on r/worldofgothic](https://img.shields.io/badge/discuss-r%2Fworldofgothic-e9b969?style=for-the-badge)](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/)
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.10.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.11.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -32,7 +32,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.10.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.11.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -151,7 +151,10 @@ Production builds send **anonymous** usage data to [PostHog EU](https://eu.posth
 1. Push to `main`.
 2. **Settings → Pages → Build and deployment**: source **Deploy from a branch**,
    branch **`main`**, folder **`/ (root)`**.
-3. It goes live at `https://<your-user>.github.io/<repo>/`.
+3. Default URL: `https://<your-user>.github.io/<repo>/`.
+4. Optional custom domain: add a root `CNAME` file, set **Custom domain** in Pages
+   settings, and point DNS (A records to GitHub Pages IPs for apex, CNAME `www` to
+   `<user>.github.io`). Live site: [gothiclockbreaker.com](https://gothiclockbreaker.com/).
 
 ## License
 

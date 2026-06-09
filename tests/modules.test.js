@@ -79,5 +79,6 @@ test("index.html includes SEO metadata", async () => {
   assert.match(html, /<link\s+rel="canonical"/);
   assert.match(html, /application\/ld\+json/);
   assert.match(html, /app-definition/);
+  assert.match(html, /https:\/\/gothiclockbreaker\.com\//);
   assert.doesNotMatch(html, /panel--faq/);
 });

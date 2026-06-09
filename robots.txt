@@ -19,4 +19,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://dsazz.github.io/gothic-remake-lockbreaker/sitemap.xml
+Sitemap: https://gothiclockbreaker.com/sitemap.xml

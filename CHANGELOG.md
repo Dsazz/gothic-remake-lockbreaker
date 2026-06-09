@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.11.0] - 2026-06-09
+
+### Added
+
+- Custom domain `gothiclockbreaker.com` via GitHub Pages `CNAME` and Cloudflare DNS.
+
+### Changed
+
+- Canonical, Open Graph, Twitter, JSON-LD, `sitemap.xml`, `robots.txt`, and `llms.txt` now point at `https://gothiclockbreaker.com/`.
+- README play badge and solver link use the custom domain.
+
 ## [1.10.0] - 2026-06-09
 
 ### Added

@@ -18,7 +18,7 @@ Free. No account. Runs in any modern browser.
 
 ## Links
 
-- Live app: https://dsazz.github.io/gothic-remake-lockbreaker/
+- Live app: https://gothiclockbreaker.com/
 - Source: https://github.com/Dsazz/gothic-remake-lockbreaker
 - Changelog: https://github.com/Dsazz/gothic-remake-lockbreaker/blob/main/CHANGELOG.md
 
