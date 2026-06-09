@@ -5,32 +5,31 @@ import {
   LINK,
   CENTER,
   DEFAULT_PLATES,
+  DEFAULT_MASTERY_ID,
   createMatrix,
   createPositions,
+  createRemovedLinks,
   isPristineDefault,
   isLockMapped,
 } from "../src/domain.js";
 
+function freshDefault(plateCount = DEFAULT_PLATES) {
+  return {
+    plateCount,
+    matrix: createMatrix(plateCount),
+    positions: createPositions(plateCount),
+    masteryLevel: DEFAULT_MASTERY_ID,
+    breaksBudget: 0,
+    removedLinks: createRemovedLinks(plateCount),
+  };
+}
+
 test("isPristineDefault matches fresh default lock", () => {
-  assert.equal(
-    isPristineDefault({
-      plateCount: DEFAULT_PLATES,
-      matrix: createMatrix(DEFAULT_PLATES),
-      positions: createPositions(DEFAULT_PLATES),
-    }),
-    true,
-  );
+  assert.equal(isPristineDefault(freshDefault()), true);
 });
 
 test("plate count alone is still pristine when couplings and pins unchanged", () => {
-  assert.equal(
-    isPristineDefault({
-      plateCount: 5,
-      matrix: createMatrix(5),
-      positions: createPositions(5),
-    }),
-    false,
-  );
+  assert.equal(isPristineDefault(freshDefault(5)), false);
   assert.equal(isLockMapped({ matrix: createMatrix(5), positions: createPositions(5) }), false);
 });
 

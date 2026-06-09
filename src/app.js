@@ -4,7 +4,7 @@
 
 import { createStore } from "./store.js";
 import { solve, statesAlong } from "./solver.js";
-import { isLockMapped, isPristineDefault } from "./domain.js";
+import { isLockMapped, isPristineDefault, effectiveMatrix, masteryForId } from "./domain.js";
 import { VERSION } from "./version.js";
 import * as view from "./view.js";
 import { createOnboarding } from "./onboarding.js";
@@ -32,6 +32,8 @@ import {
   trackTutorStarted,
   trackWalkthroughStepChanged,
   trackWalkthroughUiToggled,
+  trackMasteryTierChanged,
+  trackStepMismatchClicked,
 } from "./analytics/index.js";
 
 const HAS_VISITED_KEY = "has_visited_v1";
@@ -89,6 +91,11 @@ let wasMapped = isLockMapped(store.getState());
 let hashBannerVisible = shouldShowHashBanner(store.getState());
 let sharePromptVisible = false;
 let sharePromptTracked = false;
+let showMismatchTips = false;
+
+function solverMatrix(state) {
+  return effectiveMatrix(state.matrix, state.removedLinks);
+}
 
 function storageGet(key) {
   try {
@@ -150,7 +157,8 @@ function flashSolveReady() {
 
 function buildWalkthrough(state) {
   if (!solution || solution.length === 0) return null;
-  const states = statesAlong(state.positions, state.matrix, solution);
+  const matrix = solverMatrix(state);
+  const states = statesAlong(state.positions, matrix, solution);
   const clamped = Math.min(stepIndex, states.length - 1);
   stepIndex = clamped;
   return { states, stepIndex: clamped, move: solution[clamped] ?? null, showAll: showAllSteps };
@@ -178,7 +186,14 @@ function renderSolutionArea(state) {
     els.solution,
     solution,
     walkthrough,
-    { minimized, blockedMessage, lockReady },
+    { minimized, blockedMessage, lockReady, showMismatchTips, state },
+    handlers,
+  );
+  view.renderHelpOverlay(
+    {
+      visible: showMismatchTips && hasMoves && !minimized && Boolean(walkthrough?.move),
+      state,
+    },
     handlers,
   );
 }
@@ -208,6 +223,7 @@ function invalidateSolution() {
   sequenceMinimized = false;
   blockedMessage = undefined;
   sharePromptVisible = false;
+  showMismatchTips = false;
 }
 
 async function copyShareUrl(url) {
@@ -253,7 +269,7 @@ const handlers = {
     store.setPosition(plate, value);
   },
   onClearAll() {
-    if (!confirm("Wipe the lock? Couplings, pins, and count will reset.")) return;
+    if (!confirm("Wipe the lock? Couplings, pins, mastery, and count will reset.")) return;
     invalidateSolution();
     store.clearAll();
     hashBannerVisible = shouldShowHashBanner(store.getState());
@@ -276,6 +292,7 @@ const handlers = {
     stepIndex += delta;
     stepIndex = Math.max(0, Math.min(stepIndex, total));
     if (stepIndex !== prev) {
+      showMismatchTips = false;
       trackWalkthroughStepChanged({
         direction: delta > 0 ? "forward" : "back",
         stepIndex,
@@ -290,6 +307,7 @@ const handlers = {
     const prev = stepIndex;
     stepIndex = Math.max(0, Math.min(index, total));
     if (stepIndex !== prev) {
+      showMismatchTips = false;
       trackWalkthroughStepChanged({
         direction: "jump",
         stepIndex,
@@ -349,6 +367,27 @@ const handlers = {
     trackExampleLockLoaded({ plateCount: exampleState.plateCount });
     onSolve({ auto: true, solveSource: "example" });
   },
+  onSetMasteryLevel(level) {
+    invalidateSolution();
+    store.setMasteryLevel(level);
+    trackMasteryTierChanged({ tier: masteryForId(level).key });
+  },
+  onAdjustBreaksBudget(delta) {
+    invalidateSolution();
+    store.adjustBreaksBudget(delta);
+  },
+  onToggleLinkRemoved(reactor, turned) {
+    invalidateSolution();
+    store.toggleLinkRemoved(reactor, turned);
+  },
+  onStepMismatch() {
+    showMismatchTips = !showMismatchTips;
+    trackStepMismatchClicked({
+      stepIndex,
+      plateCount: store.getState().plateCount,
+    });
+    renderSolutionArea(store.getState());
+  },
 };
 
 function onSolve({ auto = false, solveSource = "manual" } = {}) {
@@ -371,7 +410,7 @@ function onSolve({ auto = false, solveSource = "manual" } = {}) {
   }
 
   blockedMessage = undefined;
-  solution = solve(state.positions, state.matrix);
+  solution = solve(state.positions, solverMatrix(state));
   trackSolveResult({ plateCount: state.plateCount, solution, landingType, solveSource });
   stepIndex = 0;
   showAllSteps = false;

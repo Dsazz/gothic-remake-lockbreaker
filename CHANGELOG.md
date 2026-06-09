@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.8.0] - 2026-06-09
+
+### Added
+
+- **Lockpicking tier** selector (Untrained / Trained / Master) with inline mistake-budget note; plate physics unchanged across tiers.
+- **Master pick-break modeling**: stepper for picks snapped and per-coupling **Gone** control on tumbler cards; solver uses `effectiveMatrix()` with dropped links cleared.
+- Walkthrough **Something off?** link with troubleshooting checklist in a mobile bottom sheet / desktop dialog (backdrop, Escape, auto-close on step change).
+- Optional URL hash segments for mastery tier, break budget, and removed-link mask (legacy 3-part links still work).
+- Analytics: `mastery_tier_changed`, `step_mismatch_clicked`.
+- Onboarding tour: 4 steps (mastery tier, plate count, start holes, couplings) with fixed spotlight targets.
+- Tests: store hash round-trip, mastery `effectiveMatrix`, onboarding targets, view module smoke.
+
+### Changed
+
+- Wipe lock resets mastery tier and Master link removals.
+- Guide documents Fingers training tiers and Master link-removal workflow.
+- Onboarding dismiss key bumped to v2 so the updated tour can show after the mastery UI landed.
+- **Locks** count control grouped under its own label in the controls footer.
+
 ## [1.7.0] - 2026-06-09
 
 ### Added

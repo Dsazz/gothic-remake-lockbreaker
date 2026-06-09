@@ -19,5 +19,7 @@ export {
   trackTutorNotShown,
   trackTutorNextClicked,
   trackTutorSkipped,
+  trackMasteryTierChanged,
+  trackStepMismatchClicked,
 } from "./track.js";
 export { installErrorCapture } from "./transport.js";

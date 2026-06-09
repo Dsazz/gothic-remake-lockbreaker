@@ -126,3 +126,14 @@ export function trackTutorSkipped({ stepId, stepIndex, totalSteps }) {
     app_version: VERSION,
   });
 }
+
+export function trackMasteryTierChanged({ tier }) {
+  send(Events.MASTERY_TIER_CHANGED, { tier, app_version: VERSION });
+}
+
+export function trackStepMismatchClicked({ stepIndex, plateCount }) {
+  send(Events.STEP_MISMATCH_CLICKED, {
+    ...baseProps(plateCount),
+    step_index: stepIndex,
+  });
+}

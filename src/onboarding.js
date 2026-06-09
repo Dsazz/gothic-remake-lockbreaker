@@ -1,29 +1,37 @@
-const DISMISSED_KEY = "onboarding_dismissed_v1";
+const DISMISSED_KEY = "onboarding_dismissed_v2";
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 const TARGET_LOWER_RATIO = 0.45;
 const ESTIMATED_CARD_HEIGHT = 220;
 
-const STEPS = [
+export const ONBOARDING_STEPS = [
+  {
+    id: "mastery_tier",
+    target: ".controls .mastery-row",
+    title: "Step 1 · Lockpicking tier",
+    body: "Pick your Fingers training level. Default Untrained is fine. Training changes mistake budget only — not how plates move.",
+  },
   {
     id: "plate_count",
-    target: ".controls .pill-row",
-    title: "Step 1 · Count the locks",
+    target: ".controls .locks-row",
+    title: "Step 2 · Count the locks",
     body: "Match the number of plates in the mechanism (4–7). Default is 6.",
   },
   {
     id: "start_holes",
     target: ".tumbler-card:last-child .plate-holes",
-    title: "Step 2 · Starting holes",
+    title: "Step 3 · Starting holes",
     body: "Tap each pin's hole. 1 and 7 are walls; 4 is the notch (goal).",
   },
   {
     id: "couplings",
     target: ".tumbler-card:last-child .link-chip-row",
-    title: "Step 3 · Couplings",
-    body: "In-game, turn this lock once. Each lock that moves — tap its chip to With or Against.",
+    title: "Step 4 · Couplings",
+    body: "In-game, turn this lock once. Each lock that moves — tap its chip to With or Against. Master: tap Gone beside a coupling after a snapped pick drops it.",
   },
 ];
+
+const STEPS = ONBOARDING_STEPS;
 
 export function createOnboarding({
   onStepViewed,

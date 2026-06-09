@@ -11,12 +11,17 @@ import {
   NEAR_EDGE,
   MIN_PLATES,
   MAX_PLATES,
+  MASTERY,
+  masteryForId,
+  countRemovedLinks,
+  maxBreaksBudget,
   isInBounds,
 } from "./domain.js";
 import { CHANGELOG_URL } from "./version.js";
 
 const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
+const MASTERY_TIERS = [MASTERY.UNTRAINED, MASTERY.TRAINED, MASTERY.MASTER];
 // Game's horizontal axis is mirrored vs the solver's number line: increasing a
 // pin's value (dir +1, toward +3) is a physical LEFT turn in-game, and vice versa.
 const DIR_LABEL = { [DIR.LEFT]: "right", [DIR.RIGHT]: "left" };
@@ -200,6 +205,88 @@ function platesDisplayOrder(plateCount) {
   return Array.from({ length: plateCount }, (_, i) => plateCount - 1 - i);
 }
 
+function masteryNoteText(state) {
+  const tier = masteryForId(state.masteryLevel);
+  const reset = tier.resetOnBreak ? "Lock resets on break." : "Progress kept on break.";
+  let text = `${tier.mistakes} wall mistakes per pick. ${reset} Plate movement is unchanged by training.`;
+  if (tier.id === MASTERY.MASTER.id) {
+    text += " Each snapped pick removes one plate link.";
+  }
+  return text;
+}
+
+function breaksHintText(breaksBudget, removed) {
+  if (breaksBudget <= 0) {
+    return "Only if you've already snapped picks on this lock: raise the count — each break drops one coupling in-game.";
+  }
+  if (removed >= breaksBudget) {
+    return "Removed links marked. Hit Break the Lock when your couplings and start holes are set.";
+  }
+  return `Tap Gone beside each coupling the game dropped (${removed} of ${breaksBudget}).`;
+}
+
+function renderMasterySelector(state, handlers) {
+  const pills = MASTERY_TIERS.map((tier) =>
+    el("button", {
+      class: `pill ${tier.id === state.masteryLevel ? "is-active" : ""}`,
+      text: tier.label,
+      type: "button",
+      onClick: () => handlers.onSetMasteryLevel(tier.id),
+    }),
+  );
+  return el("div", { class: "mastery-block" }, [
+    el("span", { class: "field-label", text: "Lockpicking tier" }),
+    el("div", { class: "pill-row mastery-row" }, pills),
+    el("p", { class: "mastery-note", text: masteryNoteText(state) }),
+  ]);
+}
+
+function renderBreaksStepper(state, handlers) {
+  if (state.masteryLevel !== MASTERY.MASTER.id) return null;
+  const max = maxBreaksBudget(state.plateCount);
+  const removed = countRemovedLinks(state.removedLinks);
+  return el("div", { class: "breaks-stepper" }, [
+    el("span", { class: "field-label", text: "Picks snapped on this lock" }),
+    el("div", { class: "breaks-stepper-controls" }, [
+      el("button", {
+        class: "pill breaks-step",
+        type: "button",
+        text: "−",
+        "aria-label": "Fewer broken picks",
+        disabled: state.breaksBudget <= 0 ? "" : null,
+        onClick: () => handlers.onAdjustBreaksBudget(-1),
+      }),
+      el("span", { class: "breaks-value", text: String(state.breaksBudget) }),
+      el("button", {
+        class: "pill breaks-step",
+        type: "button",
+        text: "+",
+        "aria-label": "More broken picks",
+        disabled: state.breaksBudget >= max ? "" : null,
+        onClick: () => handlers.onAdjustBreaksBudget(1),
+      }),
+    ]),
+    el("p", {
+      class: "breaks-hint",
+      text: breaksHintText(state.breaksBudget, removed),
+    }),
+  ]);
+}
+
+function mismatchChecklist(state) {
+  const items = [
+    "Re-check With/Against on each coupling — links are directional (column of the turned lock).",
+    "If a step moves the wrong way, try the opposite direction label (game mirror).",
+    "Confirm each lock's start hole matches in-game.",
+  ];
+  if (state.masteryLevel === MASTERY.MASTER.id && state.breaksBudget > 0) {
+    items.push(
+      "Snapped picks? Set the count under Master, then tap Gone beside each dropped coupling.",
+    );
+  }
+  return el("ul", { class: "mismatch-checklist" }, items.map((text) => el("li", { text })));
+}
+
 export function renderControls(container, state, handlers, ui = {}) {
   const counts = [];
   for (let n = MIN_PLATES; n <= MAX_PLATES; n++) {
@@ -211,46 +298,80 @@ export function renderControls(container, state, handlers, ui = {}) {
       }),
     );
   }
+  const breaksStepper = renderBreaksStepper(state, handlers);
   container.replaceChildren(
-    el("span", { class: "field-label", text: "Locks" }),
-    el("div", { class: "pill-row" }, counts),
-    el("div", { class: "controls-actions" }, [
-      el(
-        "button",
-        {
-          class: `controls-share ${ui.copyCopied ? "is-copied" : ""}`,
-          type: "button",
-          "aria-label": ui.copyCopied ? "Copied!" : "Share lock",
-          title: ui.copyCopied ? "Copied!" : "Share lock",
-          onClick: handlers.onCopyShareLink,
-        },
-        [
-          controlsIconSvg("link"),
-          el("span", { class: "controls-share-label", text: ui.copyCopied ? "Copied!" : "Share lock" }),
-        ],
-      ),
-      iconBtn({
-        label: "Wipe lock",
-        className: "icon-btn--tool",
-        onClick: handlers.onClearAll,
-        svg: controlsIconSvg("wipe"),
-      }),
-    ]),
+    renderMasterySelector(state, handlers),
+    ...(breaksStepper ? [breaksStepper] : []),
+    el("div", { class: "controls-footer" }, [
+        el("div", { class: "locks-block" }, [
+          el("span", { class: "field-label", text: "Locks" }),
+          el("div", { class: "pill-row locks-row" }, counts),
+        ]),
+        el("div", { class: "controls-actions" }, [
+          el(
+            "button",
+            {
+              class: `controls-share ${ui.copyCopied ? "is-copied" : ""}`,
+              type: "button",
+              "aria-label": ui.copyCopied ? "Copied!" : "Share lock",
+              title: ui.copyCopied ? "Copied!" : "Share lock",
+              onClick: handlers.onCopyShareLink,
+            },
+            [
+              controlsIconSvg("link"),
+              el("span", {
+                class: "controls-share-label",
+                text: ui.copyCopied ? "Copied!" : "Share lock",
+              }),
+            ],
+          ),
+          iconBtn({
+            label: "Wipe lock",
+            className: "icon-btn--tool",
+            onClick: handlers.onClearAll,
+            svg: controlsIconSvg("wipe"),
+          }),
+        ]),
+      ]),
   );
 }
 
-function linkChips(turned, plateCount, matrix, handlers) {
+function linkChips(turned, state, handlers) {
+  const { plateCount, matrix, removedLinks, masteryLevel, breaksBudget } = state;
+  const masterGone = masteryLevel === MASTERY.MASTER.id && breaksBudget > 0;
+  const removedCount = countRemovedLinks(removedLinks);
   const chips = [];
+
   for (let reactor = 0; reactor < plateCount; reactor++) {
     if (reactor === turned) continue;
     const link = matrix[reactor][turned];
-    chips.push(
-      el("button", {
-        class: `link-chip ${LINK_CLASS[link]}`,
-        text: `${lockLabel(reactor)} ${LINK_LABEL[link]}`,
-        onClick: () => handlers.onCycleCell(reactor, turned),
-      }),
-    );
+    const removed = removedLinks[reactor][turned];
+    const couplingChip = el("button", {
+      class: ["link-chip", LINK_CLASS[link], removed ? "link-removed" : ""].filter(Boolean).join(" "),
+      text: `${lockLabel(reactor)} ${LINK_LABEL[link]}`,
+      type: "button",
+      "aria-label": `${lockLabel(reactor)} ${LINK_LABEL[link]} coupling`,
+      onClick: () => handlers.onCycleCell(reactor, turned),
+    });
+
+    if (!masterGone || link === LINK.NONE) {
+      chips.push(couplingChip);
+      continue;
+    }
+
+    const canMarkGone = removed || removedCount < breaksBudget;
+    const goneBtn = el("button", {
+      class: `link-gone-btn${removed ? " is-active" : ""}`,
+      text: removed ? "Gone ✓" : "Gone",
+      type: "button",
+      "aria-label": removed
+        ? `${lockLabel(reactor)} marked gone — tap to undo`
+        : `Mark ${lockLabel(reactor)} coupling as gone`,
+      disabled: canMarkGone ? null : "",
+      onClick: () => handlers.onToggleLinkRemoved(reactor, turned),
+    });
+
+    chips.push(el("div", { class: "link-chip-group" }, [couplingChip, goneBtn]));
   }
   return chips;
 }
@@ -328,7 +449,7 @@ function tumblerCard(plate, state, handlers) {
     ]),
     el("div", { class: "tumbler-links" }, [
       el("span", { class: "tumbler-field-label", text: "Turning this moves" }),
-      el("div", { class: "link-chip-row" }, linkChips(plate, state.plateCount, state.matrix, handlers)),
+      el("div", { class: "link-chip-row" }, linkChips(plate, state, handlers)),
     ]),
   ]);
 }
@@ -497,7 +618,7 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
       class: "success solution-count",
       text: `${solution.length} turn${solution.length === 1 ? "" : "s"}`,
     }),
-    renderWalkthrough(walkthrough, handlers),
+    renderWalkthrough(walkthrough, ui.state, handlers, ui),
     toggle,
   ];
   if (showAll) children.push(el("ol", { class: "step-list" }, steps));
@@ -594,7 +715,86 @@ function renderMinimizedSummary(walkthrough, handlers) {
   ]);
 }
 
-function renderWalkthrough(walkthrough, handlers) {
+const HELP_OVERLAY_ID = "wt-help-overlay";
+let helpEscapeListener = null;
+
+function clearHelpEscapeListener() {
+  if (!helpEscapeListener) return;
+  document.removeEventListener("keydown", helpEscapeListener);
+  helpEscapeListener = null;
+}
+
+export function renderHelpOverlay({ visible, state }, handlers) {
+  clearHelpEscapeListener();
+  const existing = document.getElementById(HELP_OVERLAY_ID);
+
+  if (!visible) {
+    existing?.remove();
+    document.body.classList.remove("wt-help-open");
+    return;
+  }
+
+  const close = () => handlers.onStepMismatch();
+  helpEscapeListener = (e) => {
+    if (e.key === "Escape") close();
+  };
+  document.addEventListener("keydown", helpEscapeListener);
+
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const sheet = el(
+    "div",
+    {
+      class: `wt-help-sheet${isMobile ? " wt-help-sheet--bottom" : ""}`,
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-labelledby": "wt-help-sheet-title",
+    },
+    [
+      el("div", { class: "wt-help-sheet-head" }, [
+        el("h2", {
+          id: "wt-help-sheet-title",
+          class: "wt-help-sheet-title",
+          text: "Something off?",
+        }),
+        el("button", {
+          class: "wt-help-sheet-close",
+          type: "button",
+          "aria-label": "Close tips",
+          text: "×",
+          onClick: close,
+        }),
+      ]),
+      el("p", {
+        class: "wt-help-lead",
+        text: "Usually a mapping issue, not your tier.",
+      }),
+      mismatchChecklist(state),
+    ],
+  );
+
+  const host = el("div", { id: HELP_OVERLAY_ID, class: "wt-help-overlay" }, [
+    el("button", {
+      class: "wt-help-backdrop",
+      type: "button",
+      "aria-label": "Close tips",
+      onClick: close,
+    }),
+    el(
+      "div",
+      { class: `wt-help-sheet-host${isMobile ? " wt-help-sheet-host--bottom" : ""}` },
+      [sheet],
+    ),
+  ]);
+
+  if (existing) existing.replaceWith(host);
+  else document.body.append(host);
+  document.body.classList.add("wt-help-open");
+  requestAnimationFrame(() => {
+    host.querySelector(".wt-help-sheet-close")?.focus();
+  });
+}
+
+function renderWalkthrough(walkthrough, state, handlers, ui = {}) {
   const { states, stepIndex, move } = walkthrough;
   const board = states[stepIndex];
 
@@ -614,22 +814,39 @@ function renderWalkthrough(walkthrough, handlers) {
   const total = states.length - 1;
   const pct = total === 0 ? 100 : Math.round((stepIndex / total) * 100);
   const counter = stepCounter(stepIndex, total, !move);
+
+  const progressHeadChildren = [el("span", { class: "wt-counter", text: counter })];
+  if (move) {
+    progressHeadChildren.push(
+      el("button", {
+        class: `wt-help-trigger${ui.showMismatchTips ? " is-open" : ""}`,
+        type: "button",
+        text: ui.showMismatchTips ? "Hide tips" : "Something off?",
+        "aria-label": ui.showMismatchTips ? "Hide troubleshooting tips" : "Troubleshoot this step",
+        "aria-expanded": ui.showMismatchTips ? "true" : "false",
+        onClick: handlers.onStepMismatch,
+      }),
+    );
+  }
+
   const current = move
     ? el("div", { class: "wt-current" }, [renderMoveCmd(move, "focus")])
-    : el("div", {
-        class: "wt-current is-open",
-        text: "Lock open — every pin in the notch.",
-      });
+    : el("div", { class: "wt-current is-open" }, [
+        el("span", { class: "wt-open-text", text: "Lock open — every pin in the notch." }),
+      ]);
 
-  return el("div", { class: "walkthrough", "data-inbounds": String(isInBounds(board)) }, [
+  const children = [
     el("div", { class: "wt-progress" }, [
-      el("span", { class: "wt-counter", text: counter }),
+      el("div", { class: "wt-progress-head" }, progressHeadChildren),
       el("div", { class: "wt-bar" }, [
         el("div", { class: "wt-bar-fill", style: `width:${pct}%` }),
       ]),
     ]),
     current,
     el("div", { class: "wt-board" }, pins),
+  ];
+
+  children.push(
     el("div", { class: "wt-nav" }, [
       el("button", {
         class: "pill",
@@ -644,7 +861,9 @@ function renderWalkthrough(walkthrough, handlers) {
         onClick: () => handlers.onWalk(1),
       }),
     ]),
-  ]);
+  );
+
+  return el("div", { class: "walkthrough", "data-inbounds": String(isInBounds(board)) }, children);
 }
 
 function versionLink(version) {

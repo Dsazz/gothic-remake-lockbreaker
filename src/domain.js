@@ -20,8 +20,43 @@ export const LINK = Object.freeze({ NONE: 0, SAME: 1, OPP: -1 });
 // A single nudge direction. +1 moves a pin toward POS_MAX, -1 toward POS_MIN.
 export const DIR = Object.freeze({ LEFT: -1, RIGHT: 1 });
 
+export const MASTERY = Object.freeze({
+  UNTRAINED: {
+    id: 0,
+    key: "untrained",
+    label: "Untrained",
+    mistakes: 2,
+    resetOnBreak: true,
+    simplifiesOnBreak: false,
+  },
+  TRAINED: {
+    id: 1,
+    key: "trained",
+    label: "Trained",
+    mistakes: 4,
+    resetOnBreak: false,
+    simplifiesOnBreak: false,
+  },
+  MASTER: {
+    id: 2,
+    key: "master",
+    label: "Master",
+    mistakes: 6,
+    resetOnBreak: false,
+    simplifiesOnBreak: true,
+  },
+});
+
+export const MASTERY_BY_ID = Object.freeze({
+  [MASTERY.UNTRAINED.id]: MASTERY.UNTRAINED,
+  [MASTERY.TRAINED.id]: MASTERY.TRAINED,
+  [MASTERY.MASTER.id]: MASTERY.MASTER,
+});
+
+export const DEFAULT_MASTERY_ID = MASTERY.UNTRAINED.id;
+
 /** @typedef {{ plate: number, dir: number }} Move */
-/** @typedef {{ plateCount: number, matrix: number[][], positions: number[] }} LockState */
+/** @typedef {{ plateCount: number, matrix: number[][], positions: number[], masteryLevel: number, breaksBudget: number, removedLinks: boolean[][] }} LockState */
 
 export function createMatrix(plateCount) {
   return Array.from({ length: plateCount }, () =>
@@ -31,6 +66,55 @@ export function createMatrix(plateCount) {
 
 export function createPositions(plateCount) {
   return new Array(plateCount).fill(CENTER);
+}
+
+export function createRemovedLinks(plateCount) {
+  return Array.from({ length: plateCount }, () => new Array(plateCount).fill(false));
+}
+
+export function masteryForId(id) {
+  return MASTERY_BY_ID[id] ?? MASTERY.UNTRAINED;
+}
+
+export function isValidMasteryId(id) {
+  return id in MASTERY_BY_ID;
+}
+
+export function maxBreaksBudget(plateCount) {
+  return plateCount;
+}
+
+export function countRemovedLinks(removedLinks) {
+  let count = 0;
+  for (let i = 0; i < removedLinks.length; i++) {
+    for (let j = 0; j < removedLinks[i].length; j++) {
+      if (i !== j && removedLinks[i][j]) count++;
+    }
+  }
+  return count;
+}
+
+/** Matrix fed to the solver: removed couplings behave as LINK.NONE. */
+export function effectiveMatrix(matrix, removedLinks) {
+  if (!removedLinks?.length) return matrix;
+  return matrix.map((row, i) =>
+    row.map((cell, j) => (removedLinks[i][j] ? LINK.NONE : cell)),
+  );
+}
+
+export function canMarkLinkRemoved(state, reactor, turned) {
+  if (reactor === turned) return false;
+  if (masteryForId(state.masteryLevel).id !== MASTERY.MASTER.id) return false;
+  if (state.breaksBudget <= 0) return false;
+  if (state.removedLinks[reactor][turned]) return true;
+  if (state.matrix[reactor][turned] === LINK.NONE) return false;
+  return countRemovedLinks(state.removedLinks) < state.breaksBudget;
+}
+
+export function isDefaultMastery({ masteryLevel, breaksBudget, removedLinks }) {
+  if (masteryLevel !== DEFAULT_MASTERY_ID) return false;
+  if (breaksBudget !== 0) return false;
+  return countRemovedLinks(removedLinks) === 0;
 }
 
 // Result of nudging `plate` by `dir`. The moved plate always shifts by `dir`;
@@ -62,9 +146,11 @@ export function hasNonCenterPin(positions) {
   return positions.some((pos) => pos !== CENTER);
 }
 
-/** Default plate count, all pins at notch, no couplings set. */
-export function isPristineDefault({ plateCount, matrix, positions }) {
+/** Default plate count, all pins at notch, no couplings set, untrained mastery. */
+export function isPristineDefault(state) {
+  const { plateCount, matrix, positions } = state;
   if (plateCount !== DEFAULT_PLATES) return false;
+  if (!isDefaultMastery(state)) return false;
   return !hasCoupling(matrix) && !hasNonCenterPin(positions);
 }
 

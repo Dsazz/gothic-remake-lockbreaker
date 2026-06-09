@@ -18,7 +18,7 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.6.1-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -28,7 +28,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.7.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.8.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -56,6 +56,19 @@ so you can watch the sequence stay clear of every wall as you go.
 
 > Garbage in, garbage out: the solver is only as good as the couplings you feed it.
 > If a step doesn't match the game, a link on one of the lock cards is wrong — re-check that lock.
+> Training with Fingers does **not** change how plates move; tap **Something off?** in the
+> walkthrough for a checklist. At **Master**, set picks snapped and tap **Gone** beside dropped couplings.
+
+## Mastery vs solver
+
+| Tier | Mistakes | On pick break | Solver impact |
+| --- | --- | --- | --- |
+| Untrained | 2 | Lock resets | Edge-safe BFS on your mapped couplings |
+| Trained | 4 | Progress kept | Same plate physics — more room for mistakes in-game |
+| Master | 6 | One link removed per snap | Set picks snapped, tap gone links on tumbler cards |
+
+The BFS never asks you to grind a pin past the wall. Mastery only changes how many wall
+mistakes you can afford in-game and (at Master) which couplings still exist after a break.
 
 ## How it works
 
@@ -78,9 +91,11 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 
 <br />
 
-1. **The Lock** — choose how many locks the mechanism has (4–7; defaults to **6**).
-   **Copy link** (link icon) shares the current setup; **Wipe lock** (trash icon)
-   clears couplings and returns the count to 6 — with a confirm prompt.
+1. **The Lock** — choose your **lockpicking tier** (Untrained / Trained / Master), how many
+   locks the mechanism has (4–7; defaults to **6**), and at Master how many **picks you've
+   snapped** on this lock so you can mark dropped couplings on the tumbler cards. **Copy link** (link icon) shares the
+   current setup; **Wipe lock** (trash icon) clears couplings, mastery, and returns the count
+   to 6 — with a confirm prompt.
 2. **Tumblers** — for each lock (numbered 1 front through N back), mark its **start hole**
    and which other locks move when you turn it: `·` none, `With` same way, `Against`
    opposite.
@@ -113,7 +128,7 @@ Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `vi
 
 | File | Responsibility |
 | --- | --- |
-| `src/domain.js` | Constants (`POS_MIN/MAX`, `CENTER`, `LINK`, `DIR`) and pure helpers. No DOM, no storage. |
+| `src/domain.js` | Constants (`POS_MIN/MAX`, `CENTER`, `LINK`, `DIR`, `MASTERY`) and pure helpers including `effectiveMatrix()`. No DOM, no storage. |
 | `src/solver.js` | Pure `solve()` BFS + `statesAlong()`. Depends only on the domain. |
 | `src/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. Depends only on the domain. |
 | `src/view.js` | Pure `state -> DOM` rendering; handlers injected. Reads domain constants; no store access. |
