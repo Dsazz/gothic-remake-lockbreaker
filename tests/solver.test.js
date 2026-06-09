@@ -62,6 +62,19 @@ test("coupling is directional, not symmetric", () => {
   assert.deepEqual(applyMove([0, 0], matrix, 1, 1), [0, 1], "plate 1 drags nothing");
 });
 
+test("5-plate lock with simple coupling solves edge-safely", () => {
+  const matrix = createMatrix(5);
+  matrix[1][0] = LINK.SAME;
+  const start = [2, -1, 0, 0, 0];
+  assertValidSolution(start, matrix, solve(start, matrix));
+});
+
+test("returns null for out-of-bounds start positions", () => {
+  const matrix = createMatrix(4);
+  assert.equal(isInBounds([4, 0, 0, 0]), false);
+  assert.equal(solve([4, 0, 0, 0], matrix), null);
+});
+
 test("reports null when no edge-safe path exists", () => {
   const matrix = createMatrix(2);
   matrix[0][1] = LINK.SAME;

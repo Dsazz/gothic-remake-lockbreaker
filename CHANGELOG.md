@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.9.0] - 2026-06-09
+
+### Added
+
+- `src/analytics/values.js` and `src/storage-keys.js` — frozen enums for analytics property values and localStorage keys (no magic strings in touched modules).
+- Deferred **solve coachmark** for cold visitors: one-shot spotlight on **Break the Lock** when the lock first becomes mappable (`solve_coachmark_seen_v1`); shown only after the onboarding tour ends if mapping completes during steps 3–4.
+- `failure_reason` on `lock_no_solution` (`oob_start` vs `no_path`) with differentiated recovery UI and **Open guide** on unsolvable paths.
+- `is_first_solve` property on first `lock_solved` per browser.
+- Onboarding dismiss key bumped to `onboarding_dismissed_v3` so prior v2 skippers see the tour again.
+
+### Changed
+
+- Share prompt dismisses only after a successful copy; banner scrolls into view after solve.
+- Mobile touch targets: plate holes and toolbar icons at least 44px at ≤768px.
+- Hash and example auto-solve scroll the sequence panel into view.
+
+### Fixed
+
+- Share prompt no longer dismisses when clipboard copy fails.
+
 ## [1.8.5] - 2026-06-09
 
 ### Added

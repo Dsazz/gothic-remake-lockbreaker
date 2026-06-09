@@ -752,7 +752,7 @@ button {
 
   .plate-holes {
     width: 100%;
-    grid-template-columns: repeat(7, minmax(42px, 1fr));
+    grid-template-columns: repeat(7, minmax(44px, 1fr));
     max-width: 100%;
     gap: 6px;
     padding: 8px 10px;
@@ -1246,6 +1246,13 @@ body.wt-help-open {
   height: 2.25rem;
 }
 
+@media (max-width: 768px) {
+  .icon-btn--tool {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
 .icon-btn--tool svg {
   width: 1rem;
   height: 1rem;
@@ -1357,6 +1364,13 @@ body.wt-help-open {
   letter-spacing: 0.5px;
   color: var(--blood-bright);
   font-weight: 700;
+}
+
+.solution-failure {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
 }
 
 .step-toggle {

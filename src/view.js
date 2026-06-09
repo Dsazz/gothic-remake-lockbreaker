@@ -18,6 +18,7 @@ import {
   isInBounds,
   isPristineDefault,
 } from "./domain.js";
+import { SolveFailureReason, SupportSource } from "./analytics/values.js";
 import { CHANGELOG_URL, SUPPORT_URL } from "./version.js";
 
 const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
@@ -549,12 +550,22 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
   }
 
   if (solution === null) {
-    container.replaceChildren(
-      el("p", {
-        class: "alert",
-        text: "No clean path from here — some pin would hit the frame. Re-check the coupling and the starting pins.",
-      }),
-    );
+    const isOob = ui?.failureReason === SolveFailureReason.OOB_START;
+    const message = isOob
+      ? "A pin starts outside the frame (holes 1–7). Tap each pin's hole to fix starting positions."
+      : "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.";
+    const children = [el("p", { class: "alert", text: message })];
+    if (!isOob) {
+      children.push(
+        el("button", {
+          class: "pill pill-ghost solution-guide-btn",
+          type: "button",
+          text: "Open guide",
+          onClick: handlers.onOpenGuide,
+        }),
+      );
+    }
+    container.replaceChildren(el("div", { class: "solution-failure" }, children));
     return;
   }
 
@@ -892,7 +903,7 @@ export function renderHeadSupport(container, handlers) {
       rel: "noopener noreferrer",
       "aria-label": SUPPORT_ARIA_LABEL,
       "data-tooltip": SUPPORT_TOOLTIP,
-      onClick: () => handlers.onSupportClick?.("header_ore"),
+      onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_ORE),
     }, [supportOreImg("app-head-support-ore", 28)]),
   );
 }
@@ -905,7 +916,7 @@ function supportStrip(handlers) {
       target: "_blank",
       rel: "noopener noreferrer",
       "aria-label": SUPPORT_ARIA_LABEL,
-      onClick: () => handlers.onSupportClick?.("footer_strip"),
+      onClick: () => handlers.onSupportClick?.(SupportSource.FOOTER_STRIP),
     }, [
       supportOreImg("support-ore", 36),
       el("span", { class: "support-cta-copy" }, [

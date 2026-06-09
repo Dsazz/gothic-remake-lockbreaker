@@ -5,6 +5,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { ONBOARDING_STEPS } from "../src/onboarding.js";
+import { OnboardingStepId } from "../src/analytics/values.js";
+import { StorageKeys } from "../src/storage-keys.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -35,7 +37,11 @@ test("onboarding step targets are specific and present in view markup", async ()
 
 test("onboarding has four steps including mastery tier before plate count", () => {
   assert.equal(ONBOARDING_STEPS.length, 4);
-  assert.equal(ONBOARDING_STEPS[0].id, "mastery_tier");
-  assert.equal(ONBOARDING_STEPS[1].id, "plate_count");
+  assert.equal(ONBOARDING_STEPS[0].id, OnboardingStepId.MASTERY_TIER);
+  assert.equal(ONBOARDING_STEPS[1].id, OnboardingStepId.PLATE_COUNT);
   assert.equal(ONBOARDING_STEPS[1].target, ".controls .locks-row");
+});
+
+test("onboarding dismiss key is v3", () => {
+  assert.equal(StorageKeys.ONBOARDING_DISMISSED_V3, "onboarding_dismissed_v3");
 });

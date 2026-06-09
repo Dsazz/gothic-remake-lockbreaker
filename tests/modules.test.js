@@ -11,6 +11,20 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/store.js");
   await import("../src/solver.js");
   await import("../src/view.js");
+  await import("../src/analytics/values.js");
+  await import("../src/storage-keys.js");
+  await import("../src/solve-coachmark.js");
+  await import("../src/solve-coachmark-schedule.js");
+});
+
+test("app defers solve coachmark until onboarding tour ends", async () => {
+  const appText = await readFile(join(root, "src/app.js"), "utf8");
+  const onboardingText = await readFile(join(root, "src/onboarding.js"), "utf8");
+  assert.match(appText, /pendingSolveCoachmark/);
+  assert.match(appText, /flushPendingSolveCoachmark/);
+  assert.match(appText, /resolveSolveCoachmarkTrigger/);
+  assert.match(appText, /onboarding\.isActive\(\)/);
+  assert.match(onboardingText, /isActive:\s*\(\)\s*=>\s*active/);
 });
 
 test("view.js has no duplicate function declarations", async () => {

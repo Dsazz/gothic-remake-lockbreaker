@@ -1,5 +1,7 @@
 import { VERSION } from "../version.js";
+import { StorageKeys } from "../storage-keys.js";
 import { Events } from "./events.js";
+import { OnboardingAction } from "./values.js";
 import { registerSessionProperties, send } from "./transport.js";
 
 function baseProps(plateCount) {
@@ -8,6 +10,28 @@ function baseProps(plateCount) {
 
 function solveProps(plateCount, landingType, solveSource) {
   return { ...baseProps(plateCount), landing_type: landingType, solve_source: solveSource };
+}
+
+function storageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // ignore
+  }
+}
+
+function firstSolveProps() {
+  if (storageGet(StorageKeys.FIRST_SOLVE_TRACKED)) return {};
+  storageSet(StorageKeys.FIRST_SOLVE_TRACKED, "1");
+  return { is_first_solve: true };
 }
 
 export function trackLanding({ landingType }) {
@@ -23,17 +47,23 @@ export function trackSolveButtonClicked({ plateCount, lockReady, landingType }) 
   });
 }
 
-export function trackSolveResult({ plateCount, solution, landingType, solveSource = "manual" }) {
+export function trackSolveResult({
+  plateCount,
+  solution,
+  landingType,
+  solveSource,
+  failureReason,
+}) {
   const props = solveProps(plateCount, landingType, solveSource);
   if (solution === null) {
-    send(Events.LOCK_NO_SOLUTION, props);
+    send(Events.LOCK_NO_SOLUTION, { ...props, failure_reason: failureReason });
     return;
   }
   if (solution.length === 0) {
     send(Events.LOCK_ALREADY_SOLVED, props);
     return;
   }
-  send(Events.LOCK_SOLVED, { ...props, move_count: solution.length });
+  send(Events.LOCK_SOLVED, { ...props, ...firstSolveProps(), move_count: solution.length });
 }
 
 export function trackLockBecameMappable({ plateCount }) {
@@ -94,7 +124,7 @@ export function trackOnboardingDismissed({ completed, stepId, stepIndex, action,
     completed,
     step_id: stepId,
     step_index: stepIndex,
-    action: action ?? (completed ? "complete" : "skip"),
+    action: action ?? (completed ? OnboardingAction.COMPLETE : OnboardingAction.SKIP),
     total_steps: totalSteps,
     app_version: VERSION,
   });

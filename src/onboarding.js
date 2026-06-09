@@ -1,4 +1,10 @@
-const DISMISSED_KEY = "onboarding_dismissed_v2";
+import { StorageKeys } from "./storage-keys.js";
+import {
+  OnboardingAction,
+  OnboardingStepId,
+  TutorNotShownReason,
+} from "./analytics/values.js";
+
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 const TARGET_LOWER_RATIO = 0.45;
@@ -6,25 +12,25 @@ const ESTIMATED_CARD_HEIGHT = 220;
 
 export const ONBOARDING_STEPS = [
   {
-    id: "mastery_tier",
+    id: OnboardingStepId.MASTERY_TIER,
     target: ".controls .mastery-row",
     title: "Step 1 · Lockpicking tier",
     body: "Pick your Fingers training level. Default Untrained is fine. Training changes mistake budget only — not how plates move.",
   },
   {
-    id: "plate_count",
+    id: OnboardingStepId.PLATE_COUNT,
     target: ".controls .locks-row",
     title: "Step 2 · Count the locks",
     body: "Match the number of plates in the mechanism (4–7). Default is 6.",
   },
   {
-    id: "start_holes",
+    id: OnboardingStepId.START_HOLES,
     target: ".tumbler-card:last-child .plate-holes",
     title: "Step 3 · Starting holes",
     body: "Tap each pin's hole. 1 and 7 are walls; 4 is the notch (goal).",
   },
   {
-    id: "couplings",
+    id: OnboardingStepId.COUPLINGS,
     target: ".tumbler-card:last-child .link-chip-row",
     title: "Step 4 · Couplings",
     body: "In-game, turn this lock once. Each lock that moves — tap its chip to With or Against. Master: tap Gone beside a coupling after a snapped pick drops it.",
@@ -50,7 +56,7 @@ export function createOnboarding({
 
   function isDismissed() {
     try {
-      return localStorage.getItem(DISMISSED_KEY) === "1";
+      return localStorage.getItem(StorageKeys.ONBOARDING_DISMISSED_V3) === "1";
     } catch {
       return false;
     }
@@ -58,7 +64,7 @@ export function createOnboarding({
 
   function markDismissed() {
     try {
-      localStorage.setItem(DISMISSED_KEY, "1");
+      localStorage.setItem(StorageKeys.ONBOARDING_DISMISSED_V3, "1");
     } catch {
       // ignore
     }
@@ -218,7 +224,7 @@ export function createOnboarding({
 
   function finish(completed) {
     const ctx = stepContext();
-    const action = completed ? "complete" : "skip";
+    const action = completed ? OnboardingAction.COMPLETE : OnboardingAction.SKIP;
     markDismissed();
     onDismissed?.({ completed, action, ...ctx });
     removeLayers();
@@ -286,13 +292,14 @@ export function createOnboarding({
   }
 
   return {
-    start({ skip = false, skipReason = "returning_user" } = {}) {
+    isActive: () => active,
+    start({ skip = false, skipReason = TutorNotShownReason.RETURNING_USER } = {}) {
       if (skip) {
         onNotShown?.({ reason: skipReason });
         return;
       }
       if (isDismissed()) {
-        onNotShown?.({ reason: "previously_dismissed" });
+        onNotShown?.({ reason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
         return;
       }
       if (active) return;
