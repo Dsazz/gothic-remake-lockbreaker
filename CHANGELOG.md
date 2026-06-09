@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.11.3] - 2026-06-09
+
+### Fixed
+
+- PostHog error capture: re-entrancy guard stops capture feedback loops; cross-origin `Script error.` and iOS `showSearchResults` noise are no longer reported.
+
+### Changed
+
+- PostHog ingestion uses the `e.gothiclockbreaker.com` reverse proxy (`ui_host` still EU).
+
 ## [1.11.2] - 2026-06-09
 
 ### Changed

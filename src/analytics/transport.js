@@ -1,3 +1,28 @@
+const SCRIPT_ERROR_PATTERN = /^script error\.?$/i;
+
+const IGNORED_MESSAGE_PATTERNS = [
+  SCRIPT_ERROR_PATTERN,
+  /showSearchResults/,
+];
+
+let capturing = false;
+
+export function isReportableError(message) {
+  const text = String(message ?? "").trim();
+  if (!text) return true;
+  return !IGNORED_MESSAGE_PATTERNS.some((pattern) => pattern.test(text));
+}
+
+function captureExceptionSafely(error, properties) {
+  if (capturing || !isReportableError(error?.message)) return;
+  capturing = true;
+  try {
+    window.posthog.captureException?.(error, properties);
+  } finally {
+    capturing = false;
+  }
+}
+
 export function send(event, properties) {
   window.posthog?.capture?.(event, properties);
 }
@@ -14,14 +39,18 @@ export function installErrorCapture() {
   if (!isEnabled()) return;
 
   window.addEventListener("error", (event) => {
-    window.posthog.captureException?.(event.error ?? new Error(event.message), {
+    const message = event.message || event.error?.message || "";
+    if (!isReportableError(message)) return;
+    captureExceptionSafely(event.error ?? new Error(message), {
       source: "window.error",
     });
   });
 
   window.addEventListener("unhandledrejection", (event) => {
     const reason = event.reason;
-    const error = reason instanceof Error ? reason : new Error(String(reason));
-    window.posthog.captureException?.(error, { source: "unhandledrejection" });
+    const message = reason instanceof Error ? reason.message : String(reason);
+    if (!isReportableError(message)) return;
+    const error = reason instanceof Error ? reason : new Error(message);
+    captureExceptionSafely(error, { source: "unhandledrejection" });
   });
 }
