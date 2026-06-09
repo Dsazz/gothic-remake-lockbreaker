@@ -137,6 +137,68 @@ button {
   z-index: 1;
 }
 
+.app-head-support {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 3;
+}
+
+.app-head-support-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  text-decoration: none;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85));
+  transition: filter 0.12s;
+}
+
+.app-head-support-link:hover,
+.app-head-support-link:focus-visible {
+  filter: drop-shadow(0 0 6px rgba(100, 180, 255, 0.55))
+    drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85));
+  outline: none;
+}
+
+.app-head-support-ore {
+  height: 28px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.app-head-support-link[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: max-content;
+  max-width: min(220px, 70vw);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone));
+  color: var(--parchment);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.12s, transform 0.12s;
+  box-shadow: var(--bevel), 0 8px 20px rgba(0, 0, 0, 0.55);
+}
+
+.app-head-support-link:hover::after,
+.app-head-support-link:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .tagline {
   margin: 0 auto;
   max-width: 44ch;
@@ -1630,12 +1692,69 @@ body.wt-help-open {
 }
 
 .app-foot-meta {
-  margin: 0;
+  margin: 10px 0 0;
 }
 
 .app-foot-meta .app-version {
   font-size: 0.72rem;
   padding: 2px 10px;
+}
+
+.support-strip {
+  margin-bottom: 4px;
+}
+
+.support-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 12px 4px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bronze-deep);
+  background: rgba(233, 185, 105, 0.08);
+  color: var(--parchment);
+  text-decoration: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.support-cta:hover {
+  border-color: var(--bronze-bright);
+  box-shadow: 0 0 14px var(--bronze-glow), var(--bevel);
+}
+
+.support-cta:hover .support-ore {
+  filter: drop-shadow(0 0 6px rgba(100, 180, 255, 0.55));
+}
+
+.support-ore {
+  flex-shrink: 0;
+  height: 36px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  margin: -2px 0;
+}
+
+.support-cta-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+}
+
+.support-cta-text {
+  font-family: var(--display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--bronze-bright);
+}
+
+.support-cta-sub {
+  font-size: 0.78rem;
+  color: var(--parchment-dim);
 }
 
 /* --- how-to-map guide --- */

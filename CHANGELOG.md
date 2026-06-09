@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.8.5] - 2026-06-09
+
+### Added
+
+- Header **ore** link (icon-only, top-right on hero) — Gothic tooltip on hover/focus; opens Ko-fi. Footer support strip unchanged.
+- PostHog `support_link_clicked` source `header_ore` for header placement.
+
+## [1.8.4] - 2026-06-09
+
+### Changed
+
+- Footer **Tip jar** replaced with a visible support strip: ore icon (`assets/ore.webp`), **Toss an ore** CTA, and **Keeps the solver free** subline — bronze banner styling, distinct from the version badge.
+- PostHog `support_link_clicked` source updated to `footer_strip`.
+
 ## [1.8.3] - 2026-06-09
 
 ### Added

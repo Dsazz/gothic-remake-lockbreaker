@@ -865,16 +865,55 @@ function versionLink(version) {
   });
 }
 
-function supportLink(handlers) {
-  return el("a", {
-    class: "app-version",
-    href: SUPPORT_URL,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    title: "Optional tips help cover support and upkeep. Solver stays free.",
-    text: "Tip jar",
-    onClick: () => handlers.onSupportClick?.(),
+const SUPPORT_ARIA_LABEL =
+  "Optional tip on Ko-fi — helps cover support and upkeep. Solver stays free.";
+
+const SUPPORT_TOOLTIP = "Toss an ore — keeps the solver free";
+
+function supportOreImg(className, size) {
+  return el("img", {
+    class: className,
+    src: "assets/ore.webp",
+    alt: "",
+    "aria-hidden": "true",
+    width: String(size),
+    height: String(size),
   });
+}
+
+export function renderHeadSupport(container, handlers) {
+  if (!container) return;
+  container.hidden = false;
+  container.replaceChildren(
+    el("a", {
+      class: "app-head-support-link",
+      href: SUPPORT_URL,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      "aria-label": SUPPORT_ARIA_LABEL,
+      "data-tooltip": SUPPORT_TOOLTIP,
+      onClick: () => handlers.onSupportClick?.("header_ore"),
+    }, [supportOreImg("app-head-support-ore", 28)]),
+  );
+}
+
+function supportStrip(handlers) {
+  return el("div", { class: "support-strip" }, [
+    el("a", {
+      class: "support-cta",
+      href: SUPPORT_URL,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      "aria-label": SUPPORT_ARIA_LABEL,
+      onClick: () => handlers.onSupportClick?.("footer_strip"),
+    }, [
+      supportOreImg("support-ore", 36),
+      el("span", { class: "support-cta-copy" }, [
+        el("span", { class: "support-cta-text", text: "Toss an ore" }),
+        el("span", { class: "support-cta-sub", text: "Keeps the solver free" }),
+      ]),
+    ]),
+  ]);
 }
 
 export function renderVersionBadge(container, version) {
@@ -883,6 +922,7 @@ export function renderVersionBadge(container, version) {
 
 export function renderFooter(container, version, handlers) {
   container.replaceChildren(
-    el("p", { class: "app-foot-meta" }, [versionLink(version), " · ", supportLink(handlers)]),
+    supportStrip(handlers),
+    el("p", { class: "app-foot-meta" }, [versionLink(version)]),
   );
 }

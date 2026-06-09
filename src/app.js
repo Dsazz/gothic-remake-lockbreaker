@@ -51,6 +51,7 @@ const els = {
   solveBtn: document.getElementById("solve-btn"),
   guide: document.getElementById("how-to-map"),
   version: document.getElementById("app-version"),
+  headSupport: document.getElementById("app-head-support"),
   foot: document.getElementById("app-foot"),
   ariaLive: document.getElementById("aria-live"),
 };
@@ -212,6 +213,7 @@ function renderAll(state) {
   }
 
   view.renderVersionBadge(els.version, VERSION);
+  view.renderHeadSupport(els.headSupport, handlers);
   view.renderControls(els.controls, state, handlers);
   view.renderTumblers(els.tumblers, state, handlers, { pulse: tumblersPulse });
   view.renderSolveButton(els.solveBtn, { mapped, justEnabled: solveReadyFlash });
@@ -391,8 +393,8 @@ const handlers = {
     });
     renderSolutionArea(store.getState());
   },
-  onSupportClick() {
-    trackSupportLinkClicked({ source: "footer" });
+  onSupportClick(source = "footer_strip") {
+    trackSupportLinkClicked({ source });
   },
 };
 
