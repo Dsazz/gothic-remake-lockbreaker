@@ -65,3 +65,19 @@ test("walkthrough uses tertiary help trigger, not pill mismatch button", async (
   assert.doesNotMatch(text, /This step doesn't match/);
   assert.doesNotMatch(text, /children\.push\(renderHelpPanel/);
 });
+
+test("walkthrough layout avoids fixed min column widths that cause horizontal scroll", async () => {
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  assert.match(css, /\.wt-plate\s*\{[^}]*grid-template-columns:\s*2\.5rem minmax\(0,\s*1fr\)/s);
+  assert.match(css, /\.wt-plate \.plate-holes--readout\s*\{[^}]*repeat\(7,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.doesNotMatch(css, /repeat\(7,\s*minmax\(26px/);
+});
+
+test("index.html includes SEO metadata", async () => {
+  const html = await readFile(join(root, "index.html"), "utf8");
+  assert.match(html, /<meta\s+name="description"/);
+  assert.match(html, /<link\s+rel="canonical"/);
+  assert.match(html, /application\/ld\+json/);
+  assert.match(html, /app-definition/);
+  assert.doesNotMatch(html, /panel--faq/);
+});

@@ -1,0 +1,27 @@
+# Gothic Lock Breaker
+
+> Free browser-based edge-safe lockpicking solver for Gothic 1 Remake players.
+
+## What it does
+
+Gothic Lock Breaker maps chest and door lock plates, their couplings (With / Against), and returns a step-by-step turn sequence that opens the lock without grinding any pin against the wall. Unlike net-turn calculators, it uses edge-safe BFS so your pick won't snap mid-sequence.
+
+## How to use
+
+1. Set lock count, tier, and each plate's starting hole (1 = wall, 4 = notch, 7 = wall).
+2. Mark couplings: turn each lock once in-game, then mark With (same way) or Against (opposite) for every plate that moves.
+3. Press Break the Lock and follow the numbered walkthrough one turn at a time.
+
+## Pricing
+
+Free. No account. Runs in any modern browser.
+
+## Links
+
+- Live app: https://dsazz.github.io/gothic-remake-lockbreaker/
+- Source: https://github.com/Dsazz/gothic-remake-lockbreaker
+- Changelog: https://github.com/Dsazz/gothic-remake-lockbreaker/blob/main/CHANGELOG.md
+
+## Community
+
+- Reddit discussion (r/worldofgothic): https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/

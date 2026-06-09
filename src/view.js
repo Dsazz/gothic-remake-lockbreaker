@@ -19,7 +19,7 @@ import {
   isPristineDefault,
 } from "./domain.js";
 import { SolveFailureReason, SupportSource } from "./analytics/values.js";
-import { CHANGELOG_URL, SUPPORT_URL } from "./version.js";
+import { CHANGELOG_URL, REDDIT_DISCUSS_URL, SUPPORT_URL } from "./version.js";
 
 const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
@@ -876,6 +876,16 @@ function versionLink(version) {
   });
 }
 
+function redditDiscussLink() {
+  return el("a", {
+    class: "app-foot-link",
+    href: REDDIT_DISCUSS_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    text: "Discuss on Reddit",
+  });
+}
+
 const SUPPORT_ARIA_LABEL =
   "Optional tip on Ko-fi — helps cover support and upkeep. Solver stays free.";
 
@@ -934,6 +944,10 @@ export function renderVersionBadge(container, version) {
 export function renderFooter(container, version, handlers) {
   container.replaceChildren(
     supportStrip(handlers),
-    el("p", { class: "app-foot-meta" }, [versionLink(version)]),
+    el("p", { class: "app-foot-meta" }, [
+      versionLink(version),
+      el("span", { class: "app-foot-sep", text: " · ", "aria-hidden": "true" }),
+      redditDiscussLink(),
+    ]),
   );
 }

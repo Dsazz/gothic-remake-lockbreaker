@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.10.0] - 2026-06-09
+
+### Added
+
+- On-page and social SEO: document title, meta description, canonical URL, Open Graph / Twitter cards, and JSON-LD `WebApplication` schema.
+- `llms.txt`, `robots.txt`, and `sitemap.xml` for search and AI crawlers.
+- Footer **Discuss on Reddit** link and README badge; `REDDIT_DISCUSS_URL` in `src/version.js`.
+
+### Changed
+
+- Hero scrim: removed duplicate tagline over in-image title; kept a single SEO definition line plus version badge.
+
+### Fixed
+
+- Mobile solution walkthrough no longer scrolls horizontally — walkthrough grids use `minmax(0, 1fr)` and clip overflow on narrow screens.
+
 ## [1.9.0] - 2026-06-09
 
 ### Added

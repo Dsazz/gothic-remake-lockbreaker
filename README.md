@@ -18,9 +18,11 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
+[![Discuss on r/worldofgothic](https://img.shields.io/badge/discuss-r%2Fworldofgothic-e9b969?style=for-the-badge)](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/)
+&nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.9.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.10.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -30,7 +32,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.9.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.10.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
