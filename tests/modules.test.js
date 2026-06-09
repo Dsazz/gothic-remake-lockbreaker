@@ -29,6 +29,13 @@ test("view.js has no duplicate function declarations", async () => {
   );
 });
 
+test("renderControls hides share and wipe until lock differs from default", async () => {
+  const text = await readFile(join(root, "src/view.js"), "utf8");
+  assert.match(text, /isPristineDefault/);
+  assert.match(text, /showLockActions/);
+  assert.match(text, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
+});
+
 test("walkthrough uses tertiary help trigger, not pill mismatch button", async () => {
   const text = await readFile(join(root, "src/view.js"), "utf8");
   assert.match(text, /wt-help-trigger/);

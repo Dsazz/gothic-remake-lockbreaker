@@ -16,6 +16,7 @@ import {
   countRemovedLinks,
   maxBreaksBudget,
   isInBounds,
+  isPristineDefault,
 } from "./domain.js";
 import { CHANGELOG_URL } from "./version.js";
 
@@ -299,40 +300,43 @@ export function renderControls(container, state, handlers, ui = {}) {
     );
   }
   const breaksStepper = renderBreaksStepper(state, handlers);
+  const showLockActions = !isPristineDefault(state);
+  const locksBlock = el("div", { class: "locks-block" }, [
+    el("span", { class: "field-label", text: "Locks" }),
+    el("div", { class: "pill-row locks-row" }, counts),
+  ]);
+  const actionsBlock = el("div", { class: "controls-actions" }, [
+    el(
+      "button",
+      {
+        class: `controls-share ${ui.copyCopied ? "is-copied" : ""}`,
+        type: "button",
+        "aria-label": ui.copyCopied ? "Copied!" : "Share lock",
+        title: ui.copyCopied ? "Copied!" : "Share lock",
+        onClick: handlers.onCopyShareLink,
+      },
+      [
+        controlsIconSvg("link"),
+        el("span", {
+          class: "controls-share-label",
+          text: ui.copyCopied ? "Copied!" : "Share lock",
+        }),
+      ],
+    ),
+    iconBtn({
+      label: "Wipe lock",
+      className: "icon-btn--tool",
+      onClick: handlers.onClearAll,
+      svg: controlsIconSvg("wipe"),
+    }),
+  ]);
   container.replaceChildren(
     renderMasterySelector(state, handlers),
     ...(breaksStepper ? [breaksStepper] : []),
     el("div", { class: "controls-footer" }, [
-        el("div", { class: "locks-block" }, [
-          el("span", { class: "field-label", text: "Locks" }),
-          el("div", { class: "pill-row locks-row" }, counts),
-        ]),
-        el("div", { class: "controls-actions" }, [
-          el(
-            "button",
-            {
-              class: `controls-share ${ui.copyCopied ? "is-copied" : ""}`,
-              type: "button",
-              "aria-label": ui.copyCopied ? "Copied!" : "Share lock",
-              title: ui.copyCopied ? "Copied!" : "Share lock",
-              onClick: handlers.onCopyShareLink,
-            },
-            [
-              controlsIconSvg("link"),
-              el("span", {
-                class: "controls-share-label",
-                text: ui.copyCopied ? "Copied!" : "Share lock",
-              }),
-            ],
-          ),
-          iconBtn({
-            label: "Wipe lock",
-            className: "icon-btn--tool",
-            onClick: handlers.onClearAll,
-            svg: controlsIconSvg("wipe"),
-          }),
-        ]),
-      ]),
+      locksBlock,
+      ...(showLockActions ? [actionsBlock] : []),
+    ]),
   );
 }
 

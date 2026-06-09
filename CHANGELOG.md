@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.8.1] - 2026-06-09
+
+### Changed
+
+- **Share lock** and **Wipe lock** toolbar icons hidden until the lock differs from the default setup (6 plates, untrained, no couplings, pins at notch).
+
 ## [1.8.0] - 2026-06-09
 
 ### Added

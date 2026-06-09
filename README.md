@@ -18,7 +18,7 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.8.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.1-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -28,7 +28,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.8.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.8.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -93,9 +93,9 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 
 1. **The Lock** — choose your **lockpicking tier** (Untrained / Trained / Master), how many
    locks the mechanism has (4–7; defaults to **6**), and at Master how many **picks you've
-   snapped** on this lock so you can mark dropped couplings on the tumbler cards. **Copy link** (link icon) shares the
-   current setup; **Wipe lock** (trash icon) clears couplings, mastery, and returns the count
-   to 6 — with a confirm prompt.
+   snapped** on this lock so you can mark dropped couplings on the tumbler cards. Once you change
+   the setup, **Share lock** (link icon) copies a URL for the current lock; **Wipe lock** (trash
+   icon) clears couplings, mastery, and returns the count to 6 — with a confirm prompt.
 2. **Tumblers** — for each lock (numbered 1 front through N back), mark its **start hole**
    and which other locks move when you turn it: `·` none, `With` same way, `Against`
    opposite.
