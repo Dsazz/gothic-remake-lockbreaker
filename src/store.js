@@ -79,22 +79,6 @@ function decodeState(text) {
 
 // --- storage adapter (browser only; silently no-ops elsewhere) ---
 
-function loadState() {
-  try {
-    const fromHash = decodeState(globalThis.location?.hash?.slice(1));
-    if (fromHash) return fromHash;
-  } catch {
-    // ignore malformed hash
-  }
-  try {
-    const fromLocal = decodeState(globalThis.localStorage?.getItem(STORAGE_KEY));
-    if (fromLocal) return fromLocal;
-  } catch {
-    // ignore unavailable/blocked storage
-  }
-  return null;
-}
-
 function saveState(state) {
   const encoded = encodeState(state);
   try {
@@ -129,7 +113,29 @@ function resizePositions(positions, newCount) {
 
 export function createStore() {
   const listeners = new Set();
-  let state = loadState() ?? defaultState();
+  let wasLoadedFromHash = false;
+  let state;
+
+  try {
+    const fromHash = decodeState(globalThis.location?.hash?.slice(1));
+    if (fromHash) {
+      state = fromHash;
+      wasLoadedFromHash = true;
+    }
+  } catch {
+    // ignore malformed hash
+  }
+
+  if (!state) {
+    try {
+      const fromLocal = decodeState(globalThis.localStorage?.getItem(STORAGE_KEY));
+      if (fromLocal) state = fromLocal;
+    } catch {
+      // ignore unavailable/blocked storage
+    }
+  }
+
+  state ??= defaultState();
 
   function commit(nextState) {
     state = nextState;
@@ -138,6 +144,10 @@ export function createStore() {
   }
 
   return {
+    get wasLoadedFromHash() {
+      return wasLoadedFromHash;
+    },
+
     getState() {
       return state;
     },
@@ -177,6 +187,10 @@ export function createStore() {
 
     clearAll() {
       commit(defaultState());
+    },
+
+    loadLock(nextState) {
+      commit(nextState);
     },
   };
 }

@@ -45,12 +45,67 @@
 
         <section class="panel panel--tumblers">
           <h2>II &middot; Tumblers</h2>
+          <details id="how-to-map" class="how-to-map">
+            <summary>How to map your lock</summary>
+            <div class="how-to-map-body">
+              <ol class="how-to-map-steps">
+                <li>Count the locks and pick the matching number above.</li>
+                <li>For each lock, set its starting hole (1 = wall, 4 = notch).</li>
+                <li>
+                  Turn that lock once in-game. Each other lock that moves — mark
+                  <strong>With</strong> (same way) or <strong>Against</strong> (opposite).
+                  With/Against apply to every turn direction for that pair.
+                </li>
+                <li>
+                  <strong>Grinding</strong> means a pin hits wall 1 or 7 — not the same as an
+                  Against coupling.
+                </li>
+              </ol>
+              <figure class="how-to-map-figure">
+                <div class="how-to-map-visual">
+                  <img
+                    src="assets/onboarding-game-lock.png"
+                    alt="In-game lock with five visible plates and pin holes along the top"
+                  />
+                  <svg
+                    class="how-to-map-overlay"
+                    viewBox="0 0 1024 977"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <g class="map-callout map-callout--lock1">
+                      <line class="map-line" x1="356" y1="760" x2="458" y2="528" />
+                      <circle class="map-dot" cx="458" cy="528" r="7" />
+                      <rect class="map-label-bg" x="220" y="742" width="260" height="40" rx="6" />
+                      <text class="map-label-text" x="352" y="762" text-anchor="middle" dominant-baseline="middle">Lock 1 · front</text>
+                    </g>
+                    <g class="map-callout map-callout--notch">
+                      <line class="map-line" x1="560" y1="250" x2="560" y2="300" />
+                      <circle class="map-dot" cx="560" cy="300" r="5" />
+                      <rect class="map-label-bg" x="420" y="230" width="280" height="40" rx="6" />
+                      <text class="map-label-text map-label-text--accent" x="560" y="250" text-anchor="middle" dominant-baseline="middle">Hole 4 · notch</text>
+                    </g>
+                    <g class="map-callout map-callout--lock5">
+                      <line class="map-line" x1="888" y1="268" x2="756" y2="328" />
+                      <circle class="map-dot" cx="756" cy="328" r="7" />
+                      <rect class="map-label-bg" x="780" y="232" width="240" height="40" rx="6" />
+                      <text class="map-label-text" x="898" y="252" text-anchor="middle" dominant-baseline="middle">Lock 6 · back</text>
+                    </g>
+                    <rect class="map-label-bg" x="162" y="908" width="700" height="44" rx="6" />
+                    <text class="map-label-text map-label-text--callout" x="512" y="934" text-anchor="middle" dominant-baseline="middle">Turn once → watch which plates move</text>
+                  </svg>
+                </div>
+              </figure>
+              <button type="button" id="load-example-lock" class="pill pill-ghost how-to-map-example">
+                Try Old Camp tower door
+              </button>
+            </div>
+          </details>
           <p class="panel-note">
             Locks are numbered <strong>1 (front)</strong> to <strong>N (back)</strong>.
             Cards stack <strong>back at top, front at bottom</strong>, matching the
-            in-game view. For each lock, mark its starting hole and how
-            turning it moves the others. Hole <strong>4</strong> is the notch (goal);
-            holes <strong>1</strong> and <strong>7</strong> are the walls.
+            in-game view. Hole <strong>4</strong> is the notch; holes <strong>1</strong>
+            and <strong>7</strong> are walls.
           </p>
           <div id="tumblers" class="tumblers"></div>
         </section>
@@ -61,7 +116,9 @@
           <h2>III &middot; The Sequence</h2>
           <div id="sequence-actions" class="sequence-actions"></div>
         </div>
-        <button id="solve-btn" class="solve-btn">Break the Lock</button>
+        <div id="hash-banner" hidden></div>
+        <div id="share-prompt" hidden></div>
+        <button id="solve-btn" class="solve-btn" type="button">Break the Lock</button>
         <div id="solution" class="solution"></div>
       </section>
 

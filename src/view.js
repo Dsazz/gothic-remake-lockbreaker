@@ -215,12 +215,20 @@ export function renderControls(container, state, handlers, ui = {}) {
     el("span", { class: "field-label", text: "Locks" }),
     el("div", { class: "pill-row" }, counts),
     el("div", { class: "controls-actions" }, [
-      iconBtn({
-        label: ui.copyCopied ? "Copied!" : "Copy link",
-        className: `icon-btn--tool ${ui.copyCopied ? "is-copied" : ""}`,
-        onClick: handlers.onCopyShareLink,
-        svg: controlsIconSvg("link"),
-      }),
+      el(
+        "button",
+        {
+          class: `controls-share ${ui.copyCopied ? "is-copied" : ""}`,
+          type: "button",
+          "aria-label": ui.copyCopied ? "Copied!" : "Share lock",
+          title: ui.copyCopied ? "Copied!" : "Share lock",
+          onClick: handlers.onCopyShareLink,
+        },
+        [
+          controlsIconSvg("link"),
+          el("span", { class: "controls-share-label", text: ui.copyCopied ? "Copied!" : "Share lock" }),
+        ],
+      ),
       iconBtn({
         label: "Wipe lock",
         className: "icon-btn--tool",
@@ -333,19 +341,100 @@ function holeLegend() {
   ]);
 }
 
-export function renderTumblers(container, state, handlers) {
+export function renderTumblers(container, state, handlers, ui = {}) {
   const cards = platesDisplayOrder(state.plateCount).map((plate) =>
     tumblerCard(plate, state, handlers),
   );
+  container.classList.toggle("is-pulse", Boolean(ui.pulse));
   container.replaceChildren(holeLegend(), ...cards);
+}
+
+export function renderSolveButton(button, { mapped, justEnabled }) {
+  if (!button) return;
+  button.disabled = !mapped;
+  button.setAttribute("aria-disabled", mapped ? "false" : "true");
+  button.classList.toggle("is-disabled", !mapped);
+  button.classList.toggle("is-ready-flash", Boolean(justEnabled));
+}
+
+export function renderHashBanner(container, ui, handlers) {
+  if (!container) return;
+  if (!ui?.visible) {
+    container.replaceChildren();
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+  container.replaceChildren(
+    el("div", { class: "hash-banner" }, [
+      el("p", { class: "hash-banner-text", text: "Shared lock — sequence ready below." }),
+      el("button", {
+        class: "pill pill-ghost hash-banner-link",
+        type: "button",
+        text: "How to map your own lock",
+        onClick: handlers.onOpenGuide,
+      }),
+      el("button", {
+        class: "icon-btn icon-btn--tool hash-banner-dismiss",
+        type: "button",
+        "aria-label": "Dismiss",
+        onClick: handlers.onDismissHashBanner,
+        svg: (() => {
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.setAttribute("viewBox", "0 0 24 24");
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", "M6 6 L18 18 M18 6 L6 18");
+          path.setAttribute("stroke", "currentColor");
+          path.setAttribute("stroke-width", "2");
+          svg.append(path);
+          return svg;
+        })(),
+      }),
+    ]),
+  );
+}
+
+export function renderSharePrompt(container, ui, handlers) {
+  if (!container) return;
+  if (!ui?.visible) {
+    container.replaceChildren();
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+  container.replaceChildren(
+    el("div", { class: "share-prompt" }, [
+      el("p", { class: "share-prompt-text", text: "Copy link to share this exact lock." }),
+      el("button", {
+        class: "pill pill-primary share-prompt-btn",
+        type: "button",
+        text: "Share lock",
+        onClick: handlers.onSharePromptClick,
+      }),
+      el("button", {
+        class: "pill pill-ghost share-prompt-dismiss",
+        type: "button",
+        text: "Dismiss",
+        onClick: handlers.onDismissSharePrompt,
+      }),
+    ]),
+  );
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
 export function renderSolution(container, solution, walkthrough, ui, handlers) {
-  if (solution === undefined) {
+  if (ui?.blockedMessage) {
     container.replaceChildren(
-      el("p", { class: "hint", text: "Map the lock above, then crack it open." }),
+      el("p", { class: "alert", text: ui.blockedMessage }),
     );
+    return;
+  }
+
+  if (solution === undefined) {
+    const hint = ui?.lockReady
+      ? "Lock mapped — crack it open."
+      : "Set each lock's start hole and couplings above, then crack it open.";
+    container.replaceChildren(el("p", { class: "hint", text: hint }));
     return;
   }
 

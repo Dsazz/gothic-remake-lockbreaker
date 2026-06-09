@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.6.0] - 2026-06-09
+
+### Added
+
+- First-visit coach marks (3 steps) with mobile bottom-sheet layout; skipped on mapped hash arrivals.
+- Collapsible **How to map your lock** guide with annotated in-game screenshot and Old Camp example lock.
+- Hash arrival auto-solve for shared, mapped locks plus dismissible banner.
+- Solve readiness gate: **Break the Lock** disabled until a coupling or start hole is set.
+- Split analytics events: `landing`, `solve_button_clicked`, `lock_already_solved`, `lock_solve_blocked`, onboarding and share-prompt events.
+- One-time share prompt after first successful solve; **Share lock** control with text label.
+- Lightweight client error capture to PostHog on production.
+
+### Changed
+
+- Shorter tumblers panel note; With/Against disambiguation in guide.
+- Mobile: sticky solve button (≤768px), larger coupling chip touch targets.
+
+### Fixed
+
+- First-map transition (example button, first coupling or pin) no longer crashes render with stack overflow while still updating the URL hash.
+
 ## [1.4.0] - 2026-06-08
 
 ### Added

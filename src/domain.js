@@ -53,3 +53,22 @@ export function isInBounds(state) {
 export function isSolved(state) {
   return state.every((pos) => pos === CENTER);
 }
+
+export function hasCoupling(matrix) {
+  return matrix.some((row, i) => row.some((cell, j) => i !== j && cell !== LINK.NONE));
+}
+
+export function hasNonCenterPin(positions) {
+  return positions.some((pos) => pos !== CENTER);
+}
+
+/** Default plate count, all pins at notch, no couplings set. */
+export function isPristineDefault({ plateCount, matrix, positions }) {
+  if (plateCount !== DEFAULT_PLATES) return false;
+  return !hasCoupling(matrix) && !hasNonCenterPin(positions);
+}
+
+/** User has set at least one coupling or moved a pin off center. Plate count alone does not count. */
+export function isLockMapped({ matrix, positions }) {
+  return hasCoupling(matrix) || hasNonCenterPin(positions);
+}

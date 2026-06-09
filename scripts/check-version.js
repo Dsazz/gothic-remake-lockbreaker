@@ -15,9 +15,10 @@ function versionFromModule(source) {
 }
 
 function versionFromChangelog(source) {
-  const match = source.match(/^## \[([^\]]+)\]/m);
-  if (!match) throw new Error("Could not parse latest version from CHANGELOG.md");
-  return match[1];
+  const headings = [...source.matchAll(/^## \[([^\]]+)\]/gm)].map((m) => m[1]);
+  const released = headings.find((heading) => heading !== "Unreleased");
+  if (!released) throw new Error("Could not parse latest released version from CHANGELOG.md");
+  return released;
 }
 
 function versionFromReadme(source) {

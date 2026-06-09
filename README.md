@@ -18,7 +18,7 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.4.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.6.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -28,7 +28,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.4.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.6.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -124,7 +124,7 @@ Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `vi
 
 ## Analytics
 
-Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover solve, share-link copy, and lock wipe. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, solve funnel steps, share-link copy, onboarding, and lock wipe. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
 ## Deploy your own
 
