@@ -478,12 +478,6 @@ export function renderHashBanner(container, ui, handlers) {
     el("div", { class: "hash-banner" }, [
       el("p", { class: "hash-banner-text", text: "Shared lock — sequence ready below." }),
       el("button", {
-        class: "pill pill-ghost hash-banner-link",
-        type: "button",
-        text: "How to map your own lock",
-        onClick: handlers.onOpenGuide,
-      }),
-      el("button", {
         class: "icon-btn icon-btn--tool hash-banner-dismiss",
         type: "button",
         "aria-label": "Dismiss",
