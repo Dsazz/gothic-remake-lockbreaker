@@ -137,3 +137,7 @@ export function trackStepMismatchClicked({ stepIndex, plateCount }) {
     step_index: stepIndex,
   });
 }
+
+export function trackSupportLinkClicked({ source }) {
+  send(Events.SUPPORT_LINK_CLICKED, { source, app_version: VERSION });
+}

@@ -34,6 +34,7 @@ import {
   trackWalkthroughUiToggled,
   trackMasteryTierChanged,
   trackStepMismatchClicked,
+  trackSupportLinkClicked,
 } from "./analytics/index.js";
 
 const HAS_VISITED_KEY = "has_visited_v1";
@@ -215,7 +216,7 @@ function renderAll(state) {
   view.renderTumblers(els.tumblers, state, handlers, { pulse: tumblersPulse });
   view.renderSolveButton(els.solveBtn, { mapped, justEnabled: solveReadyFlash });
   renderSolutionArea(state);
-  view.renderFooter(els.foot, VERSION);
+  view.renderFooter(els.foot, VERSION, handlers);
 }
 
 function invalidateSolution() {
@@ -389,6 +390,9 @@ const handlers = {
       plateCount: store.getState().plateCount,
     });
     renderSolutionArea(store.getState());
+  },
+  onSupportClick() {
+    trackSupportLinkClicked({ source: "footer" });
   },
 };
 

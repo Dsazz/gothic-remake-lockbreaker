@@ -18,7 +18,7 @@ import {
   isInBounds,
   isPristineDefault,
 } from "./domain.js";
-import { CHANGELOG_URL } from "./version.js";
+import { CHANGELOG_URL, SUPPORT_URL } from "./version.js";
 
 const LINK_LABEL = { [LINK.NONE]: "·", [LINK.SAME]: "With", [LINK.OPP]: "Against" };
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
@@ -865,16 +865,24 @@ function versionLink(version) {
   });
 }
 
+function supportLink(handlers) {
+  return el("a", {
+    class: "app-version",
+    href: SUPPORT_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    title: "Optional tips help cover support and upkeep. Solver stays free.",
+    text: "Tip jar",
+    onClick: () => handlers.onSupportClick?.(),
+  });
+}
+
 export function renderVersionBadge(container, version) {
   container.replaceChildren(versionLink(version));
 }
 
-export function renderFooter(container, version) {
+export function renderFooter(container, version, handlers) {
   container.replaceChildren(
-    el("p", {
-      class: "app-foot-note",
-      text: "This lock travels in the page link and your browser, ready to revisit or hand off.",
-    }),
-    el("p", { class: "app-foot-meta" }, [versionLink(version)]),
+    el("p", { class: "app-foot-meta" }, [versionLink(version), " · ", supportLink(handlers)]),
   );
 }

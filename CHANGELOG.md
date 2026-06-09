@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.8.3] - 2026-06-09
+
+### Added
+
+- Optional **Tip jar** link in the footer (Ko-fi) and README badge row — voluntary tips for support and upkeep; solver stays free.
+- PostHog event `support_link_clicked` when the footer tip link is opened.
+- Header **hero** background (`assets/hero.webp`) — compact band with tagline and version overlaid on a bottom scrim; artwork title in-image; `<h1>` for screen readers only.
+
 ## [1.8.2] - 2026-06-09
 
 ### Changed

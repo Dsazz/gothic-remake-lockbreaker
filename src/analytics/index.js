@@ -21,5 +21,6 @@ export {
   trackTutorSkipped,
   trackMasteryTierChanged,
   trackStepMismatchClicked,
+  trackSupportLinkClicked,
 } from "./track.js";
 export { installErrorCapture } from "./transport.js";

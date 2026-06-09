@@ -23,4 +23,5 @@ export const Events = Object.freeze({
   TUTOR_SKIPPED: "tutor_skipped",
   MASTERY_TIER_CHANGED: "mastery_tier_changed",
   STEP_MISMATCH_CLICKED: "step_mismatch_clicked",
+  SUPPORT_LINK_CLICKED: "support_link_clicked",
 });

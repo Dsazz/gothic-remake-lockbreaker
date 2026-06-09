@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/hero.png" alt="Gothic Lock Breaker" width="100%" />
+<img src="assets/hero.webp" alt="Gothic Lock Breaker" width="100%" />
 
 # Gothic Lock Breaker
 
@@ -18,7 +18,9 @@ one against the frame.
 
 [![Live on GitHub Pages](https://img.shields.io/badge/play-GitHub%20Pages-e9b969?style=for-the-badge)](https://dsazz.github.io/gothic-remake-lockbreaker/)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.8.2-e9b969?style=for-the-badge)
+[![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
+&nbsp;
+![Version](https://img.shields.io/badge/version-1.8.3-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -28,7 +30,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.8.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.8.3** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
