@@ -22,7 +22,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.11.1-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.11.2-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -32,7 +32,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.11.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.11.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 

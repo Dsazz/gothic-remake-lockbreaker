@@ -168,6 +168,23 @@ button {
   width: auto;
   display: block;
   object-fit: contain;
+  animation: app-head-support-ore-glow 4s ease-in-out infinite;
+}
+
+.app-head-support-link:hover .app-head-support-ore,
+.app-head-support-link:focus-visible .app-head-support-ore {
+  animation-play-state: paused;
+}
+
+@keyframes app-head-support-ore-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(100, 180, 255, 0.1));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(100, 180, 255, 0.35))
+      drop-shadow(0 0 8px rgba(100, 180, 255, 0.15));
+  }
 }
 
 .app-head-support-link[data-tooltip]::after {

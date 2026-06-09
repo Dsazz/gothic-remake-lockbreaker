@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.11.2] - 2026-06-09
+
+### Changed
+
+- Header support ore: subtle slow blue glow pulse; pauses on link hover/focus.
+
 ## [1.11.1] - 2026-06-09
 
 ### Removed
