@@ -54,8 +54,7 @@ const onboarding = createOnboarding({
   onStepViewed: ({ stepId }) => trackOnboardingStepViewed({ stepId }),
   onDismissed: ({ completed }) => trackOnboardingDismissed({ completed }),
   onComplete: () => {
-    openGuide();
-    storageSet("guide_seen_v1", "1");
+    setTimeout(() => openGuide(), 0);
   },
 });
 
@@ -110,7 +109,8 @@ function shouldShowHashBanner(state) {
 function openGuide() {
   if (!els.guide) return;
   els.guide.open = true;
-  els.guide.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  const block = window.matchMedia("(max-width: 768px)").matches ? "start" : "nearest";
+  els.guide.scrollIntoView({ behavior: "smooth", block });
 }
 
 function pulseTumblers() {

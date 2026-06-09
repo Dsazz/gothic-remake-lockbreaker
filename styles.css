@@ -1537,6 +1537,11 @@ button {
   padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
 }
 
+.onboarding-card-host--mobile-top {
+  place-items: start center;
+  padding: calc(12px + env(safe-area-inset-top)) 12px 12px;
+}
+
 .onboarding-card {
   width: min(420px, 100%);
   padding: 16px;
@@ -1589,6 +1594,35 @@ button {
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
   position: relative;
   z-index: 21;
+  scroll-margin: 12px;
+}
+
+@media (max-width: 768px) {
+  body.onboarding-active.onboarding-card-at-top .onboarding-target {
+    scroll-margin-top: calc(220px + env(safe-area-inset-top));
+    scroll-margin-bottom: 24px;
+  }
+
+  body.onboarding-active.onboarding-card-at-bottom .onboarding-target {
+    scroll-margin-top: 12px;
+    scroll-margin-bottom: calc(220px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 899px) {
+  body.onboarding-active .panel--sequence {
+    position: static;
+    z-index: auto;
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 0;
+    box-shadow: var(--bevel);
+  }
+
+  body.onboarding-active .tumbler-card:has(.onboarding-target) {
+    position: relative;
+    z-index: 21;
+  }
 }
 
 .tumblers.is-pulse {

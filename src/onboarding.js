@@ -1,4 +1,8 @@
 const DISMISSED_KEY = "onboarding_dismissed_v1";
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
+const TARGET_LOWER_RATIO = 0.45;
+const ESTIMATED_CARD_HEIGHT = 220;
 
 const STEPS = [
   {
@@ -26,6 +30,7 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
   let cardHost;
   let stepIndex = 0;
   let active = false;
+  let resizeTimer;
 
   function isDismissed() {
     try {
@@ -44,7 +49,7 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
   }
 
   function isMobile() {
-    return window.matchMedia("(max-width: 768px)").matches;
+    return window.matchMedia(MOBILE_MEDIA).matches;
   }
 
   function ensureLayers() {
@@ -62,7 +67,123 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
     return cardHost;
   }
 
+  function clearMobileCardClasses() {
+    cardHost?.classList.remove("onboarding-card-host--mobile", "onboarding-card-host--mobile-top");
+    document.body.classList.remove("onboarding-card-at-top", "onboarding-card-at-bottom");
+  }
+
+  function targetNeedsTopCard(target) {
+    const rect = target.getBoundingClientRect();
+    return rect.top >= window.innerHeight * TARGET_LOWER_RATIO;
+  }
+
+  function updateMobileCardPlacement(target) {
+    if (!cardHost || !isMobile()) {
+      clearMobileCardClasses();
+      return;
+    }
+
+    const cardAtTop = targetNeedsTopCard(target);
+    cardHost.classList.add("onboarding-card-host--mobile");
+    cardHost.classList.toggle("onboarding-card-host--mobile-top", cardAtTop);
+    document.body.classList.toggle("onboarding-card-at-top", cardAtTop);
+    document.body.classList.toggle("onboarding-card-at-bottom", !cardAtTop);
+  }
+
+  function mobileScrollMargins(cardAtTop) {
+    const topReserve = cardAtTop ? ESTIMATED_CARD_HEIGHT + 24 : 12;
+    return { topReserve, bottomReserve: 24 };
+  }
+
+  function alignTargetInMobileViewport(target, cardAtTop) {
+    const { topReserve, bottomReserve } = mobileScrollMargins(cardAtTop);
+    const rect = target.getBoundingClientRect();
+    const viewHeight = window.innerHeight;
+    let scrollDelta = 0;
+
+    if (rect.top < topReserve) {
+      scrollDelta = rect.top - topReserve;
+    } else if (rect.bottom > viewHeight - bottomReserve) {
+      scrollDelta = rect.bottom - (viewHeight - bottomReserve);
+    }
+
+    if (scrollDelta === 0) return Promise.resolve();
+
+    window.scrollBy({ top: scrollDelta, behavior: "smooth" });
+    return new Promise((resolve) => setTimeout(resolve, 320));
+  }
+
+  function scrollTargetIntoView(target, cardAtTop) {
+    if (!isMobile()) {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      return Promise.resolve();
+    }
+
+    target.scrollIntoView({ behavior: "instant", block: "nearest" });
+
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          alignTargetInMobileViewport(target, cardAtTop).then(resolve);
+        });
+      });
+    });
+  }
+
+  async function applySpotlight(target, card) {
+    const mobile = isMobile();
+    let cardAtTop = false;
+
+    if (mobile) {
+      cardAtTop = targetNeedsTopCard(target);
+      updateMobileCardPlacement(target);
+    } else {
+      clearMobileCardClasses();
+    }
+
+    backdrop.hidden = true;
+    await scrollTargetIntoView(target, cardAtTop);
+
+    if (mobile) {
+      updateMobileCardPlacement(target);
+    }
+
+    target.classList.add("onboarding-target");
+
+    const cleanup = () => target.classList.remove("onboarding-target");
+    card.querySelector(".onboarding-skip").addEventListener("click", cleanup, { once: true });
+    card.querySelector(".onboarding-next").addEventListener("click", cleanup, { once: true });
+  }
+
+  function repositionCurrentStep() {
+    if (!active) return;
+
+    const step = STEPS[stepIndex];
+    if (!step) return;
+
+    const target = document.querySelector(step.target);
+    if (target?.classList.contains("onboarding-target")) {
+      updateMobileCardPlacement(target);
+      return;
+    }
+
+    if (isMobile()) {
+      cardHost?.classList.add("onboarding-card-host--mobile");
+      cardHost?.classList.remove("onboarding-card-host--mobile-top");
+    } else {
+      clearMobileCardClasses();
+    }
+  }
+
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(repositionCurrentStep, 150);
+  }
+
   function removeLayers() {
+    window.removeEventListener("resize", onResize);
+    clearTimeout(resizeTimer);
+    document.body.classList.remove("onboarding-active", "onboarding-card-at-top", "onboarding-card-at-bottom");
     backdrop?.remove();
     cardHost?.remove();
     backdrop = null;
@@ -96,7 +217,8 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
 
     backdrop.hidden = false;
     cardHost.hidden = false;
-    cardHost.classList.toggle("onboarding-card-host--mobile", mobile);
+    clearMobileCardClasses();
+    if (mobile) cardHost.classList.add("onboarding-card-host--mobile");
 
     const card = document.createElement("div");
     card.className = "onboarding-card";
@@ -119,12 +241,8 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
       else renderStep();
     });
 
-    if (target && !mobile) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-      target.classList.add("onboarding-target");
-      const cleanup = () => target.classList.remove("onboarding-target");
-      card.querySelector(".onboarding-skip").addEventListener("click", cleanup, { once: true });
-      card.querySelector(".onboarding-next").addEventListener("click", cleanup, { once: true });
+    if (target) {
+      void applySpotlight(target, card);
     }
 
     if (stepIndex === STEPS.length - 1) {
@@ -140,6 +258,8 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
       if (skip || isDismissed() || active) return;
       active = true;
       stepIndex = 0;
+      document.body.classList.add("onboarding-active");
+      window.addEventListener("resize", onResize);
       renderStep();
     },
   };
