@@ -25,7 +25,15 @@ const STEPS = [
   },
 ];
 
-export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
+export function createOnboarding({
+  onStepViewed,
+  onDismissed,
+  onComplete,
+  onStarted,
+  onNotShown,
+  onNextClicked,
+  onSkipped,
+}) {
   let backdrop;
   let cardHost;
   let stepIndex = 0;
@@ -50,6 +58,15 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
 
   function isMobile() {
     return window.matchMedia(MOBILE_MEDIA).matches;
+  }
+
+  function stepContext() {
+    const step = STEPS[stepIndex];
+    return {
+      stepId: step?.id,
+      stepIndex,
+      totalSteps: STEPS.length,
+    };
   }
 
   function ensureLayers() {
@@ -192,8 +209,10 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
   }
 
   function finish(completed) {
+    const ctx = stepContext();
+    const action = completed ? "complete" : "skip";
     markDismissed();
-    onDismissed?.({ completed });
+    onDismissed?.({ completed, action, ...ctx });
     removeLayers();
     if (completed) onComplete?.();
   }
@@ -234,8 +253,13 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
 
     host.replaceChildren(card);
 
-    card.querySelector(".onboarding-skip").addEventListener("click", () => finish(false));
+    card.querySelector(".onboarding-skip").addEventListener("click", () => {
+      onSkipped?.({ stepId: step.id, stepIndex, totalSteps: STEPS.length });
+      finish(false);
+    });
     card.querySelector(".onboarding-next").addEventListener("click", () => {
+      const isFinal = stepIndex === STEPS.length - 1;
+      onNextClicked?.({ stepId: step.id, stepIndex, totalSteps: STEPS.length, isFinal });
       stepIndex += 1;
       if (stepIndex >= STEPS.length) finish(true);
       else renderStep();
@@ -254,12 +278,21 @@ export function createOnboarding({ onStepViewed, onDismissed, onComplete }) {
   }
 
   return {
-    start({ skip = false } = {}) {
-      if (skip || isDismissed() || active) return;
+    start({ skip = false, skipReason = "returning_user" } = {}) {
+      if (skip) {
+        onNotShown?.({ reason: skipReason });
+        return;
+      }
+      if (isDismissed()) {
+        onNotShown?.({ reason: "previously_dismissed" });
+        return;
+      }
+      if (active) return;
       active = true;
       stepIndex = 0;
       document.body.classList.add("onboarding-active");
       window.addEventListener("resize", onResize);
+      onStarted?.({ totalSteps: STEPS.length });
       renderStep();
     },
   };

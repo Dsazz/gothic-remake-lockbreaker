@@ -2,6 +2,10 @@ export function send(event, properties) {
   window.posthog?.capture?.(event, properties);
 }
 
+export function registerSessionProperties(properties) {
+  window.posthog?.register?.(properties);
+}
+
 export function isEnabled() {
   return typeof window.posthog?.capture === "function";
 }

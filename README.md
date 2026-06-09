@@ -28,7 +28,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.6.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.7.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -124,7 +124,7 @@ Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `vi
 
 ## Analytics
 
-Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, solve funnel steps, share-link copy, onboarding, and lock wipe. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, mapping milestones, solve funnel (with `solve_source`), walkthrough interaction, tutor/onboarding, share prompts, guide opens, and lock wipe. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
 ## Deploy your own
 

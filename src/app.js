@@ -12,16 +12,26 @@ import { oldCampExample } from "./examples.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
 import {
   installErrorCapture,
+  trackExampleLockLoaded,
+  trackGuideOpened,
   trackLanding,
+  trackLockBecameMappable,
   trackLockCleared,
   trackOnboardingDismissed,
   trackOnboardingStepViewed,
+  trackPromptDismissed,
   trackShareLinkCopied,
+  trackShareLinkCopyFailed,
   trackSharePromptClicked,
   trackSharePromptShown,
-  trackSolveBlocked,
   trackSolveButtonClicked,
   trackSolveResult,
+  trackTutorNextClicked,
+  trackTutorNotShown,
+  trackTutorSkipped,
+  trackTutorStarted,
+  trackWalkthroughStepChanged,
+  trackWalkthroughUiToggled,
 } from "./analytics/index.js";
 
 const HAS_VISITED_KEY = "has_visited_v1";
@@ -52,9 +62,14 @@ installErrorCapture();
 
 const onboarding = createOnboarding({
   onStepViewed: ({ stepId }) => trackOnboardingStepViewed({ stepId }),
-  onDismissed: ({ completed }) => trackOnboardingDismissed({ completed }),
+  onDismissed: ({ completed, stepId, stepIndex, action, totalSteps }) =>
+    trackOnboardingDismissed({ completed, stepId, stepIndex, action, totalSteps }),
+  onStarted: ({ totalSteps }) => trackTutorStarted({ totalSteps }),
+  onNotShown: ({ reason }) => trackTutorNotShown({ reason }),
+  onNextClicked: (ctx) => trackTutorNextClicked(ctx),
+  onSkipped: (ctx) => trackTutorSkipped(ctx),
   onComplete: () => {
-    setTimeout(() => openGuide(), 0);
+    setTimeout(() => openGuide("onboarding_complete"), 0);
   },
 });
 
@@ -106,9 +121,10 @@ function shouldShowHashBanner(state) {
   return store.wasLoadedFromHash && !isPristineDefault(state);
 }
 
-function openGuide() {
+function openGuide(source = "manual") {
   if (!els.guide) return;
   els.guide.open = true;
+  trackGuideOpened({ source });
   const block = window.matchMedia("(max-width: 768px)").matches ? "start" : "nearest";
   els.guide.scrollIntoView({ behavior: "smooth", block });
 }
@@ -172,7 +188,10 @@ function renderAll(state) {
   const transition = advanceMappedTracking(wasMapped, mapped);
   wasMapped = transition.wasMapped;
 
-  if (transition.justBecameMapped) flashSolveReady();
+  if (transition.justBecameMapped) {
+    flashSolveReady();
+    trackLockBecameMappable({ plateCount: state.plateCount });
+  }
 
   view.renderVersionBadge(els.version, VERSION);
   view.renderControls(els.controls, state, handlers, { copyCopied });
@@ -241,48 +260,77 @@ const handlers = {
     trackLockCleared();
   },
   async onCopyShareLink() {
+    const plateCount = store.getState().plateCount;
     try {
       await copyShareUrl(location.href);
       showCopyFeedback();
-      trackShareLinkCopied({ plateCount: store.getState().plateCount });
+      trackShareLinkCopied({ plateCount });
     } catch {
       if (els.ariaLive) els.ariaLive.textContent = "Could not copy link.";
+      trackShareLinkCopyFailed({ plateCount });
     }
   },
   onWalk(delta) {
+    const total = solution?.length ?? 0;
+    const prev = stepIndex;
     stepIndex += delta;
+    stepIndex = Math.max(0, Math.min(stepIndex, total));
+    if (stepIndex !== prev) {
+      trackWalkthroughStepChanged({
+        direction: delta > 0 ? "forward" : "back",
+        stepIndex,
+        totalSteps: total,
+        plateCount: store.getState().plateCount,
+      });
+    }
     renderSolutionArea(store.getState());
   },
   onJumpTo(index) {
     const total = solution?.length ?? 0;
+    const prev = stepIndex;
     stepIndex = Math.max(0, Math.min(index, total));
+    if (stepIndex !== prev) {
+      trackWalkthroughStepChanged({
+        direction: "jump",
+        stepIndex,
+        totalSteps: total,
+        plateCount: store.getState().plateCount,
+      });
+    }
     renderSolutionArea(store.getState());
   },
   onToggleSteps() {
     showAllSteps = !showAllSteps;
+    if (showAllSteps) {
+      trackWalkthroughUiToggled({ action: "show_all", plateCount: store.getState().plateCount });
+    }
     renderSolutionArea(store.getState());
   },
   onMinimizeSequence() {
     sequenceMinimized = true;
     showAllSteps = false;
+    trackWalkthroughUiToggled({ action: "minimize", plateCount: store.getState().plateCount });
     renderSolutionArea(store.getState());
   },
   onExpandSequence() {
     sequenceMinimized = false;
+    trackWalkthroughUiToggled({ action: "expand", plateCount: store.getState().plateCount });
     renderSolutionArea(store.getState());
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   },
   onClearSolution() {
+    trackWalkthroughUiToggled({ action: "clear_solution", plateCount: store.getState().plateCount });
     invalidateSolution();
     renderAll(store.getState());
   },
   onDismissHashBanner() {
     hashBannerVisible = false;
     storageSet(HASH_BANNER_KEY, "1");
+    trackPromptDismissed({ prompt: "hash_banner", plateCount: store.getState().plateCount });
     renderSolutionArea(store.getState());
   },
   onOpenGuide() {
-    openGuide();
+    openGuide("manual");
   },
   async onSharePromptClick() {
     trackSharePromptClicked({ plateCount: store.getState().plateCount });
@@ -292,16 +340,18 @@ const handlers = {
   onDismissSharePrompt() {
     sharePromptVisible = false;
     storageSet(SHARE_PROMPT_KEY, "1");
+    trackPromptDismissed({ prompt: "share", plateCount: store.getState().plateCount });
     renderSolutionArea(store.getState());
   },
   onLoadExampleLock(exampleState) {
     invalidateSolution();
     store.loadLock(exampleState);
-    onSolve({ auto: true });
+    trackExampleLockLoaded({ plateCount: exampleState.plateCount });
+    onSolve({ auto: true, solveSource: "example" });
   },
 };
 
-function onSolve({ auto = false } = {}) {
+function onSolve({ auto = false, solveSource = "manual" } = {}) {
   const state = store.getState();
   const mapped = isLockMapped(state);
 
@@ -314,7 +364,6 @@ function onSolve({ auto = false } = {}) {
   }
 
   if (!mapped) {
-    trackSolveBlocked({ plateCount: state.plateCount, landingType });
     blockedMessage = "Set each lock's start hole and couplings first.";
     pulseTumblers();
     renderSolutionArea(state);
@@ -323,7 +372,7 @@ function onSolve({ auto = false } = {}) {
 
   blockedMessage = undefined;
   solution = solve(state.positions, state.matrix);
-  trackSolveResult({ plateCount: state.plateCount, solution, landingType });
+  trackSolveResult({ plateCount: state.plateCount, solution, landingType, solveSource });
   stepIndex = 0;
   showAllSteps = false;
   maybeShowSharePrompt(state);
@@ -339,11 +388,12 @@ store.subscribe(renderAll);
 renderAll(store.getState());
 
 if (store.wasLoadedFromHash && isLockMapped(store.getState())) {
-  onSolve({ auto: true });
+  onSolve({ auto: true, solveSource: "hash" });
 } else if (landingType === "cold") {
   onboarding.start({ skip: false });
 } else {
-  onboarding.start({ skip: true });
+  const skipReason = landingType === "hash" ? "hash_landing" : "returning_user";
+  onboarding.start({ skip: true, skipReason });
 }
 
 document.getElementById("load-example-lock")?.addEventListener("click", () => {

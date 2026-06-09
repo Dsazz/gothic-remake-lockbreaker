@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.7.0] - 2026-06-09
+
+### Added
+
+- PostHog UX analytics: mapping (`lock_became_mappable`, `example_lock_loaded`, `guide_opened`), walkthrough (`walkthrough_step_changed`, `walkthrough_ui_toggled`), tutor (`tutor_started`, `tutor_not_shown`, `tutor_next_clicked`, `tutor_skipped`), and prompt dismissals (`prompt_dismissed`, `share_link_copy_failed`).
+- `solve_source` on solve-outcome events (`manual`, `hash`, `example`); `landing_type` and `app_version` as PostHog super properties.
+- Enriched `onboarding_dismissed` with `step_id`, `step_index`, `action`, and `total_steps`.
+
+### Changed
+
+- README analytics section updated for expanded event coverage.
+
+### Removed
+
+- Dead `lock_solve_blocked` event (solve button is disabled until lock is mapped).
+
 ## [1.6.1] - 2026-06-09
 
 ### Fixed
