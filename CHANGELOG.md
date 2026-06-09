@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.8.2] - 2026-06-09
+
+### Changed
+
+- **Share lock** moved to Section III only: post-solve banner is the sole share affordance (shown after a walkthrough with steps).
+- Share banner dismiss is session-scoped — re-solve brings it back; permanent localStorage dismiss removed.
+- **Wipe lock** stays in Section I; toolbar still hidden on the pristine default lock.
+
+### Removed
+
+- Section I **Share lock** button and `.controls-share` styles.
+
 ## [1.8.1] - 2026-06-09
 
 ### Changed

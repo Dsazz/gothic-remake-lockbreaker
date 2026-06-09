@@ -38,7 +38,6 @@ import {
 
 const HAS_VISITED_KEY = "has_visited_v1";
 const HASH_BANNER_KEY = "hash_banner_dismissed_v1";
-const SHARE_PROMPT_KEY = "share_prompt_dismissed_v1";
 
 const els = {
   controls: document.getElementById("controls"),
@@ -165,7 +164,6 @@ function buildWalkthrough(state) {
 }
 
 function maybeShowSharePrompt(state) {
-  if (storageGet(SHARE_PROMPT_KEY)) return;
   if (!Array.isArray(solution) || solution.length === 0) return;
   sharePromptVisible = true;
   if (!sharePromptTracked) {
@@ -181,7 +179,11 @@ function renderSolutionArea(state) {
   const lockReady = isLockMapped(state);
   view.renderSequencePanel(els.sequencePanel, solution, { minimized }, handlers);
   view.renderHashBanner(els.hashBanner, { visible: hashBannerVisible && hasMoves }, handlers);
-  view.renderSharePrompt(els.sharePrompt, { visible: sharePromptVisible && hasMoves }, handlers);
+  view.renderSharePrompt(
+    els.sharePrompt,
+    { visible: sharePromptVisible && hasMoves, copyCopied },
+    handlers,
+  );
   view.renderSolution(
     els.solution,
     solution,
@@ -209,7 +211,7 @@ function renderAll(state) {
   }
 
   view.renderVersionBadge(els.version, VERSION);
-  view.renderControls(els.controls, state, handlers, { copyCopied });
+  view.renderControls(els.controls, state, handlers);
   view.renderTumblers(els.tumblers, state, handlers, { pulse: tumblersPulse });
   view.renderSolveButton(els.solveBtn, { mapped, justEnabled: solveReadyFlash });
   renderSolutionArea(state);
@@ -223,6 +225,7 @@ function invalidateSolution() {
   sequenceMinimized = false;
   blockedMessage = undefined;
   sharePromptVisible = false;
+  sharePromptTracked = false;
   showMismatchTips = false;
 }
 
@@ -357,7 +360,6 @@ const handlers = {
   },
   onDismissSharePrompt() {
     sharePromptVisible = false;
-    storageSet(SHARE_PROMPT_KEY, "1");
     trackPromptDismissed({ prompt: "share", plateCount: store.getState().plateCount });
     renderSolutionArea(store.getState());
   },

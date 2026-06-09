@@ -288,7 +288,7 @@ function mismatchChecklist(state) {
   return el("ul", { class: "mismatch-checklist" }, items.map((text) => el("li", { text })));
 }
 
-export function renderControls(container, state, handlers, ui = {}) {
+export function renderControls(container, state, handlers) {
   const counts = [];
   for (let n = MIN_PLATES; n <= MAX_PLATES; n++) {
     counts.push(
@@ -306,23 +306,6 @@ export function renderControls(container, state, handlers, ui = {}) {
     el("div", { class: "pill-row locks-row" }, counts),
   ]);
   const actionsBlock = el("div", { class: "controls-actions" }, [
-    el(
-      "button",
-      {
-        class: `controls-share ${ui.copyCopied ? "is-copied" : ""}`,
-        type: "button",
-        "aria-label": ui.copyCopied ? "Copied!" : "Share lock",
-        title: ui.copyCopied ? "Copied!" : "Share lock",
-        onClick: handlers.onCopyShareLink,
-      },
-      [
-        controlsIconSvg("link"),
-        el("span", {
-          class: "controls-share-label",
-          text: ui.copyCopied ? "Copied!" : "Share lock",
-        }),
-      ],
-    ),
     iconBtn({
       label: "Wipe lock",
       className: "icon-btn--tool",
@@ -526,14 +509,16 @@ export function renderSharePrompt(container, ui, handlers) {
     container.hidden = true;
     return;
   }
+  const copied = Boolean(ui?.copyCopied);
   container.hidden = false;
   container.replaceChildren(
     el("div", { class: "share-prompt" }, [
       el("p", { class: "share-prompt-text", text: "Copy link to share this exact lock." }),
       el("button", {
-        class: "pill pill-primary share-prompt-btn",
+        class: `pill pill-primary share-prompt-btn${copied ? " is-copied" : ""}`,
         type: "button",
-        text: "Share lock",
+        text: copied ? "Copied!" : "Share lock",
+        "aria-label": copied ? "Copied!" : "Share lock",
         onClick: handlers.onSharePromptClick,
       }),
       el("button", {

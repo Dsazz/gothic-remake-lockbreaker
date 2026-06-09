@@ -29,11 +29,17 @@ test("view.js has no duplicate function declarations", async () => {
   );
 });
 
-test("renderControls hides share and wipe until lock differs from default", async () => {
-  const text = await readFile(join(root, "src/view.js"), "utf8");
-  assert.match(text, /isPristineDefault/);
-  assert.match(text, /showLockActions/);
-  assert.match(text, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
+test("renderControls hides wipe until lock differs from default; share is banner-only", async () => {
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const appText = await readFile(join(root, "src/app.js"), "utf8");
+  assert.match(viewText, /isPristineDefault/);
+  assert.match(viewText, /showLockActions/);
+  assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
+  assert.match(viewText, /Wipe lock/);
+  assert.doesNotMatch(viewText, /controls-share/);
+  assert.match(viewText, /renderSharePrompt/);
+  assert.match(appText, /sharePromptVisible && hasMoves/);
+  assert.doesNotMatch(appText, /SHARE_PROMPT_KEY/);
 });
 
 test("walkthrough uses tertiary help trigger, not pill mismatch button", async () => {
