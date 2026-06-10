@@ -19,7 +19,13 @@ import {
   isPristineDefault,
 } from "./domain.js";
 import { SolveFailureReason, SupportSource } from "./analytics/values.js";
-import { CHANGELOG_URL, GITHUB_ISSUES_URL, SUPPORT_URL } from "./version.js";
+import {
+  CHANGELOG_URL,
+  GITHUB_ISSUES_URL,
+  PRESS_BUFFED_URL,
+  PRESS_PCGAMES_URL,
+  SUPPORT_URL,
+} from "./version.js";
 import { t, tCount } from "./i18n.js";
 import { localeSuggestPromptKey } from "./locale-suggest.js";
 
@@ -1017,6 +1023,25 @@ function githubIssuesLink() {
   });
 }
 
+function pressLink(url, labelKey) {
+  return el("a", {
+    class: "app-foot-link",
+    href: url,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    text: t(labelKey),
+  });
+}
+
+function pressMentionsLine() {
+  return el("p", { class: "app-foot-press" }, [
+    el("span", { text: `${t("press.featured")} ` }),
+    pressLink(PRESS_PCGAMES_URL, "press.pcgames"),
+    el("span", { class: "app-foot-sep", text: " · ", "aria-hidden": "true" }),
+    pressLink(PRESS_BUFFED_URL, "press.buffed"),
+  ]);
+}
+
 function supportOreImg(className, size) {
   return el("img", {
     class: className,
@@ -1070,6 +1095,7 @@ export function renderVersionBadge(container, version) {
 export function renderFooter(container, version, handlers) {
   container.replaceChildren(
     supportStrip(handlers),
+    pressMentionsLine(),
     el("p", { class: "app-foot-meta" }, [
       versionLink(version),
       el("span", { class: "app-foot-sep", text: " · ", "aria-hidden": "true" }),

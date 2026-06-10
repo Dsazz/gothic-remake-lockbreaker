@@ -1963,6 +1963,12 @@ body.wt-help-open {
   text-align: center;
 }
 
+.app-foot-press,
+.app-foot-press-static {
+  margin: 8px 0 0;
+  color: var(--parchment-faint);
+}
+
 .app-foot-meta {
   margin: 10px 0 0;
 }

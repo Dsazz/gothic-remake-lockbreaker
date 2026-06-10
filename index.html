@@ -14,6 +14,7 @@
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://gothiclockbreaker.com/" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Summary for AI systems" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gothiclockbreaker.com/" />
     <meta property="og:site_name" content="Gothic Lock Breaker" />
@@ -57,6 +58,13 @@
         "description": "Free browser-based edge-safe lockpicking solver for Gothic 1 Remake. Maps plate couplings and returns step-by-step turn sequences that never grind pins against the wall.",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
+        "inLanguage": ["en", "de", "pl", "uk"],
+        "availableLanguage": [
+          { "@type": "Language", "name": "English", "alternateName": "en" },
+          { "@type": "Language", "name": "German", "alternateName": "de" },
+          { "@type": "Language", "name": "Polish", "alternateName": "pl" },
+          { "@type": "Language", "name": "Ukrainian", "alternateName": "uk" }
+        ],
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -67,8 +75,57 @@
           "name": "Stanislav Stepanenko"
         },
         "sameAs": [
-          "https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/",
           "https://github.com/Dsazz/gothic-remake-lockbreaker"
+        ],
+        "subjectOf": [
+          {
+            "@type": "NewsArticle",
+            "headline": "Schlösserknacken im Gothic Remake macht euch wahnsinnig? Dieses Tool hilft!",
+            "url": "https://www.pcgames.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/",
+            "inLanguage": "de",
+            "publisher": {
+              "@type": "Organization",
+              "name": "PC Games"
+            }
+          },
+          {
+            "@type": "NewsArticle",
+            "headline": "Schlösserknacken im Gothic Remake macht euch wahnsinnig? Dieses Tool hilft!",
+            "url": "https://www.buffed.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/",
+            "inLanguage": "de",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Buffed"
+            }
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to solve a Gothic 1 Remake lock with Gothic Lock Breaker",
+        "description": "Map plate couplings and starting holes, then get an edge-safe turn-by-turn walkthrough that opens the lock without grinding pins.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Set lock count, tier, and starting holes",
+            "text": "Choose how many plates the lock has, your lockpicking tier, and each plate's starting hole (1 = wall, 4 = notch, 7 = wall)."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Mark With and Against couplings",
+            "text": "Turn each lock once in-game. For every other plate that moves, mark With (same direction) or Against (opposite). With and Against apply to every turn direction for that pair."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Break the Lock and follow the walkthrough",
+            "text": "Press Break the Lock. Follow the numbered turn sequence one step at a time in-game until every pin rests in the notch."
+          }
         ]
       }
     </script>
@@ -231,7 +288,22 @@
         <div id="solution" class="solution"></div>
       </section>
 
-      <footer id="app-foot" class="app-foot"></footer>
+      <footer id="app-foot" class="app-foot">
+        <p class="app-foot-press app-foot-press-static">
+          Featured in
+          <a
+            class="app-foot-link"
+            href="https://www.pcgames.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/"
+            >PC Games</a
+          >
+          ·
+          <a
+            class="app-foot-link"
+            href="https://www.buffed.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/"
+            >Buffed</a
+          >
+        </p>
+      </footer>
     </main>
 
     <div id="locale-suggest" class="locale-suggest-host" hidden></div>

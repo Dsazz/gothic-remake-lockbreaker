@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.13.1] - 2026-06-10
+
+### Added
+
+- Footer **Featured in PC Games · Buffed** linking to German press coverage of the solver.
+- Expanded `llms.txt` for AI crawlers: press links, FAQ, localized URLs, preferred citation.
+- Page-head link to `llms.txt`; JSON-LD `subjectOf` (PC Games, Buffed articles), `HowTo`, and language metadata on `WebApplication`.
+- `scripts/check-seo.js` — CI guard for press URL parity, JSON-LD validity, and `llms.txt` / `sitemap.xml` dates vs changelog.
+
+### Changed
+
+- README badges: PC Games and Buffed replace Reddit.
+- Reddit removed from `index.html` structured data (`sameAs`); historical Reddit link kept in `llms.txt` only.
+
 ## [1.13.0] - 2026-06-10
 
 ### Added

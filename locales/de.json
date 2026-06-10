@@ -152,6 +152,11 @@
   "footer": {
     "issues": "Problem melden"
   },
+  "press": {
+    "featured": "Erwähnt in",
+    "pcgames": "PC Games",
+    "buffed": "Buffed"
+  },
   "support": {
     "aria": "Optionaler Tipp auf Ko-fi — unterstützt Wartung. Solver bleibt kostenlos.",
     "tooltip": "Wirf ein Erz — hält den Solver kostenlos",

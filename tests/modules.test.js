@@ -29,13 +29,17 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/app-elements.js");
 });
 
-test("footer links to GitHub issues", async () => {
+test("footer links to GitHub issues and press coverage", async () => {
   const versionText = await readFile(join(root, "src/version.js"), "utf8");
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
   assert.match(versionText, /GITHUB_ISSUES_URL/);
+  assert.match(versionText, /PRESS_PCGAMES_URL/);
+  assert.match(versionText, /PRESS_BUFFED_URL/);
   assert.doesNotMatch(versionText, /REDDIT_DISCUSS_URL/);
   assert.match(viewText, /githubIssuesLink/);
+  assert.match(viewText, /pressMentionsLine/);
   assert.match(viewText, /footer\.issues/);
+  assert.match(viewText, /press\.pcgames/);
 });
 
 test("app defers solve coachmark until onboarding tour ends", async () => {
@@ -96,14 +100,42 @@ test("walkthrough layout avoids fixed min column widths that cause horizontal sc
   assert.doesNotMatch(css, /repeat\(7,\s*minmax\(26px/);
 });
 
+test("static-content.js does not hydrate footer press", async () => {
+  const staticContentText = await readFile(join(root, "src/static-content.js"), "utf8");
+  assert.doesNotMatch(staticContentText, /applyPressStaticContent/);
+  assert.doesNotMatch(staticContentText, /PRESS_PCGAMES_URL/);
+});
+
 test("index.html includes SEO metadata", async () => {
   const html = await readFile(join(root, "index.html"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
   assert.match(html, /<meta\s+name="description"/);
   assert.match(html, /<link\s+rel="canonical"/);
+  assert.match(html, /href="\/llms\.txt"/);
   assert.match(html, /application\/ld\+json/);
   assert.match(html, /app-definition/);
+  assert.match(html, /app-foot-press-static/);
+  assert.match(html, /app-foot-press app-foot-press-static/);
+  assert.match(html, /"availableLanguage"/);
+  assert.match(html, /"HowTo"/);
+  assert.match(html, /"subjectOf"/);
   assert.match(html, /https:\/\/gothiclockbreaker\.com\//);
+  assert.doesNotMatch(html, /"FAQPage"/);
   assert.doesNotMatch(html, /panel--faq/);
+  assert.doesNotMatch(html, /app-faq/);
+  assert.doesNotMatch(html, /reddit\.com/);
+  assert.match(css, /\.app-foot-press,\s*\n\.app-foot-press-static/);
+});
+
+test("README and llms.txt promote press, not Reddit in README", async () => {
+  const readme = await readFile(join(root, "README.md"), "utf8");
+  const llms = await readFile(join(root, "llms.txt"), "utf8");
+  assert.match(readme, /pcgames\.de/);
+  assert.match(readme, /buffed\.de/);
+  assert.doesNotMatch(readme, /reddit\.com/);
+  assert.match(llms, /## Press coverage/);
+  assert.match(llms, /## FAQ/);
+  assert.match(llms, /reddit\.com/);
 });
 
 test("locale suggest uses region semantics, not dialog", async () => {

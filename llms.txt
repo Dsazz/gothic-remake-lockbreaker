@@ -22,6 +22,45 @@ Free. No account. Runs in any modern browser.
 - Source: https://github.com/Dsazz/gothic-remake-lockbreaker
 - Changelog: https://github.com/Dsazz/gothic-remake-lockbreaker/blob/main/CHANGELOG.md
 
+## Press coverage
+
+- PC Games (German gaming press): https://www.pcgames.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/
+  Article: "Schlösserknacken im Gothic Remake macht euch wahnsinnig? Dieses Tool hilft!" — covers Gothic Lock Breaker as a fan-made step-by-step lockpicking helper.
+- Buffed (German gaming press): https://www.buffed.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/
+  Same article on Buffed — recommends Gothic Lock Breaker for players stuck on complex locks such as the Old Camp tower door.
+
+## FAQ
+
+### What is Gothic Lock Breaker?
+
+Gothic Lock Breaker is a free browser-based lockpicking solver for Gothic 1 Remake. You map each plate's starting hole and couplings (With or Against), and it returns a step-by-step turn sequence that opens the lock.
+
+### How is it different from net-turn calculators?
+
+Net-turn calculators only tell you how many turns each plate needs in total. Gothic Lock Breaker uses edge-safe BFS to find turn sequences that never grind a pin against wall holes 1 or 7, so your pick does not snap mid-sequence.
+
+### Is it free? Does it need an account?
+
+Yes — free, no account, runs in any modern browser including phones.
+
+### How do I use it for the Old Camp tower door?
+
+Set five plates, map starting holes and With/Against couplings after one in-game turn per lock, then press Break the Lock. The in-app guide includes a "Try Old Camp tower door" preset.
+
+## Localized versions
+
+- German: https://gothiclockbreaker.com/?lang=de
+- Polish: https://gothiclockbreaker.com/?lang=pl
+- Ukrainian: https://gothiclockbreaker.com/?lang=ukr
+
+## Last updated
+
+2026-06-10
+
+## Preferred citation
+
+Gothic Lock Breaker — free edge-safe lockpicking solver for Gothic 1 Remake at https://gothiclockbreaker.com/
+
 ## Community
 
 - Reddit discussion (r/worldofgothic): https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/

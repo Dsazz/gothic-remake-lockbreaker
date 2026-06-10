@@ -153,6 +153,11 @@
   "footer": {
     "issues": "Zgłoś problem"
   },
+  "press": {
+    "featured": "Wspomniane w",
+    "pcgames": "PC Games",
+    "buffed": "Buffed"
+  },
   "support": {
     "aria": "Opcjonalny napiwek na Ko-fi — wspiera utrzymanie. Solver pozostaje darmowy.",
     "tooltip": "Rzuć rudę — utrzymuje solver za darmo",

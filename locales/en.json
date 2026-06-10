@@ -177,6 +177,11 @@
   "footer": {
     "issues": "Report an issue"
   },
+  "press": {
+    "featured": "Featured in",
+    "pcgames": "PC Games",
+    "buffed": "Buffed"
+  },
   "support": {
     "aria": "Optional tip on Ko-fi — helps cover support and upkeep. Solver stays free.",
     "tooltip": "Toss an ore — keeps the solver free",

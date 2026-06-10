@@ -18,11 +18,13 @@ one against the frame.
 
 [![Play online](https://img.shields.io/badge/play-gothiclockbreaker.com-e9b969?style=for-the-badge)](https://gothiclockbreaker.com/)
 &nbsp;
-[![Discuss on r/worldofgothic](https://img.shields.io/badge/discuss-r%2Fworldofgothic-e9b969?style=for-the-badge)](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/)
+[![Featured in PC Games](https://img.shields.io/badge/featured-PC%20Games-e9b969?style=for-the-badge)](https://www.pcgames.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/)
+&nbsp;
+[![Featured in Buffed](https://img.shields.io/badge/featured-Buffed-e9b969?style=for-the-badge)](https://www.buffed.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/)
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.13.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.13.1-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -32,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.13.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.13.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
