@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.11.4] - 2026-06-10
+
+### Changed
+
+- Social and search metadata: shorter title (~53 chars) and description (~121 chars) so Google, X, and LinkedIn previews do not truncate.
+- Open Graph: `og:site_name`, dedicated `assets/og-image.png` at 1200×630 (1.91:1), and `og:image:width` / `og:image:height`; Twitter card uses the same image.
+
 ## [1.11.3] - 2026-06-09
 
 ### Fixed
