@@ -28,4 +28,7 @@ export const Events = Object.freeze({
   LOCALE_RESOLVED: "locale_resolved",
   I18N_BANNER_SHOWN: "i18n_banner_shown",
   LOCALE_SESSION_END: "locale_session_end",
+  LOCALE_SUGGEST_SHOWN: "locale_suggest_shown",
+  LOCALE_SUGGEST_ACCEPTED: "locale_suggest_accepted",
+  LOCALE_SUGGEST_DECLINED: "locale_suggest_declined",
 });

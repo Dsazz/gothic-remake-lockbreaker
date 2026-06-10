@@ -7,6 +7,7 @@ export const StorageKeys = Object.freeze({
   LOCALE: "locale_v1",
   I18N_BANNER_DISMISSED: "i18n_banner_dismissed_v1",
   LOCALE_SESSION_END_SENT: "locale_session_end_sent_v1",
+  LOCALE_SUGGEST_DISMISSED: "locale_suggest_dismissed_v1",
 });
 
 /** Persisted boolean flags — localStorage/sessionStorage value when set. */

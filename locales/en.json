@@ -188,6 +188,12 @@
     "link": "Open a GitHub issue and I'll fix it",
     "dismiss": "Got it"
   },
+  "localeSuggest": {
+    "promptDe": "German guide available — switch the interface?",
+    "promptPl": "Polish guide available — switch the interface?",
+    "english": "English",
+    "dismiss": "Dismiss"
+  },
   "locale": {
     "switcher": "Language",
     "en": "English",

@@ -22,7 +22,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.12.2-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.13.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -32,7 +32,9 @@ one against the frame.
 
 <br />
 
-**Current release: v1.12.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.13.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+
+**Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
 </div>
 
@@ -129,7 +131,7 @@ Override the port with `make serve PORT=3000`. Run `make` with no args to list t
 
 ## Architecture
 
-Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `view` stay pure and all depend on `domain`:
+Native ES modules. `app.js` is the composition root; `store`, `solver`, and `view` stay pure and all depend on `domain`:
 
 | File | Responsibility |
 | --- | --- |
@@ -137,14 +139,19 @@ Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `vi
 | `src/solver.js` | Pure `solve()` BFS + `statesAlong()`. Depends only on the domain. |
 | `src/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. Depends only on the domain. |
 | `src/view.js` | Pure `state -> DOM` rendering; handlers injected. Reads domain constants; no store access. |
-| `src/app.js` | Wires DOM events to the store and solver output to the view. |
+| `src/app.js` | Composition root: bootstraps i18n, composes controllers, subscribes store to renderer. |
+| `src/ui-prefs.js` | UI flag persistence (banners, visit marker, locale suggest dismiss). |
+| `src/solve-controller.js` | Solve session, walkthrough, share/hash banners, solve coachmark deferral. |
+| `src/lock-controller.js` | Lock mutation handlers; invalidates solve session on change. |
+| `src/locale-chrome-controller.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
+| `src/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
 | `src/analytics/` | Product analytics facade; PostHog wired only in `transport.js`, init in `index.html`. |
 | `src/version.js` | Release version and changelog URL for the footer badge. |
 | `index.html`, `styles.css` | Shell and theme. |
 
 ## Analytics
 
-Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, mapping milestones, solve funnel (with `solve_source`), walkthrough interaction, tutor/onboarding, share prompts, guide opens, lock wipe, and i18n (`locale_resolved`, `locale_changed`, `locale_session_end`, `i18n_banner_shown`, translation-feedback link clicks). Every session registers `initial_locale`, `locale`, and engagement flags after bootstrap. Use `locale_session_end` where `staying_on_translation = true` for users who kept a translation, or `reverted_to_default = true` / `locale_changed.change_direction = to_default` for switch-back-to-English. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, mapping milestones, solve funnel (with `solve_source`), walkthrough interaction, tutor/onboarding, share prompts, guide opens, lock wipe, and i18n (`locale_resolved`, `locale_changed`, `locale_session_end`, `i18n_banner_shown`, `locale_suggest_shown` / `locale_suggest_accepted` / `locale_suggest_declined`, translation-feedback link clicks). Every session registers `initial_locale`, `locale`, and engagement flags after bootstrap. Use `locale_session_end` where `staying_on_translation = true` for users who kept a translation, or `reverted_to_default = true` / `locale_changed.change_direction = to_default` for switch-back-to-English. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
 ## Deploy your own
 

@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.13.0] - 2026-06-10
+
+### Added
+
+- Locale suggest bar for first-time English-default visitors: opt-in DE/PL switch from referrer hints (`pcgames.de`, `buffed.de`, `gamestar.de`, `ithardware.pl`) or async PostHog geo (`DE` / `AT` / `CH` / `PL`).
+- `src/locale-suggest.js`, `src/analytics/geo-hint.js`; `renderLocaleSuggest` UI with English prompt copy.
+- PostHog `locale_suggest_shown`, `locale_suggest_accepted`, `locale_suggest_declined`; `LocaleChangeSource.SUGGEST_BAR`; `LocaleSource.SUGGEST` on accept.
+- `StorageKeys.LOCALE_SUGGEST_DISMISSED`; `localeSuggest` strings in `locales/en.json`.
+- Composition-root refactor: `solve-controller`, `lock-controller`, `locale-chrome-controller`, `app-renderer`, `ui-prefs`, `landing`, `app-elements`.
+
+### Changed
+
+- `app.js` is the composition root only; lock/solve/locale chrome logic moved into dedicated controllers.
+- `setLocale` accepts `changeSource` and `localeSource` for switcher vs suggest-bar tracking.
+- Onboarding and solve coachmark defer the locale suggest bar (same as i18n quality banner).
+- i18n quality banner shows only on translated locales and stays hidden while locale suggest is visible.
+
+### Fixed
+
+- Geo locale hint is stored during onboarding/coachmark deferral and shown when eligible; geo poll retries after timeout.
+- Locale suggest uses `role="region"` instead of misused `role="dialog"`.
+
 ## [1.12.2] - 2026-06-10
 
 ### Added

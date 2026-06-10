@@ -67,8 +67,9 @@ test("resolveLocalePreference prioritizes query over storage over default", () =
   );
 });
 
-test("shouldPersistLocaleOnInit is true only for query source", () => {
+test("shouldPersistLocaleOnInit persists query deeplinks and suggest accept", () => {
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.QUERY), true);
+  assert.equal(shouldPersistLocaleOnInit(LocaleSource.SUGGEST), true);
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.STORAGE), false);
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.DEFAULT), false);
 });
@@ -114,7 +115,9 @@ test("de pl ukr catalogs cover Tier C keys from English", async () => {
   const en = await loadLocale(Locale.EN);
   const translatedLocales = SUPPORTED_LOCALES.filter((code) => code !== Locale.EN);
   const enKeys = flattenKeys(en);
-  const tierC = enKeys.filter((key) => !FROZEN_KEYS.has(key));
+  const tierC = enKeys.filter(
+    (key) => !FROZEN_KEYS.has(key) && !key.startsWith("localeSuggest."),
+  );
 
   for (const code of translatedLocales) {
     const catalogKeys = new Set(flattenKeys(await loadLocale(code)));

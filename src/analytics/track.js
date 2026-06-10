@@ -71,6 +71,31 @@ export function trackI18nBannerShown({ locale }) {
   send(Events.I18N_BANNER_SHOWN, { locale, app_version: VERSION });
 }
 
+export function trackLocaleSuggestShown({ suggestedLocale, hintSource }) {
+  send(Events.LOCALE_SUGGEST_SHOWN, {
+    suggested_locale: suggestedLocale,
+    hint_source: hintSource,
+    app_version: VERSION,
+  });
+}
+
+export function trackLocaleSuggestAccepted({ suggestedLocale, hintSource }) {
+  send(Events.LOCALE_SUGGEST_ACCEPTED, {
+    suggested_locale: suggestedLocale,
+    hint_source: hintSource,
+    app_version: VERSION,
+  });
+}
+
+export function trackLocaleSuggestDeclined({ suggestedLocale, hintSource, declineAction }) {
+  send(Events.LOCALE_SUGGEST_DECLINED, {
+    suggested_locale: suggestedLocale,
+    hint_source: hintSource,
+    decline_action: declineAction,
+    app_version: VERSION,
+  });
+}
+
 export function trackSolveButtonClicked({ plateCount, lockReady, landingType }) {
   send(Events.SOLVE_BUTTON_CLICKED, {
     ...baseProps(plateCount),

@@ -1,0 +1,59 @@
+import { StorageKeys, StorageFlag } from "./storage-keys.js";
+
+function storageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // ignore blocked storage
+  }
+}
+
+/** UI flag persistence — banners, visit marker, locale suggest dismiss. */
+export function createUiPrefs() {
+  return {
+    get(key) {
+      return storageGet(key);
+    },
+    set(key, value) {
+      storageSet(key, value);
+    },
+    has(key) {
+      return storageGet(key) === StorageFlag.SET;
+    },
+    hasVisited() {
+      return storageGet(StorageKeys.HAS_VISITED) === StorageFlag.SET;
+    },
+    markVisited() {
+      storageSet(StorageKeys.HAS_VISITED, StorageFlag.SET);
+    },
+    isHashBannerDismissed() {
+      return storageGet(StorageKeys.HASH_BANNER_DISMISSED) === StorageFlag.SET;
+    },
+    dismissHashBanner() {
+      storageSet(StorageKeys.HASH_BANNER_DISMISSED, StorageFlag.SET);
+    },
+    isI18nBannerDismissed() {
+      return storageGet(StorageKeys.I18N_BANNER_DISMISSED) === StorageFlag.SET;
+    },
+    dismissI18nBanner() {
+      storageSet(StorageKeys.I18N_BANNER_DISMISSED, StorageFlag.SET);
+    },
+    isLocaleSuggestDismissed() {
+      return storageGet(StorageKeys.LOCALE_SUGGEST_DISMISSED) === StorageFlag.SET;
+    },
+    dismissLocaleSuggest() {
+      storageSet(StorageKeys.LOCALE_SUGGEST_DISMISSED, StorageFlag.SET);
+    },
+    getStoredLocale() {
+      return storageGet(StorageKeys.LOCALE);
+    },
+  };
+}

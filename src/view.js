@@ -21,6 +21,7 @@ import {
 import { SolveFailureReason, SupportSource } from "./analytics/values.js";
 import { CHANGELOG_URL, GITHUB_ISSUES_URL, SUPPORT_URL } from "./version.js";
 import { t, tCount } from "./i18n.js";
+import { localeSuggestPromptKey } from "./locale-suggest.js";
 
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
 const MASTERY_TIERS = [MASTERY.UNTRAINED, MASTERY.TRAINED, MASTERY.MASTER];
@@ -536,6 +537,58 @@ function i18nAckButton(onClick) {
       onClick,
     },
     [ackCheckSvg()],
+  );
+}
+
+export function renderLocaleSuggest(container, ui, handlers) {
+  if (!container) return;
+  if (!ui?.visible || !ui.suggestedLocale) {
+    container.replaceChildren();
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+  const promptKey = localeSuggestPromptKey(ui.suggestedLocale);
+  const promptId = "locale-suggest-prompt";
+  const prompt = promptKey ? t(promptKey) : "";
+  const languageLabel = t(`locale.${ui.suggestedLocale}`);
+
+  container.replaceChildren(
+    el(
+      "div",
+      {
+        class: "locale-suggest",
+        role: "region",
+        "aria-labelledby": promptId,
+      },
+      [
+        el("p", { class: "locale-suggest-text", id: promptId, text: prompt }),
+        el("div", { class: "locale-suggest-actions" }, [
+          el("button", {
+            class: "locale-suggest-primary",
+            type: "button",
+            text: languageLabel,
+            onClick: () => handlers.onAcceptLocaleSuggest?.(),
+          }),
+          el("button", {
+            class: "locale-suggest-secondary",
+            type: "button",
+            text: t("localeSuggest.english"),
+            onClick: () => handlers.onDeclineLocaleSuggest?.({ explicit: true }),
+          }),
+        ]),
+        el(
+          "button",
+          {
+            class: "icon-btn icon-btn--tool locale-suggest-dismiss",
+            type: "button",
+            "aria-label": t("localeSuggest.dismiss"),
+            onClick: () => handlers.onDeclineLocaleSuggest?.({ explicit: false }),
+          },
+          [dismissCrossSvg()],
+        ),
+      ],
+    ),
   );
 }
 

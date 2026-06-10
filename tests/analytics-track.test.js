@@ -22,6 +22,23 @@ test("events.js defines locale session events", async () => {
   assert.match(text, /LOCALE_CHANGED/);
   assert.match(text, /LOCALE_SESSION_END/);
   assert.match(text, /I18N_BANNER_SHOWN/);
+  assert.match(text, /LOCALE_SUGGEST_SHOWN/);
+  assert.match(text, /LOCALE_SUGGEST_ACCEPTED/);
+  assert.match(text, /LOCALE_SUGGEST_DECLINED/);
+});
+
+test("values.js defines locale suggest change source", async () => {
+  const text = await readFile(join(root, "src/analytics/values.js"), "utf8");
+  assert.match(text, /SUGGEST_BAR/);
+  assert.match(text, /LocaleSuggestDeclineAction/);
+});
+
+test("track.js exports locale suggest helpers", async () => {
+  const text = await readFile(join(root, "src/analytics/track.js"), "utf8");
+  assert.match(text, /export function trackLocaleSuggestShown/);
+  assert.match(text, /export function trackLocaleSuggestAccepted/);
+  assert.match(text, /export function trackLocaleSuggestDeclined/);
+  assert.match(text, /decline_action/);
 });
 
 test("trackLanding accepts locale and localeSource", async () => {

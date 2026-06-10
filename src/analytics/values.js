@@ -55,6 +55,12 @@ export const SupportSource = Object.freeze({
 
 export const LocaleChangeSource = Object.freeze({
   SWITCHER: "switcher",
+  SUGGEST_BAR: "suggest_bar",
+});
+
+export const LocaleSuggestDeclineAction = Object.freeze({
+  ENGLISH: "english",
+  DISMISS: "dismiss",
 });
 
 export const LocaleChangeDirection = Object.freeze({

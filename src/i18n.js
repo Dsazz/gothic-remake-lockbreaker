@@ -19,6 +19,7 @@ export const LocaleSource = Object.freeze({
   QUERY: "query",
   STORAGE: "storage",
   DEFAULT: "default",
+  SUGGEST: "suggest",
 });
 
 /** Tier B — always read from English catalog (layout-safe compact UI). */
@@ -89,9 +90,9 @@ export function isDefaultLocale(locale) {
   return locale === DEFAULT_LOCALE;
 }
 
-/** True when init should write resolved locale to storage (query deeplink). */
+/** True when init should write resolved locale to storage (query deeplink or suggest accept). */
 export function shouldPersistLocaleOnInit(source) {
-  return source === LocaleSource.QUERY;
+  return source === LocaleSource.QUERY || source === LocaleSource.SUGGEST;
 }
 
 export function localePageUrl(locale, origin = SITE_ORIGIN) {
@@ -273,9 +274,9 @@ export function onLocaleChange(listener) {
   return () => listeners.delete(listener);
 }
 
-function notifyLocaleChange(locale) {
+function notifyLocaleChange(locale, changeSource) {
   for (const listener of listeners) {
-    listener(locale);
+    listener(locale, changeSource);
   }
 }
 
@@ -300,12 +301,13 @@ export async function initI18n() {
   return activeLocale;
 }
 
-export async function setLocale(locale) {
+export async function setLocale(locale, { changeSource, localeSource: nextSource } = {}) {
   if (!SUPPORTED_LOCALES.includes(locale) || locale === activeLocale) return activeLocale;
   if (!catalogs[locale]) await loadCatalog(locale);
   activeLocale = locale;
+  if (nextSource) localeSource = nextSource;
   storageSet(StorageKeys.LOCALE, locale);
   applyDocumentLocale(locale);
-  notifyLocaleChange(locale);
+  notifyLocaleChange(locale, changeSource);
   return activeLocale;
 }
