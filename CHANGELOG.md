@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.11.5] - 2026-06-10
+
+### Changed
+
+- Social preview image: dedicated footer band with **Gothic Lock Breaker** title and **Break the Lock** CTA, Cinzel typography, and anchor-based alignment (1200×630).
+- Added `scripts/generate-og-image.py`, `assets/og-screenshot-source.png`, and bundled Cinzel font for reproducible OG image builds.
+
 ## [1.11.4] - 2026-06-10
 
 ### Changed
