@@ -1,10 +1,11 @@
-import { StorageKeys } from "./storage-keys.js";
+import { StorageKeys, StorageFlag } from "./storage-keys.js";
 import { OnboardingAction, OnboardingStepId } from "./analytics/values.js";
+import { t } from "./i18n.js";
 
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 const TARGET_LOWER_RATIO = 0.45;
-const ESTIMATED_CARD_HEIGHT = 220;
+const FALLBACK_CARD_HEIGHT = 220;
 
 export function createSolveCoachmark({ onStepViewed, onDismissed }) {
   let backdrop;
@@ -16,7 +17,7 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
 
   function isSeen() {
     try {
-      return localStorage.getItem(StorageKeys.SOLVE_COACHMARK_SEEN) === "1";
+      return localStorage.getItem(StorageKeys.SOLVE_COACHMARK_SEEN) === StorageFlag.SET;
     } catch {
       return false;
     }
@@ -24,7 +25,7 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
 
   function markSeen() {
     try {
-      localStorage.setItem(StorageKeys.SOLVE_COACHMARK_SEEN, "1");
+      localStorage.setItem(StorageKeys.SOLVE_COACHMARK_SEEN, StorageFlag.SET);
     } catch {
       // ignore
     }
@@ -32,6 +33,11 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
 
   function isMobile() {
     return window.matchMedia(MOBILE_MEDIA).matches;
+  }
+
+  function measuredCardHeight() {
+    const card = cardHost?.querySelector(".onboarding-card");
+    return card ? card.offsetHeight + 24 : FALLBACK_CARD_HEIGHT;
   }
 
   function targetNeedsTopCard(target) {
@@ -58,7 +64,8 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
   }
 
   function mobileScrollMargins(cardAtTop) {
-    const topReserve = cardAtTop ? ESTIMATED_CARD_HEIGHT + 24 : 12;
+    const reserve = measuredCardHeight();
+    const topReserve = cardAtTop ? reserve : 12;
     return { topReserve, bottomReserve: 24 };
   }
 
@@ -110,6 +117,16 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
 
     document.body.append(backdrop, cardHost);
     return cardHost;
+  }
+
+  function buildCard() {
+    const card = document.createElement("div");
+    card.className = "onboarding-card";
+    card.innerHTML = `
+      <h3 class="onboarding-title">${t("coachmark.title")}</h3>
+      <p class="onboarding-body">${t("coachmark.body")}</p>
+    `;
+    return card;
   }
 
   function removeLayers() {
@@ -178,13 +195,7 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
     clearMobileCardClasses();
     if (mobile) cardHost.classList.add("onboarding-card-host--mobile");
 
-    const card = document.createElement("div");
-    card.className = "onboarding-card";
-    card.innerHTML = `
-      <h3 class="onboarding-title">Lock mapped</h3>
-      <p class="onboarding-body">Tap Break the Lock to see the sequence.</p>
-    `;
-    host.replaceChildren(card);
+    host.replaceChildren(buildCard());
 
     await scrollTargetIntoView(solveBtn, cardAtTop);
 
@@ -203,5 +214,13 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
     backdrop.addEventListener("click", backdropListener, { once: true });
   }
 
-  return { show, dismissSilent, isActive: () => active };
+  return {
+    show,
+    dismissSilent,
+    isActive: () => active,
+    refreshCopy() {
+      if (!active || !cardHost) return;
+      cardHost.replaceChildren(buildCard());
+    },
+  };
 }

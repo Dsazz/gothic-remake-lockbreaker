@@ -1,0 +1,198 @@
+{
+  "seo": {
+    "title": "Gothic Lock Breaker — Edge-Safe G1 Remake Lock Solver",
+    "description": "Free edge-safe lockpicking solver for Gothic 1 Remake. Map plates and couplings for turn sequences that never grind pins.",
+    "ogImageAlt": "Gothic Lock Breaker solver showing tumbler mapping and a 3-turn lock sequence walkthrough"
+  },
+  "app": {
+    "srTitle": "Gothic Lock Breaker",
+    "definition": "Gothic Lock Breaker is a free browser solver for Gothic 1 Remake lockpicking puzzles. Unlike net-turn calculators, it uses edge-safe BFS to return only turn sequences that never grind a pin against the wall, with a step-by-step walkthrough.",
+    "bootError": "Could not load translations. The solver may not work correctly — try refreshing the page."
+  },
+  "section": {
+    "lock": "I · The Lock",
+    "tumblers": "II · Tumblers",
+    "sequence": "III · The Sequence"
+  },
+  "howto": {
+    "summary": "How to map your lock",
+    "step1": "Count the locks and pick the matching number above.",
+    "step2": "For each lock, set its starting hole (1 = wall, 4 = notch).",
+    "step3": "Turn that lock once in-game. Each other lock that moves — mark <strong>With</strong> (same way) or <strong>Against</strong> (opposite). With/Against apply to every turn direction for that pair.",
+    "step4": "<strong>Grinding</strong> means a pin hits wall 1 or 7 — not the same as an Against coupling.",
+    "subhead": "Lockpicking tier (Fingers, Old Camp)",
+    "tierNote1": "Training does <strong>not</strong> change how plates move on a legal turn — only mistake budget and (at Master) link removal after a broken pick.",
+    "tierNote2": "At <strong>Master</strong>, if you've snapped picks on this lock, set how many under <strong>I · The Lock</strong>, then tap <strong>Gone</strong> beside each dropped coupling on the tumbler cards before re-solving.",
+    "table": {
+      "tier": "Tier",
+      "wallMistakes": "Wall mistakes",
+      "onBreak": "On pick break",
+      "untrainedReset": "Lock resets",
+      "trainedKept": "Progress kept",
+      "masterKept": "Progress kept; one link removed"
+    },
+    "example": "Try Old Camp tower door",
+    "imgAlt": "In-game lock with five visible plates and pin holes along the top"
+  },
+  "panel": {
+    "tumblersNote": "Locks are numbered <strong>1 (front)</strong> to <strong>N (back)</strong>. Cards stack <strong>back at top, front at bottom</strong>, matching the in-game view. Hole <strong>4</strong> is the notch; holes <strong>1</strong> and <strong>7</strong> are walls."
+  },
+  "map": {
+    "lock1": "Lock 1 · front",
+    "notch": "Hole 4 · notch",
+    "lock6": "Lock 6 · back",
+    "turnOnce": "Turn once → watch which plates move"
+  },
+  "coupling": {
+    "with": "With",
+    "against": "Against",
+    "gone": "Gone",
+    "goneDone": "Gone ✓"
+  },
+  "mastery": {
+    "untrained": "Untrained",
+    "trained": "Trained",
+    "trainedCost": "Trained (10 LP + 100 ore)",
+    "master": "Master",
+    "masterCost": "Master (20 LP + 200 ore)",
+    "label": "Lockpicking tier",
+    "noteReset": "Lock resets on break.",
+    "noteKept": "Progress kept on break.",
+    "noteMasterExtra": " Each snapped pick removes one plate link.",
+    "note": "{mistakes} wall mistakes per pick. {reset} Plate movement is unchanged by training.{masterExtra}"
+  },
+  "controls": {
+    "breaksLabel": "Picks snapped on this lock",
+    "breaksFewer": "Fewer broken picks",
+    "breaksMore": "More broken picks",
+    "locksLabel": "Locks",
+    "wipeLock": "Wipe lock"
+  },
+  "breaks": {
+    "hintZero": "Only if you've already snapped picks on this lock: raise the count — each break drops one coupling in-game.",
+    "hintDone": "Removed links marked. Hit Break the Lock when your couplings and start holes are set.",
+    "hintProgress": "Tap Gone beside each coupling the game dropped ({removed} of {total})."
+  },
+  "tumbler": {
+    "lock": "Lock {n}",
+    "frontPlate": "front plate",
+    "backPlate": "back plate",
+    "startHole": "Start hole",
+    "turningMoves": "Turning this moves",
+    "holeAria": "Hole {hole}",
+    "couplingAria": "{lock} {coupling} coupling",
+    "goneAria": "Mark {lock} coupling as gone",
+    "goneUndoAria": "{lock} marked gone — tap to undo"
+  },
+  "legend": {
+    "wallLeft": "1 · wall",
+    "notch": "4 · notch",
+    "wallRight": "wall · 7"
+  },
+  "solve": {
+    "cta": "Break the Lock"
+  },
+  "nav": {
+    "next": "Next",
+    "back": "Back",
+    "done": "Done",
+    "backChevron": "‹ Back",
+    "nextChevron": "Next ›"
+  },
+  "direction": {
+    "left": "left",
+    "right": "right"
+  },
+  "move": {
+    "aria": "Lock {lock}, turn {dir}"
+  },
+  "solution": {
+    "blocked": "Set each lock's start hole and couplings first.",
+    "hintReady": "Lock mapped — crack it open.",
+    "hintMap": "Set each lock's start hole and couplings above, then crack it open.",
+    "oob": "A pin starts outside the frame (holes 1–7). Tap each pin's hole to fix starting positions.",
+    "noPath": "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.",
+    "openGuide": "Open guide",
+    "alreadyOpen": "Nothing to do — every pin already rests in the notch.",
+    "turnCountOne": "1 turn",
+    "turnCountMany": "{n} turns",
+    "showAll": "Show all {n} steps ▼",
+    "hideAll": "Hide full list ▲",
+    "lockOpen": "Lock open",
+    "sharedBanner": "Shared lock — sequence ready below.",
+    "shareText": "Copy link to share this exact lock.",
+    "shareBtn": "Share lock",
+    "shareCopied": "Copied!",
+    "dismiss": "Dismiss"
+  },
+  "sequence": {
+    "expand": "Expand",
+    "minimize": "Minimize",
+    "clear": "Clear"
+  },
+  "walkthrough": {
+    "lockOpen": "Lock open — every pin in the notch.",
+    "somethingOff": "Something off?",
+    "hideTips": "Hide tips",
+    "helpTitle": "Something off?",
+    "helpLead": "Usually a mapping issue, not your tier.",
+    "closeTips": "Close tips",
+    "mismatch1": "Re-check With/Against on each coupling — links are directional (column of the turned lock).",
+    "mismatch2": "If a step moves the wrong way, try the opposite direction label (game mirror).",
+    "mismatch3": "Confirm each lock's start hole matches in-game.",
+    "mismatch4": "Snapped picks? Set the count under Master, then tap Gone beside each dropped coupling."
+  },
+  "onboarding": {
+    "kicker": "{current} / {total}",
+    "skip": "Skip tour",
+    "footnote": "Full reference in How to map your lock below.",
+    "step1": {
+      "title": "Step 1 · Lockpicking tier",
+      "body": "Pick your Fingers training level. Default Untrained is fine. Training changes mistake budget only — not how plates move."
+    },
+    "step2": {
+      "title": "Step 2 · Count the locks",
+      "body": "Match the number of plates in the mechanism (4–7). Default is 6."
+    },
+    "step3": {
+      "title": "Step 3 · Starting holes",
+      "body": "Tap each pin's hole. 1 and 7 are walls; 4 is the notch (goal)."
+    },
+    "step4": {
+      "title": "Step 4 · Couplings",
+      "body": "In-game, turn this lock once. Each lock that moves — tap its chip to With or Against. Master: tap Gone beside a coupling after a snapped pick drops it."
+    }
+  },
+  "coachmark": {
+    "title": "Lock mapped",
+    "body": "Tap Break the Lock to see the sequence."
+  },
+  "confirm": {
+    "wipe": "Wipe the lock? Couplings, pins, mastery, and count will reset."
+  },
+  "aria": {
+    "copyOk": "Link copied to clipboard.",
+    "copyFail": "Could not copy link."
+  },
+  "footer": {
+    "issues": "Report an issue"
+  },
+  "support": {
+    "aria": "Optional tip on Ko-fi — helps cover support and upkeep. Solver stays free.",
+    "tooltip": "Toss an ore — keeps the solver free",
+    "cta": "Toss an ore",
+    "sub": "Keeps the solver free"
+  },
+  "i18nBanner": {
+    "text": "German, Polish, and Ukrainian are machine-translated and may be wrong.",
+    "link": "Open a GitHub issue and I'll fix it",
+    "dismiss": "Got it"
+  },
+  "locale": {
+    "switcher": "Language",
+    "en": "English",
+    "de": "German",
+    "pl": "Polish",
+    "ukr": "Ukrainian"
+  }
+}

@@ -137,6 +137,71 @@ button {
   z-index: 1;
 }
 
+.app-head-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  z-index: 1;
+}
+
+.app-head-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.app-head-lang {
+  flex-shrink: 0;
+}
+
+.locale-switcher {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  background: rgba(11, 12, 14, 0.55);
+  border: 1px solid var(--iron);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.locale-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.72;
+  transition: opacity 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+
+.locale-switcher-btn:hover,
+.locale-switcher-btn:focus-visible {
+  opacity: 1;
+  outline: none;
+}
+
+.locale-switcher-btn.is-active {
+  opacity: 1;
+  border-color: var(--bronze-deep);
+  box-shadow: 0 0 8px var(--bronze-glow);
+}
+
+.locale-flag {
+  width: 24px;
+  height: 16px;
+  display: block;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
 .app-head-support {
   position: absolute;
   top: 10px;
@@ -235,7 +300,83 @@ button {
 }
 
 .app-version-wrap {
-  margin: 8px 0 0;
+  margin: 0;
+}
+
+.i18n-toast-host {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 18;
+  width: min(100% - 24px, 40rem);
+  transform: translateX(-50%);
+}
+
+.i18n-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(233, 185, 105, 0.28);
+  background: rgba(18, 19, 22, 0.94);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+}
+
+.i18n-toast-text {
+  margin: 0;
+  flex: 1;
+  color: var(--parchment);
+  font-size: clamp(0.72rem, 2vw, 0.8rem);
+  line-height: 1.4;
+  text-align: left;
+}
+
+.i18n-toast-link {
+  color: var(--patina);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.i18n-toast-link:hover,
+.i18n-toast-link:focus-visible {
+  color: var(--parchment);
+}
+
+.i18n-ack-btn {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  margin-top: 1px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(233, 185, 105, 0.45);
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.i18n-ack-btn svg {
+  display: block;
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.i18n-ack-btn:hover,
+.i18n-ack-btn:focus-visible {
+  background: linear-gradient(180deg, var(--bronze-bright), var(--bronze-deep));
+  border-color: var(--bronze-bright);
+  color: var(--stone-sunken);
+  box-shadow: 0 0 10px var(--bronze-glow);
+  outline: none;
 }
 
 .app-version {
@@ -1095,10 +1236,13 @@ body.wt-help-open {
   background: linear-gradient(180deg, var(--bronze-bright), var(--bronze-deep));
   color: #160f04;
   font-family: var(--display);
-  font-size: 1.12rem;
+  font-size: clamp(0.95rem, 3.2vw, 1.12rem);
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: normal;
+  line-height: 1.25;
+  padding: 10px 12px;
   cursor: pointer;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 20px var(--bronze-glow), var(--bevel);
@@ -1180,9 +1324,12 @@ body.wt-help-open {
 
 .sequence-min-step {
   position: absolute;
-  bottom: calc(100% + 2px);
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
+  max-width: min(100%, 8rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--display);
   font-size: 0.85rem;
@@ -1982,6 +2129,7 @@ body.wt-help-open {
 
 .hash-banner-dismiss {
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .share-prompt-btn.is-copied {

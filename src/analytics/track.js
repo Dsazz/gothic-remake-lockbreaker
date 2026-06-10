@@ -1,7 +1,10 @@
 import { VERSION } from "../version.js";
-import { StorageKeys } from "../storage-keys.js";
+import { isDefaultLocale } from "../i18n.js";
+import { StorageKeys, StorageFlag } from "../storage-keys.js";
 import { Events } from "./events.js";
-import { OnboardingAction } from "./values.js";
+import { recordLocaleSwitch, seedLocaleEngagement } from "./locale-engagement.js";
+import { localeChangeDirection } from "./locale-metrics.js";
+import { LocaleChangeDirection, OnboardingAction } from "./values.js";
 import { registerSessionProperties, send } from "./transport.js";
 
 function baseProps(plateCount) {
@@ -30,13 +33,42 @@ function storageSet(key, value) {
 
 function firstSolveProps() {
   if (storageGet(StorageKeys.FIRST_SOLVE_TRACKED)) return {};
-  storageSet(StorageKeys.FIRST_SOLVE_TRACKED, "1");
+  storageSet(StorageKeys.FIRST_SOLVE_TRACKED, StorageFlag.SET);
   return { is_first_solve: true };
 }
 
-export function trackLanding({ landingType }) {
-  send(Events.LANDING, { landing_type: landingType, app_version: VERSION });
-  registerSessionProperties({ landing_type: landingType, app_version: VERSION });
+export function trackLanding({ landingType, locale, localeSource }) {
+  const props = {
+    landing_type: landingType,
+    locale,
+    locale_source: localeSource,
+    app_version: VERSION,
+  };
+  send(Events.LANDING, props);
+  registerSessionProperties({ landing_type: landingType, locale, app_version: VERSION });
+}
+
+export function trackLocaleResolved({ locale, localeSource }) {
+  send(Events.LOCALE_RESOLVED, {
+    locale,
+    locale_source: localeSource,
+    app_version: VERSION,
+  });
+  seedLocaleEngagement({ locale, localeSource });
+  const sessionProps = {
+    initial_locale: locale,
+    initial_locale_source: localeSource,
+    locale,
+    app_version: VERSION,
+  };
+  if (!isDefaultLocale(locale)) {
+    sessionProps.ever_used_translation = true;
+  }
+  registerSessionProperties(sessionProps);
+}
+
+export function trackI18nBannerShown({ locale }) {
+  send(Events.I18N_BANNER_SHOWN, { locale, app_version: VERSION });
 }
 
 export function trackSolveButtonClicked({ plateCount, lockReady, landingType }) {
@@ -170,4 +202,26 @@ export function trackStepMismatchClicked({ stepIndex, plateCount }) {
 
 export function trackSupportLinkClicked({ source }) {
   send(Events.SUPPORT_LINK_CLICKED, { source, app_version: VERSION });
+}
+
+export function trackLocaleChanged({ locale, previousLocale, source, switchCount }) {
+  const change_direction = localeChangeDirection({ locale, previousLocale });
+  send(Events.LOCALE_CHANGED, {
+    locale,
+    previous_locale: previousLocale,
+    source,
+    change_direction,
+    locale_switch_count: switchCount,
+    is_revert_to_default: change_direction === LocaleChangeDirection.TO_DEFAULT,
+    app_version: VERSION,
+  });
+  recordLocaleSwitch({ locale, changeDirection: change_direction });
+  const sessionPatch = { locale, app_version: VERSION };
+  if (change_direction === LocaleChangeDirection.TO_DEFAULT) {
+    sessionPatch.ever_reverted_to_default = true;
+  }
+  if (!isDefaultLocale(locale)) {
+    sessionPatch.ever_used_translation = true;
+  }
+  registerSessionProperties(sessionPatch);
 }

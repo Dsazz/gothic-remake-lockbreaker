@@ -13,6 +13,9 @@ import {
 } from "./domain.js";
 import { VERSION } from "./version.js";
 import * as view from "./view.js";
+import { initI18n, onLocaleChange, getLocale, getLocaleSource, DEFAULT_LOCALE, t } from "./i18n.js";
+import { applyStaticContent } from "./static-content.js";
+import { renderLocaleSwitcher } from "./locale-switcher.js";
 import { createOnboarding } from "./onboarding.js";
 import { createSolveCoachmark } from "./solve-coachmark.js";
 import {
@@ -21,10 +24,11 @@ import {
 } from "./solve-coachmark-schedule.js";
 import { oldCampExample } from "./examples.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
-import { StorageKeys } from "./storage-keys.js";
+import { StorageKeys, StorageFlag } from "./storage-keys.js";
 import {
   GuideSource,
   LandingType,
+  LocaleChangeSource,
   PromptKind,
   SolveFailureReason,
   SolveSource,
@@ -38,6 +42,8 @@ import {
   trackExampleLockLoaded,
   trackGuideOpened,
   trackLanding,
+  trackLocaleResolved,
+  trackI18nBannerShown,
   trackLockBecameMappable,
   trackLockCleared,
   trackOnboardingDismissed,
@@ -58,6 +64,8 @@ import {
   trackMasteryTierChanged,
   trackStepMismatchClicked,
   trackSupportLinkClicked,
+  trackLocaleChanged,
+  installLocaleEngagementTracking,
 } from "./analytics/index.js";
 
 const els = {
@@ -65,6 +73,7 @@ const els = {
   tumblers: document.getElementById("tumblers"),
   tumblersPanel: document.querySelector(".panel--tumblers"),
   sequencePanel: document.querySelector(".panel--sequence"),
+  i18nBanner: document.getElementById("i18n-banner"),
   hashBanner: document.getElementById("hash-banner"),
   sharePrompt: document.getElementById("share-prompt"),
   solution: document.getElementById("solution"),
@@ -72,6 +81,7 @@ const els = {
   guide: document.getElementById("how-to-map"),
   version: document.getElementById("app-version"),
   headSupport: document.getElementById("app-head-support"),
+  headLang: document.getElementById("app-head-lang"),
   foot: document.getElementById("app-foot"),
   ariaLive: document.getElementById("aria-live"),
 };
@@ -79,7 +89,6 @@ const els = {
 const store = createStore();
 
 let landingType = resolveLandingType(store.getState(), store.wasLoadedFromHash);
-trackLanding({ landingType });
 markVisited();
 installErrorCapture();
 
@@ -88,6 +97,10 @@ const onboarding = createOnboarding({
   onDismissed: (ctx) => {
     trackOnboardingDismissed(ctx);
     flushPendingSolveCoachmark();
+    queueMicrotask(() => {
+      renderLocaleChrome();
+      renderAll(store.getState());
+    });
   },
   onStarted: ({ totalSteps }) => trackTutorStarted({ totalSteps }),
   onNotShown: ({ reason }) => trackTutorNotShown({ reason }),
@@ -100,7 +113,10 @@ const onboarding = createOnboarding({
 
 const solveCoachmark = createSolveCoachmark({
   onStepViewed: ({ stepId }) => trackOnboardingStepViewed({ stepId }),
-  onDismissed: (ctx) => trackOnboardingDismissed(ctx),
+  onDismissed: (ctx) => {
+    trackOnboardingDismissed(ctx);
+    renderLocaleChrome();
+  },
 });
 
 // Transient UI state — the solution is derived, not part of the lock definition.
@@ -120,6 +136,10 @@ let wasMapped = isLockMapped(store.getState());
 let hashBannerVisible = shouldShowHashBanner(store.getState());
 let sharePromptVisible = false;
 let sharePromptTracked = false;
+let i18nBannerTracked = false;
+let lastI18nBannerVisible = null;
+let lastRenderedLocale = null;
+let localeSwitchCount = 0;
 let showMismatchTips = false;
 let pendingSolveCoachmark = false;
 
@@ -174,12 +194,19 @@ function resolveLandingType(state, wasLoadedFromHash) {
 }
 
 function markVisited() {
-  storageSet(StorageKeys.HAS_VISITED, "1");
+  storageSet(StorageKeys.HAS_VISITED, StorageFlag.SET);
 }
 
 function shouldShowHashBanner(state) {
   if (storageGet(StorageKeys.HASH_BANNER_DISMISSED)) return false;
   return store.wasLoadedFromHash && !isPristineDefault(state);
+}
+
+function shouldShowI18nBanner() {
+  if (storageGet(StorageKeys.I18N_BANNER_DISMISSED)) return false;
+  if (onboarding.isActive()) return false;
+  if (solveCoachmark.isActive()) return false;
+  return true;
 }
 
 function openGuide(source = GuideSource.MANUAL) {
@@ -263,6 +290,29 @@ function renderSolutionArea(state) {
   );
 }
 
+function renderLocaleChrome() {
+  view.renderVersionBadge(els.version, VERSION);
+  view.renderHeadSupport(els.headSupport, handlers);
+  renderLocaleSwitcher(els.headLang);
+  view.renderFooter(els.foot, VERSION, handlers);
+
+  const locale = getLocale();
+  const i18nBannerVisible = shouldShowI18nBanner();
+  const bannerDirty =
+    i18nBannerVisible !== lastI18nBannerVisible || locale !== lastRenderedLocale;
+
+  if (i18nBannerVisible && !i18nBannerTracked) {
+    i18nBannerTracked = true;
+    trackI18nBannerShown({ locale });
+  }
+
+  if (bannerDirty) {
+    lastI18nBannerVisible = i18nBannerVisible;
+    lastRenderedLocale = locale;
+    view.renderI18nBanner(els.i18nBanner, { visible: i18nBannerVisible }, handlers);
+  }
+}
+
 function renderAll(state) {
   const mapped = isLockMapped(state);
   const transition = advanceMappedTracking(wasMapped, mapped);
@@ -272,15 +322,13 @@ function renderAll(state) {
     flashSolveReady();
     trackLockBecameMappable({ plateCount: state.plateCount });
     handleSolveCoachmarkOnMapped(state);
+    renderLocaleChrome();
   }
 
-  view.renderVersionBadge(els.version, VERSION);
-  view.renderHeadSupport(els.headSupport, handlers);
   view.renderControls(els.controls, state, handlers);
   view.renderTumblers(els.tumblers, state, handlers, { pulse: tumblersPulse });
   view.renderSolveButton(els.solveBtn, { mapped, justEnabled: solveReadyFlash });
   renderSolutionArea(state);
-  view.renderFooter(els.foot, VERSION, handlers);
 }
 
 function invalidateSolution() {
@@ -316,7 +364,7 @@ async function copyShareUrl(url) {
 
 function showCopyFeedback() {
   copyCopied = true;
-  if (els.ariaLive) els.ariaLive.textContent = "Link copied to clipboard.";
+  if (els.ariaLive) els.ariaLive.textContent = t("aria.copyOk");
   renderAll(store.getState());
   clearTimeout(copyTimer);
   copyTimer = setTimeout(() => {
@@ -340,7 +388,7 @@ const handlers = {
     store.setPosition(plate, value);
   },
   onClearAll() {
-    if (!confirm("Wipe the lock? Couplings, pins, mastery, and count will reset.")) return;
+    if (!confirm(t("confirm.wipe"))) return;
     invalidateSolution();
     store.clearAll();
     hashBannerVisible = shouldShowHashBanner(store.getState());
@@ -354,7 +402,7 @@ const handlers = {
       trackShareLinkCopied({ plateCount });
       return true;
     } catch {
-      if (els.ariaLive) els.ariaLive.textContent = "Could not copy link.";
+      if (els.ariaLive) els.ariaLive.textContent = t("aria.copyFail");
       trackShareLinkCopyFailed({ plateCount });
       return false;
     }
@@ -428,9 +476,14 @@ const handlers = {
   },
   onDismissHashBanner() {
     hashBannerVisible = false;
-    storageSet(StorageKeys.HASH_BANNER_DISMISSED, "1");
+    storageSet(StorageKeys.HASH_BANNER_DISMISSED, StorageFlag.SET);
     trackPromptDismissed({ prompt: PromptKind.HASH_BANNER, plateCount: store.getState().plateCount });
     renderSolutionArea(store.getState());
+  },
+  onDismissI18nBanner() {
+    storageSet(StorageKeys.I18N_BANNER_DISMISSED, StorageFlag.SET);
+    trackPromptDismissed({ prompt: PromptKind.I18N_BANNER, plateCount: store.getState().plateCount });
+    renderLocaleChrome();
   },
   onOpenGuide() {
     openGuide(GuideSource.MANUAL);
@@ -490,7 +543,7 @@ function onSolve({ auto = false, solveSource = SolveSource.MANUAL } = {}) {
   }
 
   if (!mapped) {
-    blockedMessage = "Set each lock's start hole and couplings first.";
+    blockedMessage = t("solution.blocked");
     pulseTumblers();
     renderSolutionArea(state);
     return;
@@ -531,22 +584,72 @@ function onSolve({ auto = false, solveSource = SolveSource.MANUAL } = {}) {
   }
 }
 
-els.solveBtn.addEventListener("click", () => onSolve());
-store.subscribe(renderAll);
-renderAll(store.getState());
+let previousLocale = DEFAULT_LOCALE;
 
-if (store.wasLoadedFromHash && isLockMapped(store.getState())) {
-  onSolve({ auto: true, solveSource: SolveSource.HASH });
-} else if (landingType === LandingType.COLD) {
-  onboarding.start({ skip: false });
-} else {
-  const skipReason =
-    landingType === LandingType.HASH
-      ? TutorNotShownReason.HASH_LANDING
-      : TutorNotShownReason.RETURNING_USER;
-  onboarding.start({ skip: true, skipReason });
+function handleLocaleChange(locale) {
+  localeSwitchCount += 1;
+  trackLocaleChanged({
+    locale,
+    previousLocale,
+    source: LocaleChangeSource.SWITCHER,
+    switchCount: localeSwitchCount,
+  });
+  previousLocale = locale;
+  if (blockedMessage) blockedMessage = t("solution.blocked");
+  applyStaticContent();
+  onboarding.refreshStep();
+  solveCoachmark.refreshCopy();
+  renderLocaleChrome();
+  renderAll(store.getState());
 }
 
-document.getElementById("load-example-lock")?.addEventListener("click", () => {
-  handlers.onLoadExampleLock(oldCampExample());
+function wireApp() {
+  installLocaleEngagementTracking();
+  els.solveBtn.addEventListener("click", () => onSolve());
+  store.subscribe(renderAll);
+  renderAll(store.getState());
+
+  if (store.wasLoadedFromHash && isLockMapped(store.getState())) {
+    onSolve({ auto: true, solveSource: SolveSource.HASH });
+  } else if (landingType === LandingType.COLD) {
+    onboarding.start({ skip: false });
+  } else {
+    const skipReason =
+      landingType === LandingType.HASH
+        ? TutorNotShownReason.HASH_LANDING
+        : TutorNotShownReason.RETURNING_USER;
+    onboarding.start({ skip: true, skipReason });
+  }
+
+  document.getElementById("load-example-lock")?.addEventListener("click", () => {
+    handlers.onLoadExampleLock(oldCampExample());
+  });
+
+  renderLocaleChrome();
+}
+
+async function bootstrap() {
+  try {
+    await initI18n();
+  } catch (err) {
+    console.error("Gothic Lock Breaker failed to load translations", err);
+    if (els.ariaLive) {
+      els.ariaLive.textContent = t("app.bootError");
+    }
+  }
+
+  const locale = getLocale();
+  const localeSource = getLocaleSource();
+  trackLocaleResolved({ locale, localeSource });
+  trackLanding({ landingType, locale, localeSource });
+  previousLocale = locale;
+  applyStaticContent();
+  onLocaleChange(handleLocaleChange);
+  renderLocaleChrome();
+  wireApp();
+}
+
+bootstrap().catch((err) => {
+  console.error("Gothic Lock Breaker failed to start", err);
+  wireApp();
 });

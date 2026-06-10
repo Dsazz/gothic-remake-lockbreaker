@@ -24,4 +24,8 @@ export const Events = Object.freeze({
   MASTERY_TIER_CHANGED: "mastery_tier_changed",
   STEP_MISMATCH_CLICKED: "step_mismatch_clicked",
   SUPPORT_LINK_CLICKED: "support_link_clicked",
+  LOCALE_CHANGED: "locale_changed",
+  LOCALE_RESOLVED: "locale_resolved",
+  I18N_BANNER_SHOWN: "i18n_banner_shown",
+  LOCALE_SESSION_END: "locale_session_end",
 });

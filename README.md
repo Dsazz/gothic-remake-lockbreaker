@@ -22,7 +22,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.11.5-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.12.2-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -32,7 +32,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.11.5** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.12.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 </div>
 
@@ -144,7 +144,7 @@ Native ES modules. `app.js` is the only wiring layer; `store`, `solver`, and `vi
 
 ## Analytics
 
-Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, mapping milestones, solve funnel (with `solve_source`), walkthrough interaction, tutor/onboarding, share prompts, guide opens, and lock wipe. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, mapping milestones, solve funnel (with `solve_source`), walkthrough interaction, tutor/onboarding, share prompts, guide opens, lock wipe, and i18n (`locale_resolved`, `locale_changed`, `locale_session_end`, `i18n_banner_shown`, translation-feedback link clicks). Every session registers `initial_locale`, `locale`, and engagement flags after bootstrap. Use `locale_session_end` where `staying_on_translation = true` for users who kept a translation, or `reverted_to_default = true` / `locale_changed.change_direction = to_default` for switch-back-to-English. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
 ## Deploy your own
 

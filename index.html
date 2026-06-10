@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -97,12 +97,17 @@
       <header class="app-head">
         <div id="app-head-support" class="app-head-support" hidden></div>
         <h1 class="sr-only">Gothic Lock Breaker</h1>
-        <p class="app-definition">
-          Gothic Lock Breaker is a free browser solver for Gothic 1 Remake lockpicking
-          puzzles. Unlike net-turn calculators, it uses edge-safe BFS to return only turn
-          sequences that never grind a pin against the wall, with a step-by-step walkthrough.
-        </p>
-        <p id="app-version" class="app-version-wrap"></p>
+        <div class="app-head-body">
+          <p class="app-definition">
+            Gothic Lock Breaker is a free browser solver for Gothic 1 Remake lockpicking
+            puzzles. Unlike net-turn calculators, it uses edge-safe BFS to return only turn
+            sequences that never grind a pin against the wall, with a step-by-step walkthrough.
+          </p>
+          <div class="app-head-meta">
+            <div id="app-head-lang" class="app-head-lang"></div>
+            <p id="app-version" class="app-version-wrap"></p>
+          </div>
+        </div>
       </header>
 
       <div class="app-input">
@@ -228,6 +233,8 @@
 
       <footer id="app-foot" class="app-foot"></footer>
     </main>
+
+    <div id="i18n-banner" class="i18n-toast-host" hidden></div>
 
     <div id="aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 

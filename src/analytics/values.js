@@ -39,6 +39,7 @@ export const TutorNotShownReason = Object.freeze({
 export const PromptKind = Object.freeze({
   SHARE: "share",
   HASH_BANNER: "hash_banner",
+  I18N_BANNER: "i18n_banner",
 });
 
 export const GuideSource = Object.freeze({
@@ -49,6 +50,17 @@ export const GuideSource = Object.freeze({
 export const SupportSource = Object.freeze({
   HEADER_ORE: "header_ore",
   FOOTER_STRIP: "footer_strip",
+  I18N_BANNER: "i18n_banner",
+});
+
+export const LocaleChangeSource = Object.freeze({
+  SWITCHER: "switcher",
+});
+
+export const LocaleChangeDirection = Object.freeze({
+  TO_TRANSLATION: "to_translation",
+  TO_DEFAULT: "to_default",
+  BETWEEN_TRANSLATIONS: "between_translations",
 });
 
 export const WalkthroughDirection = Object.freeze({

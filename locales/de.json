@@ -1,0 +1,173 @@
+{
+  "seo": {
+    "title": "Gothic Lock Breaker — Kantensicherer G1 Remake Schloss-Solver",
+    "description": "Kostenloser kantensicherer Lockpicking-Solver für Gothic 1 Remake. Mappe Platten und Kupplungen für Drehfolgen, die Nadeln nie anschleifen.",
+    "ogImageAlt": "Gothic Lock Breaker Solver mit Tumblern und 3-Schritt-Walkthrough"
+  },
+  "app": {
+    "srTitle": "Gothic Lock Breaker",
+    "definition": "Gothic Lock Breaker ist ein kostenloser Browser-Solver für Lockpicking-Rätsel in Gothic 1 Remake. Anders als Netto-Dreh-Rechner nutzt er kantensichere BFS und liefert nur Drehfolgen, die eine Nadel nie gegen die Wand schleifen — mit Schritt-für-Schritt-Walkthrough.",
+    "bootError": "Übersetzungen konnten nicht geladen werden. Der Solver funktioniert möglicherweise nicht richtig — Seite neu laden."
+  },
+  "section": {
+    "lock": "I · Das Schloss",
+    "tumblers": "II · Tumbler",
+    "sequence": "III · Die Sequenz"
+  },
+  "howto": {
+    "summary": "Schloss abbilden",
+    "step1": "Zähle die Schlösser und wähle oben die passende Anzahl.",
+    "step2": "Setze für jedes Schloss die Startposition (1 = Wand, 4 = Kerbe).",
+    "step3": "Drehe dieses Schloss einmal im Spiel. Jedes andere Schloss, das sich bewegt — markiere <strong>With</strong> (gleiche Richtung) oder <strong>Against</strong> (entgegengesetzt). With/Against gelten für jede Drehrichtung dieses Paares.",
+    "step4": "<strong>Grinding</strong> bedeutet, eine Nadel trifft Wand 1 oder 7 — nicht dasselbe wie eine Against-Kupplung.",
+    "subhead": "Lockpicking-Stufe (Fingers, Altes Lager)",
+    "tierNote1": "Training ändert <strong>nicht</strong>, wie Platten sich bei einem legalen Zug bewegen — nur Fehlerbudget und (bei Master) Link-Entfernung nach gebrochenem Dietrich.",
+    "tierNote2": "Bei <strong>Master</strong>: Wenn du Dietriche auf diesem Schloss gebrochen hast, setze die Anzahl unter <strong>I · Das Schloss</strong>, dann tippe <strong>Gone</strong> neben jeder entfallenen Kupplung auf den Tumbler-Karten, bevor du erneut löst.",
+    "table": {
+      "tier": "Stufe",
+      "wallMistakes": "Wandfehler",
+      "onBreak": "Bei Dietrichbruch",
+      "untrainedReset": "Schloss wird zurückgesetzt",
+      "trainedKept": "Fortschritt bleibt",
+      "masterKept": "Fortschritt bleibt; ein Link entfernt"
+    },
+    "example": "Turmtür im Alten Lager ausprobieren",
+    "imgAlt": "Spiel-Schloss mit fünf sichtbaren Platten und Nadel-Löchern oben"
+  },
+  "panel": {
+    "tumblersNote": "Schlösser sind nummeriert <strong>1 (vorne)</strong> bis <strong>N (hinten)</strong>. Karten stapeln <strong>hinten oben, vorne unten</strong> — wie im Spiel. Loch <strong>4</strong> ist die Kerbe; Löcher <strong>1</strong> und <strong>7</strong> sind Wände."
+  },
+  "map": {
+    "lock1": "Schloss 1 · vorne",
+    "notch": "Loch 4 · Kerbe",
+    "lock6": "Schloss 6 · hinten",
+    "turnOnce": "Einmal drehen → beobachte welche Platten sich bewegen"
+  },
+  "mastery": {
+    "label": "Lockpicking-Stufe",
+    "noteReset": "Schloss wird bei Bruch zurückgesetzt.",
+    "noteKept": "Fortschritt bleibt bei Bruch.",
+    "noteMasterExtra": " Jeder gebrochene Dietrich entfernt eine Platten-Verbindung.",
+    "note": "{mistakes} Wandfehler pro Dietrich. {reset} Plattenbewegung ändert sich durch Training nicht.{masterExtra}"
+  },
+  "controls": {
+    "breaksLabel": "Gebrochene Dietriche an diesem Schloss",
+    "breaksFewer": "Weniger gebrochene Dietriche",
+    "breaksMore": "Mehr gebrochene Dietriche",
+    "locksLabel": "Schlösser",
+    "wipeLock": "Schloss löschen"
+  },
+  "breaks": {
+    "hintZero": "Nur wenn du bereits Dietriche an diesem Schloss gebrochen hast: erhöhe die Anzahl — jeder Bruch entfernt eine Kupplung im Spiel.",
+    "hintDone": "Entfernte Verbindungen markiert. Tippe Break the Lock, wenn Kupplungen und Startlöcher gesetzt sind.",
+    "hintProgress": "Tippe Gone neben jeder vom Spiel entfernten Kupplung ({removed} von {total})."
+  },
+  "tumbler": {
+    "lock": "Schloss {n}",
+    "frontPlate": "vordere Platte",
+    "backPlate": "hintere Platte",
+    "startHole": "Startloch",
+    "turningMoves": "Drehen bewegt",
+    "holeAria": "Loch {hole}",
+    "couplingAria": "{lock} {coupling} Kupplung",
+    "goneAria": "{lock} Kupplung als gone markieren",
+    "goneUndoAria": "{lock} als gone markiert — tippen zum Rückgängig"
+  },
+  "legend": {
+    "wallLeft": "1 · Wand",
+    "notch": "4 · Kerbe",
+    "wallRight": "Wand · 7"
+  },
+  "move": {
+    "aria": "Schloss {lock}, drehe {dir}"
+  },
+  "solution": {
+    "blocked": "Setze zuerst Startloch und Kupplungen für jedes Schloss.",
+    "hintReady": "Schloss abgebildet — öffne es.",
+    "hintMap": "Setze oben Startlöcher und Kupplungen, dann öffne das Schloss.",
+    "oob": "Eine Nadel startet außerhalb des Rahmens (Löcher 1–7). Tippe jedes Startloch zum Korrigieren.",
+    "noPath": "Kein sicherer Weg mit diesen Kupplungen. Prüfe With/Against auf jedem Chip oder öffne die Anleitung.",
+    "openGuide": "Anleitung öffnen",
+    "alreadyOpen": "Nichts zu tun — jede Nadel liegt bereits in der Kerbe.",
+    "turnCountOne": "1 Drehung",
+    "turnCountMany": "{n} Drehungen",
+    "showAll": "Alle {n} Schritte ▼",
+    "hideAll": "Liste ausblenden ▲",
+    "lockOpen": "Offen",
+    "sharedBanner": "Geteiltes Schloss — Sequenz unten bereit.",
+    "shareText": "Link kopieren, um dieses Schloss zu teilen.",
+    "shareBtn": "Schloss teilen",
+    "shareCopied": "Kopiert!",
+    "dismiss": "Schließen"
+  },
+  "sequence": {
+    "expand": "Erweitern",
+    "minimize": "Minimieren",
+    "clear": "Löschen"
+  },
+  "walkthrough": {
+    "lockOpen": "Schloss offen — jede Nadel in der Kerbe.",
+    "somethingOff": "Stimmt etwas nicht?",
+    "hideTips": "Tipps ausblenden",
+    "helpTitle": "Stimmt etwas nicht?",
+    "helpLead": "Meist ein Mapping-Problem, nicht deine Stufe.",
+    "closeTips": "Tipps schließen",
+    "mismatch1": "Prüfe With/Against an jeder Kupplung — Verbindungen sind richtungsabhängig (Spalte des gedrehten Schlosses).",
+    "mismatch2": "Bewegt sich ein Schritt falsch, probiere die entgegengesetzte Richtung (Spiegelung im Spiel).",
+    "mismatch3": "Bestätige, dass jedes Startloch dem Spiel entspricht.",
+    "mismatch4": "Dietriche gebrochen? Setze die Anzahl unter Master, dann Gone neben jeder entfallenen Kupplung."
+  },
+  "onboarding": {
+    "kicker": "{current} / {total}",
+    "skip": "Tour überspringen",
+    "footnote": "Vollständige Referenz unten unter Schloss abbilden.",
+    "step1": {
+      "title": "Schritt 1 · Lockpicking-Stufe",
+      "body": "Wähle dein Fingers-Training. Standard Untrained reicht. Training ändert nur das Fehlerbudget — nicht wie Platten sich bewegen."
+    },
+    "step2": {
+      "title": "Schritt 2 · Schlösser zählen",
+      "body": "Passe die Anzahl der Platten im Mechanismus an (4–7). Standard ist 6."
+    },
+    "step3": {
+      "title": "Schritt 3 · Startlöcher",
+      "body": "Tippe jedes Nadel-Loch. 1 und 7 sind Wände; 4 ist die Kerbe (Ziel)."
+    },
+    "step4": {
+      "title": "Schritt 4 · Kupplungen",
+      "body": "Drehe dieses Schloss einmal im Spiel. Jedes sich bewegende Schloss — tippe With oder Against. Master: tippe Gone neben einer Kupplung, nachdem ein Dietrich sie entfernt hat."
+    }
+  },
+  "coachmark": {
+    "title": "Schloss abgebildet",
+    "body": "Tippe Break the Lock für die Sequenz."
+  },
+  "confirm": {
+    "wipe": "Schloss löschen? Kupplungen, Nadeln, Stufe und Anzahl werden zurückgesetzt."
+  },
+  "aria": {
+    "copyOk": "Link in Zwischenablage kopiert.",
+    "copyFail": "Link konnte nicht kopiert werden."
+  },
+  "footer": {
+    "issues": "Problem melden"
+  },
+  "support": {
+    "aria": "Optionaler Tipp auf Ko-fi — unterstützt Wartung. Solver bleibt kostenlos.",
+    "tooltip": "Wirf ein Erz — hält den Solver kostenlos",
+    "cta": "Erz spenden",
+    "sub": "Hält den Solver kostenlos"
+  },
+  "i18nBanner": {
+    "text": "Diese Oberfläche ist maschinell übersetzt — Formulierungen können falsch oder holprig sein.",
+    "link": "Als GitHub-Issue melden, dann korrigiere ich es",
+    "dismiss": "Verstanden"
+  },
+  "locale": {
+    "switcher": "Sprache",
+    "en": "Englisch",
+    "de": "Deutsch",
+    "pl": "Polnisch",
+    "ukr": "Ukrainisch"
+  }
+}

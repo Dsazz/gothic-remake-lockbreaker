@@ -1,5 +1,7 @@
 export {
   trackLanding,
+  trackLocaleResolved,
+  trackI18nBannerShown,
   trackSolveButtonClicked,
   trackSolveResult,
   trackLockBecameMappable,
@@ -22,5 +24,7 @@ export {
   trackMasteryTierChanged,
   trackStepMismatchClicked,
   trackSupportLinkClicked,
+  trackLocaleChanged,
 } from "./track.js";
-export { installErrorCapture } from "./transport.js";
+export { installErrorCapture, sendOnPageHide } from "./transport.js";
+export { installLocaleEngagementTracking } from "./locale-engagement.js";

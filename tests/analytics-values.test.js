@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import { ONBOARDING_STEPS } from "../src/onboarding.js";
 import {
   LandingType,
+  LocaleChangeSource,
+  LocaleChangeDirection,
   OnboardingAction,
   OnboardingStepId,
   PromptKind,
@@ -14,10 +16,14 @@ import {
   WalkthroughDirection,
   WalkthroughUiAction,
 } from "../src/analytics/values.js";
-import { StorageKeys } from "../src/storage-keys.js";
+import { LocaleSource } from "../src/i18n.js";
+import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
 
 const FROZEN_MAPS = [
   LandingType,
+  LocaleSource,
+  LocaleChangeSource,
+  LocaleChangeDirection,
   SolveSource,
   SolveFailureReason,
   OnboardingStepId,
@@ -28,6 +34,7 @@ const FROZEN_MAPS = [
   WalkthroughDirection,
   WalkthroughUiAction,
   StorageKeys,
+  StorageFlag,
 ];
 
 function assertFrozenUnique(obj, label) {
@@ -41,6 +48,10 @@ test("analytics and storage value maps are frozen with unique string values", ()
   for (const obj of FROZEN_MAPS) {
     assertFrozenUnique(obj, obj === StorageKeys ? "StorageKeys" : "values map");
   }
+});
+
+test("SupportSource includes i18n banner", () => {
+  assert.equal(SupportSource.I18N_BANNER, "i18n_banner");
 });
 
 test("onboarding step ids align with OnboardingStepId (tour steps only)", () => {

@@ -1,39 +1,40 @@
-import { StorageKeys } from "./storage-keys.js";
+import { StorageKeys, StorageFlag } from "./storage-keys.js";
 import {
   OnboardingAction,
   OnboardingStepId,
   TutorNotShownReason,
 } from "./analytics/values.js";
+import { t } from "./i18n.js";
 
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 const TARGET_LOWER_RATIO = 0.45;
-const ESTIMATED_CARD_HEIGHT = 220;
+const FALLBACK_CARD_HEIGHT = 220;
 
 export const ONBOARDING_STEPS = [
   {
     id: OnboardingStepId.MASTERY_TIER,
     target: ".controls .mastery-row",
-    title: "Step 1 · Lockpicking tier",
-    body: "Pick your Fingers training level. Default Untrained is fine. Training changes mistake budget only — not how plates move.",
+    titleKey: "onboarding.step1.title",
+    bodyKey: "onboarding.step1.body",
   },
   {
     id: OnboardingStepId.PLATE_COUNT,
     target: ".controls .locks-row",
-    title: "Step 2 · Count the locks",
-    body: "Match the number of plates in the mechanism (4–7). Default is 6.",
+    titleKey: "onboarding.step2.title",
+    bodyKey: "onboarding.step2.body",
   },
   {
     id: OnboardingStepId.START_HOLES,
     target: ".tumbler-card:last-child .plate-holes",
-    title: "Step 3 · Starting holes",
-    body: "Tap each pin's hole. 1 and 7 are walls; 4 is the notch (goal).",
+    titleKey: "onboarding.step3.title",
+    bodyKey: "onboarding.step3.body",
   },
   {
     id: OnboardingStepId.COUPLINGS,
     target: ".tumbler-card:last-child .link-chip-row",
-    title: "Step 4 · Couplings",
-    body: "In-game, turn this lock once. Each lock that moves — tap its chip to With or Against. Master: tap Gone beside a coupling after a snapped pick drops it.",
+    titleKey: "onboarding.step4.title",
+    bodyKey: "onboarding.step4.body",
   },
 ];
 
@@ -54,9 +55,14 @@ export function createOnboarding({
   let active = false;
   let resizeTimer;
 
+  function measuredCardHeight() {
+    const card = cardHost?.querySelector(".onboarding-card");
+    return card ? card.offsetHeight + 24 : FALLBACK_CARD_HEIGHT;
+  }
+
   function isDismissed() {
     try {
-      return localStorage.getItem(StorageKeys.ONBOARDING_DISMISSED_V3) === "1";
+      return localStorage.getItem(StorageKeys.ONBOARDING_DISMISSED_V3) === StorageFlag.SET;
     } catch {
       return false;
     }
@@ -64,7 +70,7 @@ export function createOnboarding({
 
   function markDismissed() {
     try {
-      localStorage.setItem(StorageKeys.ONBOARDING_DISMISSED_V3, "1");
+      localStorage.setItem(StorageKeys.ONBOARDING_DISMISSED_V3, StorageFlag.SET);
     } catch {
       // ignore
     }
@@ -122,7 +128,8 @@ export function createOnboarding({
   }
 
   function mobileScrollMargins(cardAtTop) {
-    const topReserve = cardAtTop ? ESTIMATED_CARD_HEIGHT + 24 : 12;
+    const reserve = measuredCardHeight();
+    const topReserve = cardAtTop ? reserve : 12;
     return { topReserve, bottomReserve: 24 };
   }
 
@@ -231,42 +238,31 @@ export function createOnboarding({
     if (completed) onComplete?.();
   }
 
-  function renderStep() {
-    const step = STEPS[stepIndex];
-    if (!step) {
-      finish(true);
-      return;
-    }
-
-    document.querySelectorAll(".onboarding-target").forEach((node) => {
-      node.classList.remove("onboarding-target");
-    });
-
-    onStepViewed?.({ stepId: step.id });
-
-    const target = document.querySelector(step.target);
-    const host = ensureLayers();
-    const mobile = isMobile();
-
-    backdrop.hidden = false;
-    cardHost.hidden = false;
-    clearMobileCardClasses();
-    if (mobile) cardHost.classList.add("onboarding-card-host--mobile");
-
+  function buildCard(step) {
     const card = document.createElement("div");
     card.className = "onboarding-card";
+    const isFinal = stepIndex === STEPS.length - 1;
     card.innerHTML = `
-      <p class="onboarding-kicker">${stepIndex + 1} / ${STEPS.length}</p>
-      <h3 class="onboarding-title">${step.title}</h3>
-      <p class="onboarding-body">${step.body}</p>
+      <p class="onboarding-kicker">${t("onboarding.kicker", { current: stepIndex + 1, total: STEPS.length })}</p>
+      <h3 class="onboarding-title">${t(step.titleKey)}</h3>
+      <p class="onboarding-body">${t(step.bodyKey)}</p>
       <div class="onboarding-actions">
-        <button type="button" class="pill pill-ghost onboarding-skip">Skip tour</button>
-        <button type="button" class="pill pill-primary onboarding-next">${stepIndex === STEPS.length - 1 ? "Done" : "Next"}</button>
+        <button type="button" class="pill pill-ghost onboarding-skip">${t("onboarding.skip")}</button>
+        <button type="button" class="pill pill-primary onboarding-next">${isFinal ? t("nav.done") : t("nav.next")}</button>
       </div>
     `;
 
-    host.replaceChildren(card);
+    if (isFinal) {
+      const note = document.createElement("p");
+      note.className = "onboarding-footnote";
+      note.textContent = t("onboarding.footnote");
+      card.append(note);
+    }
 
+    return card;
+  }
+
+  function wireCard(card, step) {
     card.querySelector(".onboarding-skip").addEventListener("click", () => {
       onSkipped?.({ stepId: step.id, stepIndex, totalSteps: STEPS.length });
       finish(false);
@@ -278,21 +274,50 @@ export function createOnboarding({
       if (stepIndex >= STEPS.length) finish(true);
       else renderStep();
     });
+  }
+
+  function renderStep({ refreshOnly = false } = {}) {
+    const step = STEPS[stepIndex];
+    if (!step) {
+      finish(true);
+      return;
+    }
+
+    if (!refreshOnly) {
+      document.querySelectorAll(".onboarding-target").forEach((node) => {
+        node.classList.remove("onboarding-target");
+      });
+      onStepViewed?.({ stepId: step.id });
+    }
+
+    const target = document.querySelector(step.target);
+    const host = ensureLayers();
+    const mobile = isMobile();
+
+    backdrop.hidden = false;
+    cardHost.hidden = false;
+    if (!refreshOnly) {
+      clearMobileCardClasses();
+      if (mobile) cardHost.classList.add("onboarding-card-host--mobile");
+    }
+
+    const card = buildCard(step);
+    host.replaceChildren(card);
+    wireCard(card, step);
+
+    if (refreshOnly) return;
 
     if (target) {
       void applySpotlight(target, card);
-    }
-
-    if (stepIndex === STEPS.length - 1) {
-      const note = document.createElement("p");
-      note.className = "onboarding-footnote";
-      note.textContent = "Full reference in How to map your lock below.";
-      card.append(note);
     }
   }
 
   return {
     isActive: () => active,
+    refreshStep() {
+      if (!active) return;
+      renderStep({ refreshOnly: true });
+    },
     start({ skip = false, skipReason = TutorNotShownReason.RETURNING_USER } = {}) {
       if (skip) {
         onNotShown?.({ reason: skipReason });

@@ -15,6 +15,18 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/storage-keys.js");
   await import("../src/solve-coachmark.js");
   await import("../src/solve-coachmark-schedule.js");
+  await import("../src/i18n.js");
+  await import("../src/static-content.js");
+  await import("../src/locale-switcher.js");
+});
+
+test("footer links to GitHub issues", async () => {
+  const versionText = await readFile(join(root, "src/version.js"), "utf8");
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  assert.match(versionText, /GITHUB_ISSUES_URL/);
+  assert.doesNotMatch(versionText, /REDDIT_DISCUSS_URL/);
+  assert.match(viewText, /githubIssuesLink/);
+  assert.match(viewText, /footer\.issues/);
 });
 
 test("app defers solve coachmark until onboarding tour ends", async () => {
@@ -49,7 +61,7 @@ test("renderControls hides wipe until lock differs from default; share is banner
   assert.match(viewText, /isPristineDefault/);
   assert.match(viewText, /showLockActions/);
   assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
-  assert.match(viewText, /Wipe lock/);
+  assert.match(viewText, /controls\.wipeLock/);
   assert.doesNotMatch(viewText, /controls-share/);
   assert.match(viewText, /renderSharePrompt/);
   assert.match(appText, /sharePromptVisible && hasMoves/);
@@ -59,7 +71,7 @@ test("renderControls hides wipe until lock differs from default; share is banner
 test("walkthrough uses tertiary help trigger, not pill mismatch button", async () => {
   const text = await readFile(join(root, "src/view.js"), "utf8");
   assert.match(text, /wt-help-trigger/);
-  assert.match(text, /Something off\?/);
+  assert.match(text, /walkthrough\.somethingOff/);
   assert.match(text, /renderHelpOverlay/);
   assert.doesNotMatch(text, /wt-mismatch-btn/);
   assert.doesNotMatch(text, /This step doesn't match/);
@@ -81,4 +93,21 @@ test("index.html includes SEO metadata", async () => {
   assert.match(html, /app-definition/);
   assert.match(html, /https:\/\/gothiclockbreaker\.com\//);
   assert.doesNotMatch(html, /panel--faq/);
+});
+
+test("app bootstraps with catch and splits locale chrome from renderAll", async () => {
+  const appText = await readFile(join(root, "src/app.js"), "utf8");
+  const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
+  assert.match(appText, /bootstrap\(\)\.catch/);
+  assert.match(appText, /function renderLocaleChrome/);
+  assert.match(appText, /function wireApp/);
+  assert.match(appText, /solveCoachmark\.isActive\(\)/);
+  const renderAllStart = appText.indexOf("function renderAll(state)");
+  const renderAllEnd = appText.indexOf("function invalidateSolution");
+  const renderAllBody = appText.slice(renderAllStart, renderAllEnd);
+  assert.doesNotMatch(renderAllBody, /renderLocaleSwitcher/);
+  assert.doesNotMatch(renderAllBody, /renderFooter/);
+  assert.doesNotMatch(renderAllBody, /renderHeadSupport/);
+  assert.match(switcherText, /function mountLocaleSwitcher/);
+  assert.match(switcherText, /function updateLocaleSwitcher/);
 });

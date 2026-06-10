@@ -1,0 +1,174 @@
+{
+  "seo": {
+    "title": "Gothic Lock Breaker — Bezpieczny solver zamków G1 Remake",
+    "description": "Darmowy solver lockpickingu dla Gothic 1 Remake. Mapuj płytki i sprzężenia, by dostać sekwencję obrotów bez ścierania szpilek o ścianę.",
+    "ogImageAlt": "Solver Gothic Lock Breaker z mapowaniem i 3-krokowym przejściem sekwencji"
+  },
+  "app": {
+    "srTitle": "Gothic Lock Breaker",
+    "definition": "Gothic Lock Breaker to darmowy solver w przeglądarce do łamania zamków w Gothic 1 Remake. W przeciwieństwie do kalkulatorów netto-obrotów używa BFS bezpiecznego na krawędzi i zwraca tylko sekwencje, które nie ścierają szpilki o ścianę — z przejściem krok po kroku.",
+    "bootError": "Nie udało się wczytać tłumaczeń. Solver może nie działać poprawnie — odśwież stronę."
+  },
+  "section": {
+    "lock": "I · Zamek",
+    "tumblers": "II · Zapadki",
+    "sequence": "III · Sekwencja"
+  },
+  "howto": {
+    "summary": "Jak zmapować zamek",
+    "step1": "Policz zamki i wybierz odpowiednią liczbę powyżej.",
+    "step2": "Dla każdego zamka ustaw otwór startowy (1 = ściana, 4 = wycięcie).",
+    "step3": "Obróć ten zamek raz w grze. Każdy inny zamek, który się rusza — oznacz <strong>With</strong> (ten sam kierunek) lub <strong>Against</strong> (przeciwny). With/Against dotyczą każdego kierunku obrotu tej pary.",
+    "step4": "<strong>Grinding</strong> oznacza, że szpilka trafia w ścianę 1 lub 7 — to nie to samo co sprzężenie Against.",
+    "subhead": "Poziom lockpickingu (Fingers, Stary Obóz)",
+    "tierNote1": "Trening <strong>nie</strong> zmienia ruchu płytek przy legalnym obrocie — tylko budżet błędów i (na Master) usuwanie połączenia po złamanym wytrychu.",
+    "tierNote2": "Na <strong>Master</strong>: jeśli złamałeś wytrychy na tym zamku, ustaw liczbę pod <strong>I · Zamek</strong>, potem naciśnij <strong>Gone</strong> przy każdym usuniętym sprzężeniu na kartach zapadek przed ponownym rozwiązaniem.",
+    "table": {
+      "tier": "Poziom",
+      "wallMistakes": "Błędy przy ścianie",
+      "onBreak": "Po złamaniu wytrychu",
+      "untrainedReset": "Zamek się resetuje",
+      "trainedKept": "Postęp zachowany",
+      "masterKept": "Postęp zachowany; jedno połączenie usunięte"
+    },
+    "example": "Wypróbuj drzwi wieży w Starym Obozie",
+    "imgAlt": "Zamek w grze z pięcioma widocznymi płytkami i otworami szpilek u góry"
+  },
+  "panel": {
+    "tumblersNote": "Zamki są numerowane <strong>1 (przód)</strong> do <strong>N (tył)</strong>. Karty układają się <strong>tył u góry, przód u dołu</strong> — jak w grze. Otwór <strong>4</strong> to wycięcie; otwory <strong>1</strong> i <strong>7</strong> to ściany."
+  },
+  "map": {
+    "lock1": "Zamek 1 · przód",
+    "notch": "Otwór 4 · wycięcie",
+    "lock6": "Zamek 6 · tył",
+    "turnOnce": "Obróć raz → obserwuj które płytki się ruszają"
+  },
+  "mastery": {
+    "label": "Poziom lockpickingu",
+    "noteReset": "Zamek resetuje się po złamaniu.",
+    "noteKept": "Postęp zachowany po złamaniu.",
+    "noteMasterExtra": " Każdy złamany wytrych usuwa jedno połączenie płytek.",
+    "note": "Błędów przy ścianie do złamania wytrycha: {mistakes}. {reset} Ruch płytek nie zmienia się przez trening.{masterExtra}"
+  },
+  "controls": {
+    "breaksLabel": "Złamane wytrychy na tym zamku",
+    "breaksFewer": "Mniej złamanych wytrychów",
+    "breaksMore": "Więcej złamanych wytrychów",
+    "locksLabel": "Zamki",
+    "wipeLock": "Wyczyść zamek"
+  },
+  "breaks": {
+    "hintZero": "Tylko jeśli już złamałeś wytrychy na tym zamku: podnieś liczbę — każde złamanie usuwa jedno sprzężenie w grze.",
+    "hintDone": "Usunięte połączenia oznaczone. Naciśnij Break the Lock, gdy sprzężenia i starty są ustawione.",
+    "hintProgress": "Naciśnij Gone przy każdym sprzężeniu usuniętym przez grę ({removed} z {total})."
+  },
+  "tumbler": {
+    "lock": "Zamek {n}",
+    "frontPlate": "przednia płytka",
+    "backPlate": "tylna płytka",
+    "startHole": "Otwór startowy",
+    "turningMoves": "Obrót tego przesuwa",
+    "holeAria": "Otwór {hole}",
+    "couplingAria": "{lock} sprzężenie {coupling}",
+    "goneAria": "Oznacz sprzężenie {lock} jako gone",
+    "goneUndoAria": "{lock} oznaczony gone — naciśnij, by cofnąć"
+  },
+  "legend": {
+    "wallLeft": "1 · ściana",
+    "notch": "4 · wycięcie",
+    "wallRight": "ściana · 7"
+  },
+  "move": {
+    "aria": "Zamek {lock}, obrót {dir}"
+  },
+  "solution": {
+    "blocked": "Najpierw ustaw otwory startowe i sprzężenia każdego zamka.",
+    "hintReady": "Zamek zmapowany — otwórz go.",
+    "hintMap": "Ustaw otwory startowe i sprzężenia powyżej, potem otwórz zamek.",
+    "oob": "Szpilka startuje poza ramą (otwory 1–7). Naciśnij każdy otwór startowy, by poprawić.",
+    "noPath": "Brak bezpiecznej ścieżki przy tych sprzężeniach. Sprawdź With/Against na każdym chipie lub otwórz przewodnik.",
+    "openGuide": "Otwórz przewodnik",
+    "alreadyOpen": "Nic do zrobienia — każda szpilka już w wycięciu.",
+    "turnCountOne": "1 obrót",
+    "turnCountFew": "{n} obroty",
+    "turnCountMany": "{n} obrotów",
+    "showAll": "Pokaż wszystkie kroki ({n}) ▼",
+    "hideAll": "Ukryj listę ▲",
+    "lockOpen": "Otwarty",
+    "sharedBanner": "Udostępniony zamek — sekwencja gotowa poniżej.",
+    "shareText": "Skopiuj link, by udostępnić ten zamek.",
+    "shareBtn": "Udostępnij zamek",
+    "shareCopied": "Skopiowano!",
+    "dismiss": "Zamknij"
+  },
+  "sequence": {
+    "expand": "Rozwiń",
+    "minimize": "Minimalizuj",
+    "clear": "Wyczyść"
+  },
+  "walkthrough": {
+    "lockOpen": "Zamek otwarty — każda szpilka w wycięciu.",
+    "somethingOff": "Coś nie gra?",
+    "hideTips": "Ukryj wskazówki",
+    "helpTitle": "Coś nie gra?",
+    "helpLead": "Zwykle problem z mapowaniem, nie z poziomem.",
+    "closeTips": "Zamknij wskazówki",
+    "mismatch1": "Sprawdź With/Against przy każdym sprzężeniu — połączenia są kierunkowe (kolumna obracanego zamka).",
+    "mismatch2": "Jeśli krok idzie w złą stronę, spróbuj przeciwnej etykiety kierunku (lustro gry).",
+    "mismatch3": "Potwierdź, że otwór startowy każdego zamka zgadza się z grą.",
+    "mismatch4": "Złamane wytrychy? Ustaw liczbę na Master, potem Gone przy każdym usuniętym sprzężeniu."
+  },
+  "onboarding": {
+    "kicker": "{current} / {total}",
+    "skip": "Pomiń przewodnik",
+    "footnote": "Pełna referencja poniżej w Jak zmapować zamek.",
+    "step1": {
+      "title": "Krok 1 · Poziom lockpickingu",
+      "body": "Wybierz poziom treningu Fingers. Domyślny Untrained wystarczy. Trening zmienia tylko budżet błędów — nie ruch płytek."
+    },
+    "step2": {
+      "title": "Krok 2 · Policz zamki",
+      "body": "Dopasuj liczbę płytek w mechanizmie (4–7). Domyślnie 6."
+    },
+    "step3": {
+      "title": "Krok 3 · Otwory startowe",
+      "body": "Naciśnij otwór każdej szpilki. 1 i 7 to ściany; 4 to wycięcie (cel)."
+    },
+    "step4": {
+      "title": "Krok 4 · Sprzężenia",
+      "body": "W grze obróć ten zamek raz. Każdy zamek, który się rusza — naciśnij With lub Against. Master: naciśnij Gone przy sprzężeniu po złamaniu wytrychu."
+    }
+  },
+  "coachmark": {
+    "title": "Zamek zmapowany",
+    "body": "Naciśnij Break the Lock, by zobaczyć sekwencję."
+  },
+  "confirm": {
+    "wipe": "Wyczyścić zamek? Sprzężenia, szpilki, poziom i liczba zostaną zresetowane."
+  },
+  "aria": {
+    "copyOk": "Link skopiowany do schowka.",
+    "copyFail": "Nie udało się skopiować linku."
+  },
+  "footer": {
+    "issues": "Zgłoś problem"
+  },
+  "support": {
+    "aria": "Opcjonalny napiwek na Ko-fi — wspiera utrzymanie. Solver pozostaje darmowy.",
+    "tooltip": "Rzuć rudę — utrzymuje solver za darmo",
+    "cta": "Rzuć rudę",
+    "sub": "Utrzymuje solver za darmo"
+  },
+  "i18nBanner": {
+    "text": "Ten interfejs jest tłumaczeniem maszynowym — brzmienie może być nietrafne lub błędne.",
+    "link": "Zgłoś to na GitHubie, a poprawię",
+    "dismiss": "Rozumiem"
+  },
+  "locale": {
+    "switcher": "Język",
+    "en": "Angielski",
+    "de": "Niemiecki",
+    "pl": "Polski",
+    "ukr": "Ukraiński"
+  }
+}

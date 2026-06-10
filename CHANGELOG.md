@@ -8,6 +8,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.12.2] - 2026-06-10
+
+### Added
+
+- PostHog i18n instrumentation: `locale_resolved` (initial query/storage/default resolution), `i18n_banner_shown`, and `locale` + `locale_source` on `landing`; `locale_changed` includes `source: switcher`, `change_direction`, and `locale_switch_count`.
+- `locale_session_end` on page hide with `staying_on_translation` and `reverted_to_default` for retention vs revert analysis.
+- Session super-properties `initial_locale`, `initial_locale_source`, `ever_used_translation`, and `ever_reverted_to_default`.
+- `support_link_clicked` with `source: i18n_banner` for the translation-feedback GitHub link.
+- `Locale` constants in `src/i18n.js`; query `?lang=` persistence; canonical and `og:url` sync on locale switch; sitemap entries for localized URLs.
+
+### Changed
+
+- Locale switcher mounts once and updates in place (perf and keyboard focus).
+- Solve coachmark and onboarding defer the i18n translation banner until they finish.
+
+### Fixed
+
+- Bootstrap survives failed non-English catalog fetch (falls back to English UI).
+- `locale` session property now registers on bootstrap (after `initI18n`), not only on switcher click — deeplink and stored-locale sessions are segmentable from the first event.
+
+## [1.12.1] - 2026-06-10
+
+### Added
+
+- Ukrainian (`ukr`) locale: Tier C prose, UA flag in header switcher, `hreflang` and SEO meta (`?lang=ukr`).
+
+## [1.12.0] - 2026-06-10
+
+### Added
+
+- Hybrid i18n (v1): German and Polish Tier C prose; English frozen for compact UI chips (`With` / `Against` / `Gone`, solve CTA, nav, mastery pills, turn labels).
+- Header language switcher with inline SVG flags (GB / DE / PL); opt-in only — English default, no browser auto-detect.
+- `locales/en.json`, `locales/de.json`, `locales/pl.json`; `src/i18n.js`, `src/static-content.js`, `src/locale-switcher.js`.
+- Dynamic SEO meta and `hreflang` alternates on locale switch (`en-GB` / `de` / `pl` on `<html lang>`).
+- PostHog `locale_changed` event and `locale` session property.
+
+### Changed
+
+- Footer **Discuss on Reddit** replaced with **Report an issue** (GitHub Issues).
+- Onboarding and solve coachmark use measured card height for mobile scroll margins.
+- Solve button and sequence minimap label CSS hardened for longer translated copy.
+
 ## [1.11.5] - 2026-06-10
 
 ### Changed

@@ -27,6 +27,19 @@ export function send(event, properties) {
   window.posthog?.capture?.(event, properties);
 }
 
+export function sendOnPageHide(event, properties) {
+  if (window.posthog?.capture) {
+    window.posthog.capture(event, properties);
+    return;
+  }
+  if (typeof navigator.sendBeacon !== "function") return;
+  const payload = JSON.stringify({
+    event,
+    properties: { ...properties, $lib: "web" },
+  });
+  navigator.sendBeacon("/ingest/e/", payload);
+}
+
 export function registerSessionProperties(properties) {
   window.posthog?.register?.(properties);
 }
