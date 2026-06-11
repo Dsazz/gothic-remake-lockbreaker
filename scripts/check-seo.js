@@ -43,7 +43,6 @@ const changelog = read("CHANGELOG.md");
 const sitemap = read("sitemap.xml");
 
 const pressPcGames = pressUrlFromModule(versionSource, "PRESS_PCGAMES_URL");
-const pressBuffed = pressUrlFromModule(versionSource, "PRESS_BUFFED_URL");
 const { date: changelogDate } = latestChangelogDate(changelog);
 
 const failures = [];
@@ -54,9 +53,6 @@ for (const [label, content] of [
 ]) {
   if (!content.includes(pressPcGames)) {
     failures.push(`${label} missing PRESS_PCGAMES_URL`);
-  }
-  if (!content.includes(pressBuffed)) {
-    failures.push(`${label} missing PRESS_BUFFED_URL`);
   }
 }
 

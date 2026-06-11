@@ -22,7 +22,6 @@ import { GuideSource, SolveFailureReason, SupportSource } from "./analytics/valu
 import {
   CHANGELOG_URL,
   GITHUB_ISSUES_URL,
-  PRESS_BUFFED_URL,
   PRESS_PCGAMES_URL,
   SUPPORT_URL,
 } from "./version.js";
@@ -1060,8 +1059,6 @@ function pressMentionsLine() {
   return el("p", { class: "app-foot-press" }, [
     el("span", { text: `${t("press.featured")} ` }),
     pressLink(PRESS_PCGAMES_URL, "press.pcgames"),
-    el("span", { class: "app-foot-sep", text: " · ", "aria-hidden": "true" }),
-    pressLink(PRESS_BUFFED_URL, "press.buffed"),
   ]);
 }
 
