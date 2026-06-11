@@ -103,21 +103,13 @@ export function createOnboarding({
     return cardHost;
   }
 
-  function clearMobileCardClasses() {
-    cardHost?.classList.remove("onboarding-card-host--mobile", "onboarding-card-host--mobile-top");
-    document.body.classList.remove("onboarding-card-at-top", "onboarding-card-at-bottom");
-  }
-
   function targetNeedsTopCard(target) {
     const rect = target.getBoundingClientRect();
     return rect.top >= window.innerHeight * TARGET_LOWER_RATIO;
   }
 
-  function updateMobileCardPlacement(target) {
-    if (!cardHost || !isMobile()) {
-      clearMobileCardClasses();
-      return;
-    }
+  function updateCardPlacement(target) {
+    if (!cardHost) return;
 
     const cardAtTop = targetNeedsTopCard(target);
     cardHost.classList.add("onboarding-card-host--mobile");
@@ -167,27 +159,23 @@ export function createOnboarding({
     });
   }
 
-  async function applySpotlight(target, card) {
-    const mobile = isMobile();
-    let cardAtTop = false;
+  async function applySpotlight(step, card) {
+    let target = document.querySelector(step.target);
+    if (!target) return;
 
-    if (mobile) {
-      cardAtTop = targetNeedsTopCard(target);
-      updateMobileCardPlacement(target);
-    } else {
-      clearMobileCardClasses();
-    }
+    const cardAtTop = targetNeedsTopCard(target);
+    updateCardPlacement(target);
 
-    backdrop.hidden = true;
     await scrollTargetIntoView(target, cardAtTop);
 
-    if (mobile) {
-      updateMobileCardPlacement(target);
-    }
+    target = document.querySelector(step.target);
+    if (!target) return;
 
+    updateCardPlacement(target);
+    backdrop.hidden = false;
     target.classList.add("onboarding-target");
 
-    const cleanup = () => target.classList.remove("onboarding-target");
+    const cleanup = () => document.querySelector(step.target)?.classList.remove("onboarding-target");
     card.querySelector(".onboarding-skip").addEventListener("click", cleanup, { once: true });
     card.querySelector(".onboarding-next").addEventListener("click", cleanup, { once: true });
   }
@@ -200,16 +188,11 @@ export function createOnboarding({
 
     const target = document.querySelector(step.target);
     if (target?.classList.contains("onboarding-target")) {
-      updateMobileCardPlacement(target);
+      updateCardPlacement(target);
       return;
     }
 
-    if (isMobile()) {
-      cardHost?.classList.add("onboarding-card-host--mobile");
-      cardHost?.classList.remove("onboarding-card-host--mobile-top");
-    } else {
-      clearMobileCardClasses();
-    }
+    if (target) updateCardPlacement(target);
   }
 
   function onResize() {
@@ -288,13 +271,11 @@ export function createOnboarding({
 
     const target = document.querySelector(step.target);
     const host = ensureLayers();
-    const mobile = isMobile();
 
     backdrop.hidden = false;
     cardHost.hidden = false;
-    if (!refreshOnly) {
-      clearMobileCardClasses();
-      if (mobile) cardHost.classList.add("onboarding-card-host--mobile");
+    if (!refreshOnly && target) {
+      updateCardPlacement(target);
     }
 
     const card = buildCard(step);
@@ -304,7 +285,7 @@ export function createOnboarding({
     if (refreshOnly) return;
 
     if (target) {
-      void applySpotlight(target, card);
+      void applySpotlight(step, card);
     }
   }
 

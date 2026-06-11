@@ -1,0 +1,28 @@
+---
+description: Release ritual when editing version, changelog, or SEO deploy files
+globs: "{src/version.js,CHANGELOG.md,README.md,llms.txt,sitemap.xml}"
+alwaysApply: false
+---
+
+# App release files
+
+These files must stay in sync. Full workflow: [.cursor/skills/app-release/SKILL.md](../skills/app-release/SKILL.md).
+
+**Required on every release**
+
+1. `src/version.js` — `VERSION` (source of truth)
+2. `CHANGELOG.md` — top `## [X.Y.Z] - YYYY-MM-DD` entry
+3. `README.md` — `Current release: vX.Y.Z` **and** shields version badge
+
+**When SEO-relevant**
+
+4. `llms.txt` — `## Last updated` date matches changelog
+5. `sitemap.xml` — `<lastmod>` dates match changelog
+
+**Before finishing**
+
+```bash
+make lint && make test
+```
+
+One commit per release. Do not commit unless the user asks.

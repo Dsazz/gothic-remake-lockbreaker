@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": "node .cursor/hooks/verify.mjs",
+        "loop_limit": 3,
+        "timeout": 300
+      }
+    ]
+  }
+}

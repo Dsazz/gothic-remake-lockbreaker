@@ -962,7 +962,7 @@ export function renderHelpOverlay({ visible, state }, handlers) {
   });
 }
 
-function renderWalkthrough(walkthrough, state, handlers, ui = {}) {
+function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
   const { states, stepIndex, move } = walkthrough;
   const board = states[stepIndex];
 
@@ -1046,16 +1046,6 @@ function versionLink(version) {
   });
 }
 
-function githubIssuesLink() {
-  return el("a", {
-    class: "app-foot-link",
-    href: GITHUB_ISSUES_URL,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    text: t("footer.issues"),
-  });
-}
-
 function pressLink(url, labelKey) {
   return el("a", {
     class: "app-foot-link",
@@ -1072,6 +1062,39 @@ function pressMentionsLine() {
     pressLink(PRESS_PCGAMES_URL, "press.pcgames"),
     el("span", { class: "app-foot-sep", text: " · ", "aria-hidden": "true" }),
     pressLink(PRESS_BUFFED_URL, "press.buffed"),
+  ]);
+}
+
+const FOOTER_FAQ_KEYS = [
+  ["footer.faq.q1", "footer.faq.a1"],
+  ["footer.faq.q2", "footer.faq.a2"],
+  ["footer.faq.q3", "footer.faq.a3"],
+];
+
+function footerIssuesLink() {
+  return el("a", {
+    class: "app-version",
+    href: GITHUB_ISSUES_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    text: t("footer.issues"),
+  });
+}
+
+function footerFaq() {
+  return el("details", { class: "app-foot-faq" }, [
+    el("summary", { text: t("footer.faqSummary") }),
+    el("dl", { class: "app-foot-faq-list" }, FOOTER_FAQ_KEYS.flatMap(([qKey, aKey]) => [
+      el("dt", { text: t(qKey) }),
+      el("dd", { text: t(aKey) }),
+    ])),
+  ]);
+}
+
+function footerUtility(version) {
+  return el("nav", { class: "app-foot-utility" }, [
+    versionLink(version),
+    footerIssuesLink(),
   ]);
 }
 
@@ -1127,12 +1150,13 @@ export function renderVersionBadge(container, version) {
 
 export function renderFooter(container, version, handlers) {
   container.replaceChildren(
-    supportStrip(handlers),
-    pressMentionsLine(),
-    el("p", { class: "app-foot-meta" }, [
-      versionLink(version),
-      el("span", { class: "app-foot-sep", text: " · ", "aria-hidden": "true" }),
-      githubIssuesLink(),
+    el("div", { class: "app-foot-stack" }, [
+      el("div", { class: "app-foot-band" }, [
+        supportStrip(handlers),
+        pressMentionsLine(),
+        footerFaq(),
+        footerUtility(version),
+      ]),
     ]),
   );
 }

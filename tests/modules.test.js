@@ -17,6 +17,9 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/solve-coachmark-schedule.js");
   await import("../src/i18n.js");
   await import("../src/static-content.js");
+  await import("../src/how-to-map-image.js");
+  await import("../src/onboarding-stub.js");
+  await import("../src/analytics/posthog-init.js");
   await import("../src/locale-switcher.js");
   await import("../src/locale-suggest.js");
   await import("../src/analytics/geo-hint.js");
@@ -36,10 +39,28 @@ test("footer links to GitHub issues and press coverage", async () => {
   assert.match(versionText, /PRESS_PCGAMES_URL/);
   assert.match(versionText, /PRESS_BUFFED_URL/);
   assert.doesNotMatch(versionText, /REDDIT_DISCUSS_URL/);
-  assert.match(viewText, /githubIssuesLink/);
+  assert.match(viewText, /footerIssuesLink/);
+  assert.match(viewText, /footerUtility/);
+  assert.match(viewText, /app-foot-stack/);
+  assert.match(viewText, /app-foot-band/);
+  assert.match(viewText, /app-foot-utility/);
   assert.match(viewText, /pressMentionsLine/);
+  assert.match(viewText, /footerFaq/);
+  assert.match(viewText, /footer\.faq\.q1/);
   assert.match(viewText, /footer\.issues/);
   assert.match(viewText, /press\.pcgames/);
+});
+
+test("tour opt-in start does not re-render controls and orphan step 1 spotlight", async () => {
+  const appText = await readFile(join(root, "src/app.js"), "utf8");
+  const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
+  const onStart = appText.slice(
+    appText.indexOf("onTutorOptInStart"),
+    appText.indexOf("onTutorOptInDismiss"),
+  );
+  assert.doesNotMatch(onStart, /renderAll\(store\.getState\(\)\)/);
+  assert.match(onStart, /renderTutorChip\(\)/);
+  assert.match(rendererText, /function renderTutorChip/);
 });
 
 test("app defers solve coachmark until onboarding tour ends", async () => {
@@ -113,10 +134,12 @@ test("walkthrough moving hole styles use thin-border glow without spread rings",
   assert.doesNotMatch(movingBlock, /0 0 0 2px/);
 });
 
-test("static-content.js does not hydrate footer press", async () => {
+test("static-content.js does not hydrate footer press or FAQ", async () => {
   const staticContentText = await readFile(join(root, "src/static-content.js"), "utf8");
   assert.doesNotMatch(staticContentText, /applyPressStaticContent/);
   assert.doesNotMatch(staticContentText, /PRESS_PCGAMES_URL/);
+  assert.doesNotMatch(staticContentText, /app-foot-faq/);
+  assert.doesNotMatch(staticContentText, /footer\.faq/);
 });
 
 test("index.html includes SEO metadata", async () => {
@@ -135,6 +158,13 @@ test("index.html includes SEO metadata", async () => {
   assert.match(html, /"featureList"/);
   assert.match(html, /beginner-friendly/i);
   assert.match(html, /https:\/\/gothiclockbreaker\.com\//);
+  assert.match(html, /Gothic Remake Lockbreaker/);
+  assert.match(html, /Gothic Remake Lock Breaker/);
+  assert.match(html, /lockpicking calculator/i);
+  assert.match(html, /Gothic Remake Lockbreaker[\s\S]*Gothic Remake Lock Breaker/);
+  assert.match(html, /hreflang="en"/);
+  assert.match(html, /hreflang="x-default"/);
+  assert.match(html, /app-foot-faq/);
   assert.doesNotMatch(html, /"FAQPage"/);
   assert.doesNotMatch(html, /panel--faq/);
   assert.doesNotMatch(html, /app-faq/);
@@ -154,7 +184,9 @@ test("README and llms.txt promote press, not Reddit in README", async () => {
   assert.match(llms, /## FAQ/);
   assert.match(llms, /beginner-friendly/i);
   assert.match(en.app.definition, /beginner-friendly/i);
-  assert.match(en.seo.title, /Beginner-Friendly/);
+  assert.match(en.app.definition, /Gothic Remake Lock Breaker/);
+  assert.match(en.seo.title, /Gothic Remake Lockbreaker/);
+  assert.match(en.seo.description, /lockpicking calculator/i);
   assert.match(llms, /reddit\.com/);
 });
 

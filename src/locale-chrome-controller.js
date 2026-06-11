@@ -158,6 +158,7 @@ export function createLocaleChromeController({
     view.renderHeadSupport(els.headSupport, handlers);
     renderLocaleSwitcher(els.headLang);
     view.renderFooter(els.foot, VERSION, handlers);
+    applyStaticContent();
 
     const { locale, localeSuggestVisible, localeSuggestHint, i18nBannerVisible } = tracking;
     const bannerDirty =
@@ -192,7 +193,6 @@ export function createLocaleChromeController({
     });
     previousLocale = locale;
     solve.onLocaleChangeRefresh();
-    applyStaticContent();
     onboarding.refreshStep();
     solveCoachmark.refreshCopy();
     onRenderLocaleChrome();

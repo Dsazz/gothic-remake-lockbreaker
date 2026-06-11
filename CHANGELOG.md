@@ -8,6 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.15.0] - 2026-06-11
+
+### Added
+
+- Vite 6 production build (`vite build` → `dist/`) with separate chunks for onboarding and analytics.
+- GitHub Actions CI (Biome lint + tests) and Pages deploy workflow.
+- `public/` symlinks so dev and build serve `assets/`, `locales/`, and root static files.
+- Self-hosted Cinzel WOFF2 fonts — no Google Fonts round trip on first load.
+- Lazy onboarding how-to image (WebP) via `src/how-to-map-image.js`.
+- `src/onboarding-stub.js` — placeholder until the onboarding chunk loads on cold landing.
+- `src/analytics/posthog-init.js` — PostHog stub + deferred SDK load after first paint.
+- Footer FAQ (`<details>`) with three common questions in en/de/pl/ukr.
+- `hreflang` alternates for en, de, pl, uk, and x-default.
+- `AGENTS.md`, Cursor rule, and `stop` hook (`make lint && make test` after agent turns).
+- Biome linter (`biome.json`) replacing ESLint.
+
+### Changed
+
+- SEO title and meta repositioned as **Gothic Remake Lockbreaker — Free Lockpicking Calculator**; JSON-LD `alternateName` for Gothic Remake Lockbreaker / Gothic Remake Lock Breaker.
+- `llms.txt` branding aligned with Gothic Remake Lock Breaker naming.
+- English locale bundled in `i18n.js`; de/pl/ukr still fetched on demand.
+- Analytics and onboarding load via dynamic `import()` after first render.
+- Footer layout: support strip, press mentions, FAQ, then version and issues.
+- `Makefile`: `dev`, `build`, `preview`, `clean`; README updated for Vite workflow.
+- Deploy docs: GitHub Pages source must be **GitHub Actions**, not branch root.
+
+### Removed
+
+- ESLint and `eslint.config.js`.
+
 ## [1.14.3] - 2026-06-11
 
 ### Added

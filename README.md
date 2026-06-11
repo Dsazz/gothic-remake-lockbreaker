@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.14.3-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.15.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.14.3** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.15.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
@@ -120,17 +120,21 @@ links to the changelog.
 
 ## Running locally
 
-Plain static files — no build step. Run `make install` once for the local dev server.
-The page loads Cinzel from Google Fonts; everything else is self-contained.
+Vite bundles the app for production; day-to-day work uses the Vite dev server. Cinzel is self-hosted (no Google Fonts round trip).
+
+Agent instructions: [AGENTS.md](AGENTS.md).
 
 ```bash
 make install        # first time only
-make serve          # http://localhost:8000
+make dev            # http://localhost:5173
+make lint
 make test
 make check-version
+make build          # output in dist/
+make preview        # build + preview dist/
 ```
 
-Override the port with `make serve PORT=3000`. Run `make` with no args to list targets.
+Override the dev port with `npm run dev -- --port 3000`. Run `make` with no args to list targets.
 
 ## Architecture
 
@@ -148,7 +152,7 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 | `src/lock-controller.js` | Lock mutation handlers; invalidates solve session on change. |
 | `src/locale-chrome-controller.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
 | `src/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
-| `src/analytics/` | Product analytics facade; PostHog wired only in `transport.js`, init in `index.html`. |
+| `src/analytics/` | Product analytics facade; PostHog init in `posthog-init.js`, transport in `transport.js`. |
 | `src/version.js` | Release version and changelog URL for the footer badge. |
 | `index.html`, `styles.css` | Shell and theme. |
 
@@ -159,12 +163,9 @@ Production builds send **anonymous** usage data to [PostHog EU](https://eu.posth
 ## Deploy your own
 
 1. Push to `main`.
-2. **Settings → Pages → Build and deployment**: source **Deploy from a branch**,
-   branch **`main`**, folder **`/ (root)`**.
-3. Default URL: `https://<your-user>.github.io/<repo>/`.
-4. Optional custom domain: add a root `CNAME` file, set **Custom domain** in Pages
-   settings, and point DNS (A records to GitHub Pages IPs for apex, CNAME `www` to
-   `<user>.github.io`). Live site: [gothiclockbreaker.com](https://gothiclockbreaker.com/).
+2. **Settings → Pages → Build and deployment**: source **GitHub Actions** (workflow `[.github/workflows/deploy.yml](.github/workflows/deploy.yml)`).
+3. CI (lint + test) runs on every push and PR; deploy builds `dist/` with Vite and publishes to Pages.
+4. Optional custom domain: root `CNAME` is copied into `dist/` at build time — set **Custom domain** in Pages settings and point DNS (A records to GitHub Pages IPs for apex, CNAME `www` to `<user>.github.io`). Live site: [gothiclockbreaker.com](https://gothiclockbreaker.com/).
 
 ## License
 

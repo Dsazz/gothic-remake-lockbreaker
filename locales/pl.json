@@ -1,12 +1,12 @@
 {
   "seo": {
-    "title": "Gothic Lock Breaker — Solver zamków G1 Remake dla początkujących",
-    "description": "Przyjazny początkującym solver lockpickingu do Gothic 1 Remake z kompaktowym UI i przejściem krok po kroku. Bezpieczne sekwencje, darmowy, działa na telefonie.",
-    "ogImageAlt": "Solver Gothic Lock Breaker z mapowaniem i 3-krokowym przejściem sekwencji"
+    "title": "Gothic Remake Lockbreaker — Darmowy kalkulator lockpickingu",
+    "description": "Darmowy kalkulator lockpickingu do Gothic 1 Remake z przejściem krok po kroku. Bezpieczne sekwencje — wytrych się nie złamie. Działa na telefonie, bez konta.",
+    "ogImageAlt": "Solver Gothic Remake Lock Breaker z mapowaniem i 3-krokowym przejściem sekwencji"
   },
   "app": {
-    "srTitle": "Gothic Lock Breaker",
-    "definition": "Gothic Lock Breaker to darmowy, przyjazny początkującym solver w przeglądarce do łamania zamków w Gothic 1 Remake. Kompaktowy interfejs w trzech sekcjach mapuje płytki i sprzężenia, potem zwraca bezpieczne sekwencje krok po kroku — nie same netto-obroty.",
+    "srTitle": "Gothic Remake Lock Breaker",
+    "definition": "Gothic Remake Lock Breaker (Gothic Lock Breaker) to darmowy, przyjazny początkującym solver w przeglądarce do łamania zamków w Gothic 1 Remake. Kompaktowy interfejs w trzech sekcjach mapuje płytki i sprzężenia, potem zwraca bezpieczne sekwencje krok po kroku — nie same netto-obroty.",
     "bootError": "Nie udało się wczytać tłumaczeń. Solver może nie działać poprawnie — odśwież stronę."
   },
   "section": {
@@ -156,9 +156,6 @@
     "copyOk": "Link skopiowany do schowka.",
     "copyFail": "Nie udało się skopiować linku."
   },
-  "footer": {
-    "issues": "Zgłoś problem"
-  },
   "press": {
     "featured": "Wspomniane w",
     "pcgames": "PC Games",
@@ -181,5 +178,17 @@
     "de": "Niemiecki",
     "pl": "Polski",
     "ukr": "Ukraiński"
+  },
+  "footer": {
+    "issues": "Zgłoś problem",
+    "faqSummary": "Częste pytania",
+    "faq": {
+      "q1": "Czym jest Gothic Remake Lock Breaker?",
+      "a1": "Gothic Remake Lock Breaker to darmowy solver lockpickingu w przeglądarce do Gothic 1 Remake. Mapujesz początkowe otwory i sprzężenia (With/Against) każdej płytki, a narzędzie zwraca sekwencję obrotów krok po kroku, która otwiera zamek.",
+      "q2": "Czym różni się od kalkulatorów netto-obrotów?",
+      "a2": "Kalkulatory netto-obrotów podają tylko łączną liczbę obrotów na płytkę. Gothic Remake Lock Breaker szuka bezpiecznych sekwencji, które nie ścierają szpili o ściany 1 lub 7 — wytrych nie pęka w trakcie sekwencji.",
+      "q3": "Czy Gothic Remake Lock Breaker jest darmowy?",
+      "a3": "Tak — darmowy, bez konta, działa w każdej nowoczesnej przeglądarce, także na telefonie. Otwórz gothiclockbreaker.com obok gry, zmapuj zamek i podążaj za przejściem krok po kroku."
+    }
   }
 }

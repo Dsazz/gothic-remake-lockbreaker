@@ -7,7 +7,6 @@ import {
   MASTERY,
   DEFAULT_MASTERY_ID,
   createMatrix,
-  createPositions,
   createRemovedLinks,
 } from "../src/domain.js";
 

@@ -71,8 +71,8 @@ test("values.js defines failure guide source", async () => {
   assert.match(text, /FAILURE_NO_PATH/);
 });
 
-test("index.html uses lean PostHog init (quota-safe defaults)", async () => {
-  const text = await readFile(join(root, "index.html"), "utf8");
+test("posthog-init uses lean PostHog init (quota-safe defaults)", async () => {
+  const text = await readFile(join(root, "src/analytics/posthog-init.js"), "utf8");
   const leanFlags = [
     "autocapture: false",
     "capture_pageview: true",

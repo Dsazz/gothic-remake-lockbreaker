@@ -1,0 +1,27 @@
+---
+description: Gothic Lock Breaker src/ hard invariants (see AGENTS.md for architecture and boundaries)
+alwaysApply: true
+---
+
+# Gothic Lock Breaker — src hard invariants
+
+Architecture, commands, and boundaries: [AGENTS.md](../../AGENTS.md).
+
+## Bootstrap and performance
+
+- Defer analytics: `src/analytics/posthog-init.js` + dynamic `import("./analytics/index.js")` after first render
+- Lazy-load `onboarding.js` on cold landing only; use `onboarding-stub.js` for returning/hash users
+- English locale is bundled in `i18n.js`; other locales fetch `locales/*.json`
+
+## View and i18n
+
+- `view.js`: render only; handlers via arguments; **do not import `store.js`**
+- Tier C keys: all four locale files; respect `FROZEN_KEYS` in `i18n.js`
+- Use `t()` / `tCount()`; never hardcode copy in `view.js` for localized surfaces
+
+## Analytics and assets
+
+- Events through `src/analytics/`; transport only in `transport.js`
+- Mobile-first; walkthrough grids use `minmax(0, 1fr)` — tests guard horizontal scroll
+- Static assets via `public/` symlinks; do not reintroduce `vite-plugin-static-copy`
+- Self-hosted Cinzel in `assets/fonts/`; no Google Fonts CDN

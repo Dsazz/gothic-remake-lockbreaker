@@ -24,5 +24,9 @@ export function createAppRenderer({ els, store, solve, onboarding, onRenderLocal
     solve.renderSolutionArea(state, handlers);
   }
 
-  return { render };
+  function renderTutorChip() {
+    view.renderTutorOptInChip(els.tutorOptIn, { visible: onboarding.isChipVisible() }, handlers);
+  }
+
+  return { render, renderTutorChip };
 }

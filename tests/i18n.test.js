@@ -111,6 +111,15 @@ test("Slavic plural forms follow CLDR one/few/many", () => {
   assert.equal(pluralForm(Locale.DE, 2), "many");
 });
 
+test("locale catalogs expose footer issues link and FAQ strings", async () => {
+  for (const code of SUPPORTED_LOCALES) {
+    const catalog = await loadLocale(code);
+    assert.ok(catalog.footer?.issues, `${code}.json missing footer.issues`);
+    assert.ok(catalog.footer?.faqSummary, `${code}.json missing footer.faqSummary`);
+    assert.ok(catalog.footer?.faq?.q1, `${code}.json missing footer.faq.q1`);
+  }
+});
+
 test("de pl ukr catalogs cover Tier C keys from English", async () => {
   const en = await loadLocale(Locale.EN);
   const translatedLocales = SUPPORTED_LOCALES.filter((code) => code !== Locale.EN);

@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 
 import {
   LINK,
-  CENTER,
   DEFAULT_PLATES,
   DEFAULT_MASTERY_ID,
   createMatrix,

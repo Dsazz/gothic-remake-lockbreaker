@@ -1,4 +1,5 @@
 import { StorageKeys } from "./storage-keys.js";
+import enCatalog from "../locales/en.json" with { type: "json" };
 
 export const Locale = Object.freeze({
   EN: "en",
@@ -61,7 +62,7 @@ const HREFLANG = Object.freeze({
 export const SITE_ORIGIN = "https://gothiclockbreaker.com";
 const SLAVIC_LOCALES = new Set([Locale.PL, Locale.UKR]);
 const catalogs = {
-  [Locale.EN]: null,
+  [Locale.EN]: enCatalog,
   [Locale.DE]: null,
   [Locale.PL]: null,
   [Locale.UKR]: null,
@@ -281,7 +282,6 @@ function notifyLocaleChange(locale, changeSource) {
 }
 
 export async function initI18n() {
-  await loadCatalog(DEFAULT_LOCALE);
   activeLocale = resolveInitialLocale();
 
   if (shouldPersistLocaleOnInit(localeSource)) {

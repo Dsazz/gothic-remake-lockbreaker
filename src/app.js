@@ -18,21 +18,11 @@ import {
   t,
 } from "./i18n.js";
 import { applyStaticContent } from "./static-content.js";
-import { createOnboarding } from "./onboarding.js";
+import { createOnboardingStub } from "./onboarding-stub.js";
 import { createSolveCoachmark } from "./solve-coachmark.js";
 import { oldCampExample } from "./examples.js";
+import { wireHowToMapImage } from "./how-to-map-image.js";
 import { LandingType, SolveSource, TutorNotShownReason } from "./analytics/values.js";
-import {
-  installErrorCapture,
-  installWebAnalyticsPresence,
-  trackLanding,
-  trackLocaleResolved,
-  trackOnboardingDismissed,
-  trackTutorNotShown,
-  trackTutorSkipped,
-  trackTutorStarted,
-  installLocaleEngagementTracking,
-} from "./analytics/index.js";
 
 const els = getAppElements();
 const uiPrefs = createUiPrefs();
@@ -44,8 +34,6 @@ const landingType = resolveLandingType(
   uiPrefs.hasVisited(),
 );
 uiPrefs.markVisited();
-installErrorCapture();
-installWebAnalyticsPresence();
 
 let handlers = {};
 const getHandlers = () => handlers;
@@ -56,89 +44,90 @@ let renderLocaleChrome = () => {};
 let locale;
 let solve;
 let renderer;
+let onboarding;
+const analyticsPromise = import("./analytics/index.js");
 
-const solveCoachmark = createSolveCoachmark({
-  onDismissed: (ctx) => {
-    trackOnboardingDismissed(ctx);
-    renderLocaleChrome();
-  },
-});
+function whenAnalytics(run) {
+  analyticsPromise.then(run).catch((err) => {
+    console.error("Gothic Lock Breaker analytics callback failed", err);
+  });
+}
 
-const onboarding = createOnboarding({
-  onDismissed: (ctx) => {
-    trackOnboardingDismissed(ctx);
-    solve.flushPendingCoachmark();
-    queueMicrotask(() => {
+async function loadOnboarding(callbacks) {
+  if (landingType !== LandingType.COLD) {
+    return createOnboardingStub(callbacks);
+  }
+  const { createOnboarding } = await import("./onboarding.js");
+  return createOnboarding(callbacks);
+}
+
+function initControllers() {
+  const solveCoachmark = createSolveCoachmark({
+    onDismissed: (ctx) => {
+      whenAnalytics((analytics) => analytics.trackOnboardingDismissed(ctx));
       renderLocaleChrome();
+    },
+  });
+
+  solve = createSolveController({
+    store,
+    els,
+    uiPrefs,
+    onboarding,
+    solveCoachmark,
+    landingType,
+    wasLoadedFromHash: store.wasLoadedFromHash,
+    getHandlers,
+    onRerender: () => renderAll(store.getState()),
+    onRenderSolutionArea: (state) => solve.renderSolutionArea(state, getHandlers()),
+  });
+
+  locale = createLocaleChromeController({
+    store,
+    els,
+    uiPrefs,
+    onboarding,
+    solveCoachmark,
+    solve,
+    onRenderLocaleChrome: () => renderLocaleChrome(),
+    onRerender: () => renderAll(store.getState()),
+  });
+
+  const lock = createLockController({ store, solve });
+
+  handlers = {
+    ...lock.handlers,
+    ...solve.handlers,
+    ...locale.handlers,
+    onTutorOptInStart() {
+      onboarding.startFromOptIn();
+      renderer.renderTutorChip();
+    },
+    onTutorOptInDismiss() {
+      onboarding.dismissOptInChip();
       renderAll(store.getState());
-    });
-  },
-  onStarted: ({ totalSteps }) => trackTutorStarted({ totalSteps }),
-  onNotShown: ({ reason }) => trackTutorNotShown({ reason }),
-  onSkipped: (ctx) => trackTutorSkipped(ctx),
-  onComplete: () => {
-    setTimeout(() => locale.openGuideOnboardingComplete(), 0);
-  },
-});
+      renderLocaleChrome();
+    },
+  };
 
-solve = createSolveController({
-  store,
-  els,
-  uiPrefs,
-  onboarding,
-  solveCoachmark,
-  landingType,
-  wasLoadedFromHash: store.wasLoadedFromHash,
-  getHandlers,
-  onRerender: () => renderAll(store.getState()),
-  onRenderSolutionArea: (state) => solve.renderSolutionArea(state, getHandlers()),
-});
+  renderLocaleChrome = () => {
+    const tracking = locale.syncTracking();
+    locale.render(getHandlers(), tracking);
+  };
 
-locale = createLocaleChromeController({
-  store,
-  els,
-  uiPrefs,
-  onboarding,
-  solveCoachmark,
-  solve,
-  onRenderLocaleChrome: () => renderLocaleChrome(),
-  onRerender: () => renderAll(store.getState()),
-});
-
-const lock = createLockController({ store, solve });
-
-handlers = {
-  ...lock.handlers,
-  ...solve.handlers,
-  ...locale.handlers,
-  onTutorOptInStart() {
-    onboarding.startFromOptIn();
-    renderAll(store.getState());
-  },
-  onTutorOptInDismiss() {
-    onboarding.dismissOptInChip();
-    renderAll(store.getState());
-    renderLocaleChrome();
-  },
-};
-
-renderLocaleChrome = () => {
-  const tracking = locale.syncTracking();
-  locale.render(getHandlers(), tracking);
-};
-
-renderer = createAppRenderer({
-  els,
-  store,
-  solve,
-  onboarding,
-  onRenderLocaleChrome: () => renderLocaleChrome(),
-  handlers,
-});
-renderAll = (state) => renderer.render(state);
+  renderer = createAppRenderer({
+    els,
+    store,
+    solve,
+    onboarding,
+    onRenderLocaleChrome: () => renderLocaleChrome(),
+    handlers,
+  });
+  renderAll = (state) => renderer.render(state);
+}
 
 function wireApp() {
-  installLocaleEngagementTracking();
+  wireHowToMapImage();
   window.addEventListener("pagehide", () => solve.flushWalkthroughSummary());
   els.solveBtn.addEventListener("click", () => solve.onSolve());
   store.subscribe(renderAll);
@@ -166,6 +155,31 @@ function wireApp() {
   renderLocaleChrome();
 }
 
+function deferAnalyticsStartup({ localeCode, localeSource }) {
+  const run = async () => {
+    const [{ initPostHog }, analytics] = await Promise.all([
+      import("./analytics/posthog-init.js"),
+      analyticsPromise,
+    ]);
+    initPostHog();
+    analytics.installErrorCapture();
+    analytics.installWebAnalyticsPresence();
+    analytics.installLocaleEngagementTracking();
+    analytics.trackLocaleResolved({ locale: localeCode, localeSource });
+    analytics.trackLanding({ landingType, locale: localeCode, localeSource });
+  };
+
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(() => {
+      run().catch((err) => console.error("Gothic Lock Breaker analytics failed to start", err));
+    }, { timeout: 3000 });
+  } else {
+    queueMicrotask(() => {
+      run().catch((err) => console.error("Gothic Lock Breaker analytics failed to start", err));
+    });
+  }
+}
+
 async function bootstrap() {
   try {
     await initI18n();
@@ -176,18 +190,43 @@ async function bootstrap() {
     }
   }
 
+  applyStaticContent();
+
+  onboarding = await loadOnboarding({
+    onDismissed: (ctx) => {
+      whenAnalytics((analytics) => analytics.trackOnboardingDismissed(ctx));
+      solve?.flushPendingCoachmark();
+      queueMicrotask(() => {
+        renderLocaleChrome();
+        renderAll(store.getState());
+      });
+    },
+    onComplete: () => {
+      setTimeout(() => locale?.openGuideOnboardingComplete(), 0);
+    },
+    onStarted: ({ totalSteps }) =>
+      whenAnalytics((analytics) => analytics.trackTutorStarted({ totalSteps })),
+    onNotShown: ({ reason }) =>
+      whenAnalytics((analytics) => analytics.trackTutorNotShown({ reason })),
+    onSkipped: (ctx) => whenAnalytics((analytics) => analytics.trackTutorSkipped(ctx)),
+  });
+
+  initControllers();
+
   const localeCode = getLocale();
   const localeSource = getLocaleSource();
-  trackLocaleResolved({ locale: localeCode, localeSource });
-  trackLanding({ landingType, locale: localeCode, localeSource });
   locale.setInitialLocale(localeCode);
-  applyStaticContent();
   onLocaleChange((code, changeSource) => locale.handleLocaleChange(code, changeSource));
-  renderLocaleChrome();
   wireApp();
+
+  deferAnalyticsStartup({ localeCode, localeSource });
 }
 
-bootstrap().catch((err) => {
+bootstrap().catch(async (err) => {
   console.error("Gothic Lock Breaker failed to start", err);
+  if (!onboarding) {
+    onboarding = createOnboardingStub();
+    initControllers();
+  }
   wireApp();
 });

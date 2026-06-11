@@ -96,8 +96,54 @@ if (!llmsTxt.includes("## Comparison")) {
   failures.push("llms.txt must include ## Comparison section");
 }
 
-if (!/## Preferred citation[\s\S]*Gothic Lock Breaker/.test(llmsTxt)) {
-  failures.push("llms.txt Preferred citation must mention Gothic Lock Breaker");
+if (!/## Preferred citation[\s\S]*Gothic Remake Lock Breaker/.test(llmsTxt)) {
+  failures.push("llms.txt Preferred citation must mention Gothic Remake Lock Breaker");
+}
+
+if (!indexHtml.includes("Gothic Remake Lockbreaker")) {
+  failures.push("index.html title must include Gothic Remake Lockbreaker (one word)");
+}
+
+if (!/lockpicking calculator/i.test(indexHtml)) {
+  failures.push("index.html meta description must mention lockpicking calculator");
+}
+
+if (
+  !indexHtml.includes("Gothic Remake Lockbreaker") ||
+  !indexHtml.includes("Gothic Remake Lock Breaker")
+) {
+  failures.push("index.html JSON-LD alternateName must include Lockbreaker and Lock Breaker variants");
+}
+
+if (!indexHtml.includes('hreflang="en"')) {
+  failures.push("index.html must include static hreflang=en link");
+}
+
+if (!indexHtml.includes('hreflang="x-default"')) {
+  failures.push("index.html must include static hreflang=x-default link");
+}
+
+if (!indexHtml.includes("app-foot-faq")) {
+  failures.push("index.html must include collapsed footer FAQ (app-foot-faq)");
+}
+
+const faqBlock = indexHtml.match(/<details class="app-foot-faq">[\s\S]*?<\/details>/)?.[0] ?? "";
+if (!faqBlock) {
+  failures.push("index.html must include app-foot-faq details block");
+} else {
+  if (!/net-turn/i.test(faqBlock)) {
+    failures.push("index.html footer FAQ must mention net-turn");
+  }
+  if (!/Gothic Remake Lock Breaker/.test(faqBlock)) {
+    failures.push("index.html footer FAQ must mention Gothic Remake Lock Breaker");
+  }
+  if (!/free/i.test(faqBlock) || !/no account/i.test(faqBlock)) {
+    failures.push("index.html footer FAQ must mention free and no account");
+  }
+}
+
+if (!/Gothic Remake Lock Breaker[\s\S]*app-definition/s.test(indexHtml)) {
+  failures.push("index.html app-definition must mention Gothic Remake Lock Breaker");
 }
 
 if (!/beginner-friendly|beginners/i.test(llmsTxt)) {

@@ -1,12 +1,12 @@
 {
   "seo": {
-    "title": "Gothic Lock Breaker — Beginner-Friendly G1 Remake Lock Solver",
-    "description": "Beginner-friendly Gothic 1 Remake lock solver with a compact UI and step-by-step walkthrough. Edge-safe sequences, free, works on phone.",
-    "ogImageAlt": "Gothic Lock Breaker solver showing tumbler mapping and a 3-turn lock sequence walkthrough"
+    "title": "Gothic Remake Lockbreaker — Free Lockpicking Calculator",
+    "description": "Free Gothic 1 Remake lockpicking calculator with step-by-step walkthrough. Edge-safe sequences — pick won't snap. Works on phone, no account.",
+    "ogImageAlt": "Gothic Remake Lock Breaker solver showing tumbler mapping and a 3-turn lock sequence walkthrough"
   },
   "app": {
-    "srTitle": "Gothic Lock Breaker",
-    "definition": "Gothic Lock Breaker is a free, beginner-friendly browser solver for Gothic 1 Remake lockpicking. Its compact three-section UI maps plates and couplings, then returns edge-safe turn-by-turn walkthroughs — not net-turn totals alone.",
+    "srTitle": "Gothic Remake Lock Breaker",
+    "definition": "Gothic Remake Lock Breaker (Gothic Lock Breaker) is a free, beginner-friendly browser solver for Gothic 1 Remake lockpicking. Its compact three-section UI maps plates and couplings, then returns edge-safe turn-by-turn walkthroughs — not net-turn totals alone.",
     "bootError": "Could not load translations. The solver may not work correctly — try refreshing the page."
   },
   "section": {
@@ -180,9 +180,6 @@
     "copyOk": "Link copied to clipboard.",
     "copyFail": "Could not copy link."
   },
-  "footer": {
-    "issues": "Report an issue"
-  },
   "press": {
     "featured": "Featured in",
     "pcgames": "PC Games",
@@ -211,5 +208,17 @@
     "de": "German",
     "pl": "Polish",
     "ukr": "Ukrainian"
+  },
+  "footer": {
+    "issues": "Report an issue",
+    "faqSummary": "Common questions",
+    "faq": {
+      "q1": "What is Gothic Remake Lock Breaker?",
+      "a1": "Gothic Remake Lock Breaker is a free browser-based lockpicking solver for Gothic 1 Remake. Map each plate's starting hole and couplings (With or Against), and it returns a step-by-step turn sequence that opens the lock.",
+      "q2": "How is it different from net-turn calculators?",
+      "a2": "Net-turn calculators only give total turns per plate. Gothic Remake Lock Breaker uses edge-safe search to find sequences that never grind a pin against wall holes 1 or 7, so your pick does not snap mid-sequence.",
+      "q3": "Is Gothic Remake Lock Breaker free?",
+      "a3": "Yes — free, no account, and runs in any modern browser including phones. Open gothiclockbreaker.com beside the game, map your lock, and follow the step-by-step walkthrough."
+    }
   }
 }
