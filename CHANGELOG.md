@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.16.0] - 2026-06-11
+
+### Changed
+
+- Footer "Featured in" shows only PC Games (Buffed link removed from noscript fallback, JS-rendered footer, and JSON-LD `subjectOf`).
+
+### Removed
+
+- Makefile `serve` and `check-version` targets; `serve` npm dependency (88 packages); `PORT` / `SERVE_BIN` variables. Use `make preview` instead of `make serve`.
+
 ## [1.15.4] - 2026-06-11
 
 ### Changed
