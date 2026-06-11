@@ -18,9 +18,10 @@ import {
   isInBounds,
   isPristineDefault,
 } from "./domain.js";
-import { GuideSource, SolveFailureReason, SupportSource } from "./analytics/values.js";
+import { AffiliateSource, GuideSource, SolveFailureReason, SupportSource } from "./analytics/values.js";
 import {
   CHANGELOG_URL,
+  GAME_AFFILIATE_URL,
   GITHUB_ISSUES_URL,
   PRESS_PCGAMES_URL,
   SUPPORT_URL,
@@ -1002,6 +1003,15 @@ function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
     ? el("div", { class: "wt-current" }, [renderMoveCmd(move, "focus")])
     : el("div", { class: "wt-current is-open" }, [
         el("span", { class: "wt-open-text", text: t("walkthrough.lockOpen") }),
+        el("a", {
+          class: "game-nudge",
+          href: GAME_AFFILIATE_URL,
+          target: "_blank",
+          rel: "sponsored noopener noreferrer",
+          "aria-label": t("game.aria"),
+          onClick: () => handlers.onAffiliateClick?.(AffiliateSource.POST_SOLVE),
+        }, [el("span", { text: t("game.solvedNudge") })]),
+        el("span", { class: "game-disclosure", text: t("game.disclosure") }),
       ]);
 
   const children = [
@@ -1141,6 +1151,20 @@ function supportStrip(handlers) {
   ]);
 }
 
+function gameFooterLine(handlers) {
+  return el("div", { class: "game-footer-line" }, [
+    el("a", {
+      class: "game-footer-link",
+      href: GAME_AFFILIATE_URL,
+      target: "_blank",
+      rel: "sponsored noopener noreferrer",
+      "aria-label": t("game.aria"),
+      onClick: () => handlers.onAffiliateClick?.(AffiliateSource.FOOTER),
+    }, [el("span", { text: t("game.cta") })]),
+    el("span", { class: "game-disclosure", text: t("game.disclosure") }),
+  ]);
+}
+
 export function renderVersionBadge(container, version) {
   container.replaceChildren(versionLink(version));
 }
@@ -1150,6 +1174,7 @@ export function renderFooter(container, version, handlers) {
     el("div", { class: "app-foot-stack" }, [
       el("div", { class: "app-foot-band" }, [
         supportStrip(handlers),
+        gameFooterLine(handlers),
         pressMentionsLine(),
         footerFaq(),
         footerUtility(version),

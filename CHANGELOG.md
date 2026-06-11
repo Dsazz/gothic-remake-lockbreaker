@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.17.0] - 2026-06-12
+
+### Added
+
+- GOG affiliate link for Gothic 1 Remake: compact footer line below Ko-fi strip and walkthrough "lock opened" nudge.
+- Localized `game.*` copy (EN, DE, PL, UKR) with per-locale Gothic NPC flavor and inline affiliate disclosure.
+- `affiliate_link_clicked` analytics event with `source` (footer / post_solve).
+
+### Removed
+
+- Web-presence `$pageview` ping (superseded by PR #5 fix; included here to avoid merge conflict).
+
 ## [1.16.0] - 2026-06-11
 
 ### Changed
