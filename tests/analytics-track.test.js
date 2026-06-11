@@ -94,11 +94,16 @@ test("posthog-init uses lean PostHog init (quota-safe defaults)", async () => {
   assert.match(text, /posthog:ready/);
 });
 
-test("web-presence refreshes visible sessions for Web Analytics Live", async () => {
-  const text = await readFile(join(root, "src/analytics/web-presence.js"), "utf8");
-  assert.match(text, /45_000/);
-  assert.match(text, /\$pageview/);
-  assert.match(text, /visibilitychange/);
+test("no module emits $pageview on a setInterval (presence inflation guard)", async () => {
+  const { readdirSync } = await import("node:fs");
+  const dir = join(root, "src/analytics");
+  const files = readdirSync(dir).filter((f) => f.endsWith(".js"));
+  for (const file of files) {
+    const text = await readFile(join(dir, file), "utf8");
+    if (text.includes("setInterval") && text.includes("$pageview")) {
+      assert.fail(`${file} fires $pageview on a setInterval — this inflates metrics`);
+    }
+  }
 });
 
 test("track.js does not export removed high-volume walkthrough/tutor events", async () => {

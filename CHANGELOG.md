@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.16.1] - 2026-06-12
+
+### Fixed
+
+- Removed web-presence `$pageview` ping that fired every 45 s on visible tabs, inflating pageview metrics ~12× during peak traffic. Real once-per-load pageviews are unaffected.
+
 ## [1.16.0] - 2026-06-11
 
 ### Changed
