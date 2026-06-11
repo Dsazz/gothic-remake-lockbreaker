@@ -5,8 +5,8 @@ import { Events } from "./events.js";
 import { recordLocaleSwitch, seedLocaleEngagement } from "./locale-engagement.js";
 import { localeChangeDirection } from "./locale-metrics.js";
 import { LocaleChangeDirection, OnboardingAction } from "./values.js";
-import { landingPageviewProps, readLandingAttribution } from "./attribution.js";
-import { registerSessionProperties, send } from "./transport.js";
+import { readLandingAttribution } from "./attribution.js";
+import { registerSessionProperties, runWhenPostHogReady, send } from "./transport.js";
 
 function baseProps(plateCount) {
   return { plate_count: plateCount, app_version: VERSION };
@@ -47,16 +47,15 @@ export function trackLanding({ landingType, locale, localeSource }) {
     app_version: VERSION,
     ...attribution,
   };
-  send(Events.LANDING, props);
-  send(
-    Events.PAGEVIEW,
-    landingPageviewProps(attribution, { landing_type: landingType, locale }),
-  );
-  registerSessionProperties({
+  const sessionProps = {
     landing_type: landingType,
     locale,
     app_version: VERSION,
     ...attribution,
+  };
+  runWhenPostHogReady(() => {
+    send(Events.LANDING, props);
+    registerSessionProperties(sessionProps);
   });
 }
 

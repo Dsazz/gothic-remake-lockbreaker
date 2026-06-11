@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.14.3] - 2026-06-11
+
+### Added
+
+- `src/analytics/web-presence.js` — 45s visibility `$pageview` ping so Web Analytics Live stays accurate during long solves (replaces autocapture activity).
+- `runWhenPostHogReady` in `transport.js`; `landing` waits for SDK `loaded`.
+
+### Changed
+
+- Re-enabled SDK `capture_pageview: true` (one pageview on load with full `$current_url` / referrer metadata).
+- Removed duplicate manual `$pageview` from `trackLanding` (was incomplete and raced SDK init).
+
 ## [1.14.2] - 2026-06-11
 
 ### Added

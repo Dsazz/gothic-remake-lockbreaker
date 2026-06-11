@@ -26,9 +26,18 @@ export function readLandingAttribution(env = {}) {
   return props;
 }
 
+function readWebLocationProps() {
+  if (typeof location === "undefined") return {};
+  return {
+    $current_url: location.href,
+    $host: location.host,
+    $pathname: `${location.pathname}${location.search}`,
+  };
+}
+
 /** Maps attribution onto PostHog Web Analytics pageview properties. */
 export function landingPageviewProps(attribution, extra = {}) {
-  const props = { ...extra, ...attribution };
+  const props = { ...readWebLocationProps(), ...extra, ...attribution };
   if (attribution.referrer) props.$referrer = attribution.referrer;
   if (attribution.referrer_host) props.$referring_domain = attribution.referrer_host;
   return props;

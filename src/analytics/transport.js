@@ -23,8 +23,22 @@ function captureExceptionSafely(error, properties) {
   }
 }
 
+export function runWhenPostHogReady(fn) {
+  const ph = window.posthog;
+  if (!ph) return;
+  if (ph.__loaded) {
+    fn();
+    return;
+  }
+  window.addEventListener("posthog:ready", () => fn(), { once: true });
+}
+
 export function send(event, properties) {
   window.posthog?.capture?.(event, properties);
+}
+
+export function sendWhenReady(event, properties) {
+  runWhenPostHogReady(() => send(event, properties));
 }
 
 export function sendOnPageHide(event, properties) {

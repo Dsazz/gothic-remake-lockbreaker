@@ -27,4 +27,5 @@ export {
   trackLocaleChanged,
 } from "./track.js";
 export { installErrorCapture, sendOnPageHide } from "./transport.js";
+export { installWebAnalyticsPresence } from "./web-presence.js";
 export { installLocaleEngagementTracking } from "./locale-engagement.js";

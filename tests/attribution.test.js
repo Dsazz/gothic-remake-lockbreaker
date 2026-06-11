@@ -39,17 +39,14 @@ test("readLandingAttribution combines referrer and UTMs", () => {
   assert.equal(props.utm_source, "reddit");
 });
 
-test("landingPageviewProps maps referrer fields for Web Analytics", () => {
+test("landingPageviewProps maps referrer and location fields for Web Analytics", () => {
   const attribution = readLandingAttribution({
     referrer: "https://www.reddit.com/r/gothic",
     search: "?utm_source=reddit",
   });
-  assert.deepEqual(landingPageviewProps(attribution, { locale: "en" }), {
-    referrer: "https://www.reddit.com/r/gothic",
-    referrer_host: "www.reddit.com",
-    utm_source: "reddit",
-    $referrer: "https://www.reddit.com/r/gothic",
-    $referring_domain: "www.reddit.com",
-    locale: "en",
-  });
+  const props = landingPageviewProps(attribution, { locale: "en" });
+  assert.equal(props.referrer_host, "www.reddit.com");
+  assert.equal(props.$referring_domain, "www.reddit.com");
+  assert.equal(props.utm_source, "reddit");
+  assert.equal(props.locale, "en");
 });

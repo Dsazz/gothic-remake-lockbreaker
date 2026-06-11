@@ -46,8 +46,7 @@ test("trackLanding accepts locale and localeSource", async () => {
   assert.match(text, /export function trackLanding\(\{ landingType, locale, localeSource \}\)/);
   assert.match(text, /locale_source: localeSource/);
   assert.match(text, /readLandingAttribution/);
-  assert.match(text, /Events\.PAGEVIEW/);
-  assert.match(text, /landingPageviewProps/);
+  assert.match(text, /runWhenPostHogReady/);
   const attribution = await readFile(join(root, "src/analytics/attribution.js"), "utf8");
   assert.match(attribution, /referrer_host/);
   assert.match(attribution, /utm_source/);
@@ -76,7 +75,7 @@ test("index.html uses lean PostHog init (quota-safe defaults)", async () => {
   const text = await readFile(join(root, "index.html"), "utf8");
   const leanFlags = [
     "autocapture: false",
-    "capture_pageview: false",
+    "capture_pageview: true",
     "capture_pageleave: false",
     "capture_performance: false",
     "capture_exceptions: false",
@@ -92,6 +91,14 @@ test("index.html uses lean PostHog init (quota-safe defaults)", async () => {
     assert.match(text, new RegExp(flag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
   assert.doesNotMatch(text, /defaults:\s*["']2026-05-30["']/);
+  assert.match(text, /posthog:ready/);
+});
+
+test("web-presence refreshes visible sessions for Web Analytics Live", async () => {
+  const text = await readFile(join(root, "src/analytics/web-presence.js"), "utf8");
+  assert.match(text, /45_000/);
+  assert.match(text, /\$pageview/);
+  assert.match(text, /visibilitychange/);
 });
 
 test("track.js does not export removed high-volume walkthrough/tutor events", async () => {

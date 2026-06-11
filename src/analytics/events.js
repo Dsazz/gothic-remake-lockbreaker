@@ -1,5 +1,4 @@
 export const Events = Object.freeze({
-  PAGEVIEW: "$pageview",
   LANDING: "landing",
   LOCK_SOLVED: "lock_solved",
   LOCK_ALREADY_SOLVED: "lock_already_solved",

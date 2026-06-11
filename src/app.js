@@ -24,6 +24,7 @@ import { oldCampExample } from "./examples.js";
 import { LandingType, SolveSource, TutorNotShownReason } from "./analytics/values.js";
 import {
   installErrorCapture,
+  installWebAnalyticsPresence,
   trackLanding,
   trackLocaleResolved,
   trackOnboardingDismissed,
@@ -44,6 +45,7 @@ const landingType = resolveLandingType(
 );
 uiPrefs.markVisited();
 installErrorCapture();
+installWebAnalyticsPresence();
 
 let handlers = {};
 const getHandlers = () => handlers;
