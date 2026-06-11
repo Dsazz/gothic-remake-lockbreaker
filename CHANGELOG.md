@@ -15,6 +15,12 @@ and update the `Current release` line in `README.md` — one commit, one deploy.
 - Shortened header definition paragraph to prevent overlap with lang switcher and version on narrow viewports.
 - Definition text vertically centered between the hero image title and the lang/version controls.
 
+## [1.15.3] - 2026-06-11
+
+### Changed
+
+- Shortened the header definition paragraph so it no longer overlaps the lang switcher and version on narrow viewports.
+
 ## [1.15.2] - 2026-06-11
 
 ### Changed
