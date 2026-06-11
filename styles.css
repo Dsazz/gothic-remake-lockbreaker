@@ -142,7 +142,7 @@ button {
   align-items: center;
   justify-content: flex-end;
   height: clamp(176px, 20vw, 212px);
-  padding: 0 clamp(14px, 4vw, 22px) clamp(12px, 2.5vw, 14px);
+  padding: clamp(42px, 6vw, 54px) clamp(14px, 4vw, 22px) clamp(12px, 2.5vw, 14px);
   text-align: center;
   overflow: hidden;
   border-bottom: 1px solid var(--iron);
@@ -183,9 +183,9 @@ button {
 
 .app-head-body {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
   width: 100%;
   z-index: 1;
 }
@@ -194,7 +194,7 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin: 0;
+  margin: auto 0 0;
 }
 
 .app-head-lang {
@@ -335,7 +335,7 @@ button {
 }
 
 .app-definition {
-  margin: 6px auto 0;
+  margin: auto auto 0;
   max-width: 52ch;
   color: var(--parchment-dim);
   font-size: clamp(0.72rem, 2vw, 0.8rem);

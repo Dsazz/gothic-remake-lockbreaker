@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.15.4] - 2026-06-11
+
+### Changed
+
+- Shortened header definition paragraph to prevent overlap with lang switcher and version on narrow viewports.
+- Definition text vertically centered between the hero image title and the lang/version controls.
+
 ## [1.15.3] - 2026-06-11
 
 ### Changed
