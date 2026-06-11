@@ -119,6 +119,8 @@ test("index.html includes SEO metadata", async () => {
   assert.match(html, /"availableLanguage"/);
   assert.match(html, /"HowTo"/);
   assert.match(html, /"subjectOf"/);
+  assert.match(html, /"featureList"/);
+  assert.match(html, /beginner-friendly/i);
   assert.match(html, /https:\/\/gothiclockbreaker\.com\//);
   assert.doesNotMatch(html, /"FAQPage"/);
   assert.doesNotMatch(html, /panel--faq/);
@@ -130,11 +132,16 @@ test("index.html includes SEO metadata", async () => {
 test("README and llms.txt promote press, not Reddit in README", async () => {
   const readme = await readFile(join(root, "README.md"), "utf8");
   const llms = await readFile(join(root, "llms.txt"), "utf8");
+  const en = JSON.parse(await readFile(join(root, "locales/en.json"), "utf8"));
   assert.match(readme, /pcgames\.de/);
   assert.match(readme, /buffed\.de/);
   assert.doesNotMatch(readme, /reddit\.com/);
   assert.match(llms, /## Press coverage/);
+  assert.match(llms, /## Comparison/);
   assert.match(llms, /## FAQ/);
+  assert.match(llms, /beginner-friendly/i);
+  assert.match(en.app.definition, /beginner-friendly/i);
+  assert.match(en.seo.title, /Beginner-Friendly/);
   assert.match(llms, /reddit\.com/);
 });
 

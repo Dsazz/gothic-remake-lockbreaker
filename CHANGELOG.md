@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.13.2] - 2026-06-10
+
+### Added
+
+- `llms.txt` comparison table, “why players use” bullets, and query-shaped FAQ for beginner/best-tool LLM queries.
+- JSON-LD `featureList` on `WebApplication` (compact UI, walkthrough, mobile, free).
+
+### Changed
+
+- SEO title/description, `app.definition`, and meta tags emphasize beginner-friendly compact UI and step-by-step walkthrough (en/de/pl/ukr).
+- `llms.txt` preferred citation and press blurbs highlight ease of use and mobile support.
+- `check-seo.js` guards comparison section, beginner positioning, and `featureList`.
+
 ## [1.13.1] - 2026-06-10
 
 ### Added

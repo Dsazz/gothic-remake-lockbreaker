@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.13.1-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.13.2-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.13.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.13.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
@@ -52,7 +52,8 @@ damage, then breaks.
 Most "solver" tools just tell you the *net* number of turns per plate. That answer is
 useless in practice, because executing it in the wrong order drives a pin into the edge
 halfway through and snaps your pick. **This one never does that.** It searches the real
-state space and only ever returns moves that keep every pin in range.
+state space and only ever returns moves that keep every pin in range. The UI stays compact
+— three sections, visual mapper, built-in guide — so beginners are not fighting a spreadsheet.
 
 <div align="center">
 <img src="assets/walkthrough.png" alt="Mobile sequence walkthrough: step 6 of 15 — L2 turn left, with 7-hole readout grooves for each lock" width="62%" />

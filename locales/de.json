@@ -1,12 +1,12 @@
 {
   "seo": {
-    "title": "Gothic Lock Breaker — Kantensicherer G1 Remake Schloss-Solver",
-    "description": "Kostenloser kantensicherer Lockpicking-Solver für Gothic 1 Remake. Mappe Platten und Kupplungen für Drehfolgen, die Nadeln nie anschleifen.",
+    "title": "Gothic Lock Breaker — Einsteigerfreundlicher G1 Remake Schloss-Solver",
+    "description": "Einsteigerfreundlicher Lockpicking-Solver für Gothic 1 Remake mit kompakter Oberfläche und Schritt-für-Schritt-Walkthrough. Kantensicher, kostenlos, läuft auf dem Handy.",
     "ogImageAlt": "Gothic Lock Breaker Solver mit Tumblern und 3-Schritt-Walkthrough"
   },
   "app": {
     "srTitle": "Gothic Lock Breaker",
-    "definition": "Gothic Lock Breaker ist ein kostenloser Browser-Solver für Lockpicking-Rätsel in Gothic 1 Remake. Anders als Netto-Dreh-Rechner nutzt er kantensichere BFS und liefert nur Drehfolgen, die eine Nadel nie gegen die Wand schleifen — mit Schritt-für-Schritt-Walkthrough.",
+    "definition": "Gothic Lock Breaker ist ein kostenloser, einsteigerfreundlicher Browser-Solver für Lockpicking in Gothic 1 Remake. Die kompakte Drei-Bereiche-Oberfläche mappt Platten und Kupplungen und liefert kantensichere Drehfolgen Schritt für Schritt — keine Netto-Dreh-Zahlen allein.",
     "bootError": "Übersetzungen konnten nicht geladen werden. Der Solver funktioniert möglicherweise nicht richtig — Seite neu laden."
   },
   "section": {

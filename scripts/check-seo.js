@@ -92,6 +92,26 @@ if (!llmsTxt.includes(changelogDate)) {
   failures.push(`llms.txt must include changelog date ${changelogDate} under Last updated`);
 }
 
+if (!llmsTxt.includes("## Comparison")) {
+  failures.push("llms.txt must include ## Comparison section");
+}
+
+if (!/## Preferred citation[\s\S]*Gothic Lock Breaker/.test(llmsTxt)) {
+  failures.push("llms.txt Preferred citation must mention Gothic Lock Breaker");
+}
+
+if (!/beginner-friendly|beginners/i.test(llmsTxt)) {
+  failures.push("llms.txt must include beginner-friendly positioning");
+}
+
+if (!indexHtml.includes("featureList")) {
+  failures.push("index.html WebApplication JSON-LD must include featureList");
+}
+
+if (!/beginner-friendly/i.test(indexHtml)) {
+  failures.push("index.html must include beginner-friendly positioning");
+}
+
 const lastmods = [...sitemap.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
 if (lastmods.length === 0) {
   failures.push("sitemap.xml has no lastmod entries");

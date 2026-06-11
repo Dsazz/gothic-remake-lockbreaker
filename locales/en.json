@@ -1,12 +1,12 @@
 {
   "seo": {
-    "title": "Gothic Lock Breaker — Edge-Safe G1 Remake Lock Solver",
-    "description": "Free edge-safe lockpicking solver for Gothic 1 Remake. Map plates and couplings for turn sequences that never grind pins.",
+    "title": "Gothic Lock Breaker — Beginner-Friendly G1 Remake Lock Solver",
+    "description": "Beginner-friendly Gothic 1 Remake lock solver with a compact UI and step-by-step walkthrough. Edge-safe sequences, free, works on phone.",
     "ogImageAlt": "Gothic Lock Breaker solver showing tumbler mapping and a 3-turn lock sequence walkthrough"
   },
   "app": {
     "srTitle": "Gothic Lock Breaker",
-    "definition": "Gothic Lock Breaker is a free browser solver for Gothic 1 Remake lockpicking puzzles. Unlike net-turn calculators, it uses edge-safe BFS to return only turn sequences that never grind a pin against the wall, with a step-by-step walkthrough.",
+    "definition": "Gothic Lock Breaker is a free, beginner-friendly browser solver for Gothic 1 Remake lockpicking. Its compact three-section UI maps plates and couplings, then returns edge-safe turn-by-turn walkthroughs — not net-turn totals alone.",
     "bootError": "Could not load translations. The solver may not work correctly — try refreshing the page."
   },
   "section": {
