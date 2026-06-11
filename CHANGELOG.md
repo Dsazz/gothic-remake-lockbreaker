@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.14.2] - 2026-06-11
+
+### Added
+
+- `src/analytics/attribution.js` — first-touch `referrer`, `referrer_host`, and UTM params on `landing` and session props.
+- One manual `$pageview` per session (with `$referring_domain`) so PostHog Web Analytics Live referrers stay populated while auto pageviews remain off.
+
 ## [1.14.1] - 2026-06-11
 
 ### Added

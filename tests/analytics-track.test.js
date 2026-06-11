@@ -45,6 +45,13 @@ test("trackLanding accepts locale and localeSource", async () => {
   const text = await readFile(join(root, "src/analytics/track.js"), "utf8");
   assert.match(text, /export function trackLanding\(\{ landingType, locale, localeSource \}\)/);
   assert.match(text, /locale_source: localeSource/);
+  assert.match(text, /readLandingAttribution/);
+  assert.match(text, /Events\.PAGEVIEW/);
+  assert.match(text, /landingPageviewProps/);
+  const attribution = await readFile(join(root, "src/analytics/attribution.js"), "utf8");
+  assert.match(attribution, /referrer_host/);
+  assert.match(attribution, /utm_source/);
+  assert.match(attribution, /\$referring_domain/);
 });
 
 test("locale-engagement installs pagehide tracking", async () => {

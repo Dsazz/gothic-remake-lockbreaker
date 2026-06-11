@@ -5,6 +5,7 @@ import { Events } from "./events.js";
 import { recordLocaleSwitch, seedLocaleEngagement } from "./locale-engagement.js";
 import { localeChangeDirection } from "./locale-metrics.js";
 import { LocaleChangeDirection, OnboardingAction } from "./values.js";
+import { landingPageviewProps, readLandingAttribution } from "./attribution.js";
 import { registerSessionProperties, send } from "./transport.js";
 
 function baseProps(plateCount) {
@@ -38,14 +39,25 @@ function firstSolveProps() {
 }
 
 export function trackLanding({ landingType, locale, localeSource }) {
+  const attribution = readLandingAttribution();
   const props = {
     landing_type: landingType,
     locale,
     locale_source: localeSource,
     app_version: VERSION,
+    ...attribution,
   };
   send(Events.LANDING, props);
-  registerSessionProperties({ landing_type: landingType, locale, app_version: VERSION });
+  send(
+    Events.PAGEVIEW,
+    landingPageviewProps(attribution, { landing_type: landingType, locale }),
+  );
+  registerSessionProperties({
+    landing_type: landingType,
+    locale,
+    app_version: VERSION,
+    ...attribution,
+  });
 }
 
 export function trackLocaleResolved({ locale, localeSource }) {
