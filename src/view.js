@@ -390,6 +390,7 @@ function holeClassList(v, value, { moving = false } = {}) {
     active ? "is-active" : "",
     v === CENTER ? "is-notch" : "",
     v === POS_MIN || v === POS_MAX ? "is-wall" : "",
+    Math.abs(v) === NEAR_EDGE ? "is-near-slot" : "",
     active ? dangerClass(value) : "",
     active && moving ? "is-moving" : "",
   ]

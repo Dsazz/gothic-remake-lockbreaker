@@ -813,63 +813,65 @@ button {
   width: 100%;
 }
 
-/* Walkthrough readout: active pin recessed with a visible ring; notch gets bronze */
+/* Walkthrough readout: active pins use solid fills; semantic color per state */
 .plate-holes--readout .hole.is-active {
-  background: radial-gradient(circle at 50% 55%, #08090c 0%, #151820 70%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    0 0 6px rgba(255, 255, 255, 0.08);
-  color: var(--parchment);
+  background: radial-gradient(circle at 50% 55%, #d9cfb8 0%, #6a6457 100%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+    0 0 8px rgba(255, 255, 255, 0.06);
+  color: #1a1814;
   transform: none;
 }
 
 .plate-holes--readout .hole.is-active.is-notch {
   background: radial-gradient(circle at 42% 32%, var(--bronze-bright), var(--bronze-deep));
-  border-color: var(--bronze-bright);
-  box-shadow: 0 0 10px var(--bronze-glow),
+  border: 1px solid var(--bronze-bright);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
     inset 0 -2px 4px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    0 0 10px var(--bronze-glow);
   color: #160f04;
   transform: translateY(-1px);
 }
 
-.plate-holes--readout .hole.is-active.is-moving:not(.is-notch):not(.at-edge):not(.near-edge) {
-  border-color: var(--parchment);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    0 0 12px rgba(255, 255, 255, 0.22);
-}
-
-.plate-holes--readout .hole.is-active.is-moving.is-notch {
-  border: 1px solid var(--bronze-bright);
-  box-shadow: 0 0 14px var(--bronze-glow),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
-}
-
 .plate-holes--readout .hole.is-active.at-edge,
 .plate-holes--readout .hole.is-active.is-wall {
-  border-color: var(--blood);
-  color: var(--blood-bright);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
+  background: radial-gradient(circle at 50% 55%, #d65b50 0%, #6b2822 100%);
+  border: 1px solid var(--blood-bright);
+  color: #1a0806;
+  box-shadow: inset 0 1px 0 rgba(255, 180, 170, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4),
     0 0 10px var(--blood-bg);
 }
 
-.plate-holes--readout .hole.is-active.is-moving.at-edge,
-.plate-holes--readout .hole.is-active.is-moving.is-wall {
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    0 0 14px var(--blood-bg);
-}
-
 .plate-holes--readout .hole.is-active.near-edge {
-  border-color: var(--amber-line);
-  color: var(--amber-line);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    0 0 8px var(--amber-bg);
+  background: radial-gradient(circle at 50% 55%, rgba(217, 145, 63, 0.62) 0%, rgba(90, 58, 22, 0.85) 100%);
+  border: 1px solid var(--amber);
+  color: #1a1004;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 160, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+    0 0 10px var(--amber-bg);
 }
 
-.plate-holes--readout .hole.is-active.is-moving.near-edge {
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
-    0 0 12px var(--amber-bg);
+/* Inactive landmarks: faint rim + dim label only — must not read as an active pin */
+.plate-holes--readout .hole.is-notch:not(.is-active) {
+  border: 1px solid rgba(199, 154, 75, 0.2);
+  color: rgba(199, 154, 75, 0.5);
+}
+
+.plate-holes--readout .hole.is-wall:not(.is-active) {
+  border: 1px solid rgba(192, 70, 60, 0.2);
+  color: rgba(214, 91, 80, 0.5);
+}
+
+.plate-holes--readout .hole.is-near-slot:not(.is-active) {
+  border: 1px solid rgba(217, 145, 63, 0.18);
+  color: rgba(217, 145, 63, 0.45);
+}
+
+.plate-holes--readout .hole:not(.is-active):not(.is-notch):not(.is-wall):not(.is-near-slot) {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--parchment-faint);
 }
 
 @media (min-width: 900px) {
@@ -1845,6 +1847,98 @@ body.wt-help-open {
 
 .wt-plate.is-current .wt-label {
   color: var(--bronze-bright);
+}
+
+.wt-plate.is-current .plate-holes--readout {
+  overflow: visible;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving:not(.is-notch):not(.at-edge):not(.near-edge) {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  animation: hole-moving-glow 3s ease-in-out infinite;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving.is-notch {
+  animation: hole-moving-glow-notch 3s ease-in-out infinite;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving.near-edge {
+  border: 1px solid var(--amber);
+  animation: hole-moving-glow-near-edge 3s ease-in-out infinite;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving.at-edge,
+.wt-plate.is-current .hole.is-active.is-moving.is-wall {
+  border: 1px solid var(--blood-bright);
+  animation: hole-moving-glow-at-edge 3s ease-in-out infinite;
+}
+
+/* drop-shadow sits outside the circle edge; fill/border stay on base .is-active rules */
+@keyframes hole-moving-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(217, 207, 184, 0.35));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.55));
+  }
+}
+
+@keyframes hole-moving-glow-notch {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(230, 189, 107, 0.3));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 18px rgba(230, 189, 107, 0.65));
+  }
+}
+
+@keyframes hole-moving-glow-near-edge {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(217, 145, 63, 0.45));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 170, 60, 0.85));
+  }
+}
+
+@keyframes hole-moving-glow-at-edge {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(214, 91, 80, 0.45));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 100, 90, 0.85));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-plate.is-current .hole.is-active.is-moving:not(.is-notch):not(.at-edge):not(.near-edge) {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
+  }
+
+  .wt-plate.is-current .hole.is-active.is-moving.is-notch {
+    animation: none;
+    filter: drop-shadow(0 0 12px rgba(230, 189, 107, 0.5));
+  }
+
+  .wt-plate.is-current .hole.is-active.is-moving.near-edge {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 170, 60, 0.7));
+  }
+
+  .wt-plate.is-current .hole.is-active.is-moving.at-edge,
+  .wt-plate.is-current .hole.is-active.is-moving.is-wall {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 100, 90, 0.7));
+  }
 }
 
 .wt-label {

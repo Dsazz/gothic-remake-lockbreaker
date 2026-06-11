@@ -100,6 +100,19 @@ test("walkthrough layout avoids fixed min column widths that cause horizontal sc
   assert.doesNotMatch(css, /repeat\(7,\s*minmax\(26px/);
 });
 
+test("walkthrough moving hole styles use thin-border glow without spread rings", async () => {
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  assert.match(css, /\.wt-plate\.is-current \.hole\.is-active\.is-moving/);
+  assert.match(css, /@keyframes hole-moving-glow/);
+  assert.match(css, /hole-moving-glow 3s ease-in-out infinite/);
+  assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.wt-plate\.is-current \.hole\.is-active\.is-moving/);
+  assert.doesNotMatch(css, /\.walkthrough:has\(\.wt-plate\.is-current\)[\s\S]*opacity:\s*0\.45/);
+  const movingBlock = css.match(
+    /\.wt-plate\.is-current \.hole\.is-active\.is-moving[\s\S]*?@keyframes hole-moving-glow-at-edge/,
+  )?.[0] ?? "";
+  assert.doesNotMatch(movingBlock, /0 0 0 2px/);
+});
+
 test("static-content.js does not hydrate footer press", async () => {
   const staticContentText = await readFile(join(root, "src/static-content.js"), "utf8");
   assert.doesNotMatch(staticContentText, /applyPressStaticContent/);

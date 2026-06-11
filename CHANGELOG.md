@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.14.1] - 2026-06-11
+
+### Added
+
+- `is-near-slot` on walkthrough readout holes 2 and 6; CSS contract test for moving-hole glow styles.
+
+### Changed
+
+- Walkthrough sequence panel: unified solid-fill active pins (parchment safe, amber near-edge, bronze notch, red wall).
+- Moving pin on the current step: slow outer `drop-shadow` pulse per danger state; static halo under `prefers-reduced-motion`.
+- Inactive groove landmarks (notch, wall, near-edge slots): faint rim and dim label so empty slots do not read as active pins.
+
 ## [1.14.0] - 2026-06-11
 
 ### Added
