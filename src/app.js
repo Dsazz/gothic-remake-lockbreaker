@@ -176,7 +176,6 @@ function deferAnalyticsStartup({ localeCode, localeSource }) {
     ]);
     initPostHog();
     analytics.installErrorCapture();
-    analytics.installWebAnalyticsPresence();
     analytics.installLocaleEngagementTracking();
     analytics.trackLocaleResolved({ locale: localeCode, localeSource });
     analytics.trackLanding({ landingType, locale: localeCode, localeSource });
