@@ -6,7 +6,7 @@
   },
   "app": {
     "srTitle": "Gothic Remake Lock Breaker",
-    "definition": "Gothic Remake Lock Breaker (Gothic Lock Breaker) ist ein kostenloser, einsteigerfreundlicher Browser-Solver für Lockpicking in Gothic 1 Remake. Die kompakte Drei-Bereiche-Oberfläche mappt Platten und Kupplungen und liefert kantensichere Drehfolgen Schritt für Schritt — keine Netto-Dreh-Zahlen allein.",
+    "definition": "Gothic Remake Lock Breaker ist ein kostenloser, einsteigerfreundlicher Solver für Lockpicking in Gothic 1 Remake — mappe deine Platten und erhalte eine kantensichere Schritt-für-Schritt-Anleitung.",
     "bootError": "Übersetzungen konnten nicht geladen werden. Der Solver funktioniert möglicherweise nicht richtig — Seite neu laden."
   },
   "section": {
