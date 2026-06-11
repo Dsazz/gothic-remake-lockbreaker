@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.15.2] - 2026-06-11
+
+### Changed
+
+- CI workflow fires on pull requests only; deploy workflow handles push-to-main (no more duplicate runs).
+- Branch protection on `main`: require `ci` status check, block direct/force pushes, enforced for admins.
+- Docs (AGENTS.md, README, release skill) updated for PR-based workflow.
+
 ## [1.15.1] - 2026-06-11
 
 ### Fixed

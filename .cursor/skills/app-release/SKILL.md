@@ -9,7 +9,7 @@ description: >-
 
 # Gothic Lock Breaker — app release
 
-Read [AGENTS.md](../../../AGENTS.md) boundaries first. One commit per release; push `main` triggers deploy.
+Read [AGENTS.md](../../../AGENTS.md) boundaries first. One commit per release; merge PR to `main` triggers deploy. Direct push to `main` is blocked by branch protection.
 
 ## When to bump
 
@@ -35,10 +35,10 @@ Copy and track:
 - [ ] llms.txt + sitemap.xml — Last updated / lastmod date = changelog date (if SEO-relevant)
 - [ ] make lint && make test (includes check-version and check-seo)
 - [ ] Optional: make build && make preview — smoke fonts, locales, hash, cold onboarding
-- [ ] Commit + push (only if user asked)
+- [ ] Commit on release branch + open/merge PR to `main` (only if user asked)
 ```
 
-`make check-version` does **not** check the README badge — update it manually.
+`main` is protected — all changes via PR, `ci` status check required. `make check-version` does **not** check the README badge — update it manually.
 
 ## CHANGELOG entry
 
@@ -86,13 +86,15 @@ Release vX.Y.Z — one-line summary of the headline change.
 
 Example: `Release v1.15.0 — Vite build, GitHub Actions deploy, first-load perf, Biome.`
 
-**Do not commit** unless the user explicitly asks. When they do, one commit with all release files + any pending feature work for that release.
+**Do not commit** unless the user explicitly asks. When they do, one commit on a release branch with all release files + any pending feature work for that release. Open a PR to `main`; merge after CI passes.
 
-## Deploy (after push to main)
+## Deploy (after PR merge to main)
 
 1. GitHub **Settings → Pages → Build and deployment** → source **GitHub Actions** (not branch root)
-2. [`.github/workflows/deploy.yml`](../../../.github/workflows/deploy.yml): CI → `vite build` → Pages artifact
+2. Merging the PR triggers [`.github/workflows/deploy.yml`](../../../.github/workflows/deploy.yml): CI → `vite build` → Pages artifact
 3. Confirm Actions green; spot-check [gothiclockbreaker.com](https://gothiclockbreaker.com/)
+
+Branch protection requires the `ci` status check to pass before merge; force pushes and direct pushes to `main` are blocked.
 
 ## Do not
 

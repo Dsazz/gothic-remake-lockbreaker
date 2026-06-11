@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.15.1-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.15.2-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.15.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.15.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
@@ -162,9 +162,9 @@ Production builds send **anonymous** usage data to [PostHog EU](https://eu.posth
 
 ## Deploy your own
 
-1. Push to `main`.
-2. **Settings → Pages → Build and deployment**: source **GitHub Actions** (workflow `[.github/workflows/deploy.yml](.github/workflows/deploy.yml)`).
-3. CI (lint + test) runs on every push and PR; deploy builds `dist/` with Vite and publishes to Pages.
+1. Create a branch, make changes, open a PR to `main`. CI (lint + test) runs on the PR and must pass before merge. `main` is protected — no direct pushes, no force pushes.
+2. Merge the PR. The deploy workflow builds `dist/` with Vite and publishes to GitHub Pages.
+3. **Settings → Pages → Build and deployment**: source **GitHub Actions** (workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
 4. Optional custom domain: root `CNAME` is copied into `dist/` at build time — set **Custom domain** in Pages settings and point DNS (A records to GitHub Pages IPs for apex, CNAME `www` to `<user>.github.io`). Live site: [gothiclockbreaker.com](https://gothiclockbreaker.com/).
 
 ## License

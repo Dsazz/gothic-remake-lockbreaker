@@ -60,14 +60,23 @@ After each agent turn, [`.cursor/hooks.json`](.cursor/hooks.json) runs `make lin
 
 Canonical checklist: [.cursor/skills/app-release/SKILL.md](.cursor/skills/app-release/SKILL.md) — semver, CHANGELOG, README badge, SEO dates, verify, deploy.
 
-**PR → `main`:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs lint + test. No deploy on PRs.
+### Branch protection
 
-**Push `main`:** [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) — CI → `vite build` → GitHub Pages. Pages source must be **GitHub Actions** (not branch root).
+`main` is protected — no direct pushes, no force pushes, no deletion. All changes go through a **pull request**. The `ci` status check must pass before merge, enforced for admins too.
+
+### Workflow
+
+1. **Create a feature/release branch** off `main`.
+2. **Open a PR → `main`:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs lint + test. Merge is blocked until `ci` passes.
+3. **Merge PR → `main`:** [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) — CI → `vite build` → GitHub Pages. Pages source must be **GitHub Actions** (not branch root).
+
+`ci.yml` fires on PRs only; `deploy.yml` fires on push to `main` only (with its own CI gate). No duplicate runs.
 
 ## Boundaries
 
 **Always**
 
+- Work on a branch; merge via PR (direct push to `main` is blocked)
 - Run `make lint && make test` before finishing
 - Minimal diff; match existing module boundaries and naming
 - Keep PostHog lean (no autocapture, replay, heatmaps unless explicitly requested)
