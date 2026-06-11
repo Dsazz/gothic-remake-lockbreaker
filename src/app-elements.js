@@ -6,6 +6,7 @@ export function getAppElements() {
     tumblersPanel: document.querySelector(".panel--tumblers"),
     sequencePanel: document.querySelector(".panel--sequence"),
     localeSuggest: document.getElementById("locale-suggest"),
+    tutorOptIn: document.getElementById("tutor-opt-in"),
     i18nBanner: document.getElementById("i18n-banner"),
     hashBanner: document.getElementById("hash-banner"),
     sharePrompt: document.getElementById("share-prompt"),

@@ -65,43 +65,30 @@ test("syncTracking starts geo poll even while onboarding is active", () => {
   assert.equal(geoWait.mock.callCount(), 1);
 });
 
-test("geo hint is stored when resolved during onboarding but bar stays hidden", () => {
-  let resolveGeo;
-  const renderCalls = mock.fn();
+test("referrer locale suggest shows while onboarding is active", () => {
   const controller = buildController({
     onboardingActive: true,
-    onRenderLocaleChrome: renderCalls,
-    waitForGeoCountryCode: (config) => {
-      resolveGeo = config.onResolved;
-    },
+    referrer: "https://www.pcgames.de/article",
   });
-
-  controller.syncTracking();
-  assert.equal(controller.syncTracking().localeSuggestVisible, false);
-
-  resolveGeo("DE");
-  assert.equal(controller.syncTracking().localeSuggestVisible, false);
-  assert.equal(renderCalls.mock.callCount(), 0);
+  const snapshot = controller.syncTracking();
+  assert.equal(snapshot.localeSuggestVisible, true);
+  assert.equal(snapshot.localeSuggestHint?.locale, "de");
+  assert.equal(snapshot.localeSuggestHint?.hintSource, LocaleHintSource.REFERRER);
 });
 
-test("geo hint shows after onboarding when hint was captured during the tour", () => {
+test("geo hint shows during onboarding once resolved", () => {
   let resolveGeo;
-  let onboardingActive = true;
   const controller = buildController({
-    onboarding: {
-      isActive: () => onboardingActive,
-      refreshStep: mock.fn(),
-    },
+    onboardingActive: true,
     waitForGeoCountryCode: (config) => {
       resolveGeo = config.onResolved;
     },
   });
 
   controller.syncTracking();
-  resolveGeo("DE");
   assert.equal(controller.syncTracking().localeSuggestVisible, false);
 
-  onboardingActive = false;
+  resolveGeo("DE");
   const snapshot = controller.syncTracking();
   assert.equal(snapshot.localeSuggestVisible, true);
   assert.equal(snapshot.localeSuggestHint?.locale, "de");

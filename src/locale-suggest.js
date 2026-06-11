@@ -62,15 +62,11 @@ export function isLocaleSuggestEligible({
   localeSource,
   storedLocale,
   dismissed,
-  onboardingActive,
-  coachmarkActive,
   activeLocale,
 }) {
   if (localeSource !== LocaleSource.DEFAULT) return false;
   if (storedLocale) return false;
   if (dismissed) return false;
-  if (onboardingActive) return false;
-  if (coachmarkActive) return false;
   if (!isDefaultLocale(activeLocale)) return false;
   return true;
 }

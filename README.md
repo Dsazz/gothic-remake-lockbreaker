@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.13.2-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.14.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.13.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.14.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
@@ -154,7 +154,7 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 
 ## Analytics
 
-Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture covers pageviews and clicks; custom events cover landing type, mapping milestones, solve funnel (with `solve_source`), walkthrough interaction, tutor/onboarding, share prompts, guide opens, lock wipe, and i18n (`locale_resolved`, `locale_changed`, `locale_session_end`, `i18n_banner_shown`, `locale_suggest_shown` / `locale_suggest_accepted` / `locale_suggest_declined`, translation-feedback link clicks). Every session registers `initial_locale`, `locale`, and engagement flags after bootstrap. Use `locale_session_end` where `staying_on_translation = true` for users who kept a translation, or `reverted_to_default = true` / `locale_changed.change_direction = to_default` for switch-back-to-English. No lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture, session replay, web vitals, heatmaps, surveys, and rageclick/dead-click capture are **disabled**; only explicit custom events are sent (landing type, mapping milestones, solve funnel with `solve_source` and `failure_reason`, aggregated `walkthrough_session_summary`, tutor/onboarding dismissals, share prompts, guide opens, lock wipe, and i18n). Every session registers `initial_locale`, `locale`, and engagement flags after bootstrap. Geo country (for locale suggest) is enriched server-side from IP — no lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
 ## Deploy your own
 

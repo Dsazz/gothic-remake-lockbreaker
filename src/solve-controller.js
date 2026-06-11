@@ -16,8 +16,6 @@ import {
   PromptKind,
   SolveFailureReason,
   SolveSource,
-  WalkthroughDirection,
-  WalkthroughUiAction,
 } from "./analytics/values.js";
 import {
   trackPromptDismissed,
@@ -27,10 +25,10 @@ import {
   trackSharePromptShown,
   trackSolveButtonClicked,
   trackSolveResult,
-  trackWalkthroughStepChanged,
-  trackWalkthroughUiToggled,
+  trackWalkthroughSessionSummary,
   trackStepMismatchClicked,
 } from "./analytics/index.js";
+import { createWalkthroughSummaryTracker } from "./walkthrough-summary.js";
 
 export function createEmptySession() {
   return {
@@ -93,6 +91,10 @@ export function createSolveController({
   const session = createEmptySession();
   session.hashBannerVisible = shouldShowHashBanner();
 
+  const walkthroughSummary = createWalkthroughSummaryTracker({
+    onFlush: (stats) => trackWalkthroughSessionSummary(stats),
+  });
+
   let copyTimer;
   let pulseTimer;
   let flashTimer;
@@ -133,11 +135,25 @@ export function createSolveController({
   }
 
   function invalidate() {
+    walkthroughSummary.flush();
     resetSession(session, {
       dismissCoachmark: () => {
         if (solveCoachmark.isActive()) solveCoachmark.dismissSilent();
       },
     });
+  }
+
+  function beginWalkthroughSummary(state) {
+    const totalSteps = session.solution?.length ?? 0;
+    if (totalSteps === 0) return;
+    walkthroughSummary.begin({ totalSteps, plateCount: state.plateCount });
+    walkthroughSummary.recordStepView(0);
+  }
+
+  function announceSolveFailure() {
+    if (!els.ariaLive) return;
+    const isOob = session.solveFailureReason === SolveFailureReason.OOB_START;
+    els.ariaLive.textContent = isOob ? t("solution.oob") : t("solution.noPath");
   }
 
   function pulseTumblers() {
@@ -273,6 +289,7 @@ export function createSolveController({
       return;
     }
 
+    walkthroughSummary.flush();
     session.blockedMessage = undefined;
     if (!isInBounds(state.positions)) {
       session.solution = null;
@@ -295,17 +312,19 @@ export function createSolveController({
 
     if (session.solution === null) {
       pulseTumblers();
+      announceSolveFailure();
+    } else if (Array.isArray(session.solution) && session.solution.length > 0) {
+      beginWalkthroughSummary(state);
+    } else {
+      walkthroughSummary.clear();
     }
 
     maybeShowSharePrompt(state);
     onRenderSolutionArea(state);
+    scrollSequencePanel();
 
     if (Array.isArray(session.solution) && session.solution.length > 0) {
       scrollSharePromptIntoView();
-    }
-
-    if (!auto || (Array.isArray(session.solution) && session.solution.length > 0)) {
-      scrollSequencePanel();
     }
   }
 
@@ -343,12 +362,8 @@ export function createSolveController({
       session.stepIndex = Math.max(0, Math.min(session.stepIndex, total));
       if (session.stepIndex !== prev) {
         session.showMismatchTips = false;
-        trackWalkthroughStepChanged({
-          direction: delta > 0 ? WalkthroughDirection.FORWARD : WalkthroughDirection.BACK,
-          stepIndex: session.stepIndex,
-          totalSteps: total,
-          plateCount: store.getState().plateCount,
-        });
+        if (delta > 0) walkthroughSummary.recordForward(session.stepIndex);
+        else walkthroughSummary.recordBack(session.stepIndex);
       }
       onRenderSolutionArea(store.getState());
     },
@@ -358,48 +373,26 @@ export function createSolveController({
       session.stepIndex = Math.max(0, Math.min(index, total));
       if (session.stepIndex !== prev) {
         session.showMismatchTips = false;
-        trackWalkthroughStepChanged({
-          direction: WalkthroughDirection.JUMP,
-          stepIndex: session.stepIndex,
-          totalSteps: total,
-          plateCount: store.getState().plateCount,
-        });
+        walkthroughSummary.recordJump(session.stepIndex);
       }
       onRenderSolutionArea(store.getState());
     },
     onToggleSteps() {
       session.showAllSteps = !session.showAllSteps;
-      if (session.showAllSteps) {
-        trackWalkthroughUiToggled({
-          action: WalkthroughUiAction.SHOW_ALL,
-          plateCount: store.getState().plateCount,
-        });
-      }
+      if (session.showAllSteps) walkthroughSummary.recordExpandedAll();
       onRenderSolutionArea(store.getState());
     },
     onMinimizeSequence() {
       session.sequenceMinimized = true;
       session.showAllSteps = false;
-      trackWalkthroughUiToggled({
-        action: WalkthroughUiAction.MINIMIZE,
-        plateCount: store.getState().plateCount,
-      });
       onRenderSolutionArea(store.getState());
     },
     onExpandSequence() {
       session.sequenceMinimized = false;
-      trackWalkthroughUiToggled({
-        action: WalkthroughUiAction.EXPAND,
-        plateCount: store.getState().plateCount,
-      });
       onRenderSolutionArea(store.getState());
       scrollSequencePanel();
     },
     onClearSolution() {
-      trackWalkthroughUiToggled({
-        action: WalkthroughUiAction.CLEAR_SOLUTION,
-        plateCount: store.getState().plateCount,
-      });
       invalidate();
       onRerender();
     },
@@ -446,5 +439,6 @@ export function createSolveController({
     onLocaleChangeRefresh,
     getTumblersPulse: () => tumblersPulse,
     getSolveReadyFlash: () => solveReadyFlash,
+    flushWalkthroughSummary: () => walkthroughSummary.flush(),
   };
 }

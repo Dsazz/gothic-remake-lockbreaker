@@ -13,8 +13,6 @@ import {
   SolveSource,
   SupportSource,
   TutorNotShownReason,
-  WalkthroughDirection,
-  WalkthroughUiAction,
 } from "../src/analytics/values.js";
 import { LocaleSource } from "../src/i18n.js";
 import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
@@ -31,8 +29,6 @@ const FROZEN_MAPS = [
   TutorNotShownReason,
   PromptKind,
   SupportSource,
-  WalkthroughDirection,
-  WalkthroughUiAction,
   StorageKeys,
   StorageFlag,
 ];

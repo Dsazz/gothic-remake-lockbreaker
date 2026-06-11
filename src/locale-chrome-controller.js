@@ -69,8 +69,6 @@ export function createLocaleChromeController({
       localeSource: getLocaleSource(),
       storedLocale: uiPrefs.getStoredLocale(),
       dismissed: localeSuggestDismissed,
-      onboardingActive: onboarding.isActive(),
-      coachmarkActive: solveCoachmark.isActive(),
       activeLocale: getLocale(),
     });
   }
@@ -241,8 +239,8 @@ export function createLocaleChromeController({
       dismissLocaleSuggest();
       onRenderLocaleChrome();
     },
-    onOpenGuide() {
-      openGuide(GuideSource.MANUAL);
+    onOpenGuide(source = GuideSource.MANUAL) {
+      openGuide(source);
     },
     onSupportClick(source = SupportSource.FOOTER_STRIP) {
       trackSupportLinkClicked({ source });

@@ -45,6 +45,7 @@ export const PromptKind = Object.freeze({
 export const GuideSource = Object.freeze({
   MANUAL: "manual",
   ONBOARDING_COMPLETE: "onboarding_complete",
+  FAILURE_NO_PATH: "failure_no_path",
 });
 
 export const SupportSource = Object.freeze({
@@ -69,15 +70,3 @@ export const LocaleChangeDirection = Object.freeze({
   BETWEEN_TRANSLATIONS: "between_translations",
 });
 
-export const WalkthroughDirection = Object.freeze({
-  FORWARD: "forward",
-  BACK: "back",
-  JUMP: "jump",
-});
-
-export const WalkthroughUiAction = Object.freeze({
-  SHOW_ALL: "show_all",
-  MINIMIZE: "minimize",
-  EXPAND: "expand",
-  CLEAR_SOLUTION: "clear_solution",
-});

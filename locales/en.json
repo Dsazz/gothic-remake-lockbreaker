@@ -112,6 +112,7 @@
     "hintMap": "Set each lock's start hole and couplings above, then crack it open.",
     "oob": "A pin starts outside the frame (holes 1–7). Tap each pin's hole to fix starting positions.",
     "noPath": "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.",
+    "noPathHint": "Check each With/Against chip on the tumbler cards — couplings are directional.",
     "openGuide": "Open guide",
     "alreadyOpen": "Nothing to do — every pin already rests in the notch.",
     "turnCountOne": "1 turn",
@@ -141,6 +142,11 @@
     "mismatch2": "If a step moves the wrong way, try the opposite direction label (game mirror).",
     "mismatch3": "Confirm each lock's start hole matches in-game.",
     "mismatch4": "Snapped picks? Set the count under Master, then tap Gone beside each dropped coupling."
+  },
+  "tutorOptIn": {
+    "prompt": "New to lock mapping? Take a 30s tour.",
+    "start": "Start tour",
+    "dismiss": "Dismiss tour offer"
   },
   "onboarding": {
     "kicker": "{current} / {total}",

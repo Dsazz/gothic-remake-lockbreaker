@@ -87,6 +87,7 @@
     "hintMap": "Ustaw otwory startowe i sprzężenia powyżej, potem otwórz zamek.",
     "oob": "Szpilka startuje poza ramą (otwory 1–7). Naciśnij każdy otwór startowy, by poprawić.",
     "noPath": "Brak bezpiecznej ścieżki przy tych sprzężeniach. Sprawdź With/Against na każdym chipie lub otwórz przewodnik.",
+    "noPathHint": "Sprawdź każdy chip With/Against na kartach — sprzężenia mają kierunek.",
     "openGuide": "Otwórz przewodnik",
     "alreadyOpen": "Nic do zrobienia — każda szpilka już w wycięciu.",
     "turnCountOne": "1 obrót",
@@ -117,6 +118,11 @@
     "mismatch2": "Jeśli krok idzie w złą stronę, spróbuj przeciwnej etykiety kierunku (lustro gry).",
     "mismatch3": "Potwierdź, że otwór startowy każdego zamka zgadza się z grą.",
     "mismatch4": "Złamane wytrychy? Ustaw liczbę na Master, potem Gone przy każdym usuniętym sprzężeniu."
+  },
+  "tutorOptIn": {
+    "prompt": "Pierwszy raz mapujesz zamek? 30-sekundowa wycieczka.",
+    "start": "Rozpocznij tour",
+    "dismiss": "Zamknij ofertę tour"
   },
   "onboarding": {
     "kicker": "{current} / {total}",

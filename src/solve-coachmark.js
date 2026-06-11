@@ -7,7 +7,7 @@ const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 const TARGET_LOWER_RATIO = 0.45;
 const FALLBACK_CARD_HEIGHT = 220;
 
-export function createSolveCoachmark({ onStepViewed, onDismissed }) {
+export function createSolveCoachmark({ onDismissed }) {
   let backdrop;
   let cardHost;
   let active = false;
@@ -206,7 +206,6 @@ export function createSolveCoachmark({ onStepViewed, onDismissed }) {
     }
 
     solveBtn.classList.add("onboarding-target");
-    onStepViewed?.({ stepId: OnboardingStepId.SOLVE_COACHMARK });
 
     solveListener = () => dismiss(OnboardingAction.SOLVE, solveBtn);
     backdropListener = () => dismiss(OnboardingAction.BACKDROP, solveBtn);

@@ -41,18 +41,17 @@ export const ONBOARDING_STEPS = [
 const STEPS = ONBOARDING_STEPS;
 
 export function createOnboarding({
-  onStepViewed,
   onDismissed,
   onComplete,
   onStarted,
   onNotShown,
-  onNextClicked,
   onSkipped,
 }) {
   let backdrop;
   let cardHost;
   let stepIndex = 0;
   let active = false;
+  let chipVisible = false;
   let resizeTimer;
 
   function measuredCardHeight() {
@@ -268,8 +267,6 @@ export function createOnboarding({
       finish(false);
     });
     card.querySelector(".onboarding-next").addEventListener("click", () => {
-      const isFinal = stepIndex === STEPS.length - 1;
-      onNextClicked?.({ stepId: step.id, stepIndex, totalSteps: STEPS.length, isFinal });
       stepIndex += 1;
       if (stepIndex >= STEPS.length) finish(true);
       else renderStep();
@@ -287,7 +284,6 @@ export function createOnboarding({
       document.querySelectorAll(".onboarding-target").forEach((node) => {
         node.classList.remove("onboarding-target");
       });
-      onStepViewed?.({ stepId: step.id });
     }
 
     const target = document.querySelector(step.target);
@@ -312,11 +308,41 @@ export function createOnboarding({
     }
   }
 
+  function hideOptInChip() {
+    chipVisible = false;
+  }
+
+  function startTour() {
+    if (isDismissed() || active) return;
+    hideOptInChip();
+    active = true;
+    stepIndex = 0;
+    document.body.classList.add("onboarding-active");
+    window.addEventListener("resize", onResize);
+    onStarted?.({ totalSteps: STEPS.length });
+    renderStep();
+  }
+
   return {
     isActive: () => active,
+    isChipVisible: () => chipVisible,
     refreshStep() {
       if (!active) return;
       renderStep({ refreshOnly: true });
+    },
+    showOptInChip() {
+      if (isDismissed() || active) return false;
+      chipVisible = true;
+      return true;
+    },
+    hideOptInChip,
+    dismissOptInChip() {
+      markDismissed();
+      hideOptInChip();
+      onNotShown?.({ reason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
+    },
+    startFromOptIn() {
+      startTour();
     },
     start({ skip = false, skipReason = TutorNotShownReason.RETURNING_USER } = {}) {
       if (skip) {
@@ -327,13 +353,7 @@ export function createOnboarding({
         onNotShown?.({ reason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
         return;
       }
-      if (active) return;
-      active = true;
-      stepIndex = 0;
-      document.body.classList.add("onboarding-active");
-      window.addEventListener("resize", onResize);
-      onStarted?.({ totalSteps: STEPS.length });
-      renderStep();
+      startTour();
     },
   };
 }

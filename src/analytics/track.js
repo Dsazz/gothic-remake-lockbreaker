@@ -135,17 +135,24 @@ export function trackGuideOpened({ source }) {
   send(Events.GUIDE_OPENED, { source, app_version: VERSION });
 }
 
-export function trackWalkthroughStepChanged({ direction, stepIndex, totalSteps, plateCount }) {
-  send(Events.WALKTHROUGH_STEP_CHANGED, {
+export function trackWalkthroughSessionSummary({
+  plateCount,
+  totalSteps,
+  stepsViewedMax,
+  forwardClicks,
+  backClicks,
+  jumpClicks,
+  expandedAll,
+}) {
+  send(Events.WALKTHROUGH_SESSION_SUMMARY, {
     ...baseProps(plateCount),
-    direction,
-    step_index: stepIndex,
     total_steps: totalSteps,
+    steps_viewed_max: stepsViewedMax,
+    forward_clicks: forwardClicks,
+    back_clicks: backClicks,
+    jump_clicks: jumpClicks,
+    expanded_all: expandedAll,
   });
-}
-
-export function trackWalkthroughUiToggled({ action, plateCount }) {
-  send(Events.WALKTHROUGH_UI_TOGGLED, { ...baseProps(plateCount), action });
 }
 
 export function trackPromptDismissed({ prompt, plateCount }) {
@@ -172,10 +179,6 @@ export function trackLockCleared() {
   send(Events.LOCK_CLEARED, { app_version: VERSION });
 }
 
-export function trackOnboardingStepViewed({ stepId }) {
-  send(Events.ONBOARDING_STEP_VIEWED, { step_id: stepId, app_version: VERSION });
-}
-
 export function trackOnboardingDismissed({ completed, stepId, stepIndex, action, totalSteps }) {
   send(Events.ONBOARDING_DISMISSED, {
     completed,
@@ -193,16 +196,6 @@ export function trackTutorStarted({ totalSteps }) {
 
 export function trackTutorNotShown({ reason }) {
   send(Events.TUTOR_NOT_SHOWN, { reason, app_version: VERSION });
-}
-
-export function trackTutorNextClicked({ stepId, stepIndex, totalSteps, isFinal }) {
-  send(Events.TUTOR_NEXT_CLICKED, {
-    step_id: stepId,
-    step_index: stepIndex,
-    total_steps: totalSteps,
-    is_final: isFinal,
-    app_version: VERSION,
-  });
 }
 
 export function trackTutorSkipped({ stepId, stepIndex, totalSteps }) {

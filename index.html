@@ -151,8 +151,21 @@
         posthog.init("phc_pryP4feC83sCWmTYDk335iBJruBuSaatcx8gw3Gn4XeA", {
           api_host: "https://e.gothiclockbreaker.com",
           ui_host: "https://eu.posthog.com",
-          defaults: "2026-05-30",
           person_profiles: "identified_only",
+          autocapture: false,
+          capture_pageview: false,
+          capture_pageleave: false,
+          capture_performance: false,
+          capture_exceptions: false,
+          rageclick: false,
+          disable_session_recording: true,
+          disable_surveys: true,
+          enable_heatmaps: false,
+          capture_dead_clicks: false,
+          advanced_disable_flags: true,
+          loaded: (ph) => {
+            ph.stopSessionRecording?.();
+          },
         });
       }
     </script>
@@ -315,6 +328,7 @@
     </main>
 
     <div id="locale-suggest" class="locale-suggest-host" hidden></div>
+    <div id="tutor-opt-in" class="tutor-opt-in-host" hidden></div>
     <div id="i18n-banner" class="i18n-toast-host" hidden></div>
 
     <div id="aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>

@@ -3,14 +3,22 @@ import assert from "node:assert/strict";
 import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
 
 const storage = new Map();
+const sessionStorageMap = new Map();
 
 test("createUiPrefs round-trips UI flags", async () => {
   const original = globalThis.localStorage;
+  const originalSession = globalThis.sessionStorage;
   globalThis.localStorage = {
     getItem: (key) => storage.get(key) ?? null,
     setItem: (key, value) => storage.set(key, value),
     removeItem: (key) => storage.delete(key),
     clear: () => storage.clear(),
+  };
+  globalThis.sessionStorage = {
+    getItem: (key) => sessionStorageMap.get(key) ?? null,
+    setItem: (key, value) => sessionStorageMap.set(key, value),
+    removeItem: (key) => sessionStorageMap.delete(key),
+    clear: () => sessionStorageMap.clear(),
   };
 
   try {
@@ -41,6 +49,8 @@ test("createUiPrefs round-trips UI flags", async () => {
     assert.equal(prefs.has("custom_key"), true);
   } finally {
     globalThis.localStorage = original;
+    globalThis.sessionStorage = originalSession;
     storage.clear();
+    sessionStorageMap.clear();
   }
 });

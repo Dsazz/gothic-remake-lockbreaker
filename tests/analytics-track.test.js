@@ -53,3 +53,52 @@ test("locale-engagement installs pagehide tracking", async () => {
   assert.match(text, /staying_on_translation/);
   assert.match(text, /pagehide/);
 });
+
+test("track.js exports walkthrough session summary", async () => {
+  const text = await readFile(join(root, "src/analytics/track.js"), "utf8");
+  assert.match(text, /export function trackWalkthroughSessionSummary/);
+  assert.match(text, /steps_viewed_max/);
+});
+
+test("values.js defines failure guide source", async () => {
+  const text = await readFile(join(root, "src/analytics/values.js"), "utf8");
+  assert.match(text, /FAILURE_NO_PATH/);
+});
+
+test("index.html uses lean PostHog init (quota-safe defaults)", async () => {
+  const text = await readFile(join(root, "index.html"), "utf8");
+  const leanFlags = [
+    "autocapture: false",
+    "capture_pageview: false",
+    "capture_pageleave: false",
+    "capture_performance: false",
+    "capture_exceptions: false",
+    "rageclick: false",
+    "disable_session_recording: true",
+    "disable_surveys: true",
+    "enable_heatmaps: false",
+    "capture_dead_clicks: false",
+    "advanced_disable_flags: true",
+    "stopSessionRecording",
+  ];
+  for (const flag of leanFlags) {
+    assert.match(text, new RegExp(flag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+  assert.doesNotMatch(text, /defaults:\s*["']2026-05-30["']/);
+});
+
+test("track.js does not export removed high-volume walkthrough/tutor events", async () => {
+  const text = await readFile(join(root, "src/analytics/track.js"), "utf8");
+  assert.doesNotMatch(text, /export function trackWalkthroughStepChanged/);
+  assert.doesNotMatch(text, /export function trackWalkthroughUiToggled/);
+  assert.doesNotMatch(text, /export function trackOnboardingStepViewed/);
+  assert.doesNotMatch(text, /export function trackTutorNextClicked/);
+});
+
+test("events.js omits removed high-volume event names", async () => {
+  const text = await readFile(join(root, "src/analytics/events.js"), "utf8");
+  assert.doesNotMatch(text, /walkthrough_step_changed/);
+  assert.doesNotMatch(text, /walkthrough_ui_toggled/);
+  assert.doesNotMatch(text, /onboarding_step_viewed/);
+  assert.doesNotMatch(text, /tutor_next_clicked/);
+});

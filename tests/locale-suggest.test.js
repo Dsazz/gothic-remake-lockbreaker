@@ -61,8 +61,6 @@ test("isLocaleSuggestEligible requires default English cold path", () => {
     localeSource: LocaleSource.DEFAULT,
     storedLocale: null,
     dismissed: false,
-    onboardingActive: false,
-    coachmarkActive: false,
     activeLocale: Locale.EN,
   };
   assert.equal(isLocaleSuggestEligible(base), true);
@@ -70,7 +68,5 @@ test("isLocaleSuggestEligible requires default English cold path", () => {
   assert.equal(isLocaleSuggestEligible({ ...base, localeSource: LocaleSource.QUERY }), false);
   assert.equal(isLocaleSuggestEligible({ ...base, storedLocale: Locale.DE }), false);
   assert.equal(isLocaleSuggestEligible({ ...base, dismissed: true }), false);
-  assert.equal(isLocaleSuggestEligible({ ...base, onboardingActive: true }), false);
-  assert.equal(isLocaleSuggestEligible({ ...base, coachmarkActive: true }), false);
   assert.equal(isLocaleSuggestEligible({ ...base, activeLocale: Locale.DE }), false);
 });

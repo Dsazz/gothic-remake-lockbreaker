@@ -27,8 +27,6 @@ import {
   trackLanding,
   trackLocaleResolved,
   trackOnboardingDismissed,
-  trackOnboardingStepViewed,
-  trackTutorNextClicked,
   trackTutorNotShown,
   trackTutorSkipped,
   trackTutorStarted,
@@ -58,7 +56,6 @@ let solve;
 let renderer;
 
 const solveCoachmark = createSolveCoachmark({
-  onStepViewed: ({ stepId }) => trackOnboardingStepViewed({ stepId }),
   onDismissed: (ctx) => {
     trackOnboardingDismissed(ctx);
     renderLocaleChrome();
@@ -66,7 +63,6 @@ const solveCoachmark = createSolveCoachmark({
 });
 
 const onboarding = createOnboarding({
-  onStepViewed: ({ stepId }) => trackOnboardingStepViewed({ stepId }),
   onDismissed: (ctx) => {
     trackOnboardingDismissed(ctx);
     solve.flushPendingCoachmark();
@@ -77,7 +73,6 @@ const onboarding = createOnboarding({
   },
   onStarted: ({ totalSteps }) => trackTutorStarted({ totalSteps }),
   onNotShown: ({ reason }) => trackTutorNotShown({ reason }),
-  onNextClicked: (ctx) => trackTutorNextClicked(ctx),
   onSkipped: (ctx) => trackTutorSkipped(ctx),
   onComplete: () => {
     setTimeout(() => locale.openGuideOnboardingComplete(), 0);
@@ -114,6 +109,15 @@ handlers = {
   ...lock.handlers,
   ...solve.handlers,
   ...locale.handlers,
+  onTutorOptInStart() {
+    onboarding.startFromOptIn();
+    renderAll(store.getState());
+  },
+  onTutorOptInDismiss() {
+    onboarding.dismissOptInChip();
+    renderAll(store.getState());
+    renderLocaleChrome();
+  },
 };
 
 renderLocaleChrome = () => {
@@ -125,6 +129,7 @@ renderer = createAppRenderer({
   els,
   store,
   solve,
+  onboarding,
   onRenderLocaleChrome: () => renderLocaleChrome(),
   handlers,
 });
@@ -132,6 +137,7 @@ renderAll = (state) => renderer.render(state);
 
 function wireApp() {
   installLocaleEngagementTracking();
+  window.addEventListener("pagehide", () => solve.flushWalkthroughSummary());
   els.solveBtn.addEventListener("click", () => solve.onSolve());
   store.subscribe(renderAll);
   renderAll(store.getState());
@@ -139,7 +145,10 @@ function wireApp() {
   if (store.wasLoadedFromHash && isLockMapped(store.getState())) {
     solve.onSolve({ auto: true, solveSource: SolveSource.HASH });
   } else if (landingType === LandingType.COLD) {
-    onboarding.start({ skip: false });
+    if (!onboarding.showOptInChip()) {
+      onboarding.start({ skip: true, skipReason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
+    }
+    renderAll(store.getState());
   } else {
     const skipReason =
       landingType === LandingType.HASH

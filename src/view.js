@@ -18,7 +18,7 @@ import {
   isInBounds,
   isPristineDefault,
 } from "./domain.js";
-import { SolveFailureReason, SupportSource } from "./analytics/values.js";
+import { GuideSource, SolveFailureReason, SupportSource } from "./analytics/values.js";
 import {
   CHANGELOG_URL,
   GITHUB_ISSUES_URL,
@@ -598,6 +598,37 @@ export function renderLocaleSuggest(container, ui, handlers) {
   );
 }
 
+export function renderTutorOptInChip(container, ui, handlers) {
+  if (!container) return;
+  if (!ui?.visible) {
+    container.replaceChildren();
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+  container.replaceChildren(
+    el("div", { class: "tutor-opt-in", role: "region", "aria-label": t("tutorOptIn.prompt") }, [
+      el("p", { class: "tutor-opt-in-text", text: t("tutorOptIn.prompt") }),
+      el("button", {
+        class: "pill pill-primary tutor-opt-in-start",
+        type: "button",
+        text: t("tutorOptIn.start"),
+        onClick: () => handlers.onTutorOptInStart?.(),
+      }),
+      el(
+        "button",
+        {
+          class: "icon-btn icon-btn--tool tutor-opt-in-dismiss",
+          type: "button",
+          "aria-label": t("tutorOptIn.dismiss"),
+          onClick: () => handlers.onTutorOptInDismiss?.(),
+        },
+        [dismissCrossSvg()],
+      ),
+    ]),
+  );
+}
+
 export function renderI18nBanner(container, ui, handlers) {
   if (!container) return;
   if (!ui?.visible) {
@@ -689,11 +720,12 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
     const children = [el("p", { class: "alert", text: message })];
     if (!isOob) {
       children.push(
+        el("p", { class: "hint solution-failure-hint", text: t("solution.noPathHint") }),
         el("button", {
           class: "pill pill-ghost solution-guide-btn",
           type: "button",
           text: t("solution.openGuide"),
-          onClick: handlers.onOpenGuide,
+          onClick: () => handlers.onOpenGuide?.(GuideSource.FAILURE_NO_PATH),
         }),
       );
     }

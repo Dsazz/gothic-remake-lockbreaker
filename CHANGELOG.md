@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.14.0] - 2026-06-11
+
+### Added
+
+- Tutor **opt-in chip** (bottom-left) instead of auto-starting the tour on cold landing.
+- `no_path` failure hint and **Open guide** button (`guide_opened` with `failure_no_path` source); en/de/pl/ukr copy.
+- `walkthrough_session_summary` — one aggregated event per session instead of per-step navigation spam.
+- `src/walkthrough-summary.js` with `pagehide` flush from solve controller.
+
+### Changed
+
+- Solve failure UX: scroll solution panel on all outcomes, `aria-live` on failure messages.
+- Locale suggest bar moved to **top of page**; visible during onboarding; decline stored in **sessionStorage** only.
+- PostHog lean init: autocapture, pageview/pageleave, performance/web vitals, session replay, surveys, heatmaps, rageclick, dead clicks, and feature flags disabled; `stopSessionRecording` on load.
+- Removed high-volume custom events: `walkthrough_step_changed`, `walkthrough_ui_toggled`, `onboarding_step_viewed`, `tutor_next_clicked` (funnel covered by `onboarding_dismissed` / `tutor_skipped`).
+
 ## [1.13.2] - 2026-06-10
 
 ### Added

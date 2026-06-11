@@ -16,6 +16,22 @@ function storageSet(key, value) {
   }
 }
 
+function sessionGet(key) {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function sessionSet(key, value) {
+  try {
+    sessionStorage.setItem(key, value);
+  } catch {
+    // ignore blocked storage
+  }
+}
+
 /** UI flag persistence — banners, visit marker, locale suggest dismiss. */
 export function createUiPrefs() {
   return {
@@ -47,10 +63,10 @@ export function createUiPrefs() {
       storageSet(StorageKeys.I18N_BANNER_DISMISSED, StorageFlag.SET);
     },
     isLocaleSuggestDismissed() {
-      return storageGet(StorageKeys.LOCALE_SUGGEST_DISMISSED) === StorageFlag.SET;
+      return sessionGet(StorageKeys.LOCALE_SUGGEST_SESSION_DISMISSED) === StorageFlag.SET;
     },
     dismissLocaleSuggest() {
-      storageSet(StorageKeys.LOCALE_SUGGEST_DISMISSED, StorageFlag.SET);
+      sessionSet(StorageKeys.LOCALE_SUGGEST_SESSION_DISMISSED, StorageFlag.SET);
     },
     getStoredLocale() {
       return storageGet(StorageKeys.LOCALE);
