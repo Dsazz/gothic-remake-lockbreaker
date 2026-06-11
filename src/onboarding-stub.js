@@ -6,6 +6,9 @@ export function createOnboardingStub({ onNotShown } = {}) {
     isChipVisible: () => false,
     refreshStep() {},
     showOptInChip: () => false,
+    enterColdLanding() {
+      onNotShown?.({ reason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
+    },
     hideOptInChip() {},
     dismissOptInChip() {
       onNotShown?.({ reason: TutorNotShownReason.PREVIOUSLY_DISMISSED });

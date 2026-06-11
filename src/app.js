@@ -22,7 +22,8 @@ import { createOnboardingStub } from "./onboarding-stub.js";
 import { createSolveCoachmark } from "./solve-coachmark.js";
 import { oldCampExample } from "./examples.js";
 import { wireHowToMapImage } from "./how-to-map-image.js";
-import { LandingType, SolveSource, TutorNotShownReason } from "./analytics/values.js";
+import { LandingType } from "./analytics/values.js";
+import { resolveStartup, StartupAction } from "./startup.js";
 
 const els = getAppElements();
 const uiPrefs = createUiPrefs();
@@ -126,31 +127,43 @@ function initControllers() {
   renderAll = (state) => renderer.render(state);
 }
 
-function wireApp() {
-  wireHowToMapImage();
+function bindAppEvents() {
   window.addEventListener("pagehide", () => solve.flushWalkthroughSummary());
   els.solveBtn.addEventListener("click", () => solve.onSolve());
+  els.loadExampleLock?.addEventListener("click", () =>
+    handlers.onLoadExampleLock(oldCampExample()),
+  );
   store.subscribe(renderAll);
-  renderAll(store.getState());
+}
 
-  if (store.wasLoadedFromHash && isLockMapped(store.getState())) {
-    solve.onSolve({ auto: true, solveSource: SolveSource.HASH });
-  } else if (landingType === LandingType.COLD) {
-    if (!onboarding.showOptInChip()) {
-      onboarding.start({ skip: true, skipReason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
-    }
-    renderAll(store.getState());
-  } else {
-    const skipReason =
-      landingType === LandingType.HASH
-        ? TutorNotShownReason.HASH_LANDING
-        : TutorNotShownReason.RETURNING_USER;
-    onboarding.start({ skip: true, skipReason });
+function applyOnboardingPlan(plan) {
+  if (plan.action === StartupAction.COLD_ENTRY) {
+    onboarding.enterColdLanding();
+    return;
   }
+  if (plan.action === StartupAction.SKIP) {
+    onboarding.start({ skip: true, skipReason: plan.skipReason });
+  }
+}
 
-  document.getElementById("load-example-lock")?.addEventListener("click", () => {
-    handlers.onLoadExampleLock(oldCampExample());
+function applyAutoSolve(plan) {
+  if (plan.action !== StartupAction.AUTO_SOLVE) return;
+  solve.onSolve({ auto: true, solveSource: plan.solveSource });
+}
+
+function wireApp() {
+  wireHowToMapImage();
+  bindAppEvents();
+
+  const plan = resolveStartup({
+    landingType,
+    wasLoadedFromHash: store.wasLoadedFromHash,
+    mapped: isLockMapped(store.getState()),
   });
+
+  applyOnboardingPlan(plan);
+  renderAll(store.getState());
+  applyAutoSolve(plan);
 
   renderLocaleChrome();
 }

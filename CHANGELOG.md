@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.15.1] - 2026-06-11
+
+### Fixed
+
+- Cold-landing layout shift from the tour opt-in chip injecting on a second paint (Web Vitals CLS).
+
+### Changed
+
+- Boot startup split into pure landing policy (`src/startup.js`), DOM event binding, and phase-ordered appliers; cold chip eligibility lives in `onboarding.enterColdLanding()`.
+
 ## [1.15.0] - 2026-06-11
 
 ### Added

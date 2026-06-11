@@ -13,6 +13,7 @@ export function getAppElements() {
     solution: document.getElementById("solution"),
     solveBtn: document.getElementById("solve-btn"),
     guide: document.getElementById("how-to-map"),
+    loadExampleLock: document.getElementById("load-example-lock"),
     version: document.getElementById("app-version"),
     headSupport: document.getElementById("app-head-support"),
     headLang: document.getElementById("app-head-lang"),

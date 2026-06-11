@@ -293,6 +293,17 @@ export function createOnboarding({
     chipVisible = false;
   }
 
+  function showOptInChip() {
+    if (isDismissed() || active) return false;
+    chipVisible = true;
+    return true;
+  }
+
+  function enterColdLanding() {
+    if (showOptInChip()) return;
+    onNotShown?.({ reason: TutorNotShownReason.PREVIOUSLY_DISMISSED });
+  }
+
   function startTour() {
     if (isDismissed() || active) return;
     hideOptInChip();
@@ -311,11 +322,8 @@ export function createOnboarding({
       if (!active) return;
       renderStep({ refreshOnly: true });
     },
-    showOptInChip() {
-      if (isDismissed() || active) return false;
-      chipVisible = true;
-      return true;
-    },
+    showOptInChip,
+    enterColdLanding,
     hideOptInChip,
     dismissOptInChip() {
       markDismissed();

@@ -5,8 +5,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { ONBOARDING_STEPS } from "../src/onboarding.js";
-import { OnboardingStepId } from "../src/analytics/values.js";
-import { StorageKeys } from "../src/storage-keys.js";
+import { OnboardingStepId, TutorNotShownReason } from "../src/analytics/values.js";
+import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -44,4 +44,53 @@ test("onboarding has four steps including mastery tier before plate count", () =
 
 test("onboarding dismiss key is v3", () => {
   assert.equal(StorageKeys.ONBOARDING_DISMISSED_V3, "onboarding_dismissed_v3");
+});
+
+test("enterColdLanding shows opt-in chip for fresh cold users", async () => {
+  const storage = new Map();
+  const original = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (key) => storage.get(key) ?? null,
+    setItem: (key, value) => storage.set(key, value),
+    removeItem: (key) => storage.delete(key),
+    clear: () => storage.clear(),
+  };
+
+  try {
+    const { createOnboarding } = await import("../src/onboarding.js");
+    const onboarding = createOnboarding({});
+    onboarding.enterColdLanding();
+    assert.equal(onboarding.isChipVisible(), true);
+  } finally {
+    globalThis.localStorage = original;
+    storage.clear();
+  }
+});
+
+test("enterColdLanding reports previously dismissed when tour was dismissed", async () => {
+  const storage = new Map();
+  storage.set(StorageKeys.ONBOARDING_DISMISSED_V3, StorageFlag.SET);
+  const original = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (key) => storage.get(key) ?? null,
+    setItem: (key, value) => storage.set(key, value),
+    removeItem: (key) => storage.delete(key),
+    clear: () => storage.clear(),
+  };
+
+  try {
+    const { createOnboarding } = await import("../src/onboarding.js");
+    let reportedReason;
+    const onboarding = createOnboarding({
+      onNotShown: ({ reason }) => {
+        reportedReason = reason;
+      },
+    });
+    onboarding.enterColdLanding();
+    assert.equal(onboarding.isChipVisible(), false);
+    assert.equal(reportedReason, TutorNotShownReason.PREVIOUSLY_DISMISSED);
+  } finally {
+    globalThis.localStorage = original;
+    storage.clear();
+  }
 });
