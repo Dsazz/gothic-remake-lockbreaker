@@ -114,6 +114,7 @@
     "noPath": "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.",
     "noPathHint": "Check each With/Against chip on the tumbler cards — couplings are directional.",
     "openGuide": "Open guide",
+    "loadExample": "Load example lock",
     "alreadyOpen": "Nothing to do — every pin already rests in the notch.",
     "turnCountOne": "1 turn",
     "turnCountMany": "{n} turns",
@@ -122,7 +123,7 @@
     "lockOpen": "Lock open",
     "sharedBanner": "Shared lock — sequence ready below.",
     "shareText": "Copy link to share this exact lock.",
-    "shareBtn": "Share lock",
+    "shareBtn": "Copy link",
     "shareCopied": "Copied!",
     "dismiss": "Dismiss"
   },

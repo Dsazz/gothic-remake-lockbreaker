@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.18.0] - 2026-06-12
+
+### Added
+
+- Press-referrer auto-locale: visitors from pcgames.de, buffed.de, gamestar.de, and ithardware.pl load German or Polish UI on first paint (respects locale suggest dismiss for the session).
+- "Load example lock" recovery button on no-path solve failures — loads the Old Camp example and auto-solves.
+
+### Changed
+
+- Share prompt CTA copy aligned with clipboard action ("Copy link" in all locales); suppressed while the shared-lock hash banner is visible.
+- Footer Ko-fi tap target bumped to 44px on mobile with focus-visible parity.
+
 ## [1.17.2] - 2026-06-12
 
 ### Fixed

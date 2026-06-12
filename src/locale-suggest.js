@@ -1,16 +1,16 @@
 import { isDefaultLocale, Locale, LocaleSource } from "./i18n.js";
+import {
+  parseReferrerHost,
+  REFERRER_LOCALE_HINTS,
+  resolveReferrerLocaleHint as resolveReferrerLocaleHintRaw,
+} from "./referrer-locale-hints.js";
+
+export { REFERRER_LOCALE_HINTS, parseReferrerHost };
 
 export const LocaleHintSource = Object.freeze({
   REFERRER: "referrer",
   GEO: "geo",
 });
-
-export const REFERRER_LOCALE_HINTS = Object.freeze([
-  { pattern: /(^|\.)pcgames\.de$/i, locale: Locale.DE },
-  { pattern: /(^|\.)buffed\.de$/i, locale: Locale.DE },
-  { pattern: /(^|\.)gamestar\.de$/i, locale: Locale.DE },
-  { pattern: /(^|\.)ithardware\.pl$/i, locale: Locale.PL },
-]);
 
 export const GEO_COUNTRY_LOCALE = Object.freeze({
   DE: Locale.DE,
@@ -24,26 +24,11 @@ const LOCALE_PROMPT_KEYS = Object.freeze({
   [Locale.PL]: "localeSuggest.promptPl",
 });
 
-/** @param {string} referrer */
-export function parseReferrerHost(referrer) {
-  if (!referrer) return null;
-  try {
-    return new URL(referrer).hostname.toLowerCase();
-  } catch {
-    return null;
-  }
-}
-
 /** @param {string} [referrer] */
 export function resolveReferrerLocaleHint(referrer = "") {
-  const host = parseReferrerHost(referrer);
-  if (!host) return null;
-  for (const { pattern, locale } of REFERRER_LOCALE_HINTS) {
-    if (pattern.test(host)) {
-      return { locale, hintSource: LocaleHintSource.REFERRER };
-    }
-  }
-  return null;
+  const hint = resolveReferrerLocaleHintRaw(referrer);
+  if (!hint) return null;
+  return { locale: hint.locale, hintSource: LocaleHintSource.REFERRER };
 }
 
 /** @param {string | null | undefined} countryCode */

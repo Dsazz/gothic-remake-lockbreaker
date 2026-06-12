@@ -1704,6 +1704,13 @@ summary.icon-btn:focus-visible {
   align-items: flex-start;
 }
 
+.solution-failure-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .step-toggle {
   margin-top: 12px;
   width: 100%;
@@ -2647,5 +2654,16 @@ body.onboarding-active.onboarding-card-at-bottom .onboarding-target {
     min-height: 44px;
     padding-left: 12px;
     padding-right: 12px;
+  }
+
+  .support-cta {
+    min-height: 44px;
+  }
+
+  .support-cta:focus-visible {
+    border-color: var(--bronze-bright);
+    background: rgba(233, 185, 105, 0.18);
+    box-shadow: 0 0 12px var(--bronze-glow), var(--bevel);
+    outline: none;
   }
 }

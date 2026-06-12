@@ -1,4 +1,5 @@
-import { StorageKeys } from "./storage-keys.js";
+import { StorageKeys, StorageFlag } from "./storage-keys.js";
+import { resolveReferrerLocaleHint } from "./referrer-locale-hints.js";
 import enCatalog from "../locales/en.json" with { type: "json" };
 
 export const Locale = Object.freeze({
@@ -87,6 +88,14 @@ function storageSet(key, value) {
   }
 }
 
+function sessionGet(key) {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
 export function isDefaultLocale(locale) {
   return locale === DEFAULT_LOCALE;
 }
@@ -100,22 +109,37 @@ export function localePageUrl(locale, origin = SITE_ORIGIN) {
   return isDefaultLocale(locale) ? `${origin}/` : `${origin}/?lang=${locale}`;
 }
 
-/** Pure resolution for tests and init — query beats storage beats default. */
-export function resolveLocalePreference({ queryLang, storedLocale }) {
+/** Pure resolution for tests and init — query beats storage beats referrer hint beats default. */
+export function resolveLocalePreference({
+  queryLang,
+  storedLocale,
+  referrer = "",
+  localeSuggestDismissed = false,
+}) {
   if (queryLang && SUPPORTED_LOCALES.includes(queryLang)) {
     return { locale: queryLang, source: LocaleSource.QUERY };
   }
   if (storedLocale && SUPPORTED_LOCALES.includes(storedLocale)) {
     return { locale: storedLocale, source: LocaleSource.STORAGE };
   }
+  if (!localeSuggestDismissed) {
+    const referrerHint = resolveReferrerLocaleHint(referrer);
+    if (referrerHint && SUPPORTED_LOCALES.includes(referrerHint.locale)) {
+      return { locale: referrerHint.locale, source: LocaleSource.QUERY };
+    }
+  }
   return { locale: DEFAULT_LOCALE, source: LocaleSource.DEFAULT };
 }
 
 function resolveInitialLocale() {
   const params = new URLSearchParams(location.search);
+  const localeSuggestDismissed =
+    sessionGet(StorageKeys.LOCALE_SUGGEST_SESSION_DISMISSED) === StorageFlag.SET;
   const { locale, source } = resolveLocalePreference({
     queryLang: params.get("lang"),
     storedLocale: storageGet(StorageKeys.LOCALE),
+    referrer: typeof document !== "undefined" ? document.referrer : "",
+    localeSuggestDismissed,
   });
   localeSource = source;
   return locale;

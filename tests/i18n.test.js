@@ -52,7 +52,7 @@ test("isDefaultLocale identifies English only", () => {
   assert.equal(isDefaultLocale(Locale.DE), false);
 });
 
-test("resolveLocalePreference prioritizes query over storage over default", () => {
+test("resolveLocalePreference prioritizes query over storage over referrer over default", () => {
   assert.deepEqual(
     resolveLocalePreference({ queryLang: Locale.DE, storedLocale: Locale.PL }),
     { locale: Locale.DE, source: LocaleSource.QUERY },
@@ -62,7 +62,32 @@ test("resolveLocalePreference prioritizes query over storage over default", () =
     { locale: Locale.PL, source: LocaleSource.STORAGE },
   );
   assert.deepEqual(
-    resolveLocalePreference({ queryLang: null, storedLocale: null }),
+    resolveLocalePreference({
+      queryLang: null,
+      storedLocale: null,
+      referrer: "https://www.pcgames.de/article/123",
+    }),
+    { locale: Locale.DE, source: LocaleSource.QUERY },
+  );
+  assert.deepEqual(
+    resolveLocalePreference({
+      queryLang: null,
+      storedLocale: null,
+      referrer: "https://forum.ithardware.pl/topic/1",
+    }),
+    { locale: Locale.PL, source: LocaleSource.QUERY },
+  );
+  assert.deepEqual(
+    resolveLocalePreference({ queryLang: null, storedLocale: null, referrer: "" }),
+    { locale: DEFAULT_LOCALE, source: LocaleSource.DEFAULT },
+  );
+  assert.deepEqual(
+    resolveLocalePreference({
+      queryLang: null,
+      storedLocale: null,
+      referrer: "https://www.pcgames.de/article/123",
+      localeSuggestDismissed: true,
+    }),
     { locale: DEFAULT_LOCALE, source: LocaleSource.DEFAULT },
   );
 });
