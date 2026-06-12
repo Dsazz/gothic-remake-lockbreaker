@@ -156,6 +156,7 @@ export function createLocaleChromeController({
   function render(handlers, tracking) {
     view.renderVersionBadge(els.version, VERSION);
     view.renderHeadSupport(els.headSupport, handlers);
+    view.renderHeadSleeper(els.headSleeper, handlers);
     renderLocaleSwitcher(els.headLang);
     view.renderFooter(els.foot, VERSION, handlers);
     applyStaticContent();

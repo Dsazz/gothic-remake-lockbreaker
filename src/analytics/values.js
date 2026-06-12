@@ -50,6 +50,7 @@ export const GuideSource = Object.freeze({
 
 export const SupportSource = Object.freeze({
   HEADER_ORE: "header_ore",
+  HEADER_SLEEPER: "header_sleeper",
   FOOTER_STRIP: "footer_strip",
   I18N_BANNER: "i18n_banner",
 });

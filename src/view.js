@@ -1114,6 +1114,44 @@ function supportOreImg(className, size) {
   });
 }
 
+const SLEEPER_ICON_SIZE = 96;
+
+function sleeperSupportImg(className, src) {
+  return el("img", {
+    class: className,
+    src,
+    alt: "",
+    "aria-hidden": "true",
+    width: String(SLEEPER_ICON_SIZE),
+    height: String(SLEEPER_ICON_SIZE),
+  });
+}
+
+function sleeperSupportIcon() {
+  return el("span", { class: "app-head-sleeper-icon" }, [
+    sleeperSupportImg("app-head-sleeper-img is-sleep", "assets/sleeper-sleep.webp"),
+    sleeperSupportImg("app-head-sleeper-img is-awake", "assets/sleeper-awake.webp"),
+  ]);
+}
+
+export function renderHeadSleeper(container, handlers) {
+  if (!container) return;
+  container.hidden = false;
+  container.replaceChildren(
+    el("a", {
+      class: "app-head-sleeper-link",
+      href: SUPPORT_URL,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      "aria-label": t("support.aria"),
+      onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_SLEEPER),
+    }, [
+      sleeperSupportIcon(),
+      el("span", { class: "app-head-sleeper-tip", text: t("support.sleeperTip") }),
+    ]),
+  );
+}
+
 export function renderHeadSupport(container, handlers) {
   if (!container) return;
   container.hidden = false;

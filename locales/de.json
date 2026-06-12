@@ -165,7 +165,8 @@
     "aria": "Optionaler Tipp auf Ko-fi — unterstützt Wartung. Solver bleibt kostenlos.",
     "tooltip": "Wirf ein Erz — hält den Solver kostenlos",
     "cta": "Erz spenden",
-    "sub": "Hält den Solver kostenlos"
+    "sub": "Hält den Solver kostenlos",
+    "sleeperTip": "Der Schläfer erwache!"
   },
   "i18nBanner": {
     "text": "Diese Oberfläche ist maschinell übersetzt — Formulierungen können falsch oder holprig sein.",

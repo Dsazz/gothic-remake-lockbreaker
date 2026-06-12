@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.19.0] - 2026-06-12
+
+### Added
+
+- Header **Sleeper** Ko-fi easter egg — top-right on desktop, sleep-to-awake hover, Gothic tooltip (*Der Schläfer erwache!*), transparent WebP assets.
+- PostHog `support_link_clicked` with `source: header_sleeper` when the Sleeper icon is opened.
+
 ## [1.18.0] - 2026-06-12
 
 ### Added
