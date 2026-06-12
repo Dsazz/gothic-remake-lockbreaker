@@ -54,6 +54,7 @@ export const SupportSource = Object.freeze({
   I18N_BANNER: "i18n_banner",
 });
 
+
 export const LocaleChangeSource = Object.freeze({
   SWITCHER: "switcher",
   SUGGEST_BAR: "suggest_bar",

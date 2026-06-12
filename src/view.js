@@ -1116,9 +1116,11 @@ export function renderHeadSupport(container, handlers) {
       target: "_blank",
       rel: "noopener noreferrer",
       "aria-label": t("support.aria"),
-      "data-tooltip": t("support.tooltip"),
       onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_ORE),
-    }, [supportOreImg("app-head-support-ore", 28)]),
+    }, [
+      supportOreImg("app-head-support-ore", 36),
+      el("span", { class: "app-head-support-label", text: t("support.cta") }),
+    ]),
   );
 }
 
@@ -1140,6 +1142,7 @@ function supportStrip(handlers) {
     ]),
   ]);
 }
+
 
 export function renderVersionBadge(container, version) {
   container.replaceChildren(versionLink(version));

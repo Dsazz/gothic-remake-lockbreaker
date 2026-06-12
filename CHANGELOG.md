@@ -8,7 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
-## [1.16.1] - 2026-06-12
+## [1.17.0] - 2026-06-12
+
+### Changed
+
+- Support button moved from hidden top-right corner to an inline pill in the header bar — ore icon + "Toss an ore" label, visible in the natural reading flow on desktop and mobile.
+- New ore icon asset with transparent background, trimmed to content.
+- Ore glow shifted to deep royal blue across header pill, idle pulse animation, and footer strip hover.
 
 ### Fixed
 

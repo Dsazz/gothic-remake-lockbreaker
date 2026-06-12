@@ -233,6 +233,7 @@ export function trackSupportLinkClicked({ source }) {
   send(Events.SUPPORT_LINK_CLICKED, { source, app_version: VERSION });
 }
 
+
 export function trackLocaleChanged({ locale, previousLocale, source, switchCount }) {
   const change_direction = localeChangeDirection({ locale, previousLocale });
   send(Events.LOCALE_CHANGED, {
