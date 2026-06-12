@@ -303,7 +303,11 @@ export async function initI18n() {
 
 export async function setLocale(locale, { changeSource, localeSource: nextSource } = {}) {
   if (!SUPPORTED_LOCALES.includes(locale) || locale === activeLocale) return activeLocale;
-  if (!catalogs[locale]) await loadCatalog(locale);
+  try {
+    if (!catalogs[locale]) await loadCatalog(locale);
+  } catch {
+    return activeLocale;
+  }
   activeLocale = locale;
   if (nextSource) localeSource = nextSource;
   storageSet(StorageKeys.LOCALE, locale);
