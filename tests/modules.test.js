@@ -101,7 +101,18 @@ test("renderControls hides wipe until lock differs from default; share is banner
   assert.doesNotMatch(viewText, /controls-share/);
   assert.match(viewText, /renderSharePrompt/);
   assert.match(solveText, /sharePromptVisible && hasMoves/);
+  assert.match(solveText, /if \(shouldShowHashBanner\(\)\) return;/);
+  assert.match(
+    solveText,
+    /session\.sharePromptVisible && Array\.isArray\(session\.solution\)/,
+  );
   assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
+});
+
+test("no_path failure offers example lock recovery", async () => {
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  assert.match(viewText, /solution\.loadExample/);
+  assert.match(viewText, /onLoadExampleFromFailure/);
 });
 
 test("walkthrough uses tertiary help trigger, not pill mismatch button", async () => {

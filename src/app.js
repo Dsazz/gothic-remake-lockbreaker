@@ -100,6 +100,9 @@ function initControllers() {
     ...lock.handlers,
     ...solve.handlers,
     ...locale.handlers,
+    onLoadExampleFromFailure() {
+      lock.handlers.onLoadExampleLock(oldCampExample());
+    },
     onTutorOptInStart() {
       onboarding.startFromOptIn();
       renderer.renderTutorChip();

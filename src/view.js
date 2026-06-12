@@ -721,12 +721,20 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
     if (!isOob) {
       children.push(
         el("p", { class: "hint solution-failure-hint", text: t("solution.noPathHint") }),
-        el("button", {
-          class: "pill pill-ghost solution-guide-btn",
-          type: "button",
-          text: t("solution.openGuide"),
-          onClick: () => handlers.onOpenGuide?.(GuideSource.FAILURE_NO_PATH),
-        }),
+        el("div", { class: "solution-failure-actions" }, [
+          el("button", {
+            class: "pill pill-ghost solution-guide-btn",
+            type: "button",
+            text: t("solution.openGuide"),
+            onClick: () => handlers.onOpenGuide?.(GuideSource.FAILURE_NO_PATH),
+          }),
+          el("button", {
+            class: "pill solution-example-btn",
+            type: "button",
+            text: t("solution.loadExample"),
+            onClick: () => handlers.onLoadExampleFromFailure?.(),
+          }),
+        ]),
       );
     }
     container.replaceChildren(el("div", { class: "solution-failure" }, children));

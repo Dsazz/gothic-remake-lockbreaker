@@ -184,6 +184,7 @@ export function createSolveController({
   }
 
   function maybeShowSharePrompt(state) {
+    if (shouldShowHashBanner()) return;
     if (!Array.isArray(session.solution) || session.solution.length === 0) return;
     session.sharePromptVisible = true;
     if (!session.sharePromptTracked) {
@@ -323,7 +324,7 @@ export function createSolveController({
     onRenderSolutionArea(state);
     scrollSequencePanel();
 
-    if (Array.isArray(session.solution) && session.solution.length > 0) {
+    if (session.sharePromptVisible && Array.isArray(session.solution) && session.solution.length > 0) {
       scrollSharePromptIntoView();
     }
   }

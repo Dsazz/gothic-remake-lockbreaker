@@ -89,6 +89,7 @@
     "noPath": "Brak bezpiecznej ścieżki przy tych sprzężeniach. Sprawdź With/Against na każdym chipie lub otwórz przewodnik.",
     "noPathHint": "Sprawdź każdy chip With/Against na kartach — sprzężenia mają kierunek.",
     "openGuide": "Otwórz przewodnik",
+    "loadExample": "Wczytaj przykładowy zamek",
     "alreadyOpen": "Nic do zrobienia — każda szpilka już w wycięciu.",
     "turnCountOne": "1 obrót",
     "turnCountFew": "{n} obroty",
@@ -98,7 +99,7 @@
     "lockOpen": "Otwarty",
     "sharedBanner": "Udostępniony zamek — sekwencja gotowa poniżej.",
     "shareText": "Skopiuj link, by udostępnić ten zamek.",
-    "shareBtn": "Udostępnij zamek",
+    "shareBtn": "Kopiuj link",
     "shareCopied": "Skopiowano!",
     "dismiss": "Zamknij"
   },

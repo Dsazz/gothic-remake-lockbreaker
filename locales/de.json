@@ -89,6 +89,7 @@
     "noPath": "Kein sicherer Weg mit diesen Kupplungen. Prüfe With/Against auf jedem Chip oder öffne die Anleitung.",
     "noPathHint": "Prüfe jeden With/Against-Chip auf den Zylinderkarten — Kupplungen sind richtungsabhängig.",
     "openGuide": "Anleitung öffnen",
+    "loadExample": "Beispielschloss laden",
     "alreadyOpen": "Nichts zu tun — jede Nadel liegt bereits in der Kerbe.",
     "turnCountOne": "1 Drehung",
     "turnCountMany": "{n} Drehungen",
@@ -97,7 +98,7 @@
     "lockOpen": "Offen",
     "sharedBanner": "Geteiltes Schloss — Sequenz unten bereit.",
     "shareText": "Link kopieren, um dieses Schloss zu teilen.",
-    "shareBtn": "Schloss teilen",
+    "shareBtn": "Link kopieren",
     "shareCopied": "Kopiert!",
     "dismiss": "Schließen"
   },
