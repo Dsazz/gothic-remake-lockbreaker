@@ -50,6 +50,10 @@ test("SupportSource includes i18n banner", () => {
   assert.equal(SupportSource.I18N_BANNER, "i18n_banner");
 });
 
+test("SupportSource includes header sleeper", () => {
+  assert.equal(SupportSource.HEADER_SLEEPER, "header_sleeper");
+});
+
 test("onboarding step ids align with OnboardingStepId (tour steps only)", () => {
   const tourIds = new Set(Object.values(OnboardingStepId));
   tourIds.delete(OnboardingStepId.SOLVE_COACHMARK);

@@ -181,6 +181,190 @@ button {
   z-index: 1;
 }
 
+.app-head-sleeper {
+  position: absolute;
+  top: clamp(12px, 2.5vw, 16px);
+  right: clamp(12px, 3vw, 20px);
+  z-index: 3;
+}
+
+.app-head-sleeper-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(48px, 5vw, 72px);
+  min-height: clamp(48px, 5vw, 72px);
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  transition: transform 0.15s;
+}
+
+.app-head-sleeper-link:hover {
+  transform: scale(1.02);
+}
+
+.app-head-sleeper-link:focus-visible {
+  outline: 2px solid var(--bronze-bright);
+  outline-offset: 3px;
+  transform: scale(1.02);
+}
+
+.app-head-sleeper-icon {
+  position: relative;
+  width: clamp(48px, 5vw, 72px);
+  height: clamp(48px, 5vw, 72px);
+  display: block;
+  flex-shrink: 0;
+}
+
+.app-head-sleeper-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.2s ease;
+}
+
+.app-head-sleeper-img.is-awake {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.app-head-sleeper-link:hover .app-head-sleeper-img.is-sleep,
+.app-head-sleeper-link:focus-visible .app-head-sleeper-img.is-sleep {
+  opacity: 0;
+}
+
+.app-head-sleeper-link:hover .app-head-sleeper-img.is-awake,
+.app-head-sleeper-link:focus-visible .app-head-sleeper-img.is-awake {
+  opacity: 1;
+}
+
+.app-head-sleeper-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  padding: 8px 14px 9px;
+  border-radius: var(--radius);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised) 0%, var(--stone-sunken) 100%);
+  color: var(--parchment);
+  font-family: var(--display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgba(230, 189, 107, 0.14),
+    0 8px 22px rgba(0, 0, 0, 0.62);
+}
+
+.app-head-sleeper-tip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bronze-bright), transparent);
+  opacity: 0.65;
+}
+
+.app-head-sleeper-tip::after {
+  content: "";
+  position: absolute;
+  bottom: calc(100% - 5px);
+  right: 22px;
+  width: 9px;
+  height: 9px;
+  background: var(--stone-raised);
+  border-left: 1px solid var(--bronze-deep);
+  border-top: 1px solid var(--bronze-deep);
+  transform: rotate(45deg);
+}
+
+.app-head-sleeper-link:hover .app-head-sleeper-tip,
+.app-head-sleeper-link:focus-visible .app-head-sleeper-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-head-sleeper-link {
+    transition: none;
+  }
+
+  .app-head-sleeper-link:hover,
+  .app-head-sleeper-link:focus-visible {
+    transform: none;
+  }
+
+  .app-head-sleeper-img,
+  .app-head-sleeper-tip {
+    transition: none;
+  }
+
+  .app-head-sleeper-link:hover .app-head-sleeper-tip,
+  .app-head-sleeper-link:focus-visible .app-head-sleeper-tip {
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 900px) {
+  .app-head-sleeper {
+    top: 50%;
+    right: clamp(56px, 6vw, 84px);
+    transform: translateY(-50%);
+  }
+
+  .app-head-sleeper-link {
+    min-width: 96px;
+    min-height: 96px;
+  }
+
+  .app-head-sleeper-icon {
+    width: 96px;
+    height: 96px;
+  }
+
+  .app-head-sleeper-tip {
+    top: 50%;
+    right: calc(100% + 14px);
+    transform: translate(calc(-6px), -50%);
+  }
+
+  .app-head-sleeper-tip::after {
+    bottom: auto;
+    right: -5px;
+    top: 50%;
+    border-left: none;
+    border-top: none;
+    border-right: 1px solid var(--bronze-deep);
+    border-bottom: 1px solid var(--bronze-deep);
+    transform: translateY(-50%) rotate(-45deg);
+  }
+
+  .app-head-sleeper-link:hover .app-head-sleeper-tip,
+  .app-head-sleeper-link:focus-visible .app-head-sleeper-tip {
+    transform: translate(0, -50%);
+  }
+}
+
 .app-head-body {
   display: flex;
   flex: 1;

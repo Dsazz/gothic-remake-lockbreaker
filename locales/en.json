@@ -190,7 +190,8 @@
     "aria": "Optional tip on Ko-fi — helps cover support and upkeep. Solver stays free.",
     "tooltip": "Toss an ore — keeps the solver free",
     "cta": "Toss an ore",
-    "sub": "Keeps the solver free"
+    "sub": "Keeps the solver free",
+    "sleeperTip": "Der Schläfer erwache!"
   },
   "i18nBanner": {
     "text": "German, Polish, and Ukrainian are machine-translated and may be wrong.",

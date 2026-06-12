@@ -166,7 +166,8 @@
     "aria": "Opcjonalny napiwek na Ko-fi — wspiera utrzymanie. Solver pozostaje darmowy.",
     "tooltip": "Rzuć rudę — utrzymuje solver za darmo",
     "cta": "Rzuć rudę",
-    "sub": "Utrzymuje solver za darmo"
+    "sub": "Utrzymuje solver za darmo",
+    "sleeperTip": "Der Schläfer erwache!"
   },
   "i18nBanner": {
     "text": "Ten interfejs jest tłumaczeniem maszynowym — brzmienie może być nietrafne lub błędne.",

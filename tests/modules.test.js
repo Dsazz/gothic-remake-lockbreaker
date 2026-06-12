@@ -75,6 +75,15 @@ test("app defers solve coachmark until onboarding tour ends", async () => {
   assert.match(onboardingText, /isActive:\s*\(\)\s*=>\s*active/);
 });
 
+test("header sleeper support link tracks header_sleeper source", async () => {
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const start = viewText.indexOf("export function renderHeadSleeper");
+  const end = viewText.indexOf("export function renderHeadSupport");
+  const body = viewText.slice(start, end);
+  assert.match(body, /SupportSource\.HEADER_SLEEPER/);
+  assert.match(body, /handlers\.onSupportClick/);
+});
+
 test("view.js has no duplicate function declarations", async () => {
   const text = await readFile(join(root, "src/view.js"), "utf8");
   const seen = new Set();

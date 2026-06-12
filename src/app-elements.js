@@ -16,6 +16,7 @@ export function getAppElements() {
     loadExampleLock: document.getElementById("load-example-lock"),
     version: document.getElementById("app-version"),
     headSupport: document.getElementById("app-head-support"),
+    headSleeper: document.getElementById("app-head-sleeper"),
     headLang: document.getElementById("app-head-lang"),
     foot: document.getElementById("app-foot"),
     ariaLive: document.getElementById("aria-live"),
