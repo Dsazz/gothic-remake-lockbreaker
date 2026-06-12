@@ -5,8 +5,6 @@ export const CHANGELOG_URL =
 
 export const SUPPORT_URL = "https://ko-fi.com/swarmconductor";
 
-// TODO: swap to https://af.gog.com/game/gothic_1_remake?as=<CHANNEL_ID> on AdTraction approval
-export const GAME_AFFILIATE_URL = "https://www.gog.com/en/game/gothic_1_remake";
 
 export const GITHUB_ISSUES_URL =
   "https://github.com/Dsazz/gothic-remake-lockbreaker/issues";

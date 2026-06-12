@@ -233,9 +233,6 @@ export function trackSupportLinkClicked({ source }) {
   send(Events.SUPPORT_LINK_CLICKED, { source, app_version: VERSION });
 }
 
-export function trackAffiliateLinkClicked({ source }) {
-  send(Events.AFFILIATE_LINK_CLICKED, { source, app_version: VERSION });
-}
 
 export function trackLocaleChanged({ locale, previousLocale, source, switchCount }) {
   const change_direction = localeChangeDirection({ locale, previousLocale });

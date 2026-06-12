@@ -18,7 +18,6 @@ import { waitForGeoCountryCode as defaultWaitForGeoCountryCode } from "./analyti
 import { applyStaticContent } from "./static-content.js";
 import { renderLocaleSwitcher } from "./locale-switcher.js";
 import {
-  AffiliateSource,
   GuideSource,
   LocaleChangeSource,
   LocaleSuggestDeclineAction,
@@ -26,7 +25,6 @@ import {
   SupportSource,
 } from "./analytics/values.js";
 import {
-  trackAffiliateLinkClicked,
   trackGuideOpened,
   trackI18nBannerShown,
   trackLocaleSuggestShown,
@@ -246,9 +244,6 @@ export function createLocaleChromeController({
     },
     onSupportClick(source = SupportSource.FOOTER_STRIP) {
       trackSupportLinkClicked({ source });
-    },
-    onAffiliateClick(source = AffiliateSource.FOOTER) {
-      trackAffiliateLinkClicked({ source });
     },
   };
 

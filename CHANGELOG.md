@@ -10,12 +10,6 @@ and update the `Current release` line in `README.md` — one commit, one deploy.
 
 ## [1.17.0] - 2026-06-12
 
-### Added
-
-- GOG affiliate link for Gothic 1 Remake: compact footer line below Ko-fi strip and walkthrough "lock opened" nudge.
-- Localized `game.*` copy (EN, DE, PL, UKR) with per-locale Gothic NPC flavor and inline affiliate disclosure.
-- `affiliate_link_clicked` analytics event with `source` (footer / post_solve).
-
 ### Changed
 
 - Support button moved from hidden top-right corner to an inline pill in the header bar — ore icon + "Toss an ore" label, visible in the natural reading flow on desktop and mobile.

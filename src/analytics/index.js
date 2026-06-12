@@ -24,7 +24,6 @@ export {
   trackMasteryTierChanged,
   trackStepMismatchClicked,
   trackSupportLinkClicked,
-  trackAffiliateLinkClicked,
   trackLocaleChanged,
 } from "./track.js";
 export { installErrorCapture, sendOnPageHide } from "./transport.js";
