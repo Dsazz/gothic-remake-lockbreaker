@@ -16,6 +16,12 @@ and update the `Current release` line in `README.md` — one commit, one deploy.
 - Localized `game.*` copy (EN, DE, PL, UKR) with per-locale Gothic NPC flavor and inline affiliate disclosure.
 - `affiliate_link_clicked` analytics event with `source` (footer / post_solve).
 
+### Changed
+
+- Support button moved from hidden top-right corner to an inline pill in the header bar — ore icon + "Toss an ore" label, visible in the natural reading flow on desktop and mobile.
+- New ore icon asset with transparent background, trimmed to content.
+- Ore glow shifted to deep royal blue across header pill, idle pulse animation, and footer strip hover.
+
 ### Removed
 
 - Web-presence `$pageview` ping (superseded by PR #5 fix; included here to avoid merge conflict).
