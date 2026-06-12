@@ -16,9 +16,9 @@ and update the `Current release` line in `README.md` — one commit, one deploy.
 - New ore icon asset with transparent background, trimmed to content.
 - Ore glow shifted to deep royal blue across header pill, idle pulse animation, and footer strip hover.
 
-### Removed
+### Fixed
 
-- Web-presence `$pageview` ping (superseded by PR #5 fix; included here to avoid merge conflict).
+- Removed web-presence `$pageview` ping that fired every 45 s on visible tabs, inflating pageview metrics ~12× during peak traffic. Real once-per-load pageviews are unaffected.
 
 ## [1.16.0] - 2026-06-11
 
