@@ -3,6 +3,8 @@ const SCRIPT_ERROR_PATTERN = /^script error\.?$/i;
 const IGNORED_MESSAGE_PATTERNS = [
   SCRIPT_ERROR_PATTERN,
   /showSearchResults/,
+  /^he$/i,
+  /WKWebView API client did not respond/,
 ];
 
 let capturing = false;
