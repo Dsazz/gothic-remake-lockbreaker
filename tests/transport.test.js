@@ -13,6 +13,16 @@ test("isReportableError drops Safari autocomplete extension noise", () => {
   assert.equal(isReportableError(message), false);
 });
 
+test("isReportableError drops iOS in-app browser noise", () => {
+  assert.equal(isReportableError("he"), false);
+  assert.equal(
+    isReportableError(
+      "Error: WKWebView API client did not respond to this postMessage",
+    ),
+    false,
+  );
+});
+
 test("isReportableError keeps real application errors", () => {
   assert.equal(isReportableError("RangeError: Maximum call stack size exceeded"), true);
   assert.equal(isReportableError(""), true);
