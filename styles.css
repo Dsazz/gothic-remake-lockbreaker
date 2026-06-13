@@ -183,7 +183,7 @@ button {
 
 .app-head-sleeper {
   position: absolute;
-  top: clamp(12px, 2.5vw, 16px);
+  top: clamp(6px, 1.8vw, 10px);
   right: clamp(12px, 3vw, 20px);
   z-index: 3;
 }
