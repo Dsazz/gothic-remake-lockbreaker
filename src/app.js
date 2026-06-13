@@ -94,7 +94,11 @@ function initControllers() {
     onRerender: () => renderAll(store.getState()),
   });
 
-  const lock = createLockController({ store, solve });
+  const lock = createLockController({
+    store,
+    solve,
+    onRerender: () => renderAll(store.getState()),
+  });
 
   handlers = {
     ...lock.handlers,
@@ -126,6 +130,7 @@ function initControllers() {
     onboarding,
     onRenderLocaleChrome: () => renderLocaleChrome(),
     handlers,
+    getWipeConfirmVisible: () => lock.isWipeConfirmOpen(),
   });
   renderAll = (state) => renderer.render(state);
 }

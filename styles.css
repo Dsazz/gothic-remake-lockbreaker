@@ -854,6 +854,14 @@ button {
   border-color: var(--iron);
 }
 
+.pill-danger {
+  background: linear-gradient(180deg, var(--blood-bright), var(--blood));
+  border-color: var(--blood-bright);
+  color: #1a0a08;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 14px var(--blood-bg), var(--bevel);
+}
+
 .pill[disabled] {
   opacity: 0.4;
   cursor: default;
@@ -1521,6 +1529,70 @@ body.wt-help-open {
   overflow: hidden;
 }
 
+/* --- wipe confirm dialog --- */
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.55);
+  cursor: default;
+}
+
+.confirm-dialog-host {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.confirm-dialog {
+  width: min(420px, 100%);
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone));
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgba(230, 189, 107, 0.15),
+    0 12px 40px rgba(0, 0, 0, 0.6);
+  pointer-events: auto;
+}
+
+.confirm-dialog-title {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  color: var(--bronze-bright);
+  font-size: 1.05rem;
+}
+
+.confirm-dialog-body {
+  margin: 0 0 16px;
+  color: var(--parchment);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+body.wipe-confirm-open {
+  overflow: hidden;
+}
+
 .wt-help-lead {
   margin: 0 0 8px;
   font-size: 0.82rem;
@@ -1769,6 +1841,32 @@ summary.icon-btn:focus-visible {
 .icon-btn--tool svg {
   width: 1rem;
   height: 1rem;
+}
+
+.icon-btn.icon-btn--pill {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.icon-btn.icon-btn--pill:hover:not(:disabled),
+.icon-btn.icon-btn--pill:focus-visible {
+  box-shadow: 0 0 16px var(--bronze-glow), 0 0 4px rgba(230, 189, 107, 0.35), var(--bevel);
+}
+
+.icon-btn.icon-btn--pill.icon-btn--wipe {
+  border-color: var(--blood-line);
+  color: var(--blood-bright);
+  box-shadow: var(--bevel), 0 0 12px var(--blood-bg);
+}
+
+.icon-btn.icon-btn--pill.icon-btn--wipe:hover:not(:disabled),
+.icon-btn.icon-btn--pill.icon-btn--wipe:focus-visible {
+  border-color: var(--blood-bright);
+  box-shadow:
+    0 0 22px rgba(192, 70, 60, 0.55),
+    0 0 8px var(--blood-bright),
+    var(--bevel);
 }
 
 @media (max-width: 899px) {

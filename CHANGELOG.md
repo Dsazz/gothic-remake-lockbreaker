@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.19.4] - 2026-06-13
+
+### Changed
+
+- Wipe lock confirmation uses a Gothic-styled in-app dialog with icon pill actions instead of the browser confirm dialog.
+
 ## [1.19.3] - 2026-06-13
 
 ### Changed
