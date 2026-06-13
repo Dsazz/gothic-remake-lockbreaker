@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.19.2] - 2026-06-13
+
+### Fixed
+
+- PostHog error capture no longer reports browser extension noise (`runtime.sendMessage(). Tab not found`).
+
 ## [1.19.1] - 2026-06-12
 
 ### Changed
