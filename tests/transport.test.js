@@ -23,6 +23,13 @@ test("isReportableError drops iOS in-app browser noise", () => {
   );
 });
 
+test("isReportableError drops browser extension messaging noise", () => {
+  assert.equal(
+    isReportableError("Error: Invalid call to runtime.sendMessage(). Tab not found."),
+    false,
+  );
+});
+
 test("isReportableError keeps real application errors", () => {
   assert.equal(isReportableError("RangeError: Maximum call stack size exceeded"), true);
   assert.equal(isReportableError(""), true);

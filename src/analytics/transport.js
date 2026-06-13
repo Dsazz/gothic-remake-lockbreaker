@@ -5,6 +5,7 @@ const IGNORED_MESSAGE_PATTERNS = [
   /showSearchResults/,
   /^he$/i,
   /WKWebView API client did not respond/,
+  /runtime\.sendMessage\(\).*Tab not found/i,
 ];
 
 let capturing = false;
