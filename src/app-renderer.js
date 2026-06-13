@@ -3,7 +3,15 @@ import * as view from "./view.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
 import { trackLockBecameMappable } from "./analytics/index.js";
 
-export function createAppRenderer({ els, store, solve, onboarding, onRenderLocaleChrome, handlers }) {
+export function createAppRenderer({
+  els,
+  store,
+  solve,
+  onboarding,
+  onRenderLocaleChrome,
+  handlers,
+  getWipeConfirmVisible,
+}) {
   let wasMapped = isLockMapped(store.getState());
 
   function render(state) {
@@ -21,6 +29,7 @@ export function createAppRenderer({ els, store, solve, onboarding, onRenderLocal
     view.renderTumblers(els.tumblers, state, handlers, { pulse: solve.getTumblersPulse() });
     view.renderSolveButton(els.solveBtn, { mapped, justEnabled: solve.getSolveReadyFlash() });
     view.renderTutorOptInChip(els.tutorOptIn, { visible: onboarding.isChipVisible() }, handlers);
+    view.renderWipeConfirmOverlay({ visible: getWipeConfirmVisible() }, handlers);
     solve.renderSolutionArea(state, handlers);
   }
 

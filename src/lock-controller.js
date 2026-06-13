@@ -1,5 +1,4 @@
 import { masteryForId } from "./domain.js";
-import { t } from "./i18n.js";
 import { SolveSource } from "./analytics/values.js";
 import {
   trackExampleLockLoaded,
@@ -7,7 +6,24 @@ import {
   trackMasteryTierChanged,
 } from "./analytics/index.js";
 
-export function createLockController({ store, solve }) {
+export function createLockController({ store, solve, onRerender }) {
+  let wipeConfirmOpen = false;
+
+  function closeWipeConfirm() {
+    if (!wipeConfirmOpen) return;
+    wipeConfirmOpen = false;
+    onRerender();
+  }
+
+  function performWipe() {
+    solve.invalidate();
+    store.clearAll();
+    solve.refreshHashBannerVisibility();
+    trackLockCleared();
+    wipeConfirmOpen = false;
+    onRerender();
+  }
+
   const handlers = {
     onSetPlateCount(n) {
       solve.invalidate();
@@ -22,11 +38,14 @@ export function createLockController({ store, solve }) {
       store.setPosition(plate, value);
     },
     onClearAll() {
-      if (!confirm(t("confirm.wipe"))) return;
-      solve.invalidate();
-      store.clearAll();
-      solve.refreshHashBannerVisibility();
-      trackLockCleared();
+      wipeConfirmOpen = true;
+      onRerender();
+    },
+    onConfirmWipe() {
+      performWipe();
+    },
+    onCancelWipe() {
+      closeWipeConfirm();
     },
     onLoadExampleLock(exampleState) {
       solve.invalidate();
@@ -49,5 +68,8 @@ export function createLockController({ store, solve }) {
     },
   };
 
-  return { handlers };
+  return {
+    handlers,
+    isWipeConfirmOpen: () => wipeConfirmOpen,
+  };
 }

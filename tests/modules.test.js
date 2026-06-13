@@ -134,6 +134,34 @@ test("walkthrough uses tertiary help trigger, not pill mismatch button", async (
   assert.doesNotMatch(text, /children\.push\(renderHelpPanel/);
 });
 
+test("wipe lock uses in-app confirm modal instead of native confirm", async () => {
+  const lockText = await readFile(join(root, "src/lock-controller.js"), "utf8");
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
+  assert.doesNotMatch(lockText, /confirm\(/);
+  assert.match(lockText, /wipeConfirmOpen/);
+  assert.match(lockText, /onConfirmWipe/);
+  assert.match(lockText, /onCancelWipe/);
+  assert.match(viewText, /renderWipeConfirmOverlay/);
+  assert.match(viewText, /icon-btn--pill/);
+  assert.match(viewText, /icon-btn--wipe/);
+  assert.match(viewText, /controlsIconSvg\("wipe"\)/);
+  assert.doesNotMatch(viewText, /confirm-dialog-actions[\s\S]*text: t\("confirm\.cancel"\)/);
+  assert.match(rendererText, /renderWipeConfirmOverlay/);
+  assert.match(rendererText, /getWipeConfirmVisible/);
+});
+
+test("src does not use native confirm dialogs", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const entries = await readdir(join(root, "src"), { recursive: true, withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith(".js")) continue;
+    const filePath = join(entry.parentPath, entry.name);
+    const text = await readFile(filePath, "utf8");
+    assert.doesNotMatch(text, /confirm\(/, `${filePath} must not use confirm()`);
+  }
+});
+
 test("walkthrough layout avoids fixed min column widths that cause horizontal scroll", async () => {
   const css = await readFile(join(root, "styles.css"), "utf8");
   assert.match(css, /\.wt-plate\s*\{[^}]*grid-template-columns:\s*2\.5rem minmax\(0,\s*1fr\)/s);

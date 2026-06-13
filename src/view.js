@@ -969,6 +969,84 @@ export function renderHelpOverlay({ visible, state }, handlers) {
   });
 }
 
+const WIPE_CONFIRM_OVERLAY_ID = "wipe-confirm-overlay";
+let wipeConfirmEscapeListener = null;
+
+function clearWipeConfirmEscapeListener() {
+  if (!wipeConfirmEscapeListener) return;
+  document.removeEventListener("keydown", wipeConfirmEscapeListener);
+  wipeConfirmEscapeListener = null;
+}
+
+export function renderWipeConfirmOverlay({ visible }, handlers) {
+  clearWipeConfirmEscapeListener();
+  const existing = document.getElementById(WIPE_CONFIRM_OVERLAY_ID);
+
+  if (!visible) {
+    existing?.remove();
+    document.body.classList.remove("wipe-confirm-open");
+    return;
+  }
+
+  const close = () => handlers.onCancelWipe();
+  wipeConfirmEscapeListener = (e) => {
+    if (e.key === "Escape") close();
+  };
+  document.addEventListener("keydown", wipeConfirmEscapeListener);
+
+  const dialog = el(
+    "div",
+    {
+      class: "confirm-dialog",
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-labelledby": "wipe-confirm-title",
+    },
+    [
+      el("h2", {
+        id: "wipe-confirm-title",
+        class: "confirm-dialog-title",
+        text: t("controls.wipeLock"),
+      }),
+      el("p", {
+        class: "confirm-dialog-body",
+        text: t("confirm.wipe"),
+      }),
+      el("div", { class: "confirm-dialog-actions" }, [
+        iconBtn({
+          label: t("confirm.cancel"),
+          className: "icon-btn--pill confirm-dialog-cancel",
+          onClick: close,
+          svg: dismissCrossSvg(),
+        }),
+        iconBtn({
+          label: t("controls.wipeLock"),
+          className: "icon-btn--pill icon-btn--wipe",
+          onClick: () => handlers.onConfirmWipe(),
+          svg: controlsIconSvg("wipe"),
+        }),
+      ]),
+    ],
+  );
+
+  const host = el("div", { id: WIPE_CONFIRM_OVERLAY_ID, class: "confirm-overlay" }, [
+    el("button", {
+      class: "confirm-backdrop",
+      type: "button",
+      "aria-label": t("confirm.cancel"),
+      onClick: close,
+    }),
+    el("div", { class: "confirm-dialog-host" }, [dialog]),
+  ]);
+
+  if (existing) existing.replaceWith(host);
+  else document.body.append(host);
+  document.body.classList.add("wipe-confirm-open");
+  requestAnimationFrame(() => {
+    host.querySelector(".confirm-dialog-cancel")?.focus();
+  });
+}
+
 function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
   const { states, stepIndex, move } = walkthrough;
   const board = states[stepIndex];

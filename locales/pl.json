@@ -151,7 +151,8 @@
     "body": "Naciśnij Break the Lock, by zobaczyć sekwencję."
   },
   "confirm": {
-    "wipe": "Wyczyścić zamek? Sprzężenia, szpilki, poziom i liczba zostaną zresetowane."
+    "wipe": "Wyczyścić zamek? Sprzężenia, szpilki, poziom i liczba zostaną zresetowane.",
+    "cancel": "Anuluj"
   },
   "aria": {
     "copyOk": "Link skopiowany do schowka.",

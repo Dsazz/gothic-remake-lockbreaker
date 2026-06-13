@@ -150,7 +150,8 @@
     "body": "Tippe Break the Lock für die Sequenz."
   },
   "confirm": {
-    "wipe": "Schloss löschen? Kupplungen, Nadeln, Stufe und Anzahl werden zurückgesetzt."
+    "wipe": "Schloss löschen? Kupplungen, Nadeln, Stufe und Anzahl werden zurückgesetzt.",
+    "cancel": "Abbrechen"
   },
   "aria": {
     "copyOk": "Link in Zwischenablage kopiert.",
