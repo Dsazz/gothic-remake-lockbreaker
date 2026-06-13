@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.19.3] - 2026-06-13
+
+### Changed
+
+- Header support ore glow toned down — smaller blur, lower opacity, deeper navy blue instead of bright royal blue.
+
 ## [1.19.2] - 2026-06-13
 
 ### Fixed
