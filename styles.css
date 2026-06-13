@@ -465,18 +465,18 @@ button {
 
 .app-head-support-link:hover .app-head-support-ore,
 .app-head-support-link:focus-visible .app-head-support-ore {
-  filter: drop-shadow(0 0 10px rgba(0, 40, 160, 0.85));
+  filter: drop-shadow(0 0 7px rgba(0, 18, 72, 0.5));
   animation-play-state: paused;
 }
 
 @keyframes app-head-support-ore-glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 4px rgba(0, 40, 160, 0.3));
+    filter: drop-shadow(0 0 3px rgba(0, 18, 72, 0.18));
   }
   50% {
-    filter: drop-shadow(0 0 10px rgba(0, 40, 160, 0.7))
-      drop-shadow(0 0 18px rgba(0, 40, 160, 0.35));
+    filter: drop-shadow(0 0 6px rgba(0, 18, 72, 0.38))
+      drop-shadow(0 0 12px rgba(0, 18, 72, 0.15));
   }
 }
 
