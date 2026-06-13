@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.19.1] - 2026-06-12
+
+### Changed
+
+- Header Sleeper icon sits slightly higher on mobile (below the `900px` desktop layout).
+
 ## [1.19.0] - 2026-06-12
 
 ### Added
