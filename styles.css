@@ -444,15 +444,27 @@ button {
   background: rgba(233, 185, 105, 0.1);
   text-decoration: none;
   color: var(--parchment);
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease;
 }
 
 .app-head-support-link:hover,
 .app-head-support-link:focus-visible {
+  transform: translateY(-2px);
   border-color: var(--bronze-bright);
   background: rgba(233, 185, 105, 0.18);
-  box-shadow: 0 0 12px var(--bronze-glow), var(--bevel);
+  box-shadow:
+    0 0 24px var(--bronze-glow),
+    0 0 12px rgba(232, 197, 106, 0.35),
+    var(--bevel);
   outline: none;
+}
+
+.app-head-support-link:active {
+  transform: translateY(0);
 }
 
 .app-head-support-ore {
@@ -465,8 +477,7 @@ button {
 
 .app-head-support-link:hover .app-head-support-ore,
 .app-head-support-link:focus-visible .app-head-support-ore {
-  filter: drop-shadow(0 0 7px rgba(0, 18, 72, 0.5));
-  animation-play-state: paused;
+  animation: support-ore-hover 0.55s ease-in-out;
 }
 
 @keyframes app-head-support-ore-glow {
@@ -726,6 +737,14 @@ button {
   border-radius: var(--radius);
   padding: clamp(13px, 3.5vw, 18px);
   box-shadow: var(--bevel), 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.panel--sequence {
+  border-color: var(--bronze-deep);
+  box-shadow:
+    var(--bevel),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 32px rgba(230, 189, 107, 0.06);
 }
 
 .panel h2 {
@@ -2591,16 +2610,32 @@ summary.icon-btn:focus-visible {
   background: rgba(233, 185, 105, 0.08);
   color: var(--parchment);
   text-decoration: none;
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease;
 }
 
-.support-cta:hover {
+.support-cta:hover,
+.support-cta:focus-visible {
+  transform: translateY(-2px);
   border-color: var(--bronze-bright);
-  box-shadow: 0 0 14px var(--bronze-glow), var(--bevel);
+  background: rgba(233, 185, 105, 0.14);
+  box-shadow:
+    0 0 24px var(--bronze-glow),
+    0 0 12px rgba(232, 197, 106, 0.35),
+    var(--bevel);
+  outline: none;
 }
 
-.support-cta:hover .support-ore {
-  filter: drop-shadow(0 0 10px rgba(0, 40, 160, 0.85));
+.support-cta:active {
+  transform: translateY(0);
+}
+
+.support-cta:hover .support-ore,
+.support-cta:focus-visible .support-ore {
+  animation: support-ore-hover 0.55s ease-in-out;
 }
 
 .support-ore {
@@ -2631,6 +2666,37 @@ summary.icon-btn:focus-visible {
 .support-cta-sub {
   font-size: 0.78rem;
   color: var(--parchment-dim);
+}
+
+.support-cta--icon {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.support-cta--icon .support-ore,
+.support-cta--icon .sequence-min-ore-img {
+  margin: 0;
+}
+
+@keyframes support-ore-hover {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 4px rgba(0, 40, 160, 0.35));
+  }
+
+  40% {
+    transform: translateY(-4px) scale(1.14);
+    filter: drop-shadow(0 0 12px rgba(0, 60, 200, 0.85));
+  }
+
+  70% {
+    transform: translateY(1px) scale(1.06);
+    filter: drop-shadow(0 0 8px rgba(0, 50, 180, 0.7));
+  }
 }
 
 
@@ -2793,20 +2859,120 @@ summary.icon-btn:focus-visible {
 .gratitude-prompt {
   flex-direction: column;
   align-items: stretch;
-  gap: 12px;
+  gap: 14px;
+  border-color: var(--bronze-deep);
+  background: linear-gradient(
+    180deg,
+    rgba(233, 185, 105, 0.14),
+    rgba(233, 185, 105, 0.05)
+  );
+  box-shadow:
+    var(--bevel),
+    0 0 24px rgba(230, 189, 107, 0.1);
+}
+
+.gratitude-prompt-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding-inline: 2.75rem;
+}
+
+.gratitude-prompt-top .icon-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0;
 }
 
 .gratitude-prompt-head {
   margin: 0;
-  color: var(--parchment);
-  font-size: 0.92rem;
+  text-align: center;
+  font-family: var(--display);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--patina);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .gratitude-prompt-actions {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
+}
+
+.gratitude-prompt-actions .pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  white-space: nowrap;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.gratitude-btn-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gratitude-action-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.gratitude-action-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.gratitude-donate-btn {
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
+  border-color: var(--bronze-deep);
+  color: var(--bronze-bright);
+  font-weight: 600;
+  text-shadow: none;
+  box-shadow: var(--bevel);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.gratitude-donate-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--bronze-bright);
+  box-shadow:
+    0 0 24px var(--bronze-glow),
+    0 0 12px rgba(232, 197, 106, 0.35),
+    var(--bevel);
+}
+
+.gratitude-donate-btn:hover .gratitude-donate-ore {
+  animation: support-ore-hover 0.55s ease-in-out;
+}
+
+.gratitude-donate-btn:active {
+  transform: translateY(0);
+}
+
+.gratitude-donate-ore {
+  flex-shrink: 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }
 
 .gratitude-share-btn.is-copied {
@@ -2814,20 +2980,78 @@ summary.icon-btn:focus-visible {
   color: var(--patina);
 }
 
-.sequence-min-ore {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--iron-light);
-  background: rgba(233, 185, 105, 0.08);
+.gratitude-share-btn:not(.is-copied) {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
 }
 
-.sequence-min-ore-img {
-  display: block;
+.gratitude-share-btn:not(.is-copied):hover {
+  transform: translateY(-2px);
+  border-color: #e8c56a;
+  box-shadow:
+    0 0 24px var(--bronze-glow),
+    0 0 12px rgba(232, 197, 106, 0.45),
+    var(--bevel);
+}
+
+.gratitude-share-btn:not(.is-copied):hover .gratitude-action-icon {
+  animation: gratitude-link-hover 0.55s ease-in-out;
+}
+
+.gratitude-share-btn:not(.is-copied):active {
+  transform: translateY(0);
+}
+
+@keyframes gratitude-link-hover {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  35% {
+    transform: translateX(-2px) rotate(-14deg);
+  }
+
+  65% {
+    transform: translateX(2px) rotate(14deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gratitude-share-btn:not(.is-copied),
+  .gratitude-donate-btn,
+  .support-cta,
+  .app-head-support-link {
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  }
+
+  .gratitude-share-btn:not(.is-copied):hover,
+  .gratitude-donate-btn:hover,
+  .support-cta:hover,
+  .support-cta:focus-visible,
+  .app-head-support-link:hover,
+  .app-head-support-link:focus-visible {
+    transform: none;
+  }
+
+  .gratitude-share-btn:not(.is-copied):hover .gratitude-action-icon,
+  .gratitude-donate-btn:hover .gratitude-donate-ore,
+  .support-cta:hover .support-ore,
+  .support-cta:focus-visible .support-ore,
+  .app-head-support-link:hover .app-head-support-ore,
+  .app-head-support-link:focus-visible .app-head-support-ore {
+    animation: none;
+  }
+
+  .app-head-support-ore {
+    animation: none;
+  }
+}
+
+.sequence-min-ore {
+  display: inline-flex;
 }
 
 @media (max-width: 768px) {

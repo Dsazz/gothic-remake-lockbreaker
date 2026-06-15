@@ -691,39 +691,19 @@ export function renderGratitudePrompt(container, ui, handlers) {
     return;
   }
   const copied = Boolean(ui?.copyCopied);
-  const moveCount = ui?.moveCount ?? 0;
   container.hidden = false;
   container.replaceChildren(
     el("div", { class: "gratitude-prompt" }, [
-      el("p", {
-        class: "gratitude-prompt-head",
-        text: tCount("solution.gratitudeHead", moveCount),
-      }),
+      el("div", { class: "gratitude-prompt-top" }, [
+        el("p", {
+          class: "gratitude-prompt-head",
+          text: t("solution.gratitudeHead"),
+        }),
+        bannerDismissButton(handlers.onDismissGratitudePrompt),
+      ]),
       el("div", { class: "gratitude-prompt-actions" }, [
-        el("button", {
-          class: `pill pill-primary gratitude-share-btn${copied ? " is-copied" : ""}`,
-          type: "button",
-          text: copied ? t("solution.shareCopied") : t("solution.shareBtn"),
-          onClick: handlers.onGratitudeShareClick,
-        }),
-        el("a", {
-          class: "pill pill-ghost gratitude-donate-btn",
-          href: SUPPORT_URL,
-          target: "_blank",
-          rel: "noopener noreferrer",
-          text: t("support.cta"),
-          onClick: (e) => {
-            e.preventDefault();
-            handlers.onGratitudeDonateClick?.();
-            window.open(SUPPORT_URL, "_blank", "noopener,noreferrer");
-          },
-        }),
-        el("button", {
-          class: "pill pill-ghost gratitude-dismiss",
-          type: "button",
-          text: t("solution.dismiss"),
-          onClick: handlers.onDismissGratitudePrompt,
-        }),
+        gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
+        gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
       ]),
     ]),
   );
@@ -937,18 +917,11 @@ function renderMinimizedSummary(walkthrough, handlers, { showMinibarOre = false 
 
   if (showMinibarOre) {
     navChildren.push(
-      el("a", {
-        class: "sequence-min-ore",
-        href: SUPPORT_URL,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        "aria-label": t("support.aria"),
-        onClick: (e) => {
-          e.preventDefault();
-          handlers.onMinibarDonateClick?.();
-          window.open(SUPPORT_URL, "_blank", "noopener,noreferrer");
-        },
-      }, [supportOreImg("sequence-min-ore-img", 36)]),
+      supportDonateLink({
+        className: "support-cta support-cta--icon sequence-min-ore",
+        iconOnly: true,
+        onClick: () => handlers.onMinibarDonateClick?.(),
+      }),
     );
   }
 
@@ -1259,6 +1232,67 @@ function supportOreImg(className, size) {
   });
 }
 
+function supportDonateLink({
+  className = "support-cta",
+  iconOnly = false,
+  compact = false,
+  labelKey = "support.cta",
+  onClick,
+}) {
+  const oreSize = iconOnly ? 32 : 36;
+  const children = [supportOreImg(iconOnly ? "sequence-min-ore-img support-ore" : "support-ore", oreSize)];
+  if (!iconOnly) {
+    const copyChildren = [el("span", { class: "support-cta-text", text: t(labelKey) })];
+    if (!compact) {
+      copyChildren.push(el("span", { class: "support-cta-sub", text: t("support.sub") }));
+    }
+    children.push(el("span", { class: "support-cta-copy" }, copyChildren));
+  }
+  return el("a", {
+    class: className,
+    href: SUPPORT_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    "aria-label": t("support.aria"),
+    onClick,
+  }, children);
+}
+
+function gratitudeShareBtn(copied, onClick) {
+  if (copied) {
+    return el("button", {
+      class: "pill pill-primary gratitude-share-btn is-copied",
+      type: "button",
+      text: t("solution.shareCopied"),
+      onClick,
+    });
+  }
+  return el("button", {
+    class: "pill pill-primary gratitude-share-btn",
+    type: "button",
+    onClick,
+  }, [
+    el("span", { class: "gratitude-action-icon", "aria-hidden": "true" }, [
+      controlsIconSvg("link"),
+    ]),
+    el("span", { class: "gratitude-btn-label", text: t("solution.shareBtn") }),
+  ]);
+}
+
+function gratitudeDonateBtn(onClick) {
+  return el("a", {
+    class: "pill gratitude-donate-btn",
+    href: SUPPORT_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    "aria-label": t("support.aria"),
+    onClick,
+  }, [
+    supportOreImg("gratitude-donate-ore", 22),
+    el("span", { class: "gratitude-btn-label", text: t("solution.donateBtn") }),
+  ]);
+}
+
 const SLEEPER_ICON_SIZE = 96;
 
 function sleeperSupportImg(className, src) {
@@ -1317,20 +1351,9 @@ export function renderHeadSupport(container, handlers) {
 
 function supportStrip(handlers) {
   return el("div", { class: "support-strip" }, [
-    el("a", {
-      class: "support-cta",
-      href: SUPPORT_URL,
-      target: "_blank",
-      rel: "noopener noreferrer",
-      "aria-label": t("support.aria"),
+    supportDonateLink({
       onClick: () => handlers.onSupportClick?.(SupportSource.FOOTER_STRIP),
-    }, [
-      supportOreImg("support-ore", 36),
-      el("span", { class: "support-cta-copy" }, [
-        el("span", { class: "support-cta-text", text: t("support.cta") }),
-        el("span", { class: "support-cta-sub", text: t("support.sub") }),
-      ]),
-    ]),
+    }),
   ]);
 }
 

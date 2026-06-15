@@ -30,6 +30,15 @@ test("isReportableError drops browser extension messaging noise", () => {
   );
 });
 
+test("isReportableError drops password-manager extension noise", () => {
+  assert.equal(
+    isReportableError(
+      "TypeError: undefined is not an object (evaluating 'n.standardSelectors')",
+    ),
+    false,
+  );
+});
+
 test("isReportableError drops wallet and Firefox extension injection noise", () => {
   assert.equal(
     isReportableError(

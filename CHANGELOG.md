@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.20.1] - 2026-06-15
+
+### Fixed
+
+- Gratitude-strip donation link opens Ko-fi via native navigation instead of a popup-blocked `window.open`.
+- PostHog error capture filters password-manager extension noise (`standardSelectors`).
+
+### Changed
+
+- Post-solve gratitude strip — centered headline, icon dismiss, stacked share/donate CTAs, shorter copy in all locales.
+- Ore donation buttons (header, footer, minibar, gratitude) share hover lift and ore shimmer; share link gets link-icon wiggle on hover.
+
 ## [1.20.0] - 2026-06-15
 
 ### Added

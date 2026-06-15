@@ -112,8 +112,7 @@
     "hintMap": "Set each lock's start hole and couplings above, then crack it open.",
     "incompleteMapping": "Mapping looks thin — add more couplings or start holes before solving.",
     "mappingChecklist": "Set each lock's start hole. Mark couplings you observed in-game.",
-    "gratitudeHeadOne": "Lock cracked — {n} turn, edge-safe.",
-    "gratitudeHeadMany": "Lock cracked — {n} turns, edge-safe.",
+    "gratitudeHead": "Lock cracked",
     "oob": "A pin starts outside the frame (holes 1–7). Tap each pin's hole to fix starting positions.",
     "noPath": "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.",
     "noPathHint": "Check each With/Against chip on the tumbler cards — couplings are directional.",
@@ -127,8 +126,9 @@
     "lockOpen": "Lock open",
     "sharedBanner": "Shared lock — sequence ready below.",
     "shareText": "Copy link to share this exact lock.",
-    "shareBtn": "Copy link",
-    "shareCopied": "Copied!",
+    "shareBtn": "Share link",
+    "shareCopied": "Link copied!",
+    "donateBtn": "Tip ore",
     "dismiss": "Dismiss"
   },
   "sequence": {

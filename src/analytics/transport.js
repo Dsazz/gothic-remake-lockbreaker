@@ -8,6 +8,7 @@ const IGNORED_MESSAGE_PATTERNS = [
   /runtime\.sendMessage\(\).*Tab not found/i,
   /window\.ethereum\.selectedAddress/,
   /Can't find variable: __firefox__/,
+  /standardSelectors/,
 ];
 
 let capturing = false;

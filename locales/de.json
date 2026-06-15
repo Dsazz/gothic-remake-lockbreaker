@@ -87,8 +87,7 @@
     "hintMap": "Setze oben Startlöcher und Kupplungen, dann öffne das Schloss.",
     "incompleteMapping": "Abbildung wirkt dünn — ergänze Kupplungen oder Startlöcher vor dem Lösen.",
     "mappingChecklist": "Setze jedes Startloch. Markiere Kupplungen, die du im Spiel gesehen hast.",
-    "gratitudeHeadOne": "Schloss geknackt — {n} Drehung, kanten-sicher.",
-    "gratitudeHeadMany": "Schloss geknackt — {n} Drehungen, kanten-sicher.",
+    "gratitudeHead": "Schloss geknackt",
     "oob": "Eine Nadel startet außerhalb des Rahmens (Löcher 1–7). Tippe jedes Startloch zum Korrigieren.",
     "noPath": "Kein sicherer Weg mit diesen Kupplungen. Prüfe With/Against auf jedem Chip oder öffne die Anleitung.",
     "noPathHint": "Prüfe jeden With/Against-Chip auf den Zylinderkarten — Kupplungen sind richtungsabhängig.",
@@ -102,8 +101,9 @@
     "lockOpen": "Offen",
     "sharedBanner": "Geteiltes Schloss — Sequenz unten bereit.",
     "shareText": "Link kopieren, um dieses Schloss zu teilen.",
-    "shareBtn": "Link kopieren",
-    "shareCopied": "Kopiert!",
+    "shareBtn": "Link teilen",
+    "shareCopied": "Link kopiert!",
+    "donateBtn": "Erz spenden",
     "dismiss": "Schließen"
   },
   "sequence": {
