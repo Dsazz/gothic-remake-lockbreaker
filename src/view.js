@@ -1293,7 +1293,7 @@ function gratitudeDonateBtn(onClick) {
   ]);
 }
 
-const SLEEPER_ICON_SIZE = 96;
+const SLEEPER_ICON_SIZE = 128;
 
 function sleeperSupportImg(className, src) {
   return el("img", {
