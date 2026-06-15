@@ -240,8 +240,8 @@ export function createSolveController({
     }
   }
 
-  function maybeTrackMinibarOre(state, minimized, hasMoves) {
-    if (!minimized || !hasMoves) return;
+  function maybeTrackMinibarOre(state, showMinibarOre) {
+    if (!showMinibarOre) return;
     if (session.minibarOreTracked) return;
     session.minibarOreTracked = true;
     trackSupportSurfaceShown({
@@ -270,16 +270,17 @@ export function createSolveController({
       : null;
     const hasMoves = Array.isArray(session.solution) && session.solution.length > 0;
     const minimized = session.sequenceMinimized && hasMoves;
+    const showGratitudeSupport = session.gratitudeVisible && hasMoves;
     const showMinibarOre =
+      showGratitudeSupport &&
       minimized &&
-      hasMoves &&
       typeof window !== "undefined" &&
       window.matchMedia("(max-width: 768px)").matches;
     const completeness = mappingCompletenessFor(state);
     const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
     const mappingPartial = completeness === MappingCompleteness.PARTIAL;
 
-    view.renderSequencePanel(els.sequencePanel, session.solution, { minimized }, handlers);
+    view.renderSequencePanel(els.sequencePanel, session.solution, { minimized, showMinibarOre }, handlers);
     maybeTrackHashBanner(state, hasMoves);
     view.renderHashBanner(
       els.hashBanner,
@@ -289,7 +290,7 @@ export function createSolveController({
     view.renderGratitudePrompt(
       els.gratitudePrompt,
       {
-        visible: session.gratitudeVisible && hasMoves && !minimized,
+        visible: showGratitudeSupport && !minimized,
         copyCopied: session.copyCopied,
         moveCount: hasMoves ? session.solution.length : 0,
       },
@@ -308,7 +309,6 @@ export function createSolveController({
         blockedMessage: session.blockedMessage,
         lockReady: mapped,
         mappingPartial,
-        showMinibarOre,
         showMismatchTips: session.showMismatchTips,
         state,
         failureReason: session.solveFailureReason,
@@ -323,7 +323,7 @@ export function createSolveController({
       },
       handlers,
     );
-    maybeTrackMinibarOre(state, minimized, hasMoves);
+    maybeTrackMinibarOre(state, showMinibarOre);
   }
 
   async function copyShareUrl(url) {

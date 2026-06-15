@@ -111,6 +111,7 @@ test("renderControls hides wipe until lock differs from default; gratitude is se
   assert.doesNotMatch(viewText, /controls-share/);
   assert.match(viewText, /renderGratitudePrompt/);
   assert.match(solveText, /gratitudeVisible && hasMoves/);
+  assert.match(solveText, /showGratitudeSupport[\s\S]*showMinibarOre/);
   assert.match(solveText, /if \(shouldShowHashBanner\(\)\) return;/);
   assert.match(
     solveText,
