@@ -12,6 +12,7 @@ import {
   SITE_ORIGIN,
   SUPPORTED_LOCALES,
   isDefaultLocale,
+  localeBrowserPath,
   localePageUrl,
   pluralForm,
   resolveLocalePreference,
@@ -103,6 +104,14 @@ test("localePageUrl uses root for default locale", () => {
   assert.equal(localePageUrl(Locale.EN), `${SITE_ORIGIN}/`);
   assert.equal(localePageUrl(Locale.DE), `${SITE_ORIGIN}/?lang=de`);
   assert.equal(localePageUrl(Locale.UKR), `${SITE_ORIGIN}/?lang=ukr`);
+});
+
+test("localeBrowserPath syncs ?lang= query for non-default locales", () => {
+  assert.equal(localeBrowserPath(Locale.EN), "/");
+  assert.equal(localeBrowserPath(Locale.EN, "?lang=de"), "/");
+  assert.equal(localeBrowserPath(Locale.DE), "/?lang=de");
+  assert.equal(localeBrowserPath(Locale.PL, "?foo=1"), "/?foo=1&lang=pl");
+  assert.equal(localeBrowserPath(Locale.UKR, "?lang=de"), "/?lang=ukr");
 });
 
 test("frozen keys are defined in English catalog", async () => {

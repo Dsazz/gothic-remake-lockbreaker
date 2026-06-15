@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.19.5] - 2026-06-15
+
+### Added
+
+- Cloudflare worker snippet to serve `robots.txt` on the PostHog reverse-proxy subdomain (`e.gothiclockbreaker.com`).
+- SEO CI guards for single-URL sitemap with `xhtml:hreflang` alternates.
+
+### Changed
+
+- Sitemap lists one homepage URL with hreflang alternates instead of separate `?lang=` entries — aligns with Google canonicalization for the SPA.
+- Locale switcher syncs `?lang=` to the address bar so localized links are shareable.
+
 ## [1.19.4] - 2026-06-13
 
 ### Changed

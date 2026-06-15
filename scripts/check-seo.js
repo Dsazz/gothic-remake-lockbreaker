@@ -154,6 +154,39 @@ if (!/beginner-friendly/i.test(indexHtml)) {
   failures.push("index.html must include beginner-friendly positioning");
 }
 
+const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+if (sitemapLocs.length !== 1) {
+  failures.push(
+    `sitemap.xml must have exactly 1 loc entry (hreflang cluster), found ${sitemapLocs.length}`,
+  );
+} else if (sitemapLocs[0] !== "https://gothiclockbreaker.com/") {
+  failures.push(`sitemap.xml loc must be apex homepage, found ${sitemapLocs[0]}`);
+}
+
+const orphanLangLocs = sitemapLocs.filter((loc) => loc.includes("?lang="));
+if (orphanLangLocs.length > 0) {
+  failures.push(
+    `sitemap.xml must not list ?lang= URLs as separate loc entries: ${orphanLangLocs.join(", ")}`,
+  );
+}
+
+const expectedSitemapHreflang = [
+  ['hreflang="en"', "https://gothiclockbreaker.com/"],
+  ['hreflang="de"', "https://gothiclockbreaker.com/?lang=de"],
+  ['hreflang="pl"', "https://gothiclockbreaker.com/?lang=pl"],
+  ['hreflang="uk"', "https://gothiclockbreaker.com/?lang=ukr"],
+  ['hreflang="x-default"', "https://gothiclockbreaker.com/"],
+];
+for (const [attr, href] of expectedSitemapHreflang) {
+  if (!sitemap.includes(`${attr} href="${href}"`)) {
+    failures.push(`sitemap.xml missing xhtml:link ${attr} → ${href}`);
+  }
+}
+
+if (!sitemap.includes('xmlns:xhtml="http://www.w3.org/1999/xhtml"')) {
+  failures.push("sitemap.xml must declare xmlns:xhtml for hreflang alternates");
+}
+
 const lastmods = [...sitemap.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
 if (lastmods.length === 0) {
   failures.push("sitemap.xml has no lastmod entries");
