@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.20.4] - 2026-06-15
+
+### Added
+
+- Header Sleeper easter egg — slow red ember sparks around the medallion rim on idle, larger on hover when the Sleeper wakes; sparks sit behind the icon so they never cover the face.
+
 ## [1.20.3] - 2026-06-15
 
 ### Changed

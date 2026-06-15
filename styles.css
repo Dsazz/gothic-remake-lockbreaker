@@ -212,11 +212,126 @@ button {
   transform: scale(1.02);
 }
 
-.app-head-sleeper-icon {
+.app-head-sleeper-figure {
   position: relative;
+  display: block;
+  flex-shrink: 0;
   width: clamp(48px, 5vw, 72px);
   height: clamp(48px, 5vw, 72px);
+}
+
+.app-head-sleeper-embers {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.app-head-sleeper-ember-slot {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.app-head-sleeper-ember {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 3px;
+  height: 11px;
+  margin-left: -1.5px;
+  border-radius: 50%;
+  opacity: 0;
+  transform-origin: 50% 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(220, 88, 32, 0.95) 0%,
+    rgba(148, 36, 16, 0.92) 55%,
+    rgba(72, 14, 8, 0.82) 100%
+  );
+  box-shadow:
+    0 0 5px rgba(180, 48, 16, 0.8),
+    0 0 10px rgba(88, 20, 8, 0.55);
+  transition:
+    width 0.25s ease,
+    height 0.25s ease,
+    margin-left 0.25s ease,
+    box-shadow 0.25s ease;
+  animation: app-head-sleeper-ember 6.5s ease-in-out infinite;
+}
+
+.app-head-sleeper-link:hover .app-head-sleeper-ember,
+.app-head-sleeper-link:focus-visible .app-head-sleeper-ember {
+  width: 5px;
+  height: 17px;
+  margin-left: -2.5px;
+  box-shadow:
+    0 0 7px rgba(180, 48, 16, 0.9),
+    0 0 14px rgba(88, 20, 8, 0.65);
+}
+
+.app-head-sleeper-ember-slot:nth-child(1) {
+  top: 44%;
+  left: 2%;
+  --ember-rot: -28deg;
+  --ember-dx: -5px;
+}
+
+.app-head-sleeper-ember-slot:nth-child(1) .app-head-sleeper-ember {
+  animation-delay: 0s;
+}
+
+.app-head-sleeper-ember-slot:nth-child(2) {
+  top: 40%;
+  right: 2%;
+  --ember-rot: 26deg;
+  --ember-dx: 5px;
+}
+
+.app-head-sleeper-ember-slot:nth-child(2) .app-head-sleeper-ember {
+  animation-delay: 1.4s;
+}
+
+.app-head-sleeper-ember-slot:nth-child(3) {
+  top: 0;
+  left: 44%;
+  --ember-rot: 4deg;
+  --ember-dx: 0;
+}
+
+.app-head-sleeper-ember-slot:nth-child(3) .app-head-sleeper-ember {
+  animation-delay: 2.8s;
+}
+
+.app-head-sleeper-ember-slot:nth-child(4) {
+  bottom: 2%;
+  left: 22%;
+  --ember-rot: -12deg;
+  --ember-dx: -3px;
+}
+
+.app-head-sleeper-ember-slot:nth-child(4) .app-head-sleeper-ember {
+  animation-delay: 4.1s;
+}
+
+.app-head-sleeper-ember-slot:nth-child(5) {
+  bottom: 6%;
+  right: 20%;
+  --ember-rot: 14deg;
+  --ember-dx: 4px;
+}
+
+.app-head-sleeper-ember-slot:nth-child(5) .app-head-sleeper-ember {
+  animation-delay: 5.3s;
+}
+
+.app-head-sleeper-icon {
+  position: relative;
+  z-index: 1;
   display: block;
+  width: 100%;
+  height: 100%;
   flex-shrink: 0;
 }
 
@@ -304,6 +419,35 @@ button {
   transform: translateY(0);
 }
 
+@keyframes app-head-sleeper-ember {
+  0% {
+    opacity: 0;
+    transform: translate(0, 3px) scale(0.5) rotate(var(--ember-rot, 0deg));
+  }
+
+  12% {
+    opacity: 0.95;
+  }
+
+  45% {
+    opacity: 0.65;
+    transform: translate(var(--ember-dx, 0), -16px) scale(0.92)
+      rotate(calc(var(--ember-rot, 0deg) + 5deg));
+  }
+
+  75% {
+    opacity: 0.2;
+    transform: translate(calc(var(--ember-dx, 0) * 1.4), -28px) scale(0.6)
+      rotate(calc(var(--ember-rot, 0deg) - 3deg));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--ember-dx, 0) * 1.8), -38px) scale(0.35)
+      rotate(var(--ember-rot, 0deg));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-head-sleeper-link {
     transition: none;
@@ -315,8 +459,14 @@ button {
   }
 
   .app-head-sleeper-img,
-  .app-head-sleeper-tip {
+  .app-head-sleeper-tip,
+  .app-head-sleeper-ember {
     transition: none;
+  }
+
+  .app-head-sleeper-ember {
+    animation: none;
+    opacity: 0;
   }
 
   .app-head-sleeper-link:hover .app-head-sleeper-tip,
@@ -337,9 +487,22 @@ button {
     min-height: 128px;
   }
 
-  .app-head-sleeper-icon {
+  .app-head-sleeper-figure {
     width: 128px;
     height: 128px;
+  }
+
+  .app-head-sleeper-ember {
+    width: 4px;
+    height: 14px;
+    margin-left: -2px;
+  }
+
+  .app-head-sleeper-link:hover .app-head-sleeper-ember,
+  .app-head-sleeper-link:focus-visible .app-head-sleeper-ember {
+    width: 6px;
+    height: 22px;
+    margin-left: -3px;
   }
 
   .app-head-sleeper-tip {

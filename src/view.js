@@ -1313,6 +1313,29 @@ function sleeperSupportIcon() {
   ]);
 }
 
+function sleeperEmber() {
+  return el("span", { class: "app-head-sleeper-ember-slot" }, [
+    el("span", { class: "app-head-sleeper-ember" }),
+  ]);
+}
+
+function sleeperEmbers() {
+  return el("span", { class: "app-head-sleeper-embers", "aria-hidden": "true" }, [
+    sleeperEmber(),
+    sleeperEmber(),
+    sleeperEmber(),
+    sleeperEmber(),
+    sleeperEmber(),
+  ]);
+}
+
+function sleeperFigure() {
+  return el("span", { class: "app-head-sleeper-figure" }, [
+    sleeperEmbers(),
+    sleeperSupportIcon(),
+  ]);
+}
+
 export function renderHeadSleeper(container, handlers) {
   if (!container) return;
   container.hidden = false;
@@ -1325,7 +1348,7 @@ export function renderHeadSleeper(container, handlers) {
       "aria-label": t("support.aria"),
       onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_SLEEPER),
     }, [
-      sleeperSupportIcon(),
+      sleeperFigure(),
       el("span", { class: "app-head-sleeper-tip", text: t("support.sleeperTip") }),
     ]),
   );
