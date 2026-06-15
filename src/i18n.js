@@ -109,6 +109,30 @@ export function localePageUrl(locale, origin = SITE_ORIGIN) {
   return isDefaultLocale(locale) ? `${origin}/` : `${origin}/?lang=${locale}`;
 }
 
+/** Path + query for in-app locale URL sync (preserves hash; omits ?lang= for English). */
+export function localeBrowserPath(locale, search = "") {
+  const params = new URLSearchParams(
+    search.startsWith("?") ? search.slice(1) : search,
+  );
+  if (isDefaultLocale(locale)) {
+    params.delete("lang");
+  } else {
+    params.set("lang", locale);
+  }
+  const query = params.toString();
+  return query ? `/?${query}` : "/";
+}
+
+function syncBrowserLocaleUrl(locale) {
+  if (typeof location === "undefined" || typeof history === "undefined") return;
+  const nextPath = localeBrowserPath(locale, location.search);
+  const nextUrl = `${nextPath}${location.hash}`;
+  const currentUrl = `${location.pathname}${location.search}${location.hash}`;
+  if (nextUrl !== currentUrl) {
+    history.replaceState(history.state, "", nextUrl);
+  }
+}
+
 /** Pure resolution for tests and init — query beats storage beats referrer hint beats default. */
 export function resolveLocalePreference({
   queryLang,
@@ -336,6 +360,7 @@ export async function setLocale(locale, { changeSource, localeSource: nextSource
   if (nextSource) localeSource = nextSource;
   storageSet(StorageKeys.LOCALE, locale);
   applyDocumentLocale(locale);
+  syncBrowserLocaleUrl(locale);
   notifyLocaleChange(locale, changeSource);
   return activeLocale;
 }
