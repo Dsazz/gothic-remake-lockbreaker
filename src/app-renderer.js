@@ -1,4 +1,5 @@
 import { isLockMapped } from "./domain.js";
+import { MappingCompleteness } from "./analytics/values.js";
 import * as view from "./view.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
 import { trackLockBecameMappable } from "./analytics/index.js";
@@ -27,7 +28,12 @@ export function createAppRenderer({
 
     view.renderControls(els.controls, state, handlers);
     view.renderTumblers(els.tumblers, state, handlers, { pulse: solve.getTumblersPulse() });
-    view.renderSolveButton(els.solveBtn, { mapped, justEnabled: solve.getSolveReadyFlash() });
+    const completeness = solve.getMappingCompleteness();
+    const solveEnabled = completeness !== MappingCompleteness.INSUFFICIENT;
+    view.renderSolveButton(els.solveBtn, {
+      mapped: solveEnabled,
+      justEnabled: solve.getSolveReadyFlash(),
+    });
     view.renderTutorOptInChip(els.tutorOptIn, { visible: onboarding.isChipVisible() }, handlers);
     view.renderWipeConfirmOverlay({ visible: getWipeConfirmVisible() }, handlers);
     solve.renderSolutionArea(state, handlers);

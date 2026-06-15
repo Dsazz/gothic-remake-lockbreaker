@@ -1,21 +1,24 @@
 import { solve, statesAlong } from "./solver.js";
 import {
+  getMappingCompleteness,
   isLockMapped,
   isPristineDefault,
   effectiveMatrix,
   isInBounds,
 } from "./domain.js";
 import * as view from "./view.js";
-import { t } from "./i18n.js";
+import { getLocale, t } from "./i18n.js";
 import {
   resolveSolveCoachmarkTrigger,
   SolveCoachmarkTrigger,
 } from "./solve-coachmark-schedule.js";
 import {
   LandingType,
+  MappingCompleteness,
   PromptKind,
   SolveFailureReason,
   SolveSource,
+  SupportSource,
 } from "./analytics/values.js";
 import {
   trackPromptDismissed,
@@ -27,6 +30,8 @@ import {
   trackSolveResult,
   trackWalkthroughSessionSummary,
   trackStepMismatchClicked,
+  trackHashBannerShown,
+  trackSupportSurfaceShown,
 } from "./analytics/index.js";
 import { createWalkthroughSummaryTracker } from "./walkthrough-summary.js";
 
@@ -40,10 +45,13 @@ export function createEmptySession() {
     copyCopied: false,
     blockedMessage: undefined,
     hashBannerVisible: false,
-    sharePromptVisible: false,
-    sharePromptTracked: false,
+    hashBannerTracked: false,
+    gratitudeVisible: false,
+    gratitudeTracked: false,
+    minibarOreTracked: false,
     showMismatchTips: false,
     pendingSolveCoachmark: false,
+    pendingHashFailureCoachmark: false,
   };
 }
 
@@ -70,10 +78,12 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   session.showAllSteps = false;
   session.sequenceMinimized = false;
   session.blockedMessage = undefined;
-  session.sharePromptVisible = false;
-  session.sharePromptTracked = false;
+  session.gratitudeVisible = false;
+  session.gratitudeTracked = false;
+  session.minibarOreTracked = false;
   session.showMismatchTips = false;
   session.pendingSolveCoachmark = false;
+  session.pendingHashFailureCoachmark = false;
 }
 
 export function createSolveController({
@@ -110,12 +120,24 @@ export function createSolveController({
     return effectiveMatrix(state.matrix, state.removedLinks);
   }
 
+  function mappingCompletenessFor(state) {
+    return getMappingCompleteness(state);
+  }
+
   function flushPendingCoachmark() {
     if (!session.pendingSolveCoachmark || onboarding.isActive()) return;
     session.pendingSolveCoachmark = false;
     const state = store.getState();
     if (!isLockMapped(state)) return;
     void solveCoachmark.show(els.solveBtn);
+  }
+
+  function maybeShowHashFailureCoachmark() {
+    if (!session.pendingHashFailureCoachmark || uiPrefs.isHashFailureCoachmarkSeen()) return;
+    if (onboarding.isActive()) return;
+    session.pendingHashFailureCoachmark = false;
+    uiPrefs.markHashFailureCoachmarkSeen();
+    void solveCoachmark.show(els.solveBtn, { variant: "hash_failure" });
   }
 
   function handleSolveCoachmarkOnMapped(state) {
@@ -141,6 +163,20 @@ export function createSolveController({
         if (solveCoachmark.isActive()) solveCoachmark.dismissSilent();
       },
     });
+  }
+
+  function invalidateOnLockEdit() {
+    if (session.solution === null && session.solveFailureReason) {
+      session.gratitudeVisible = false;
+      session.showMismatchTips = false;
+      session.sequenceMinimized = false;
+      session.showAllSteps = false;
+      session.stepIndex = 0;
+      onRerender();
+      return;
+    }
+    invalidate();
+    onRerender();
   }
 
   function beginWalkthroughSummary(state) {
@@ -179,18 +215,46 @@ export function createSolveController({
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function scrollSharePromptIntoView() {
-    els.sharePrompt?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  function scrollGratitudeIntoView() {
+    els.gratitudePrompt?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function maybeShowSharePrompt(state) {
+  function maybeShowGratitudePrompt(state) {
     if (shouldShowHashBanner()) return;
+    if (uiPrefs.isGratitudePromptDismissed() || uiPrefs.wasGratitudePromptShown()) return;
     if (!Array.isArray(session.solution) || session.solution.length === 0) return;
-    session.sharePromptVisible = true;
-    if (!session.sharePromptTracked) {
-      session.sharePromptTracked = true;
-      trackSharePromptShown({ plateCount: state.plateCount });
+    session.gratitudeVisible = true;
+    uiPrefs.markGratitudePromptShown();
+    if (!session.gratitudeTracked) {
+      session.gratitudeTracked = true;
+      trackSharePromptShown({
+        plateCount: state.plateCount,
+        landingType,
+        hasDonationCta: true,
+      });
+      trackSupportSurfaceShown({
+        source: SupportSource.SEQUENCE_POST_SOLVE,
+        plateCount: state.plateCount,
+        locale: getLocale(),
+      });
     }
+  }
+
+  function maybeTrackMinibarOre(state, minimized, hasMoves) {
+    if (!minimized || !hasMoves) return;
+    if (session.minibarOreTracked) return;
+    session.minibarOreTracked = true;
+    trackSupportSurfaceShown({
+      source: SupportSource.SEQUENCE_MINIBAR,
+      plateCount: state.plateCount,
+      locale: getLocale(),
+    });
+  }
+
+  function maybeTrackHashBanner(state, hasMoves) {
+    if (!session.hashBannerVisible || !hasMoves || session.hashBannerTracked) return;
+    session.hashBannerTracked = true;
+    trackHashBannerShown({ plateCount: state.plateCount });
   }
 
   function renderSolutionArea(state, handlers) {
@@ -206,17 +270,34 @@ export function createSolveController({
       : null;
     const hasMoves = Array.isArray(session.solution) && session.solution.length > 0;
     const minimized = session.sequenceMinimized && hasMoves;
-    const lockReady = isLockMapped(state);
+    const showMinibarOre =
+      minimized &&
+      hasMoves &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 768px)").matches;
+    const completeness = mappingCompletenessFor(state);
+    const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
+    const mappingPartial = completeness === MappingCompleteness.PARTIAL;
+
     view.renderSequencePanel(els.sequencePanel, session.solution, { minimized }, handlers);
+    maybeTrackHashBanner(state, hasMoves);
     view.renderHashBanner(
       els.hashBanner,
       { visible: session.hashBannerVisible && hasMoves },
       handlers,
     );
-    view.renderSharePrompt(
-      els.sharePrompt,
-      { visible: session.sharePromptVisible && hasMoves, copyCopied: session.copyCopied },
+    view.renderGratitudePrompt(
+      els.gratitudePrompt,
+      {
+        visible: session.gratitudeVisible && hasMoves && !minimized,
+        copyCopied: session.copyCopied,
+        moveCount: hasMoves ? session.solution.length : 0,
+      },
       handlers,
+    );
+    view.renderMappingWarning(
+      els.mappingWarning,
+      { visible: mappingPartial && !hasMoves },
     );
     view.renderSolution(
       els.solution,
@@ -225,7 +306,9 @@ export function createSolveController({
       {
         minimized,
         blockedMessage: session.blockedMessage,
-        lockReady,
+        lockReady: mapped,
+        mappingPartial,
+        showMinibarOre,
         showMismatchTips: session.showMismatchTips,
         state,
         failureReason: session.solveFailureReason,
@@ -240,6 +323,7 @@ export function createSolveController({
       },
       handlers,
     );
+    maybeTrackMinibarOre(state, minimized, hasMoves);
   }
 
   async function copyShareUrl(url) {
@@ -273,13 +357,16 @@ export function createSolveController({
 
   function onSolve({ auto = false, solveSource = SolveSource.MANUAL } = {}) {
     const state = store.getState();
-    const mapped = isLockMapped(state);
+    const completeness = mappingCompletenessFor(state);
+    const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
+    const lockReady = completeness === MappingCompleteness.READY;
 
     if (!auto) {
       trackSolveButtonClicked({
         plateCount: state.plateCount,
-        lockReady: mapped,
+        lockReady,
         landingType,
+        mappingCompleteness: completeness,
       });
     }
 
@@ -307,6 +394,7 @@ export function createSolveController({
       landingType,
       solveSource,
       failureReason: session.solveFailureReason,
+      mappingCompleteness: completeness,
     });
     session.stepIndex = 0;
     session.showAllSteps = false;
@@ -314,18 +402,22 @@ export function createSolveController({
     if (session.solution === null) {
       pulseTumblers();
       announceSolveFailure();
+      if (solveSource === SolveSource.HASH && landingType === LandingType.HASH) {
+        session.pendingHashFailureCoachmark = true;
+        maybeShowHashFailureCoachmark();
+      }
     } else if (Array.isArray(session.solution) && session.solution.length > 0) {
       beginWalkthroughSummary(state);
+      maybeShowGratitudePrompt(state);
     } else {
       walkthroughSummary.clear();
     }
 
-    maybeShowSharePrompt(state);
     onRenderSolutionArea(state);
     scrollSequencePanel();
 
-    if (session.sharePromptVisible && Array.isArray(session.solution) && session.solution.length > 0) {
-      scrollSharePromptIntoView();
+    if (session.gratitudeVisible && Array.isArray(session.solution) && session.solution.length > 0) {
+      scrollGratitudeIntoView();
     }
   }
 
@@ -348,11 +440,11 @@ export function createSolveController({
       try {
         await copyShareUrl(location.href);
         showCopyFeedback();
-        trackShareLinkCopied({ plateCount });
+        trackShareLinkCopied({ plateCount, landingType });
         return true;
       } catch {
         if (els.ariaLive) els.ariaLive.textContent = t("aria.copyFail");
-        trackShareLinkCopyFailed({ plateCount });
+        trackShareLinkCopyFailed({ plateCount, landingType });
         return false;
       }
     },
@@ -406,13 +498,23 @@ export function createSolveController({
       });
       onRenderSolutionArea(store.getState());
     },
-    async onSharePromptClick() {
-      trackSharePromptClicked({ plateCount: store.getState().plateCount });
+    async onGratitudeShareClick() {
+      trackSharePromptClicked({
+        plateCount: store.getState().plateCount,
+        landingType,
+      });
       const copied = await handlers.onCopyShareLink();
-      if (copied) getHandlers().onDismissSharePrompt();
+      if (copied) getHandlers().onDismissGratitudePrompt();
     },
-    onDismissSharePrompt() {
-      session.sharePromptVisible = false;
+    onGratitudeDonateClick() {
+      getHandlers().onSupportClick(SupportSource.SEQUENCE_POST_SOLVE);
+    },
+    onMinibarDonateClick() {
+      getHandlers().onSupportClick(SupportSource.SEQUENCE_MINIBAR);
+    },
+    onDismissGratitudePrompt() {
+      session.gratitudeVisible = false;
+      uiPrefs.dismissGratitudePrompt();
       trackPromptDismissed({
         prompt: PromptKind.SHARE,
         plateCount: store.getState().plateCount,
@@ -432,14 +534,17 @@ export function createSolveController({
   return {
     handlers,
     invalidate,
+    invalidateOnLockEdit,
     onSolve,
     renderSolutionArea,
     flushPendingCoachmark,
+    maybeShowHashFailureCoachmark,
     onMapped,
     refreshHashBannerVisibility,
     onLocaleChangeRefresh,
     getTumblersPulse: () => tumblersPulse,
     getSolveReadyFlash: () => solveReadyFlash,
+    getMappingCompleteness: () => mappingCompletenessFor(store.getState()),
     flushWalkthroughSummary: () => walkthroughSummary.flush(),
   };
 }

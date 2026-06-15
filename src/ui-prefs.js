@@ -71,5 +71,23 @@ export function createUiPrefs() {
     getStoredLocale() {
       return storageGet(StorageKeys.LOCALE);
     },
+    isGratitudePromptDismissed() {
+      return storageGet(StorageKeys.GRATITUDE_PROMPT_DISMISSED) === StorageFlag.SET;
+    },
+    dismissGratitudePrompt() {
+      storageSet(StorageKeys.GRATITUDE_PROMPT_DISMISSED, StorageFlag.SET);
+    },
+    wasGratitudePromptShown() {
+      return storageGet(StorageKeys.GRATITUDE_PROMPT_SHOWN) === StorageFlag.SET;
+    },
+    markGratitudePromptShown() {
+      storageSet(StorageKeys.GRATITUDE_PROMPT_SHOWN, StorageFlag.SET);
+    },
+    isHashFailureCoachmarkSeen() {
+      return storageGet(StorageKeys.HASH_FAILURE_COACHMARK_SEEN) === StorageFlag.SET;
+    },
+    markHashFailureCoachmarkSeen() {
+      storageSet(StorageKeys.HASH_FAILURE_COACHMARK_SEEN, StorageFlag.SET);
+    },
   };
 }

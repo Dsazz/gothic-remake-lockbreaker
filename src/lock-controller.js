@@ -24,17 +24,21 @@ export function createLockController({ store, solve, onRerender }) {
     onRerender();
   }
 
+  function onLockEdit() {
+    solve.invalidateOnLockEdit();
+  }
+
   const handlers = {
     onSetPlateCount(n) {
-      solve.invalidate();
+      onLockEdit();
       store.setPlateCount(n);
     },
     onCycleCell(mover, affected) {
-      solve.invalidate();
+      onLockEdit();
       store.cycleMatrixCell(mover, affected);
     },
     onSetPosition(plate, value) {
-      solve.invalidate();
+      onLockEdit();
       store.setPosition(plate, value);
     },
     onClearAll() {
@@ -54,16 +58,16 @@ export function createLockController({ store, solve, onRerender }) {
       solve.onSolve({ auto: true, solveSource: SolveSource.EXAMPLE });
     },
     onSetMasteryLevel(level) {
-      solve.invalidate();
+      onLockEdit();
       store.setMasteryLevel(level);
       trackMasteryTierChanged({ tier: masteryForId(level).key });
     },
     onAdjustBreaksBudget(delta) {
-      solve.invalidate();
+      onLockEdit();
       store.adjustBreaksBudget(delta);
     },
     onToggleLinkRemoved(reactor, turned) {
-      solve.invalidate();
+      onLockEdit();
       store.toggleLinkRemoved(reactor, turned);
     },
   };

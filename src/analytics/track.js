@@ -12,8 +12,30 @@ function baseProps(plateCount) {
   return { plate_count: plateCount, app_version: VERSION };
 }
 
-function solveProps(plateCount, landingType, solveSource) {
-  return { ...baseProps(plateCount), landing_type: landingType, solve_source: solveSource };
+function shareProps(plateCount, landingType, extra = {}) {
+  return {
+    ...baseProps(plateCount),
+    landing_type: landingType,
+    ...extra,
+  };
+}
+
+function supportProps({ source, plateCount, locale }) {
+  return {
+    source,
+    app_version: VERSION,
+    ...(plateCount != null ? { plate_count: plateCount } : {}),
+    ...(locale ? { locale } : {}),
+  };
+}
+
+function solveProps(plateCount, landingType, solveSource, mappingCompleteness) {
+  return {
+    ...baseProps(plateCount),
+    landing_type: landingType,
+    solve_source: solveSource,
+    ...(mappingCompleteness ? { mapping_completeness: mappingCompleteness } : {}),
+  };
 }
 
 function storageGet(key) {
@@ -107,11 +129,17 @@ export function trackLocaleSuggestDeclined({ suggestedLocale, hintSource, declin
   });
 }
 
-export function trackSolveButtonClicked({ plateCount, lockReady, landingType }) {
+export function trackSolveButtonClicked({
+  plateCount,
+  lockReady,
+  landingType,
+  mappingCompleteness,
+}) {
   send(Events.SOLVE_BUTTON_CLICKED, {
     ...baseProps(plateCount),
     lock_ready: lockReady,
     landing_type: landingType,
+    ...(mappingCompleteness ? { mapping_completeness: mappingCompleteness } : {}),
   });
 }
 
@@ -121,8 +149,9 @@ export function trackSolveResult({
   landingType,
   solveSource,
   failureReason,
+  mappingCompleteness,
 }) {
-  const props = solveProps(plateCount, landingType, solveSource);
+  const props = solveProps(plateCount, landingType, solveSource, mappingCompleteness);
   if (solution === null) {
     send(Events.LOCK_NO_SOLUTION, { ...props, failure_reason: failureReason });
     return;
@@ -170,20 +199,25 @@ export function trackPromptDismissed({ prompt, plateCount }) {
   send(Events.PROMPT_DISMISSED, { ...baseProps(plateCount), prompt });
 }
 
-export function trackShareLinkCopied({ plateCount }) {
-  send(Events.SHARE_LINK_COPIED, baseProps(plateCount));
+export function trackShareLinkCopied({ plateCount, landingType }) {
+  send(Events.SHARE_LINK_COPIED, shareProps(plateCount, landingType));
 }
 
-export function trackShareLinkCopyFailed({ plateCount }) {
-  send(Events.SHARE_LINK_COPY_FAILED, baseProps(plateCount));
+export function trackShareLinkCopyFailed({ plateCount, landingType }) {
+  send(Events.SHARE_LINK_COPY_FAILED, shareProps(plateCount, landingType));
 }
 
-export function trackSharePromptShown({ plateCount }) {
-  send(Events.SHARE_PROMPT_SHOWN, baseProps(plateCount));
+export function trackSharePromptShown({ plateCount, landingType, hasDonationCta = false }) {
+  send(
+    Events.SHARE_PROMPT_SHOWN,
+    shareProps(plateCount, landingType, {
+      ...(hasDonationCta ? { has_donation_cta: true } : {}),
+    }),
+  );
 }
 
-export function trackSharePromptClicked({ plateCount }) {
-  send(Events.SHARE_PROMPT_CLICKED, baseProps(plateCount));
+export function trackSharePromptClicked({ plateCount, landingType }) {
+  send(Events.SHARE_PROMPT_CLICKED, shareProps(plateCount, landingType));
 }
 
 export function trackLockCleared() {
@@ -229,8 +263,28 @@ export function trackStepMismatchClicked({ stepIndex, plateCount }) {
   });
 }
 
-export function trackSupportLinkClicked({ source }) {
-  send(Events.SUPPORT_LINK_CLICKED, { source, app_version: VERSION });
+export function trackSupportLinkClicked({ source, plateCount, locale }) {
+  send(Events.SUPPORT_LINK_CLICKED, supportProps({ source, plateCount, locale }));
+}
+
+export function trackSupportSurfaceShown({ source, plateCount, locale }) {
+  send(Events.SUPPORT_SURFACE_SHOWN, supportProps({ source, plateCount, locale }));
+}
+
+export function trackHashBannerShown({ plateCount }) {
+  send(Events.HASH_BANNER_SHOWN, baseProps(plateCount));
+}
+
+export function trackTranslationFeedbackClicked({ locale }) {
+  send(Events.TRANSLATION_FEEDBACK_CLICKED, { locale, app_version: VERSION });
+}
+
+export function trackLocaleAutoApplied({ locale, hintSource }) {
+  send(Events.LOCALE_AUTO_APPLIED, {
+    locale,
+    hint_source: hintSource,
+    app_version: VERSION,
+  });
 }
 
 

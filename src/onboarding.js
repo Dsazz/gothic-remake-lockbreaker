@@ -5,9 +5,11 @@ import {
   TutorNotShownReason,
 } from "./analytics/values.js";
 import { t } from "./i18n.js";
+import { createSpotlightRing } from "./spotlight-ring.js";
 
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
+const DESKTOP_SEQUENCE_MEDIA = "(min-width: 900px)";
 const TARGET_LOWER_RATIO = 0.45;
 const FALLBACK_CARD_HEIGHT = 220;
 
@@ -36,6 +38,12 @@ export const ONBOARDING_STEPS = [
     titleKey: "onboarding.step4.title",
     bodyKey: "onboarding.step4.body",
   },
+  {
+    id: OnboardingStepId.SOLVE,
+    target: ".panel--sequence .solve-btn",
+    titleKey: "onboarding.step5.title",
+    bodyKey: "onboarding.step5.body",
+  },
 ];
 
 const STEPS = ONBOARDING_STEPS;
@@ -53,6 +61,7 @@ export function createOnboarding({
   let active = false;
   let chipVisible = false;
   let resizeTimer;
+  const spotlightRing = createSpotlightRing();
 
   function measuredCardHeight() {
     const card = cardHost?.querySelector(".onboarding-card");
@@ -77,6 +86,38 @@ export function createOnboarding({
 
   function isMobile() {
     return window.matchMedia(MOBILE_MEDIA).matches;
+  }
+
+  function isDesktopSequenceLayout() {
+    return window.matchMedia(DESKTOP_SEQUENCE_MEDIA).matches;
+  }
+
+  function isSequenceSolveStep(step) {
+    return step?.id === OnboardingStepId.SOLVE;
+  }
+
+  function clearTargetSpotlight(step) {
+    if (isSequenceSolveStep(step)) {
+      spotlightRing.clear();
+      return;
+    }
+    document.querySelector(step?.target ?? "")?.classList.remove("onboarding-target");
+  }
+
+  function clearAllSpotlights() {
+    spotlightRing.clear();
+    document.querySelectorAll(".onboarding-target").forEach((node) => {
+      node.classList.remove("onboarding-target");
+    });
+  }
+
+  function clearCardPlacementClasses() {
+    cardHost?.classList.remove(
+      "onboarding-card-host--mobile",
+      "onboarding-card-host--mobile-top",
+      "onboarding-card-host--desktop-sequence",
+    );
+    document.body.classList.remove("onboarding-card-at-top", "onboarding-card-at-bottom");
   }
 
   function stepContext() {
@@ -108,14 +149,23 @@ export function createOnboarding({
     return rect.top >= window.innerHeight * TARGET_LOWER_RATIO;
   }
 
-  function updateCardPlacement(target) {
+  function updateCardPlacement(target, step) {
     if (!cardHost) return;
 
-    const cardAtTop = targetNeedsTopCard(target);
-    cardHost.classList.add("onboarding-card-host--mobile");
-    cardHost.classList.toggle("onboarding-card-host--mobile-top", cardAtTop);
-    document.body.classList.toggle("onboarding-card-at-top", cardAtTop);
-    document.body.classList.toggle("onboarding-card-at-bottom", !cardAtTop);
+    clearCardPlacementClasses();
+
+    if (isMobile()) {
+      const cardAtTop = isSequenceSolveStep(step) || targetNeedsTopCard(target);
+      cardHost.classList.add("onboarding-card-host--mobile");
+      cardHost.classList.toggle("onboarding-card-host--mobile-top", cardAtTop);
+      document.body.classList.toggle("onboarding-card-at-top", cardAtTop);
+      document.body.classList.toggle("onboarding-card-at-bottom", !cardAtTop);
+      return;
+    }
+
+    if (isDesktopSequenceLayout() && isSequenceSolveStep(step)) {
+      cardHost.classList.add("onboarding-card-host--desktop-sequence");
+    }
   }
 
   function mobileScrollMargins(cardAtTop) {
@@ -142,7 +192,14 @@ export function createOnboarding({
     return new Promise((resolve) => setTimeout(resolve, 320));
   }
 
-  function scrollTargetIntoView(target, cardAtTop) {
+  function scrollTargetIntoView(target, cardAtTop, step) {
+    if (isSequenceSolveStep(step)) {
+      if (isMobile()) {
+        return alignTargetInMobileViewport(target, true);
+      }
+      return Promise.resolve();
+    }
+
     if (!isMobile()) {
       target.scrollIntoView({ behavior: "smooth", block: "center" });
       return Promise.resolve();
@@ -163,19 +220,24 @@ export function createOnboarding({
     let target = document.querySelector(step.target);
     if (!target) return;
 
-    const cardAtTop = targetNeedsTopCard(target);
-    updateCardPlacement(target);
+    const cardAtTop = isSequenceSolveStep(step) || targetNeedsTopCard(target);
+    updateCardPlacement(target, step);
 
-    await scrollTargetIntoView(target, cardAtTop);
+    await scrollTargetIntoView(target, cardAtTop, step);
 
     target = document.querySelector(step.target);
     if (!target) return;
 
-    updateCardPlacement(target);
+    updateCardPlacement(target, step);
     backdrop.hidden = false;
-    target.classList.add("onboarding-target");
 
-    const cleanup = () => document.querySelector(step.target)?.classList.remove("onboarding-target");
+    if (isSequenceSolveStep(step)) {
+      spotlightRing.show(target);
+    } else {
+      target.classList.add("onboarding-target");
+    }
+
+    const cleanup = () => clearTargetSpotlight(step);
     card.querySelector(".onboarding-skip").addEventListener("click", cleanup, { once: true });
     card.querySelector(".onboarding-next").addEventListener("click", cleanup, { once: true });
   }
@@ -187,12 +249,18 @@ export function createOnboarding({
     if (!step) return;
 
     const target = document.querySelector(step.target);
-    if (target?.classList.contains("onboarding-target")) {
-      updateCardPlacement(target);
+    if (isSequenceSolveStep(step) && target) {
+      updateCardPlacement(target, step);
+      spotlightRing.position();
       return;
     }
 
-    if (target) updateCardPlacement(target);
+    if (target?.classList.contains("onboarding-target")) {
+      updateCardPlacement(target, step);
+      return;
+    }
+
+    if (target) updateCardPlacement(target, step);
   }
 
   function onResize() {
@@ -203,7 +271,9 @@ export function createOnboarding({
   function removeLayers() {
     window.removeEventListener("resize", onResize);
     clearTimeout(resizeTimer);
-    document.body.classList.remove("onboarding-active", "onboarding-card-at-top", "onboarding-card-at-bottom");
+    clearCardPlacementClasses();
+    clearAllSpotlights();
+    document.body.classList.remove("onboarding-active");
     backdrop?.remove();
     cardHost?.remove();
     backdrop = null;
@@ -264,9 +334,7 @@ export function createOnboarding({
     }
 
     if (!refreshOnly) {
-      document.querySelectorAll(".onboarding-target").forEach((node) => {
-        node.classList.remove("onboarding-target");
-      });
+      clearAllSpotlights();
     }
 
     const target = document.querySelector(step.target);
@@ -275,7 +343,7 @@ export function createOnboarding({
     backdrop.hidden = false;
     cardHost.hidden = false;
     if (!refreshOnly && target) {
-      updateCardPlacement(target);
+      updateCardPlacement(target, step);
     }
 
     const card = buildCard(step);

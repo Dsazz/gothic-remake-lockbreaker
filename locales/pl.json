@@ -85,6 +85,10 @@
     "blocked": "Najpierw ustaw otwory startowe i sprzężenia każdego zamka.",
     "hintReady": "Zamek zmapowany — otwórz go.",
     "hintMap": "Ustaw otwory startowe i sprzężenia powyżej, potem otwórz zamek.",
+    "incompleteMapping": "Mapowanie wygląda na niepełne — dodaj sprzężenia lub otwory startowe przed rozwiązaniem.",
+    "mappingChecklist": "Ustaw każdy otwór startowy. Zaznacz sprzężenia widziane w grze.",
+    "gratitudeHeadOne": "Zamek otwarty — {n} ruch, bezpiecznie przy krawędzi.",
+    "gratitudeHeadMany": "Zamek otwarty — {n} ruchów, bezpiecznie przy krawędzi.",
     "oob": "Szpilka startuje poza ramą (otwory 1–7). Naciśnij każdy otwór startowy, by poprawić.",
     "noPath": "Brak bezpiecznej ścieżki przy tych sprzężeniach. Sprawdź With/Against na każdym chipie lub otwórz przewodnik.",
     "noPathHint": "Sprawdź każdy chip With/Against na kartach — sprzężenia mają kierunek.",
@@ -144,11 +148,17 @@
     "step4": {
       "title": "Krok 4 · Sprzężenia",
       "body": "W grze obróć ten zamek raz. Każdy zamek, który się rusza — naciśnij With lub Against. Master: naciśnij Gone przy sprzężeniu po złamaniu wytrychu."
+    },
+    "step5": {
+      "title": "Krok 5 · Otwórz zamek",
+      "body": "Gdy mapowanie zgadza się z grą, naciśnij Break the Lock. Zobaczysz sekwencję krok po kroku."
     }
   },
   "coachmark": {
     "title": "Zamek zmapowany",
-    "body": "Naciśnij Break the Lock, by zobaczyć sekwencję."
+    "body": "Naciśnij Break the Lock, by zobaczyć sekwencję.",
+    "hashFailureTitle": "Brak ścieżki przy tym mapowaniu",
+    "hashFailureBody": "Popraw otwory startowe lub sprzężenia, potem ponownie naciśnij Break the Lock."
   },
   "confirm": {
     "wipe": "Wyczyścić zamek? Sprzężenia, szpilki, poziom i liczba zostaną zresetowane.",

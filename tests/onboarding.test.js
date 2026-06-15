@@ -12,6 +12,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 test("onboarding step targets are specific and present in view markup", async () => {
   const view = await readFile(join(root, "src/view.js"), "utf8");
+  const html = await readFile(join(root, "index.html"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
   const targets = new Set();
 
   for (const step of ONBOARDING_STEPS) {
@@ -28,18 +30,21 @@ test("onboarding step targets are specific and present in view markup", async ()
     targets.add(step.target);
 
     const classes = [...step.target.matchAll(/\.([\w-]+)/g)].map((m) => m[1]);
+    const markup = `${view}\n${html}\n${css}`;
     assert.ok(
-      classes.some((name) => view.includes(name)),
-      `${step.id}: expected one of [${classes.join(", ")}] in view.js`,
+      classes.some((name) => markup.includes(name)),
+      `${step.id}: expected one of [${classes.join(", ")}] in view/index/styles`,
     );
   }
 });
 
-test("onboarding has four steps including mastery tier before plate count", () => {
-  assert.equal(ONBOARDING_STEPS.length, 4);
+test("onboarding has five steps ending with solve", () => {
+  assert.equal(ONBOARDING_STEPS.length, 5);
   assert.equal(ONBOARDING_STEPS[0].id, OnboardingStepId.MASTERY_TIER);
   assert.equal(ONBOARDING_STEPS[1].id, OnboardingStepId.PLATE_COUNT);
   assert.equal(ONBOARDING_STEPS[1].target, ".controls .locks-row");
+  assert.equal(ONBOARDING_STEPS[4].id, OnboardingStepId.SOLVE);
+  assert.equal(ONBOARDING_STEPS[4].target, ".panel--sequence .solve-btn");
 });
 
 test("onboarding dismiss key is v3", () => {

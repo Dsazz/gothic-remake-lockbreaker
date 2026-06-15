@@ -30,6 +30,16 @@ test("isReportableError drops browser extension messaging noise", () => {
   );
 });
 
+test("isReportableError drops wallet and Firefox extension injection noise", () => {
+  assert.equal(
+    isReportableError(
+      "TypeError: undefined is not an object (evaluating 'window.ethereum.selectedAddress = undefined')",
+    ),
+    false,
+  );
+  assert.equal(isReportableError("ReferenceError: Can't find variable: __firefox__"), false);
+});
+
 test("isReportableError keeps real application errors", () => {
   assert.equal(isReportableError("RangeError: Maximum call stack size exceeded"), true);
   assert.equal(isReportableError(""), true);

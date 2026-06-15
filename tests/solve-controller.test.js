@@ -37,10 +37,11 @@ test("resetSession clears all solve session fields", () => {
   session.showAllSteps = true;
   session.sequenceMinimized = true;
   session.blockedMessage = "blocked";
-  session.sharePromptVisible = true;
-  session.sharePromptTracked = true;
+  session.gratitudeVisible = true;
+  session.gratitudeTracked = true;
   session.showMismatchTips = true;
   session.pendingSolveCoachmark = true;
+  session.pendingHashFailureCoachmark = true;
 
   let dismissed = false;
   resetSession(session, { dismissCoachmark: () => { dismissed = true; } });
@@ -52,10 +53,11 @@ test("resetSession clears all solve session fields", () => {
   assert.equal(session.showAllSteps, false);
   assert.equal(session.sequenceMinimized, false);
   assert.equal(session.blockedMessage, undefined);
-  assert.equal(session.sharePromptVisible, false);
-  assert.equal(session.sharePromptTracked, false);
+  assert.equal(session.gratitudeVisible, false);
+  assert.equal(session.gratitudeTracked, false);
   assert.equal(session.showMismatchTips, false);
   assert.equal(session.pendingSolveCoachmark, false);
+  assert.equal(session.pendingHashFailureCoachmark, false);
 });
 
 test("buildWalkthrough clamps step index to available states", () => {

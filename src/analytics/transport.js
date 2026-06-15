@@ -6,6 +6,8 @@ const IGNORED_MESSAGE_PATTERNS = [
   /^he$/i,
   /WKWebView API client did not respond/,
   /runtime\.sendMessage\(\).*Tab not found/i,
+  /window\.ethereum\.selectedAddress/,
+  /Can't find variable: __firefox__/,
 ];
 
 let capturing = false;

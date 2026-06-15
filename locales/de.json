@@ -85,6 +85,10 @@
     "blocked": "Setze zuerst Startloch und Kupplungen für jedes Schloss.",
     "hintReady": "Schloss abgebildet — öffne es.",
     "hintMap": "Setze oben Startlöcher und Kupplungen, dann öffne das Schloss.",
+    "incompleteMapping": "Abbildung wirkt dünn — ergänze Kupplungen oder Startlöcher vor dem Lösen.",
+    "mappingChecklist": "Setze jedes Startloch. Markiere Kupplungen, die du im Spiel gesehen hast.",
+    "gratitudeHeadOne": "Schloss geknackt — {n} Drehung, kanten-sicher.",
+    "gratitudeHeadMany": "Schloss geknackt — {n} Drehungen, kanten-sicher.",
     "oob": "Eine Nadel startet außerhalb des Rahmens (Löcher 1–7). Tippe jedes Startloch zum Korrigieren.",
     "noPath": "Kein sicherer Weg mit diesen Kupplungen. Prüfe With/Against auf jedem Chip oder öffne die Anleitung.",
     "noPathHint": "Prüfe jeden With/Against-Chip auf den Zylinderkarten — Kupplungen sind richtungsabhängig.",
@@ -143,11 +147,17 @@
     "step4": {
       "title": "Schritt 4 · Kupplungen",
       "body": "Drehe dieses Schloss einmal im Spiel. Jedes sich bewegende Schloss — tippe With oder Against. Master: tippe Gone neben einer Kupplung, nachdem ein Dietrich sie entfernt hat."
+    },
+    "step5": {
+      "title": "Schritt 5 · Schloss öffnen",
+      "body": "Wenn die Abbildung dem Spiel entspricht, tippe Break the Lock. Du erhältst eine Schritt-für-Schritt-Drehfolge."
     }
   },
   "coachmark": {
     "title": "Schloss abgebildet",
-    "body": "Tippe Break the Lock für die Sequenz."
+    "body": "Tippe Break the Lock für die Sequenz.",
+    "hashFailureTitle": "Kein Weg mit dieser Abbildung",
+    "hashFailureBody": "Passe Startlöcher oder Kupplungen an, dann tippe erneut Break the Lock."
   },
   "confirm": {
     "wipe": "Schloss löschen? Kupplungen, Nadeln, Stufe und Anzahl werden zurückgesetzt.",

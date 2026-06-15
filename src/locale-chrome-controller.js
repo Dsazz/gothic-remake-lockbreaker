@@ -12,6 +12,7 @@ import {
   isLocaleSuggestEligible,
   LocaleHintSource,
   resolveGeoLocaleHint,
+  resolveNavigatorLocaleHint,
   resolveReferrerLocaleHint,
 } from "./locale-suggest.js";
 import { waitForGeoCountryCode as defaultWaitForGeoCountryCode } from "./analytics/geo-hint.js";
@@ -33,6 +34,7 @@ import {
   trackPromptDismissed,
   trackSupportLinkClicked,
   trackLocaleChanged,
+  trackTranslationFeedbackClicked,
 } from "./analytics/index.js";
 
 export function createLocaleChromeController({
@@ -76,7 +78,12 @@ export function createLocaleChromeController({
   function ensureLocaleHint() {
     if (activeLocaleHint) return activeLocaleHint;
     const referrerHint = resolveReferrerLocaleHint(document.referrer);
-    if (referrerHint) activeLocaleHint = referrerHint;
+    if (referrerHint) {
+      activeLocaleHint = referrerHint;
+      return activeLocaleHint;
+    }
+    const navigatorHint = resolveNavigatorLocaleHint();
+    if (navigatorHint) activeLocaleHint = navigatorHint;
     return activeLocaleHint;
   }
 
@@ -244,7 +251,14 @@ export function createLocaleChromeController({
       openGuide(source);
     },
     onSupportClick(source = SupportSource.FOOTER_STRIP) {
-      trackSupportLinkClicked({ source });
+      trackSupportLinkClicked({
+        source,
+        plateCount: store.getState().plateCount,
+        locale: getLocale(),
+      });
+    },
+    onTranslationFeedbackClick() {
+      trackTranslationFeedbackClicked({ locale: getLocale() });
     },
   };
 
