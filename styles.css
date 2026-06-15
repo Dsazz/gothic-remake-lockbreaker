@@ -432,6 +432,8 @@ button {
 
 .app-head-support {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .app-head-support-link {
@@ -1862,6 +1864,18 @@ summary.icon-btn:focus-visible {
   height: 1rem;
 }
 
+.icon-btn.sequence-min-ore .support-ore,
+.icon-btn.sequence-min-ore .sequence-min-ore-img {
+  width: auto;
+  height: 1.35rem;
+  margin: 0;
+}
+
+.icon-btn.sequence-min-ore:hover .support-ore,
+.icon-btn.sequence-min-ore:focus-visible .support-ore {
+  animation: support-ore-hover 0.55s ease-in-out;
+}
+
 .icon-btn.icon-btn--pill {
   width: 2.75rem;
   height: 2.75rem;
@@ -2668,19 +2682,6 @@ summary.icon-btn:focus-visible {
   color: var(--parchment-dim);
 }
 
-.support-cta--icon {
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.support-cta--icon .support-ore,
-.support-cta--icon .sequence-min-ore-img {
-  margin: 0;
-}
-
 @keyframes support-ore-hover {
   0%,
   100% {
@@ -3041,7 +3042,9 @@ summary.icon-btn:focus-visible {
   .support-cta:hover .support-ore,
   .support-cta:focus-visible .support-ore,
   .app-head-support-link:hover .app-head-support-ore,
-  .app-head-support-link:focus-visible .app-head-support-ore {
+  .app-head-support-link:focus-visible .app-head-support-ore,
+  .icon-btn.sequence-min-ore:hover .support-ore,
+  .icon-btn.sequence-min-ore:focus-visible .support-ore {
     animation: none;
   }
 
@@ -3050,13 +3053,35 @@ summary.icon-btn:focus-visible {
   }
 }
 
-.sequence-min-ore {
-  display: inline-flex;
-}
-
 @media (max-width: 768px) {
   .app-head-support-label {
     display: none;
+  }
+
+  .app-head-support-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 38px;
+    gap: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .app-head-support-ore {
+    height: 32px;
+    width: auto;
+  }
+
+  .app-head-support-link:hover,
+  .app-head-support-link:focus-visible {
+    transform: none;
+    border: none;
+    background: transparent;
+    box-shadow: none;
   }
 }
 

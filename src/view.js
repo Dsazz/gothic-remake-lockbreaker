@@ -775,9 +775,7 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
   }
 
   if (ui?.minimized) {
-    container.replaceChildren(
-      renderMinimizedSummary(walkthrough, handlers, { showMinibarOre: ui.showMinibarOre }),
-    );
+    container.replaceChildren(renderMinimizedSummary(walkthrough, handlers));
     return;
   }
 
@@ -845,7 +843,7 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
     ? { label: t("sequence.expand"), kind: "expand", onClick: handlers.onExpandSequence }
     : { label: t("sequence.minimize"), kind: "minimize", onClick: handlers.onMinimizeSequence };
 
-  actions.replaceChildren(
+  const actionChildren = [
     iconBtn({
       label: panelTool.label,
       className: "icon-btn--tool",
@@ -858,10 +856,22 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
       onClick: handlers.onClearSolution,
       svg: toolIconSvg("clear"),
     }),
-  );
+  ];
+
+  if (minimized && ui?.showMinibarOre) {
+    actionChildren.unshift(
+      supportDonateLink({
+        className: "icon-btn icon-btn--tool sequence-min-ore",
+        iconOnly: true,
+        onClick: () => handlers.onMinibarDonateClick?.(),
+      }),
+    );
+  }
+
+  actions.replaceChildren(...actionChildren);
 }
 
-function renderMinimizedSummary(walkthrough, handlers, { showMinibarOre = false } = {}) {
+function renderMinimizedSummary(walkthrough, handlers) {
   const { states, stepIndex, move } = walkthrough;
   const total = states.length - 1;
   const counter = stepCounter(stepIndex, total, !move);
@@ -914,16 +924,6 @@ function renderMinimizedSummary(walkthrough, handlers, { showMinibarOre = false 
       svg: navChevronSvg("next"),
     }),
   ];
-
-  if (showMinibarOre) {
-    navChildren.push(
-      supportDonateLink({
-        className: "support-cta support-cta--icon sequence-min-ore",
-        iconOnly: true,
-        onClick: () => handlers.onMinibarDonateClick?.(),
-      }),
-    );
-  }
 
   return el("div", { class: "sequence-min" }, [
     el("div", { class: "sequence-min-nav" }, navChildren),

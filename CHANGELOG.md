@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.20.2] - 2026-06-15
+
+### Changed
+
+- Mobile header donation ore — icon-only (no pill chrome), aligned with locale switcher, larger tap target.
+- Minimized Sequence minibar ore — moved to header icon row (first position), matches expand/clear tool styling.
+- Minibar ore visibility — same eligibility as post-solve gratitude strip (share + donate); ore is the minimized mobile fallback.
+
 ## [1.20.1] - 2026-06-15
 
 ### Fixed
