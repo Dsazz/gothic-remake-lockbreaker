@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.20.0] - 2026-06-15
+
+### Added
+
+- Graduated solve gate — block solve on empty mapping, amber warning on partial mapping, `mapping_completeness` analytics.
+- Post-solve gratitude strip in The Sequence — one-time share link + donation CTA with minibar ore fallback on mobile walkthrough.
+- Onboarding tour step 5 targeting Break the Lock; hash-failure coachmark for shared locks that do not solve.
+- Analytics: `support_surface_shown`, `hash_banner_shown`, `translation_feedback_clicked`, `locale_auto_applied`; donation `plate_count` / `locale`; share `landing_type`.
+- German locale suggest from browser language before geo resolves.
+- Fixed spotlight ring overlay for solve-button coachmarks (avoids breaking sticky mobile layout).
+
+### Changed
+
+- Failure alerts persist until the next solve attempt; OOB failures get the same recovery CTAs as no-path.
+- Tour completion scrolls to the solve button; i18n banner GitHub link tracks translation feedback separately from donations.
+- PostHog error capture filters wallet and Firefox extension injection noise.
+
 ## [1.19.5] - 2026-06-15
 
 ### Added

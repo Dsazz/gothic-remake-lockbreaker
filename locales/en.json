@@ -110,6 +110,10 @@
     "blocked": "Set each lock's start hole and couplings first.",
     "hintReady": "Lock mapped — crack it open.",
     "hintMap": "Set each lock's start hole and couplings above, then crack it open.",
+    "incompleteMapping": "Mapping looks thin — add more couplings or start holes before solving.",
+    "mappingChecklist": "Set each lock's start hole. Mark couplings you observed in-game.",
+    "gratitudeHeadOne": "Lock cracked — {n} turn, edge-safe.",
+    "gratitudeHeadMany": "Lock cracked — {n} turns, edge-safe.",
     "oob": "A pin starts outside the frame (holes 1–7). Tap each pin's hole to fix starting positions.",
     "noPath": "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.",
     "noPathHint": "Check each With/Against chip on the tumbler cards — couplings are directional.",
@@ -168,11 +172,17 @@
     "step4": {
       "title": "Step 4 · Couplings",
       "body": "In-game, turn this lock once. Each lock that moves — tap its chip to With or Against. Master: tap Gone beside a coupling after a snapped pick drops it."
+    },
+    "step5": {
+      "title": "Step 5 · Break the lock",
+      "body": "When mapping matches what you saw in-game, tap Break the Lock. You'll get a step-by-step turn sequence."
     }
   },
   "coachmark": {
     "title": "Lock mapped",
-    "body": "Tap Break the Lock to see the sequence."
+    "body": "Tap Break the Lock to see the sequence.",
+    "hashFailureTitle": "No path with this mapping",
+    "hashFailureBody": "Adjust start holes or couplings, then tap Break the Lock again."
   },
   "confirm": {
     "wipe": "Wipe the lock? Couplings, pins, mastery, and count will reset.",

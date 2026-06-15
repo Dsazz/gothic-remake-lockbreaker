@@ -9,6 +9,9 @@ export const StorageKeys = Object.freeze({
   LOCALE_SESSION_END_SENT: "locale_session_end_sent_v1",
   LOCALE_SUGGEST_DISMISSED: "locale_suggest_dismissed_v1",
   LOCALE_SUGGEST_SESSION_DISMISSED: "locale_suggest_session_dismissed_v1",
+  GRATITUDE_PROMPT_DISMISSED: "gratitude_prompt_dismissed_v1",
+  GRATITUDE_PROMPT_SHOWN: "gratitude_prompt_shown_v1",
+  HASH_FAILURE_COACHMARK_SEEN: "hash_failure_coachmark_seen_v1",
 });
 
 /** Persisted boolean flags — localStorage/sessionStorage value when set. */

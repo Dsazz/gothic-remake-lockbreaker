@@ -1,10 +1,11 @@
 import { StorageKeys, StorageFlag } from "./storage-keys.js";
 import { OnboardingAction, OnboardingStepId } from "./analytics/values.js";
 import { t } from "./i18n.js";
+import { createSpotlightRing } from "./spotlight-ring.js";
 
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
-const TARGET_LOWER_RATIO = 0.45;
+const DESKTOP_SEQUENCE_MEDIA = "(min-width: 900px)";
 const FALLBACK_CARD_HEIGHT = 220;
 
 export function createSolveCoachmark({ onDismissed }) {
@@ -12,8 +13,10 @@ export function createSolveCoachmark({ onDismissed }) {
   let cardHost;
   let active = false;
   let currentSolveBtn;
+  let currentVariant;
   let solveListener;
   let backdropListener;
+  const spotlightRing = createSpotlightRing();
 
   function isSeen() {
     try {
@@ -35,42 +38,46 @@ export function createSolveCoachmark({ onDismissed }) {
     return window.matchMedia(MOBILE_MEDIA).matches;
   }
 
+  function isDesktopSequenceLayout() {
+    return window.matchMedia(DESKTOP_SEQUENCE_MEDIA).matches;
+  }
+
   function measuredCardHeight() {
     const card = cardHost?.querySelector(".onboarding-card");
     return card ? card.offsetHeight + 24 : FALLBACK_CARD_HEIGHT;
   }
 
-  function targetNeedsTopCard(target) {
-    const rect = target.getBoundingClientRect();
-    return rect.top >= window.innerHeight * TARGET_LOWER_RATIO;
-  }
-
-  function clearMobileCardClasses() {
-    cardHost?.classList.remove("onboarding-card-host--mobile", "onboarding-card-host--mobile-top");
+  function clearCardPlacementClasses() {
+    cardHost?.classList.remove(
+      "onboarding-card-host--mobile",
+      "onboarding-card-host--mobile-top",
+      "onboarding-card-host--desktop-sequence",
+    );
     document.body.classList.remove("onboarding-card-at-top", "onboarding-card-at-bottom");
   }
 
-  function updateMobileCardPlacement(target) {
-    if (!cardHost || !isMobile()) {
-      clearMobileCardClasses();
+  function updateCardPlacement() {
+    if (!cardHost) return;
+    clearCardPlacementClasses();
+
+    if (isMobile()) {
+      cardHost.classList.add("onboarding-card-host--mobile", "onboarding-card-host--mobile-top");
+      document.body.classList.add("onboarding-card-at-top");
       return;
     }
 
-    const cardAtTop = targetNeedsTopCard(target);
-    cardHost.classList.add("onboarding-card-host--mobile");
-    cardHost.classList.toggle("onboarding-card-host--mobile-top", cardAtTop);
-    document.body.classList.toggle("onboarding-card-at-top", cardAtTop);
-    document.body.classList.toggle("onboarding-card-at-bottom", !cardAtTop);
+    if (isDesktopSequenceLayout()) {
+      cardHost.classList.add("onboarding-card-host--desktop-sequence");
+    }
   }
 
-  function mobileScrollMargins(cardAtTop) {
+  function mobileScrollMargins() {
     const reserve = measuredCardHeight();
-    const topReserve = cardAtTop ? reserve : 12;
-    return { topReserve, bottomReserve: 24 };
+    return { topReserve: reserve, bottomReserve: 24 };
   }
 
-  function alignTargetInMobileViewport(target, cardAtTop) {
-    const { topReserve, bottomReserve } = mobileScrollMargins(cardAtTop);
+  function alignTargetInMobileViewport(target) {
+    const { topReserve, bottomReserve } = mobileScrollMargins();
     const rect = target.getBoundingClientRect();
     const viewHeight = window.innerHeight;
     let scrollDelta = 0;
@@ -87,21 +94,11 @@ export function createSolveCoachmark({ onDismissed }) {
     return new Promise((resolve) => setTimeout(resolve, 320));
   }
 
-  function scrollTargetIntoView(target, cardAtTop) {
-    if (!isMobile()) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-      return Promise.resolve();
+  function scrollTargetIntoView(target) {
+    if (isMobile()) {
+      return alignTargetInMobileViewport(target);
     }
-
-    target.scrollIntoView({ behavior: "instant", block: "nearest" });
-
-    return new Promise((resolve) => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          alignTargetInMobileViewport(target, cardAtTop).then(resolve);
-        });
-      });
-    });
+    return Promise.resolve();
   }
 
   function ensureLayers() {
@@ -119,18 +116,23 @@ export function createSolveCoachmark({ onDismissed }) {
     return cardHost;
   }
 
-  function buildCard() {
+  function buildCard(variant) {
+    const isHashFailure = variant === "hash_failure";
+    const titleKey = isHashFailure ? "coachmark.hashFailureTitle" : "coachmark.title";
+    const bodyKey = isHashFailure ? "coachmark.hashFailureBody" : "coachmark.body";
     const card = document.createElement("div");
     card.className = "onboarding-card";
     card.innerHTML = `
-      <h3 class="onboarding-title">${t("coachmark.title")}</h3>
-      <p class="onboarding-body">${t("coachmark.body")}</p>
+      <h3 class="onboarding-title">${t(titleKey)}</h3>
+      <p class="onboarding-body">${t(bodyKey)}</p>
     `;
     return card;
   }
 
   function removeLayers() {
-    document.body.classList.remove("onboarding-active", "onboarding-card-at-top", "onboarding-card-at-bottom");
+    clearCardPlacementClasses();
+    spotlightRing.clear();
+    document.body.classList.remove("onboarding-active");
     backdrop?.remove();
     cardHost?.remove();
     backdrop = null;
@@ -153,7 +155,8 @@ export function createSolveCoachmark({ onDismissed }) {
   function dismiss(action, solveBtn, { silent = false } = {}) {
     if (!active) return;
     const btn = solveBtn ?? currentSolveBtn;
-    if (!silent) {
+    const isHashFailure = currentVariant === "hash_failure";
+    if (!silent && !isHashFailure) {
       markSeen();
       onDismissed?.({
         completed: action === OnboardingAction.SOLVE,
@@ -163,7 +166,6 @@ export function createSolveCoachmark({ onDismissed }) {
         totalSteps: 1,
       });
     }
-    btn?.classList.remove("onboarding-target");
     detachListeners(btn);
     removeLayers();
   }
@@ -172,40 +174,29 @@ export function createSolveCoachmark({ onDismissed }) {
     dismiss(undefined, currentSolveBtn, { silent: true });
   }
 
-  async function show(solveBtn) {
-    if (!solveBtn || active || isSeen()) return;
-
-    const mobile = isMobile();
-    let cardAtTop = false;
-
-    if (mobile) {
-      cardAtTop = targetNeedsTopCard(solveBtn);
-      updateMobileCardPlacement(solveBtn);
-    } else {
-      clearMobileCardClasses();
-    }
+  async function show(solveBtn, { variant } = {}) {
+    if (!solveBtn || active) return;
+    const isHashFailure = variant === "hash_failure";
+    if (!isHashFailure && isSeen()) return;
 
     const host = ensureLayers();
     active = true;
     currentSolveBtn = solveBtn;
+    currentVariant = variant;
     document.body.classList.add("onboarding-active");
 
     backdrop.hidden = false;
     cardHost.hidden = false;
-    clearMobileCardClasses();
-    if (mobile) cardHost.classList.add("onboarding-card-host--mobile");
+    updateCardPlacement();
 
-    host.replaceChildren(buildCard());
+    host.replaceChildren(buildCard(variant));
 
-    await scrollTargetIntoView(solveBtn, cardAtTop);
+    await scrollTargetIntoView(solveBtn);
 
     if (!active || currentSolveBtn !== solveBtn) return;
 
-    if (mobile) {
-      updateMobileCardPlacement(solveBtn);
-    }
-
-    solveBtn.classList.add("onboarding-target");
+    updateCardPlacement();
+    spotlightRing.show(solveBtn);
 
     solveListener = () => dismiss(OnboardingAction.SOLVE, solveBtn);
     backdropListener = () => dismiss(OnboardingAction.BACKDROP, solveBtn);
@@ -219,7 +210,8 @@ export function createSolveCoachmark({ onDismissed }) {
     isActive: () => active,
     refreshCopy() {
       if (!active || !cardHost) return;
-      cardHost.replaceChildren(buildCard());
+      cardHost.replaceChildren(buildCard(currentVariant));
+      spotlightRing.position();
     },
   };
 }

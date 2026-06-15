@@ -14,6 +14,7 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/analytics/values.js");
   await import("../src/storage-keys.js");
   await import("../src/solve-coachmark.js");
+  await import("../src/spotlight-ring.js");
   await import("../src/solve-coachmark-schedule.js");
   await import("../src/i18n.js");
   await import("../src/static-content.js");
@@ -100,7 +101,7 @@ test("view.js has no duplicate function declarations", async () => {
   );
 });
 
-test("renderControls hides wipe until lock differs from default; share is banner-only", async () => {
+test("renderControls hides wipe until lock differs from default; gratitude is sequence-only", async () => {
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
   const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
   assert.match(viewText, /isPristineDefault/);
@@ -108,12 +109,12 @@ test("renderControls hides wipe until lock differs from default; share is banner
   assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
   assert.match(viewText, /controls\.wipeLock/);
   assert.doesNotMatch(viewText, /controls-share/);
-  assert.match(viewText, /renderSharePrompt/);
-  assert.match(solveText, /sharePromptVisible && hasMoves/);
+  assert.match(viewText, /renderGratitudePrompt/);
+  assert.match(solveText, /gratitudeVisible && hasMoves/);
   assert.match(solveText, /if \(shouldShowHashBanner\(\)\) return;/);
   assert.match(
     solveText,
-    /session\.sharePromptVisible && Array\.isArray\(session\.solution\)/,
+    /session\.gratitudeVisible && Array\.isArray\(session\.solution\)/,
   );
   assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
 });

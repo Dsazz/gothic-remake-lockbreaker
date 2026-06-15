@@ -10,6 +10,7 @@ export { REFERRER_LOCALE_HINTS, parseReferrerHost };
 export const LocaleHintSource = Object.freeze({
   REFERRER: "referrer",
   GEO: "geo",
+  NAVIGATOR: "navigator",
 });
 
 export const GEO_COUNTRY_LOCALE = Object.freeze({
@@ -37,6 +38,14 @@ export function resolveGeoLocaleHint(countryCode) {
   const locale = GEO_COUNTRY_LOCALE[countryCode.toUpperCase()];
   if (!locale) return null;
   return { locale, hintSource: LocaleHintSource.GEO };
+}
+
+/** Early DE hint from browser language before geo resolves. */
+export function resolveNavigatorLocaleHint() {
+  if (typeof navigator === "undefined") return null;
+  const lang = (navigator.language ?? "").toLowerCase();
+  if (!lang.startsWith("de")) return null;
+  return { locale: Locale.DE, hintSource: LocaleHintSource.NAVIGATOR };
 }
 
 export function localeSuggestPromptKey(locale) {

@@ -8,6 +8,7 @@ import {
   localeSuggestPromptKey,
   parseReferrerHost,
   resolveGeoLocaleHint,
+  resolveNavigatorLocaleHint,
   resolveReferrerLocaleHint,
 } from "../src/locale-suggest.js";
 
@@ -31,6 +32,27 @@ test("resolveReferrerLocaleHint matches German and Polish press domains", () => 
     hintSource: LocaleHintSource.REFERRER,
   });
   assert.equal(resolveReferrerLocaleHint("https://www.google.com/"), null);
+});
+
+test("resolveNavigatorLocaleHint maps German browser language", () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, "navigator");
+  try {
+    Object.defineProperty(globalThis, "navigator", {
+      configurable: true,
+      value: { language: "de-DE" },
+    });
+    assert.deepEqual(resolveNavigatorLocaleHint(), {
+      locale: Locale.DE,
+      hintSource: LocaleHintSource.NAVIGATOR,
+    });
+    Object.defineProperty(globalThis, "navigator", {
+      configurable: true,
+      value: { language: "en-US" },
+    });
+    assert.equal(resolveNavigatorLocaleHint(), null);
+  } finally {
+    if (original) Object.defineProperty(globalThis, "navigator", original);
+  }
 });
 
 test("resolveGeoLocaleHint maps DACH and Poland", () => {

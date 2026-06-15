@@ -158,3 +158,31 @@ export function isPristineDefault(state) {
 export function isLockMapped({ matrix, positions }) {
   return hasCoupling(matrix) || hasNonCenterPin(positions);
 }
+
+export function countCouplings(matrix) {
+  let count = 0;
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (i !== j && matrix[i][j] !== LINK.NONE) count++;
+    }
+  }
+  return count;
+}
+
+export function countNonCenterPins(positions) {
+  return positions.filter((pos) => pos !== CENTER).length;
+}
+
+/** @returns {"insufficient" | "partial" | "ready"} */
+export function getMappingCompleteness({ matrix, positions, plateCount }) {
+  const couplings = countCouplings(matrix);
+  const movedPins = countNonCenterPins(positions);
+  if (couplings === 0 && movedPins === 0) return "insufficient";
+  const ready =
+    couplings >= plateCount - 1 || movedPins >= Math.ceil(plateCount / 2);
+  return ready ? "ready" : "partial";
+}
+
+export function isLockReadyToSolve(state) {
+  return getMappingCompleteness(state) === "ready";
+}

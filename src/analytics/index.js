@@ -24,6 +24,10 @@ export {
   trackMasteryTierChanged,
   trackStepMismatchClicked,
   trackSupportLinkClicked,
+  trackSupportSurfaceShown,
+  trackHashBannerShown,
+  trackTranslationFeedbackClicked,
+  trackLocaleAutoApplied,
   trackLocaleChanged,
 } from "./track.js";
 export { installErrorCapture, sendOnPageHide } from "./transport.js";

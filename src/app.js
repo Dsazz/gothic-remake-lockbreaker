@@ -22,8 +22,9 @@ import { createOnboardingStub } from "./onboarding-stub.js";
 import { createSolveCoachmark } from "./solve-coachmark.js";
 import { oldCampExample } from "./examples.js";
 import { wireHowToMapImage } from "./how-to-map-image.js";
-import { LandingType } from "./analytics/values.js";
+import { LandingType, LocaleAutoHintSource } from "./analytics/values.js";
 import { resolveStartup, StartupAction } from "./startup.js";
+import { LocaleSource, DEFAULT_LOCALE } from "./i18n.js";
 
 const els = getAppElements();
 const uiPrefs = createUiPrefs();
@@ -187,6 +188,17 @@ function deferAnalyticsStartup({ localeCode, localeSource }) {
     analytics.installLocaleEngagementTracking();
     analytics.trackLocaleResolved({ locale: localeCode, localeSource });
     analytics.trackLanding({ landingType, locale: localeCode, localeSource });
+    const queryLang = new URLSearchParams(location.search).get("lang");
+    if (
+      localeSource === LocaleSource.QUERY &&
+      !queryLang &&
+      localeCode !== DEFAULT_LOCALE
+    ) {
+      analytics.trackLocaleAutoApplied({
+        locale: localeCode,
+        hintSource: LocaleAutoHintSource.REFERRER,
+      });
+    }
   };
 
   if (typeof requestIdleCallback === "function") {
@@ -222,7 +234,10 @@ async function bootstrap() {
       });
     },
     onComplete: () => {
-      setTimeout(() => locale?.openGuideOnboardingComplete(), 0);
+      setTimeout(() => {
+        if (window.matchMedia("(min-width: 900px)").matches) return;
+        els.solveBtn?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 0);
     },
     onStarted: ({ totalSteps }) =>
       whenAnalytics((analytics) => analytics.trackTutorStarted({ totalSteps })),

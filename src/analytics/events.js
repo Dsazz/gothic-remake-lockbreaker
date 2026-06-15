@@ -28,4 +28,8 @@ export const Events = Object.freeze({
   LOCALE_SUGGEST_SHOWN: "locale_suggest_shown",
   LOCALE_SUGGEST_ACCEPTED: "locale_suggest_accepted",
   LOCALE_SUGGEST_DECLINED: "locale_suggest_declined",
+  HASH_BANNER_SHOWN: "hash_banner_shown",
+  SUPPORT_SURFACE_SHOWN: "support_surface_shown",
+  TRANSLATION_FEEDBACK_CLICKED: "translation_feedback_clicked",
+  LOCALE_AUTO_APPLIED: "locale_auto_applied",
 });

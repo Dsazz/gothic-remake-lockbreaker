@@ -2769,7 +2769,8 @@ summary.icon-btn:focus-visible {
 /* --- banners --- */
 
 .hash-banner,
-.share-prompt {
+.gratitude-prompt,
+.mapping-warning {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -2781,8 +2782,61 @@ summary.icon-btn:focus-visible {
   background: rgba(233, 185, 105, 0.08);
 }
 
-.hash-banner-text,
-.share-prompt-text {
+.mapping-warning {
+  display: block;
+  border-color: rgba(233, 185, 105, 0.45);
+  background: rgba(233, 185, 105, 0.12);
+  color: var(--parchment);
+  font-size: 0.88rem;
+}
+
+.gratitude-prompt {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.gratitude-prompt-head {
+  margin: 0;
+  color: var(--parchment);
+  font-size: 0.92rem;
+}
+
+.gratitude-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.gratitude-share-btn.is-copied {
+  border-color: var(--patina);
+  color: var(--patina);
+}
+
+.sequence-min-ore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--iron-light);
+  background: rgba(233, 185, 105, 0.08);
+}
+
+.sequence-min-ore-img {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .app-head-support-label {
+    display: none;
+  }
+}
+
+.hash-banner-text {
   margin: 0;
   flex: 1 1 180px;
   color: var(--parchment);
@@ -2792,11 +2846,6 @@ summary.icon-btn:focus-visible {
 .hash-banner-dismiss {
   margin-left: auto;
   flex-shrink: 0;
-}
-
-.share-prompt-btn.is-copied {
-  border-color: var(--patina);
-  color: var(--patina);
 }
 
 /* --- onboarding --- */
@@ -2826,6 +2875,19 @@ summary.icon-btn:focus-visible {
 .onboarding-card-host--mobile-top {
   place-items: start center;
   padding: calc(12px + env(safe-area-inset-top)) 12px 12px;
+}
+
+@media (min-width: 900px) {
+  body.onboarding-active .panel--sequence {
+    overflow: visible;
+    z-index: 21;
+  }
+
+  .onboarding-card-host--desktop-sequence {
+    place-items: start center;
+    justify-items: start;
+    padding: clamp(72px, 14vh, 160px) 420px 24px 24px;
+  }
 }
 
 .onboarding-card {
@@ -2881,6 +2943,15 @@ summary.icon-btn:focus-visible {
   position: relative;
   z-index: 21;
   scroll-margin: 12px;
+}
+
+.onboarding-spotlight-ring {
+  position: fixed;
+  z-index: 21;
+  pointer-events: none;
+  border: 2px solid var(--bronze-bright);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
 }
 
 body.onboarding-active .panel:has(.onboarding-target),

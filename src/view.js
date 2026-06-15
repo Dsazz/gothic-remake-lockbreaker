@@ -646,7 +646,7 @@ export function renderI18nBanner(container, ui, handlers) {
       target: "_blank",
       rel: "noopener noreferrer",
       text: t("i18nBanner.link"),
-      onClick: () => handlers.onSupportClick?.(SupportSource.I18N_BANNER),
+      onClick: () => handlers.onTranslationFeedbackClick?.(),
     }),
   );
   container.replaceChildren(
@@ -670,7 +670,20 @@ export function renderHashBanner(container, ui, handlers) {
   );
 }
 
-export function renderSharePrompt(container, ui, handlers) {
+export function renderMappingWarning(container, ui) {
+  if (!container) return;
+  if (!ui?.visible) {
+    container.replaceChildren();
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+  container.replaceChildren(
+    el("p", { class: "alert mapping-warning", text: t("solution.incompleteMapping") }),
+  );
+}
+
+export function renderGratitudePrompt(container, ui, handlers) {
   if (!container) return;
   if (!ui?.visible) {
     container.replaceChildren();
@@ -678,25 +691,47 @@ export function renderSharePrompt(container, ui, handlers) {
     return;
   }
   const copied = Boolean(ui?.copyCopied);
+  const moveCount = ui?.moveCount ?? 0;
   container.hidden = false;
   container.replaceChildren(
-    el("div", { class: "share-prompt" }, [
-      el("p", { class: "share-prompt-text", text: t("solution.shareText") }),
-      el("button", {
-        class: `pill pill-primary share-prompt-btn${copied ? " is-copied" : ""}`,
-        type: "button",
-        text: copied ? t("solution.shareCopied") : t("solution.shareBtn"),
-        "aria-label": copied ? t("solution.shareCopied") : t("solution.shareBtn"),
-        onClick: handlers.onSharePromptClick,
+    el("div", { class: "gratitude-prompt" }, [
+      el("p", {
+        class: "gratitude-prompt-head",
+        text: tCount("solution.gratitudeHead", moveCount),
       }),
-      el("button", {
-        class: "pill pill-ghost share-prompt-dismiss",
-        type: "button",
-        text: t("solution.dismiss"),
-        onClick: handlers.onDismissSharePrompt,
-      }),
+      el("div", { class: "gratitude-prompt-actions" }, [
+        el("button", {
+          class: `pill pill-primary gratitude-share-btn${copied ? " is-copied" : ""}`,
+          type: "button",
+          text: copied ? t("solution.shareCopied") : t("solution.shareBtn"),
+          onClick: handlers.onGratitudeShareClick,
+        }),
+        el("a", {
+          class: "pill pill-ghost gratitude-donate-btn",
+          href: SUPPORT_URL,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          text: t("support.cta"),
+          onClick: (e) => {
+            e.preventDefault();
+            handlers.onGratitudeDonateClick?.();
+            window.open(SUPPORT_URL, "_blank", "noopener,noreferrer");
+          },
+        }),
+        el("button", {
+          class: "pill pill-ghost gratitude-dismiss",
+          type: "button",
+          text: t("solution.dismiss"),
+          onClick: handlers.onDismissGratitudePrompt,
+        }),
+      ]),
     ]),
   );
+}
+
+/** @deprecated use renderGratitudePrompt — kept for test grep compatibility */
+export function renderSharePrompt(container, ui, handlers) {
+  renderGratitudePrompt(container, ui, handlers);
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
@@ -710,33 +745,44 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
 
   if (solution === undefined) {
     const hint = ui?.lockReady ? t("solution.hintReady") : t("solution.hintMap");
-    container.replaceChildren(el("p", { class: "hint", text: hint }));
+    const children = [el("p", { class: "hint", text: hint })];
+    if (ui?.mappingPartial) {
+      children.push(
+        el("p", { class: "hint mapping-checklist", text: t("solution.mappingChecklist") }),
+      );
+    }
+    container.replaceChildren(...children);
     return;
   }
 
   if (solution === null) {
     const isOob = ui?.failureReason === SolveFailureReason.OOB_START;
     const message = isOob ? t("solution.oob") : t("solution.noPath");
-    const children = [el("p", { class: "alert", text: message })];
+    const children = [
+      el("p", { class: "alert", text: message }),
+      el("p", { class: "hint solution-failure-hint", text: t("walkthrough.somethingOff") }),
+    ];
     if (!isOob) {
       children.push(
-        el("p", { class: "hint solution-failure-hint", text: t("solution.noPathHint") }),
-        el("div", { class: "solution-failure-actions" }, [
-          el("button", {
-            class: "pill pill-ghost solution-guide-btn",
-            type: "button",
-            text: t("solution.openGuide"),
-            onClick: () => handlers.onOpenGuide?.(GuideSource.FAILURE_NO_PATH),
-          }),
-          el("button", {
-            class: "pill solution-example-btn",
-            type: "button",
-            text: t("solution.loadExample"),
-            onClick: () => handlers.onLoadExampleFromFailure?.(),
-          }),
-        ]),
+        el("p", { class: "hint", text: t("solution.noPathHint") }),
       );
     }
+    children.push(
+      el("div", { class: "solution-failure-actions" }, [
+        el("button", {
+          class: "pill pill-ghost solution-guide-btn",
+          type: "button",
+          text: t("solution.openGuide"),
+          onClick: () => handlers.onOpenGuide?.(GuideSource.FAILURE_NO_PATH),
+        }),
+        el("button", {
+          class: "pill solution-example-btn",
+          type: "button",
+          text: t("solution.loadExample"),
+          onClick: () => handlers.onLoadExampleFromFailure?.(),
+        }),
+      ]),
+    );
     container.replaceChildren(el("div", { class: "solution-failure" }, children));
     return;
   }
@@ -749,7 +795,9 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
   }
 
   if (ui?.minimized) {
-    container.replaceChildren(renderMinimizedSummary(walkthrough, handlers));
+    container.replaceChildren(
+      renderMinimizedSummary(walkthrough, handlers, { showMinibarOre: ui.showMinibarOre }),
+    );
     return;
   }
 
@@ -833,7 +881,7 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
   );
 }
 
-function renderMinimizedSummary(walkthrough, handlers) {
+function renderMinimizedSummary(walkthrough, handlers, { showMinibarOre = false } = {}) {
   const { states, stepIndex, move } = walkthrough;
   const total = states.length - 1;
   const counter = stepCounter(stepIndex, total, !move);
@@ -871,22 +919,41 @@ function renderMinimizedSummary(walkthrough, handlers) {
 
   const core = el("div", coreProps, coreChildren);
 
+  const navChildren = [
+    iconBtn({
+      label: t("nav.back"),
+      onClick: () => handlers.onWalk(-1),
+      disabled: stepIndex === 0,
+      svg: navChevronSvg("back"),
+    }),
+    core,
+    iconBtn({
+      label: move ? t("nav.next") : t("nav.done"),
+      onClick: () => handlers.onWalk(1),
+      disabled: stepIndex === total,
+      svg: navChevronSvg("next"),
+    }),
+  ];
+
+  if (showMinibarOre) {
+    navChildren.push(
+      el("a", {
+        class: "sequence-min-ore",
+        href: SUPPORT_URL,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        "aria-label": t("support.aria"),
+        onClick: (e) => {
+          e.preventDefault();
+          handlers.onMinibarDonateClick?.();
+          window.open(SUPPORT_URL, "_blank", "noopener,noreferrer");
+        },
+      }, [supportOreImg("sequence-min-ore-img", 36)]),
+    );
+  }
+
   return el("div", { class: "sequence-min" }, [
-    el("div", { class: "sequence-min-nav" }, [
-      iconBtn({
-        label: t("nav.back"),
-        onClick: () => handlers.onWalk(-1),
-        disabled: stepIndex === 0,
-        svg: navChevronSvg("back"),
-      }),
-      core,
-      iconBtn({
-        label: move ? t("nav.next") : t("nav.done"),
-        onClick: () => handlers.onWalk(1),
-        disabled: stepIndex === total,
-        svg: navChevronSvg("next"),
-      }),
-    ]),
+    el("div", { class: "sequence-min-nav" }, navChildren),
   ]);
 }
 
