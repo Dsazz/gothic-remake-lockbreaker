@@ -685,27 +685,11 @@ export function renderMappingWarning(container, ui) {
 
 export function renderGratitudePrompt(container, ui, handlers) {
   if (!container) return;
-  if (!ui?.visible) {
-    container.replaceChildren();
-    container.hidden = true;
-    return;
-  }
   const copied = Boolean(ui?.copyCopied);
   container.hidden = false;
   container.replaceChildren(
-    el("div", { class: "gratitude-prompt" }, [
-      el("div", { class: "gratitude-prompt-top" }, [
-        el("p", {
-          class: "gratitude-prompt-head",
-          text: t("solution.gratitudeHead"),
-        }),
-        bannerDismissButton(handlers.onDismissGratitudePrompt),
-      ]),
-      el("div", { class: "gratitude-prompt-actions" }, [
-        gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
-        gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
-      ]),
-    ]),
+    gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
+    gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
   );
 }
 
@@ -843,7 +827,7 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
     ? { label: t("sequence.expand"), kind: "expand", onClick: handlers.onExpandSequence }
     : { label: t("sequence.minimize"), kind: "minimize", onClick: handlers.onMinimizeSequence };
 
-  const actionChildren = [
+  actions.replaceChildren(
     iconBtn({
       label: panelTool.label,
       className: "icon-btn--tool",
@@ -856,19 +840,7 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
       onClick: handlers.onClearSolution,
       svg: toolIconSvg("clear"),
     }),
-  ];
-
-  if (minimized && ui?.showMinibarOre) {
-    actionChildren.unshift(
-      supportDonateLink({
-        className: "icon-btn icon-btn--tool sequence-min-ore",
-        iconOnly: true,
-        onClick: () => handlers.onMinibarDonateClick?.(),
-      }),
-    );
-  }
-
-  actions.replaceChildren(...actionChildren);
+  );
 }
 
 function renderMinimizedSummary(walkthrough, handlers) {

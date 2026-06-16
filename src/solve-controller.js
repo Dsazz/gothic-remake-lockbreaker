@@ -46,9 +46,7 @@ export function createEmptySession() {
     blockedMessage: undefined,
     hashBannerVisible: false,
     hashBannerTracked: false,
-    gratitudeVisible: false,
-    gratitudeTracked: false,
-    minibarOreTracked: false,
+    sequenceSupportTracked: false,
     showMismatchTips: false,
     pendingSolveCoachmark: false,
     pendingHashFailureCoachmark: false,
@@ -78,9 +76,7 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   session.showAllSteps = false;
   session.sequenceMinimized = false;
   session.blockedMessage = undefined;
-  session.gratitudeVisible = false;
-  session.gratitudeTracked = false;
-  session.minibarOreTracked = false;
+  session.sequenceSupportTracked = false;
   session.showMismatchTips = false;
   session.pendingSolveCoachmark = false;
   session.pendingHashFailureCoachmark = false;
@@ -167,7 +163,6 @@ export function createSolveController({
 
   function invalidateOnLockEdit() {
     if (session.solution === null && session.solveFailureReason) {
-      session.gratitudeVisible = false;
       session.showMismatchTips = false;
       session.sequenceMinimized = false;
       session.showAllSteps = false;
@@ -215,37 +210,16 @@ export function createSolveController({
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function scrollGratitudeIntoView() {
-    els.gratitudePrompt?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-
-  function maybeShowGratitudePrompt(state) {
-    if (shouldShowHashBanner()) return;
-    if (uiPrefs.isGratitudePromptDismissed() || uiPrefs.wasGratitudePromptShown()) return;
-    if (!Array.isArray(session.solution) || session.solution.length === 0) return;
-    session.gratitudeVisible = true;
-    uiPrefs.markGratitudePromptShown();
-    if (!session.gratitudeTracked) {
-      session.gratitudeTracked = true;
-      trackSharePromptShown({
-        plateCount: state.plateCount,
-        landingType,
-        hasDonationCta: true,
-      });
-      trackSupportSurfaceShown({
-        source: SupportSource.SEQUENCE_POST_SOLVE,
-        plateCount: state.plateCount,
-        locale: getLocale(),
-      });
-    }
-  }
-
-  function maybeTrackMinibarOre(state, showMinibarOre) {
-    if (!showMinibarOre) return;
-    if (session.minibarOreTracked) return;
-    session.minibarOreTracked = true;
+  function maybeTrackSequenceSupport(state) {
+    if (session.sequenceSupportTracked) return;
+    session.sequenceSupportTracked = true;
+    trackSharePromptShown({
+      plateCount: state.plateCount,
+      landingType,
+      hasDonationCta: true,
+    });
     trackSupportSurfaceShown({
-      source: SupportSource.SEQUENCE_MINIBAR,
+      source: SupportSource.SEQUENCE_POST_SOLVE,
       plateCount: state.plateCount,
       locale: getLocale(),
     });
@@ -270,17 +244,12 @@ export function createSolveController({
       : null;
     const hasMoves = Array.isArray(session.solution) && session.solution.length > 0;
     const minimized = session.sequenceMinimized && hasMoves;
-    const showGratitudeSupport = session.gratitudeVisible && hasMoves;
-    const showMinibarOre =
-      showGratitudeSupport &&
-      minimized &&
-      typeof window !== "undefined" &&
-      window.matchMedia("(max-width: 768px)").matches;
     const completeness = mappingCompletenessFor(state);
     const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
     const mappingPartial = completeness === MappingCompleteness.PARTIAL;
 
-    view.renderSequencePanel(els.sequencePanel, session.solution, { minimized, showMinibarOre }, handlers);
+    view.renderSequencePanel(els.sequencePanel, session.solution, { minimized }, handlers);
+    maybeTrackSequenceSupport(state);
     maybeTrackHashBanner(state, hasMoves);
     view.renderHashBanner(
       els.hashBanner,
@@ -289,11 +258,7 @@ export function createSolveController({
     );
     view.renderGratitudePrompt(
       els.gratitudePrompt,
-      {
-        visible: showGratitudeSupport && !minimized,
-        copyCopied: session.copyCopied,
-        moveCount: hasMoves ? session.solution.length : 0,
-      },
+      { copyCopied: session.copyCopied },
       handlers,
     );
     view.renderMappingWarning(
@@ -323,7 +288,6 @@ export function createSolveController({
       },
       handlers,
     );
-    maybeTrackMinibarOre(state, showMinibarOre);
   }
 
   async function copyShareUrl(url) {
@@ -408,17 +372,12 @@ export function createSolveController({
       }
     } else if (Array.isArray(session.solution) && session.solution.length > 0) {
       beginWalkthroughSummary(state);
-      maybeShowGratitudePrompt(state);
     } else {
       walkthroughSummary.clear();
     }
 
     onRenderSolutionArea(state);
     scrollSequencePanel();
-
-    if (session.gratitudeVisible && Array.isArray(session.solution) && session.solution.length > 0) {
-      scrollGratitudeIntoView();
-    }
   }
 
   function onMapped(state) {
@@ -503,23 +462,10 @@ export function createSolveController({
         plateCount: store.getState().plateCount,
         landingType,
       });
-      const copied = await handlers.onCopyShareLink();
-      if (copied) getHandlers().onDismissGratitudePrompt();
+      await handlers.onCopyShareLink();
     },
     onGratitudeDonateClick() {
       getHandlers().onSupportClick(SupportSource.SEQUENCE_POST_SOLVE);
-    },
-    onMinibarDonateClick() {
-      getHandlers().onSupportClick(SupportSource.SEQUENCE_MINIBAR);
-    },
-    onDismissGratitudePrompt() {
-      session.gratitudeVisible = false;
-      uiPrefs.dismissGratitudePrompt();
-      trackPromptDismissed({
-        prompt: PromptKind.SHARE,
-        plateCount: store.getState().plateCount,
-      });
-      onRenderSolutionArea(store.getState());
     },
     onStepMismatch() {
       session.showMismatchTips = !session.showMismatchTips;
