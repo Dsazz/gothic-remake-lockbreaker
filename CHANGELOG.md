@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.21.0] - 2026-06-17
+
+### Added
+
+- In-app **Gothic Remake Lockpicking Guide** — collapsed reference in II · Tumblers (puzzle mechanics, couplings, skill tiers, trainer, edge-safe solving, hard-lock tips); static HTML for crawlers, localized in en/de/pl/ukr.
+- Visible inline **H1** in the header definition sentence (replaces hidden sr-only title).
+
+### Changed
+
+- Footer FAQ trimmed to four product questions under **About this tool**; game-mechanic Q&As live in the lockpicking guide instead.
+- `llms.txt` — lockpicking guide summary for AI crawlers; FAQ aligned with footer.
+- `<html lang="en">` (was `en-GB`); SEO checks for guide section, visible H1, and footer FAQ count.
+
 ## [1.20.6] - 2026-06-16
 
 ### Fixed

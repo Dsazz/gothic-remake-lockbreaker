@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -149,13 +149,14 @@
   <body>
     <main class="app">
       <header class="app-head">
-        <h1 class="sr-only">Gothic Remake Lock Breaker</h1>
         <div id="app-head-sleeper" class="app-head-sleeper" hidden></div>
         <div class="app-head-body">
-          <p class="app-definition">
-            Gothic Remake Lock Breaker is a free, beginner-friendly solver for Gothic 1 Remake
-            lockpicking — map your plates and get an edge-safe, turn-by-turn walkthrough.
-          </p>
+          <div class="app-definition">
+            <h1 class="app-title">Gothic Remake Lock Breaker</h1><span class="app-definition-body">
+              is a free, beginner-friendly solver for Gothic 1 Remake lockpicking — map your
+              plates and get an edge-safe, turn-by-turn walkthrough.</span
+            >
+          </div>
           <div class="app-head-meta">
             <div id="app-head-lang" class="app-head-lang"></div>
             <div id="app-head-support" class="app-head-support" hidden></div>
@@ -267,6 +268,63 @@
               </button>
             </div>
           </details>
+          <details class="lockpicking-guide">
+            <summary>Gothic Remake Lockpicking Guide</summary>
+            <div class="lockpicking-guide-body">
+              <h3 class="lockpicking-guide-subhead">How the Lockpicking Puzzle Works</h3>
+              <p class="lockpicking-guide-text">
+                Gothic 1 Remake replaces the classic left-right guessing game with a plate-sliding
+                puzzle. Every chest and door lock has 4 to 7 rotating plates, each carrying a golden
+                pin on a seven-hole track. Holes are numbered 1 (left wall) through 7 (right wall),
+                with 4 as the center notch where every pin must rest for the lock to open. Push a pin
+                into wall 1 or 7 and your lockpick takes damage; enough mistakes break the pick and
+                reset progress on Untrained.
+              </p>
+              <h3 class="lockpicking-guide-subhead">Plate Couplings: With, Against, and None</h3>
+              <p class="lockpicking-guide-text">
+                Plates are linked by couplings. When you turn one plate, others may move
+                <strong>With</strong> it (same direction), <strong>Against</strong> it (opposite
+                direction), or not at all (None). These relationships form a coupling matrix unique to
+                each lock. To scout them in-game, turn one plate a single step where it has room,
+                watch which other plates shift, then mark With or Against on the tumbler cards. With
+                and Against apply to every turn direction for that pair — they describe how plates
+                interact, not a single move.
+              </p>
+              <h3 class="lockpicking-guide-subhead">Lockpicking Skill Tiers</h3>
+              <p class="lockpicking-guide-text">
+                Three tiers control your mistake budget, not how plates move.
+                <strong>Untrained</strong> allows 2 wall mistakes before the lock resets on a broken
+                pick. <strong>Trained</strong> (10 LP + 100 ore from Fingers) raises that to 4
+                mistakes and keeps progress on break. <strong>Master</strong> (20 LP + 200 ore) allows
+                6 mistakes, keeps progress, and removes one random coupling after each broken pick —
+                simplifying hard locks like the Old Camp tower door over time.
+              </p>
+              <h3 class="lockpicking-guide-subhead">Where to Find the Lockpicking Trainer</h3>
+              <p class="lockpicking-guide-text">
+                Train with Fingers in the Old Camp, near Scatty's hut. He teaches Trained for 10
+                learning points and 100 ore, and Master for 20 LP and 200 ore. Training never changes
+                plate movement on a legal turn — only how many wall hits you can survive and whether
+                broken picks drop couplings at Master level.
+              </p>
+              <h3 class="lockpicking-guide-subhead">Why Edge-Safe Solving Matters</h3>
+              <p class="lockpicking-guide-text">
+                Net-turn calculators tell you how many total turns each plate needs but not a safe
+                execution order. Follow net totals blindly and a coupled pin can hit a wall halfway
+                through, snapping your pick. Gothic Remake Lock Breaker uses edge-safe breadth-first
+                search: it only returns turn sequences that never grind any pin against holes 1 or 7,
+                giving you a numbered walkthrough you can follow one step at a time beside the game.
+              </p>
+              <h3 class="lockpicking-guide-subhead">Tips for Hard Locks</h3>
+              <p class="lockpicking-guide-text">
+                Quick-save before a difficult chest — a reload is free insurance. Scout one plate at a
+                time: turn it once, note every plate that moves, then undo before testing the next.
+                Plates already near hole 4 are lower risk; edge pins at 1 or 7 need careful sequencing.
+                For the Old Camp tower door, use the built-in preset under How to map your lock. If the
+                solver reports no safe path, your coupling map is almost always wrong — re-check
+                With/Against on each chip.
+              </p>
+            </div>
+          </details>
           <p class="panel-note">
             Locks are numbered <strong>1 (front)</strong> to <strong>N (back)</strong>.
             Cards stack <strong>back at top, front at bottom</strong>, matching the
@@ -301,7 +359,7 @@
           >
         </p>
         <details class="app-foot-faq">
-          <summary>Common questions</summary>
+          <summary>About this tool</summary>
           <dl class="app-foot-faq-list">
             <dt>What is Gothic Remake Lock Breaker?</dt>
             <dd>
@@ -317,9 +375,13 @@
             </dd>
             <dt>Is Gothic Remake Lock Breaker free?</dt>
             <dd>
-              Yes — free, no account, and runs in any modern browser including phones. Open
-              gothiclockbreaker.com beside the game, map your lock, and follow the step-by-step
-              walkthrough.
+              Yes — free, no account, runs in any modern browser. Open gothiclockbreaker.com
+              beside the game, map your lock, and follow the step-by-step walkthrough.
+            </dd>
+            <dt>Can I use this solver on mobile?</dt>
+            <dd>
+              Yes — Gothic Remake Lock Breaker runs in any modern mobile browser. Map your lock on
+              your phone beside the game and follow the step-by-step walkthrough.
             </dd>
           </dl>
         </details>

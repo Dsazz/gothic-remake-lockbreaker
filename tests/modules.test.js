@@ -197,6 +197,8 @@ test("index.html includes SEO metadata", async () => {
   assert.match(html, /href="\/llms\.txt"/);
   assert.match(html, /application\/ld\+json/);
   assert.match(html, /app-definition/);
+  assert.match(html, /app-title/);
+  assert.match(html, /lockpicking-guide/);
   assert.match(html, /app-foot-press-static/);
   assert.match(html, /app-foot-press app-foot-press-static/);
   assert.match(html, /"availableLanguage"/);
@@ -230,8 +232,8 @@ test("README and llms.txt promote press, not Reddit in README", async () => {
   assert.match(llms, /## Comparison/);
   assert.match(llms, /## FAQ/);
   assert.match(llms, /beginner-friendly/i);
-  assert.match(en.app.definition, /beginner-friendly/i);
-  assert.match(en.app.definition, /Gothic Remake Lock Breaker/);
+  assert.match(en.app.definitionBody, /beginner-friendly/i);
+  assert.match(en.app.srTitle, /Gothic Remake Lock Breaker/);
   assert.match(en.seo.title, /Gothic Remake Lockbreaker/);
   assert.match(en.seo.description, /lockpicking calculator/i);
   assert.match(llms, /reddit\.com/);
