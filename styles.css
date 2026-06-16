@@ -1140,6 +1140,18 @@ button {
   gap: clamp(10px, 2.5vw, 14px);
 }
 
+/* Reserve default 6-card stack before JS hydrates (#tumblers starts empty). */
+.tumblers:empty {
+  --tumbler-placeholder-count: 6;
+  --tumbler-placeholder-row: 13.75rem;
+  --tumbler-placeholder-gap: clamp(10px, 2.5vw, 14px);
+  min-height: calc(
+    var(--tumbler-placeholder-count) * var(--tumbler-placeholder-row) +
+      (var(--tumbler-placeholder-count) - 1) * var(--tumbler-placeholder-gap) +
+      1.75rem
+  );
+}
+
 .hole-legend {
   display: flex;
   justify-content: space-between;
@@ -1596,7 +1608,7 @@ button {
 }
 
 .link-chip.link-none {
-  color: var(--parchment-faint);
+  color: #8b8679;
 }
 
 .link-chip.link-same {

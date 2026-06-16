@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.21.1] - 2026-06-17
+
+### Added
+
+- **Lighthouse CI** on pull requests — builds `dist/` and gates SEO score (≥ 90); reports accessibility, performance, and best-practices as warnings.
+
+### Fixed
+
+- Invalid `aria-expanded` on the sequence panel `<section>` (PageSpeed / Agentic Browsing).
+- Support-link accessible names — footer uses visible copy; header ore link keeps `aria-label` when the label is hidden on mobile.
+- Coupling chip contrast for the unset (`link-none`) state.
+- Layout shift on first paint — reserve space for six default tumbler cards before JS hydrates `#tumblers`.
+
 ## [1.21.0] - 2026-06-17
 
 ### Added
