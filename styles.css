@@ -706,6 +706,18 @@ button {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
+.app-title {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--display);
+  font-size: inherit;
+  font-weight: 700;
+  line-height: inherit;
+  color: var(--bronze-bright);
+}
+
 .app-version-wrap {
   margin: 0;
 }
@@ -2961,6 +2973,15 @@ summary.icon-btn:focus-visible {
   background: rgba(0, 0, 0, 0.2);
 }
 
+.how-to-map:has(+ .lockpicking-guide) {
+  margin-bottom: 0;
+}
+
+.how-to-map + .lockpicking-guide {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
 .how-to-map summary {
   cursor: pointer;
   padding: 10px 12px;
@@ -3082,6 +3103,64 @@ summary.icon-btn:focus-visible {
 
 .how-to-map-example {
   margin-top: 12px;
+}
+
+/* --- lockpicking guide (SEO) --- */
+
+.lockpicking-guide {
+  margin: 0 0 12px;
+  border: 1px solid var(--iron);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 900px) {
+  .panel--tumblers .lockpicking-guide summary {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 899px) {
+  .panel--tumblers .lockpicking-guide:not([open]) summary {
+    padding-block: 8px;
+    font-size: 0.82rem;
+  }
+}
+
+.lockpicking-guide summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  font-family: var(--display);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  color: var(--bronze-bright);
+}
+
+.lockpicking-guide-body {
+  padding: 0 12px 14px;
+}
+
+.lockpicking-guide-subhead {
+  margin: 18px 0 8px;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--bronze-bright);
+}
+
+.lockpicking-guide-subhead:first-child {
+  margin-top: 0;
+}
+
+.lockpicking-guide-text {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--parchment-dim);
+}
+
+.lockpicking-guide-text:last-child {
+  margin-bottom: 0;
 }
 
 /* --- banners --- */

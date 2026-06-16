@@ -6,7 +6,7 @@
   },
   "app": {
     "srTitle": "Gothic Remake Lock Breaker",
-    "definition": "Gothic Remake Lock Breaker ist ein kostenloser, einsteigerfreundlicher Solver für Lockpicking in Gothic 1 Remake — mappe deine Platten und erhalte eine kantensichere Schritt-für-Schritt-Anleitung.",
+    "definitionBody": " ist ein kostenloser, einsteigerfreundlicher Solver für Lockpicking in Gothic 1 Remake — mappe deine Platten und erhalte eine kantensichere Schritt-für-Schritt-Anleitung.",
     "bootError": "Übersetzungen konnten nicht geladen werden. Der Solver funktioniert möglicherweise nicht richtig — Seite neu laden."
   },
   "section": {
@@ -42,6 +42,21 @@
     "notch": "Loch 4 · Kerbe",
     "lock6": "Schloss 6 · hinten",
     "turnOnce": "Einmal drehen → beobachte welche Platten sich bewegen"
+  },
+  "guide": {
+    "summary": "Gothic Remake Lockpicking-Leitfaden",
+    "puzzleTitle": "So funktioniert das Lockpicking-Rätsel",
+    "puzzleText": "Gothic 1 Remake ersetzt das klassische Links-Rechts-Raten durch ein Platten-Schiebe-Rätsel. Jede Truhe und Tür hat 4 bis 7 drehbare Platten mit einer goldenen Nadel auf einer Sieben-Loch-Bahn. Löcher 1 (linke Wand) bis 7 (rechte Wand), 4 ist die Kerbe, in der jede Nadel ruhen muss. Drückst du eine Nadel in Wand 1 oder 7, nimmt der Dietrich Schaden; zu viele Fehler brechen ihn und setzen den Fortschritt bei Untrained zurück.",
+    "couplingTitle": "Platten-Kupplungen: With, Against und None",
+    "couplingText": "Platten sind über Kupplungen verbunden. Drehst du eine Platte, bewegen sich andere With (gleiche Richtung), Against (entgegengesetzt) oder gar nicht (None). Das ergibt eine Kupplungsmatrix pro Schloss. Scoute im Spiel: eine Platte einen Schritt drehen, beobachten welche anderen sich bewegen, dann With oder Against auf den Tumbler-Karten markieren. With und Against gelten für jede Drehrichtung des Paares.",
+    "tiersTitle": "Lockpicking-Stufen",
+    "tiersText": "Drei Stufen steuern dein Fehlerbudget, nicht die Plattenbewegung. Untrained: 2 Wandfehler, dann Reset bei gebrochenem Dietrich. Trained (10 LP + 100 Erz bei Fingers): 4 Fehler, Fortschritt bleibt. Master (20 LP + 200 Erz): 6 Fehler, Fortschritt bleibt, eine zufällige Kupplung fällt nach jedem Bruch weg — hilfreich bei harten Schlössern wie der Altem-Lager-Turm-Tür.",
+    "trainerTitle": "Wo du den Lockpicking-Trainer findest",
+    "trainerText": "Trainiere bei Fingers im Alten Lager, nahe Scattys Hütte. Trained kostet 10 LP und 100 Erz, Master 20 LP und 200 Erz. Training ändert nie die Plattenbewegung bei legalen Zügen — nur wie viele Wandtreffer du überlebst und ob gebrochene Dietriche bei Master Kupplungen entfernen.",
+    "edgeSafeTitle": "Warum kantensicheres Lösen wichtig ist",
+    "edgeSafeText": "Netto-Dreh-Rechner nennen Gesamtdrehungen pro Platte, aber keine sichere Ausführungsreihenfolge. Folge Netto-Werten blind und eine gekuppelte Nadel trifft unterwegs die Wand — Dietrich weg. Gothic Remake Lock Breaker nutzt kantensichere Breitensuche und liefert nur Sequenzen, die nie Löcher 1 oder 7 schleifen.",
+    "tipsTitle": "Tipps für harte Schlösser",
+    "tipsText": "Quick-Save vor schweren Truhen. Eine Platte nach der anderen scouten: einmal drehen, alle Bewegungen notieren, zurückdrehen, nächste testen. Platten nahe Loch 4 sind weniger riskant; Randnadeln bei 1 oder 7 brauchen Vorsicht. Für die Turm-Tür im Alten Lager: Preset unter „Schloss mappen“. Kein sicherer Pfad? Kupplungskarte ist fast immer falsch — With/Against erneut prüfen."
   },
   "mastery": {
     "label": "Lockpicking-Stufe",
@@ -193,14 +208,16 @@
   },
   "footer": {
     "issues": "Problem melden",
-    "faqSummary": "Häufige Fragen",
+    "faqSummary": "Über dieses Tool",
     "faq": {
       "q1": "Was ist Gothic Remake Lock Breaker?",
       "a1": "Gothic Remake Lock Breaker ist ein kostenloser Browser-Solver für Lockpicking in Gothic 1 Remake. Ihr mappt Startlöcher und Kupplungen (With/Against) jeder Platte und erhaltet eine Schritt-für-Schritt-Drehfolge, die das Schloss öffnet.",
       "q2": "Worin unterscheidet er sich von Netto-Dreh-Rechnern?",
       "a2": "Netto-Dreh-Rechner nennen nur Gesamtdrehungen pro Platte. Gothic Remake Lock Breaker sucht kantensichere Folgen, die nie eine Nadel an Wandlöcher 1 oder 7 schleifen — der Dietrich bricht nicht mitten in der Sequenz.",
       "q3": "Ist Gothic Remake Lock Breaker kostenlos?",
-      "a3": "Ja — kostenlos, ohne Konto, in jedem modernen Browser auch auf dem Handy. gothiclockbreaker.com neben dem Spiel öffnen, Schloss mappen und der Schritt-für-Schritt-Anleitung folgen."
+      "a3": "Ja — kostenlos, ohne Konto, in jedem modernen Browser. gothiclockbreaker.com neben dem Spiel öffnen, Schloss mappen und der Schritt-für-Schritt-Anleitung folgen.",
+      "q4": "Kann ich den Solver auf dem Handy nutzen?",
+      "a4": "Ja — Gothic Remake Lock Breaker läuft in jedem modernen Mobilbrowser. Schloss auf dem Handy neben dem Spiel mappen und der Schritt-für-Schritt-Anleitung folgen."
     }
   }
 }

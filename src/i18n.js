@@ -46,7 +46,7 @@ export const FROZEN_KEYS = new Set([
 ]);
 
 const HTML_LANG = Object.freeze({
-  [Locale.EN]: "en-GB",
+  [Locale.EN]: "en",
   [Locale.DE]: "de",
   [Locale.PL]: "pl",
   [Locale.UKR]: "uk",

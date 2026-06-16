@@ -142,6 +142,50 @@ if (!/Gothic Remake Lock Breaker[\s\S]*app-definition/s.test(indexHtml)) {
   failures.push("index.html app-definition must mention Gothic Remake Lock Breaker");
 }
 
+if (!indexHtml.includes('<h1 class="app-title">')) {
+  failures.push("index.html must include visible inline H1 (app-title in app-definition)");
+}
+
+if (!indexHtml.includes("lockpicking-guide")) {
+  failures.push("index.html must include collapsed lockpicking-guide section");
+}
+
+const guideBlock = indexHtml.match(/<details class="lockpicking-guide">[\s\S]*?<\/details>/)?.[0] ?? "";
+if (!guideBlock) {
+  failures.push("index.html must include lockpicking-guide details block");
+} else {
+  if (!/lockpicking puzzle works/i.test(guideBlock)) {
+    failures.push("index.html lockpicking-guide must explain the puzzle mechanic");
+  }
+  if (!/Fingers/i.test(guideBlock)) {
+    failures.push("index.html lockpicking-guide must mention trainer Fingers");
+  }
+  if (!/edge-safe|net-turn/i.test(guideBlock)) {
+    failures.push("index.html lockpicking-guide must mention edge-safe or net-turn solving");
+  }
+}
+
+const faqDtCount = (faqBlock.match(/<dt>/g) ?? []).length;
+if (faqDtCount !== 4) {
+  failures.push(`index.html footer FAQ must have 4 questions, found ${faqDtCount}`);
+}
+
+if (!/About this tool/i.test(faqBlock)) {
+  failures.push("index.html footer FAQ summary must be About this tool");
+}
+
+if (!/mobile/i.test(faqBlock)) {
+  failures.push("index.html footer FAQ must mention mobile");
+}
+
+if (!indexHtml.includes('lang="en"')) {
+  failures.push('index.html must use lang="en" on html element');
+}
+
+if (indexHtml.includes('lang="en-GB"')) {
+  failures.push('index.html must not use lang="en-GB"');
+}
+
 if (!/beginner-friendly|beginners/i.test(llmsTxt)) {
   failures.push("llms.txt must include beginner-friendly positioning");
 }

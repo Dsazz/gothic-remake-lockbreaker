@@ -16,9 +16,24 @@ function setMapLabel(selector, key) {
   if (node) node.textContent = t(key);
 }
 
+function setAppDefinition() {
+  const titleEl = document.querySelector(".app-title");
+  if (titleEl) titleEl.textContent = t("app.srTitle");
+  const bodyEl = document.querySelector(".app-definition-body");
+  if (bodyEl) bodyEl.textContent = t("app.definitionBody");
+}
+
+const GUIDE_SECTIONS = [
+  ["guide.puzzleTitle", "guide.puzzleText"],
+  ["guide.couplingTitle", "guide.couplingText"],
+  ["guide.tiersTitle", "guide.tiersText"],
+  ["guide.trainerTitle", "guide.trainerText"],
+  ["guide.edgeSafeTitle", "guide.edgeSafeText"],
+  ["guide.tipsTitle", "guide.tipsText"],
+];
+
 export function applyStaticContent() {
-  setText(".sr-only", "app.srTitle");
-  setText(".app-definition", "app.definition");
+  setAppDefinition();
 
   setText(".panel--lock h2", "section.lock");
   setText(".panel--tumblers h2", "section.tumblers");
@@ -68,4 +83,12 @@ export function applyStaticContent() {
 
   const solveBtn = document.getElementById("solve-btn");
   if (solveBtn) solveBtn.textContent = t("solve.cta");
+
+  setText(".lockpicking-guide summary", "guide.summary");
+  const guideSubheads = document.querySelectorAll(".lockpicking-guide-subhead");
+  const guideTexts = document.querySelectorAll(".lockpicking-guide-text");
+  GUIDE_SECTIONS.forEach(([titleKey, textKey], i) => {
+    if (guideSubheads[i]) guideSubheads[i].textContent = t(titleKey);
+    if (guideTexts[i]) guideTexts[i].textContent = t(textKey);
+  });
 }

@@ -1169,6 +1169,7 @@ const FOOTER_FAQ_KEYS = [
   ["footer.faq.q1", "footer.faq.a1"],
   ["footer.faq.q2", "footer.faq.a2"],
   ["footer.faq.q3", "footer.faq.a3"],
+  ["footer.faq.q4", "footer.faq.a4"],
 ];
 
 function footerIssuesLink() {
