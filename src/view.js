@@ -820,7 +820,6 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
   const minimized = Boolean(ui?.minimized && hasMoves);
   panel.classList.toggle("is-minimized", minimized);
   panel.classList.toggle("has-solution", hasMoves);
-  panel.setAttribute("aria-expanded", String(!minimized));
 
   if (!actions) return;
   if (!hasMoves) {
@@ -1231,7 +1230,7 @@ function supportDonateLink({
     href: SUPPORT_URL,
     target: "_blank",
     rel: "noopener noreferrer",
-    "aria-label": t("support.aria"),
+    ...(iconOnly ? { "aria-label": t("support.aria") } : {}),
     onClick,
   }, children);
 }
@@ -1263,7 +1262,6 @@ function gratitudeDonateBtn(onClick) {
     href: SUPPORT_URL,
     target: "_blank",
     rel: "noopener noreferrer",
-    "aria-label": t("support.aria"),
     onClick,
   }, [
     supportOreImg("gratitude-donate-ore", 22),
@@ -1327,7 +1325,7 @@ export function renderHeadSleeper(container, handlers) {
       onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_SLEEPER),
     }, [
       sleeperFigure(),
-      el("span", { class: "app-head-sleeper-tip", text: t("support.sleeperTip") }),
+      el("span", { class: "app-head-sleeper-tip", text: t("support.sleeperTip"), "aria-hidden": "true" }),
     ]),
   );
 }
@@ -1341,7 +1339,7 @@ export function renderHeadSupport(container, handlers) {
       href: SUPPORT_URL,
       target: "_blank",
       rel: "noopener noreferrer",
-      "aria-label": t("support.aria"),
+      "aria-label": t("support.cta"),
       onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_ORE),
     }, [
       supportOreImg("app-head-support-ore", 36),
