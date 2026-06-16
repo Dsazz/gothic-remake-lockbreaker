@@ -685,6 +685,11 @@ export function renderMappingWarning(container, ui) {
 
 export function renderGratitudePrompt(container, ui, handlers) {
   if (!container) return;
+  if (!ui?.visible) {
+    container.replaceChildren();
+    container.hidden = true;
+    return;
+  }
   const copied = Boolean(ui?.copyCopied);
   container.hidden = false;
   container.replaceChildren(
