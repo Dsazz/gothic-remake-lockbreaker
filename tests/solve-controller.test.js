@@ -37,8 +37,7 @@ test("resetSession clears all solve session fields", () => {
   session.showAllSteps = true;
   session.sequenceMinimized = true;
   session.blockedMessage = "blocked";
-  session.gratitudeVisible = true;
-  session.gratitudeTracked = true;
+  session.sequenceSupportTracked = true;
   session.showMismatchTips = true;
   session.pendingSolveCoachmark = true;
   session.pendingHashFailureCoachmark = true;
@@ -53,8 +52,7 @@ test("resetSession clears all solve session fields", () => {
   assert.equal(session.showAllSteps, false);
   assert.equal(session.sequenceMinimized, false);
   assert.equal(session.blockedMessage, undefined);
-  assert.equal(session.gratitudeVisible, false);
-  assert.equal(session.gratitudeTracked, false);
+  assert.equal(session.sequenceSupportTracked, false);
   assert.equal(session.showMismatchTips, false);
   assert.equal(session.pendingSolveCoachmark, false);
   assert.equal(session.pendingHashFailureCoachmark, false);

@@ -101,7 +101,7 @@ test("view.js has no duplicate function declarations", async () => {
   );
 });
 
-test("renderControls hides wipe until lock differs from default; gratitude is sequence-only", async () => {
+test("renderControls hides wipe until lock differs from default; sequence share is section-only", async () => {
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
   const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
   assert.match(viewText, /isPristineDefault/);
@@ -110,13 +110,9 @@ test("renderControls hides wipe until lock differs from default; gratitude is se
   assert.match(viewText, /controls\.wipeLock/);
   assert.doesNotMatch(viewText, /controls-share/);
   assert.match(viewText, /renderGratitudePrompt/);
-  assert.match(solveText, /gratitudeVisible && hasMoves/);
-  assert.match(solveText, /showGratitudeSupport[\s\S]*showMinibarOre/);
-  assert.match(solveText, /if \(shouldShowHashBanner\(\)\) return;/);
-  assert.match(
-    solveText,
-    /session\.gratitudeVisible && Array\.isArray\(session\.solution\)/,
-  );
+  assert.match(viewText, /gratitudeShareBtn/);
+  assert.match(solveText, /maybeTrackSequenceSupport/);
+  assert.match(solveText, /renderGratitudePrompt/);
   assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
 });
 

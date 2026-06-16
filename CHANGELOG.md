@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.20.5] - 2026-06-16
+
+### Changed
+
+- Sequence section — Share and Tip ore stay visible in the header as compact side-by-side pills; post-solve gratitude banner and dismiss removed.
+- Share button label — "Share" in EN and "Teilen" in DE (was "Share link" / "Link teilen").
+- Header and footer donation buttons — subtle blue glow on the ore and button chrome.
+- Minimized sequence walkthrough — small top padding below header actions.
+
 ## [1.20.4] - 2026-06-15
 
 ### Added
