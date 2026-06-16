@@ -210,8 +210,8 @@ export function createSolveController({
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function maybeTrackSequenceSupport(state) {
-    if (session.sequenceSupportTracked) return;
+  function maybeTrackSequenceSupport(state, hasMoves) {
+    if (!hasMoves || session.sequenceSupportTracked) return;
     session.sequenceSupportTracked = true;
     trackSharePromptShown({
       plateCount: state.plateCount,
@@ -249,7 +249,7 @@ export function createSolveController({
     const mappingPartial = completeness === MappingCompleteness.PARTIAL;
 
     view.renderSequencePanel(els.sequencePanel, session.solution, { minimized }, handlers);
-    maybeTrackSequenceSupport(state);
+    maybeTrackSequenceSupport(state, hasMoves);
     maybeTrackHashBanner(state, hasMoves);
     view.renderHashBanner(
       els.hashBanner,
@@ -258,7 +258,10 @@ export function createSolveController({
     );
     view.renderGratitudePrompt(
       els.gratitudePrompt,
-      { copyCopied: session.copyCopied },
+      {
+        visible: hasMoves,
+        copyCopied: session.copyCopied,
+      },
       handlers,
     );
     view.renderMappingWarning(

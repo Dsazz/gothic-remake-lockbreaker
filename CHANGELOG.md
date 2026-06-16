@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.20.6] - 2026-06-16
+
+### Fixed
+
+- Sequence Share and Tip ore — hidden until a solve returns steps (no longer shown on the empty pre-solve panel).
+
 ## [1.20.5] - 2026-06-16
 
 ### Changed

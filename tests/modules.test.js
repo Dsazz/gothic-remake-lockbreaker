@@ -112,6 +112,7 @@ test("renderControls hides wipe until lock differs from default; sequence share 
   assert.match(viewText, /renderGratitudePrompt/);
   assert.match(viewText, /gratitudeShareBtn/);
   assert.match(solveText, /maybeTrackSequenceSupport/);
+  assert.match(solveText, /visible: hasMoves/);
   assert.match(solveText, /renderGratitudePrompt/);
   assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
 });
