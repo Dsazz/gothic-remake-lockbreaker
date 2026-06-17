@@ -700,7 +700,7 @@ button {
 .app-definition {
   margin: auto auto 0;
   max-width: 52ch;
-  color: var(--parchment-dim);
+  color: var(--parchment);
   font-size: clamp(0.72rem, 2vw, 0.8rem);
   line-height: 1.4;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
@@ -976,21 +976,11 @@ button {
   flex-wrap: wrap;
 }
 
-.sequence-head-actions {
-  display: flex;
-  flex: 1 1 12rem;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  min-width: 0;
-}
-
 .sequence-ctas {
   display: flex;
-  flex: 1 1 10rem;
   align-items: stretch;
-  gap: 6px;
-  min-width: 0;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .sequence-ctas .pill {
@@ -998,28 +988,28 @@ button {
   flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
-  min-height: 36px;
-  padding: 0 10px;
+  min-height: 40px;
+  padding: 0 14px;
   white-space: nowrap;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   text-decoration: none;
 }
 
 .sequence-ctas .gratitude-donate-ore {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .sequence-ctas .gratitude-action-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .sequence-ctas .gratitude-action-icon svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 .sequence-head h2 {
@@ -1064,6 +1054,11 @@ button {
   display: flex;
   gap: 8px;
   margin-left: auto;
+}
+
+.controls-wipe-btn {
+  font-size: 0.88rem;
+  white-space: nowrap;
 }
 
 .field-label {
@@ -1641,9 +1636,11 @@ button {
 
 .mastery-note {
   margin: 0;
+  padding-left: 1.1em;
   font-size: 0.82rem;
   line-height: 1.45;
   color: var(--parchment-dim);
+  list-style-type: disc;
 }
 
 .breaks-stepper {
@@ -2146,21 +2143,6 @@ summary.icon-btn:focus-visible {
 .icon-btn.icon-btn--pill:hover:not(:disabled),
 .icon-btn.icon-btn--pill:focus-visible {
   box-shadow: 0 0 16px var(--bronze-glow), 0 0 4px rgba(230, 189, 107, 0.35), var(--bevel);
-}
-
-.icon-btn.icon-btn--pill.icon-btn--wipe {
-  border-color: var(--blood-line);
-  color: var(--blood-bright);
-  box-shadow: var(--bevel), 0 0 12px var(--blood-bg);
-}
-
-.icon-btn.icon-btn--pill.icon-btn--wipe:hover:not(:disabled),
-.icon-btn.icon-btn--pill.icon-btn--wipe:focus-visible {
-  border-color: var(--blood-bright);
-  box-shadow:
-    0 0 22px rgba(192, 70, 60, 0.55),
-    0 0 8px var(--blood-bright),
-    var(--bevel);
 }
 
 @media (max-width: 899px) {

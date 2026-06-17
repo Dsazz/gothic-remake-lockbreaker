@@ -188,23 +188,6 @@ function controlsIconSvg(kind) {
       "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
     );
     svg.append(path, path2);
-  } else {
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute(
-      "d",
-      "M3 6h18M8 6V4h8v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
-    );
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line.setAttribute("x1", "10");
-    line.setAttribute("y1", "11");
-    line.setAttribute("x2", "10");
-    line.setAttribute("y2", "17");
-    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line2.setAttribute("x1", "14");
-    line2.setAttribute("y1", "11");
-    line2.setAttribute("x2", "14");
-    line2.setAttribute("y2", "17");
-    svg.append(path, line, line2);
   }
   return svg;
 }
@@ -227,15 +210,19 @@ function platesDisplayOrder(plateCount) {
   return Array.from({ length: plateCount }, (_, i) => plateCount - 1 - i);
 }
 
-function masteryNoteText(state) {
+function masteryNoteItems(state) {
   const tier = masteryForId(state.masteryLevel);
-  const reset = tier.resetOnBreak ? t("mastery.noteReset") : t("mastery.noteKept");
-  const masterExtra = tier.id === MASTERY.MASTER.id ? t("mastery.noteMasterExtra") : "";
-  return t("mastery.note", {
-    mistakes: tier.mistakes,
-    reset,
-    masterExtra,
-  });
+  const items = [
+    t("mastery.bulletMistakes", { n: tier.mistakes }),
+    t("mastery.bulletReset", {
+      value: tier.resetOnBreak ? t("mastery.yes") : t("mastery.no"),
+    }),
+    t("mastery.bulletPlateMovement"),
+  ];
+  if (tier.id === MASTERY.MASTER.id) {
+    items.push(t("mastery.bulletLinkRemoval"));
+  }
+  return items;
 }
 
 function breaksHintText(breaksBudget, removed) {
@@ -256,7 +243,7 @@ function renderMasterySelector(state, handlers) {
   return el("div", { class: "mastery-block" }, [
     el("span", { class: "field-label", text: t("mastery.label") }),
     el("div", { class: "pill-row mastery-row" }, pills),
-    el("p", { class: "mastery-note", text: masteryNoteText(state) }),
+    el("ul", { class: "mastery-note" }, masteryNoteItems(state).map((text) => el("li", { text }))),
   ]);
 }
 
@@ -322,11 +309,11 @@ export function renderControls(container, state, handlers) {
     el("div", { class: "pill-row locks-row" }, counts),
   ]);
   const actionsBlock = el("div", { class: "controls-actions" }, [
-    iconBtn({
-      label: t("controls.wipeLock"),
-      className: "icon-btn--tool",
+    el("button", {
+      class: "pill pill-ghost controls-wipe-btn",
+      type: "button",
+      text: t("controls.wipeLock"),
       onClick: handlers.onClearAll,
-      svg: controlsIconSvg("wipe"),
     }),
   ]);
   container.replaceChildren(
@@ -1029,17 +1016,17 @@ export function renderWipeConfirmOverlay({ visible }, handlers) {
         text: t("confirm.wipe"),
       }),
       el("div", { class: "confirm-dialog-actions" }, [
-        iconBtn({
-          label: t("confirm.cancel"),
-          className: "icon-btn--pill confirm-dialog-cancel",
+        el("button", {
+          class: "pill pill-ghost",
+          type: "button",
+          text: t("confirm.cancel"),
           onClick: close,
-          svg: dismissCrossSvg(),
         }),
-        iconBtn({
-          label: t("controls.wipeLock"),
-          className: "icon-btn--pill icon-btn--wipe",
+        el("button", {
+          class: "pill pill-danger",
+          type: "button",
+          text: t("controls.wipeLock"),
           onClick: () => handlers.onConfirmWipe(),
-          svg: controlsIconSvg("wipe"),
         }),
       ]),
     ],
@@ -1059,7 +1046,7 @@ export function renderWipeConfirmOverlay({ visible }, handlers) {
   else document.body.append(host);
   document.body.classList.add("wipe-confirm-open");
   requestAnimationFrame(() => {
-    host.querySelector(".confirm-dialog-cancel")?.focus();
+    host.querySelector(".pill-ghost")?.focus();
   });
 }
 
@@ -1240,13 +1227,19 @@ function gratitudeShareBtn(copied, onClick) {
     return el("button", {
       class: "pill pill-primary gratitude-share-btn is-copied",
       type: "button",
-      text: t("solution.shareCopied"),
+      "aria-label": t("solution.shareCopied"),
       onClick,
-    });
+    }, [
+      el("span", { class: "gratitude-action-icon", "aria-hidden": "true" }, [
+        ackCheckSvg(),
+      ]),
+      el("span", { class: "gratitude-btn-label", text: t("solution.shareCopied") }),
+    ]);
   }
   return el("button", {
     class: "pill pill-primary gratitude-share-btn",
     type: "button",
+    "aria-label": t("solution.shareBtn"),
     onClick,
   }, [
     el("span", { class: "gratitude-action-icon", "aria-hidden": "true" }, [
@@ -1262,6 +1255,7 @@ function gratitudeDonateBtn(onClick) {
     href: SUPPORT_URL,
     target: "_blank",
     rel: "noopener noreferrer",
+    "aria-label": t("solution.donateBtn"),
     onClick,
   }, [
     supportOreImg("gratitude-donate-ore", 22),

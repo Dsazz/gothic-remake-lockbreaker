@@ -10,9 +10,9 @@
     "bootError": "Nie udało się wczytać tłumaczeń. Solver może nie działać poprawnie — odśwież stronę."
   },
   "section": {
-    "lock": "I · Zamek",
-    "tumblers": "II · Zapadki",
-    "sequence": "III · Sekwencja"
+    "lock": "Zamek",
+    "tumblers": "Zapadki",
+    "sequence": "Sekwencja"
   },
   "howto": {
     "summary": "Jak zmapować zamek",
@@ -22,7 +22,7 @@
     "step4": "<strong>Grinding</strong> oznacza, że szpilka trafia w ścianę 1 lub 7 — to nie to samo co sprzężenie Against.",
     "subhead": "Poziom lockpickingu (Fingers, Stary Obóz)",
     "tierNote1": "Trening <strong>nie</strong> zmienia ruchu płytek przy legalnym obrocie — tylko budżet błędów i (na Master) usuwanie połączenia po złamanym wytrychu.",
-    "tierNote2": "Na <strong>Master</strong>: jeśli złamałeś wytrychy na tym zamku, ustaw liczbę pod <strong>I · Zamek</strong>, potem naciśnij <strong>Gone</strong> przy każdym usuniętym sprzężeniu na kartach zapadek przed ponownym rozwiązaniem.",
+    "tierNote2": "Na <strong>Master</strong>: jeśli złamałeś wytrychy na tym zamku, ustaw liczbę pod <strong>Zamek</strong>, potem naciśnij <strong>Gone</strong> przy każdym usuniętym sprzężeniu na kartach zapadek przed ponownym rozwiązaniem.",
     "table": {
       "tier": "Poziom",
       "wallMistakes": "Błędy przy ścianie",
@@ -60,17 +60,19 @@
   },
   "mastery": {
     "label": "Poziom lockpickingu",
-    "noteReset": "Zamek resetuje się po złamaniu.",
-    "noteKept": "Postęp zachowany po złamaniu.",
-    "noteMasterExtra": " Każdy złamany wytrych usuwa jedno połączenie płytek.",
-    "note": "Błędów przy ścianie do złamania wytrycha: {mistakes}. {reset} Ruch płytek nie zmienia się przez trening.{masterExtra}"
+    "bulletMistakes": "Dozwolone błędy: {n}",
+    "bulletReset": "Reset po złamaniu: {value}",
+    "bulletPlateMovement": "Ruch płytek: bez zmian od treningu",
+    "bulletLinkRemoval": "Złamany wytrych usuwa jedno połączenie płytek",
+    "yes": "Tak",
+    "no": "Nie"
   },
   "controls": {
     "breaksLabel": "Złamane wytrychy na tym zamku",
     "breaksFewer": "Mniej złamanych wytrychów",
     "breaksMore": "Więcej złamanych wytrychów",
     "locksLabel": "Zamki",
-    "wipeLock": "Wyczyść zamek"
+    "wipeLock": "Resetuj zamek"
   },
   "breaks": {
     "hintZero": "Tylko jeśli już złamałeś wytrychy na tym zamku: podnieś liczbę — każde złamanie usuwa jedno sprzężenie w grze.",
@@ -176,7 +178,7 @@
     "hashFailureBody": "Popraw otwory startowe lub sprzężenia, potem ponownie naciśnij Break the Lock."
   },
   "confirm": {
-    "wipe": "Wyczyścić zamek? Sprzężenia, szpilki, poziom i liczba zostaną zresetowane.",
+    "wipe": "Zresetować zamek? Sprzężenia, szpilki, poziom i liczba wrócą do ustawień domyślnych.",
     "cancel": "Anuluj"
   },
   "aria": {

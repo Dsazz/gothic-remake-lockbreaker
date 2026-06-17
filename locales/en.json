@@ -10,9 +10,9 @@
     "bootError": "Could not load translations. The solver may not work correctly — try refreshing the page."
   },
   "section": {
-    "lock": "I · The Lock",
-    "tumblers": "II · Tumblers",
-    "sequence": "III · The Sequence"
+    "lock": "The Lock",
+    "tumblers": "Tumblers",
+    "sequence": "The Sequence"
   },
   "howto": {
     "summary": "How to map your lock",
@@ -22,7 +22,7 @@
     "step4": "<strong>Grinding</strong> means a pin hits wall 1 or 7 — not the same as an Against coupling.",
     "subhead": "Lockpicking tier (Fingers, Old Camp)",
     "tierNote1": "Training does <strong>not</strong> change how plates move on a legal turn — only mistake budget and (at Master) link removal after a broken pick.",
-    "tierNote2": "At <strong>Master</strong>, if you've snapped picks on this lock, set how many under <strong>I · The Lock</strong>, then tap <strong>Gone</strong> beside each dropped coupling on the tumbler cards before re-solving.",
+    "tierNote2": "At <strong>Master</strong>, if you've snapped picks on this lock, set how many under <strong>The Lock</strong>, then tap <strong>Gone</strong> beside each dropped coupling on the tumbler cards before re-solving.",
     "table": {
       "tier": "Tier",
       "wallMistakes": "Wall mistakes",
@@ -71,17 +71,19 @@
     "master": "Master",
     "masterCost": "Master (20 LP + 200 ore)",
     "label": "Lockpicking tier",
-    "noteReset": "Lock resets on break.",
-    "noteKept": "Progress kept on break.",
-    "noteMasterExtra": " Each snapped pick removes one plate link.",
-    "note": "{mistakes} wall mistakes per pick. {reset} Plate movement is unchanged by training.{masterExtra}"
+    "bulletMistakes": "Mistakes allowed: {n}",
+    "bulletReset": "Resets on break: {value}",
+    "bulletPlateMovement": "Plate movement: unchanged by training",
+    "bulletLinkRemoval": "Snapped pick removes one plate link",
+    "yes": "Yes",
+    "no": "No"
   },
   "controls": {
     "breaksLabel": "Picks snapped on this lock",
     "breaksFewer": "Fewer broken picks",
     "breaksMore": "More broken picks",
     "locksLabel": "Locks",
-    "wipeLock": "Wipe lock"
+    "wipeLock": "Reset lock"
   },
   "breaks": {
     "hintZero": "Only if you've already snapped picks on this lock: raise the count — each break drops one coupling in-game.",
@@ -200,7 +202,7 @@
     "hashFailureBody": "Adjust start holes or couplings, then tap Break the Lock again."
   },
   "confirm": {
-    "wipe": "Wipe the lock? Couplings, pins, mastery, and count will reset.",
+    "wipe": "Reset the lock? Couplings, pins, mastery tier, and count will return to defaults.",
     "cancel": "Cancel"
   },
   "aria": {

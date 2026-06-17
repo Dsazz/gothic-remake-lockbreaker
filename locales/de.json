@@ -10,9 +10,9 @@
     "bootError": "Übersetzungen konnten nicht geladen werden. Der Solver funktioniert möglicherweise nicht richtig — Seite neu laden."
   },
   "section": {
-    "lock": "I · Das Schloss",
-    "tumblers": "II · Tumbler",
-    "sequence": "III · Die Sequenz"
+    "lock": "Das Schloss",
+    "tumblers": "Tumbler",
+    "sequence": "Die Sequenz"
   },
   "howto": {
     "summary": "Schloss abbilden",
@@ -22,7 +22,7 @@
     "step4": "<strong>Grinding</strong> bedeutet, eine Nadel trifft Wand 1 oder 7 — nicht dasselbe wie eine Against-Kupplung.",
     "subhead": "Lockpicking-Stufe (Fingers, Altes Lager)",
     "tierNote1": "Training ändert <strong>nicht</strong>, wie Platten sich bei einem legalen Zug bewegen — nur Fehlerbudget und (bei Master) Link-Entfernung nach gebrochenem Dietrich.",
-    "tierNote2": "Bei <strong>Master</strong>: Wenn du Dietriche auf diesem Schloss gebrochen hast, setze die Anzahl unter <strong>I · Das Schloss</strong>, dann tippe <strong>Gone</strong> neben jeder entfallenen Kupplung auf den Tumbler-Karten, bevor du erneut löst.",
+    "tierNote2": "Bei <strong>Master</strong>: Wenn du Dietriche auf diesem Schloss gebrochen hast, setze die Anzahl unter <strong>Das Schloss</strong>, dann tippe <strong>Gone</strong> neben jeder entfallenen Kupplung auf den Tumbler-Karten, bevor du erneut löst.",
     "table": {
       "tier": "Stufe",
       "wallMistakes": "Wandfehler",
@@ -60,17 +60,19 @@
   },
   "mastery": {
     "label": "Lockpicking-Stufe",
-    "noteReset": "Schloss wird bei Bruch zurückgesetzt.",
-    "noteKept": "Fortschritt bleibt bei Bruch.",
-    "noteMasterExtra": " Jeder gebrochene Dietrich entfernt eine Platten-Verbindung.",
-    "note": "{mistakes} Wandfehler pro Dietrich. {reset} Plattenbewegung ändert sich durch Training nicht.{masterExtra}"
+    "bulletMistakes": "Erlaubte Fehler: {n}",
+    "bulletReset": "Reset bei Bruch: {value}",
+    "bulletPlateMovement": "Plattenbewegung: durch Training unverändert",
+    "bulletLinkRemoval": "Gebrochener Dietrich entfernt eine Platten-Verbindung",
+    "yes": "Ja",
+    "no": "Nein"
   },
   "controls": {
     "breaksLabel": "Gebrochene Dietriche an diesem Schloss",
     "breaksFewer": "Weniger gebrochene Dietriche",
     "breaksMore": "Mehr gebrochene Dietriche",
     "locksLabel": "Schlösser",
-    "wipeLock": "Schloss löschen"
+    "wipeLock": "Schloss zurücksetzen"
   },
   "breaks": {
     "hintZero": "Nur wenn du bereits Dietriche an diesem Schloss gebrochen hast: erhöhe die Anzahl — jeder Bruch entfernt eine Kupplung im Spiel.",
@@ -175,7 +177,7 @@
     "hashFailureBody": "Passe Startlöcher oder Kupplungen an, dann tippe erneut Break the Lock."
   },
   "confirm": {
-    "wipe": "Schloss löschen? Kupplungen, Nadeln, Stufe und Anzahl werden zurückgesetzt.",
+    "wipe": "Schloss zurücksetzen? Kupplungen, Nadeln, Stufe und Anzahl werden auf Standard zurückgesetzt.",
     "cancel": "Abbrechen"
   },
   "aria": {

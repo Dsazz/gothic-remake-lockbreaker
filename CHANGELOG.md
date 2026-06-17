@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.21.3] - 2026-06-17
+
+### Changed
+
+- Header definition text brightened to full parchment for better contrast against the backdrop.
+- Section titles dropped the Roman-numeral prefixes (I/II/III) to cut visual noise.
+- Lockpicking tier description reformatted from a paragraph into a scannable bullet list.
+- "Wipe lock" control relabeled **Reset lock** with a text button (no more ambiguous trash icon); confirm dialog copy updated to match.
+- Sequence **Share** and **Tip ore** moved to their own full-width row, keeping text labels so they no longer truncate on mobile.
+
 ## [1.21.2] - 2026-06-17
 
 ### Fixed

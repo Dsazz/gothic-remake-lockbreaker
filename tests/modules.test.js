@@ -142,10 +142,10 @@ test("wipe lock uses in-app confirm modal instead of native confirm", async () =
   assert.match(lockText, /onConfirmWipe/);
   assert.match(lockText, /onCancelWipe/);
   assert.match(viewText, /renderWipeConfirmOverlay/);
-  assert.match(viewText, /icon-btn--pill/);
-  assert.match(viewText, /icon-btn--wipe/);
-  assert.match(viewText, /controlsIconSvg\("wipe"\)/);
-  assert.doesNotMatch(viewText, /confirm-dialog-actions[\s\S]*text: t\("confirm\.cancel"\)/);
+  assert.match(viewText, /pill-danger/);
+  assert.match(viewText, /controls-wipe-btn/);
+  assert.doesNotMatch(viewText, /controlsIconSvg\("wipe"\)/);
+  assert.match(viewText, /confirm-dialog-actions[\s\S]*text: t\("confirm\.cancel"\)/);
   assert.match(rendererText, /renderWipeConfirmOverlay/);
   assert.match(rendererText, /getWipeConfirmVisible/);
 });
