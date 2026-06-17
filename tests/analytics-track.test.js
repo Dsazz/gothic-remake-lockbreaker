@@ -92,6 +92,8 @@ test("posthog-init uses lean PostHog init (quota-safe defaults)", async () => {
   }
   assert.doesNotMatch(text, /defaults:\s*["']2026-05-30["']/);
   assert.match(text, /posthog:ready/);
+  assert.match(text, /before_send/);
+  assert.match(text, /isReportableExceptionProperties/);
 });
 
 test("no module emits $pageview on a setInterval (presence inflation guard)", async () => {

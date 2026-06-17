@@ -19,8 +19,21 @@ export function isReportableError(message) {
   return !IGNORED_MESSAGE_PATTERNS.some((pattern) => pattern.test(text));
 }
 
+export function isReportableExceptionProperties(properties) {
+  const values = properties?.$exception_values;
+  if (Array.isArray(values) && values.some((value) => !isReportableError(value))) {
+    return false;
+  }
+  const list = properties?.$exception_list;
+  if (Array.isArray(list) && list.some((entry) => !isReportableError(entry?.value))) {
+    return false;
+  }
+  return true;
+}
+
 function captureExceptionSafely(error, properties) {
-  if (capturing || !isReportableError(error?.message)) return;
+  const message = String(error?.message ?? "").trim();
+  if (capturing || !isReportableError(message)) return;
   capturing = true;
   try {
     window.posthog.captureException?.(error, properties);

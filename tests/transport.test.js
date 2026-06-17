@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isReportableError } from "../src/analytics/transport.js";
+import { isReportableError, isReportableExceptionProperties } from "../src/analytics/transport.js";
 
 test("isReportableError drops cross-origin script noise", () => {
   assert.equal(isReportableError("Script error."), false);
@@ -52,4 +52,19 @@ test("isReportableError drops wallet and Firefox extension injection noise", () 
 test("isReportableError keeps real application errors", () => {
   assert.equal(isReportableError("RangeError: Maximum call stack size exceeded"), true);
   assert.equal(isReportableError(""), true);
+});
+
+test("isReportableExceptionProperties drops ignored exception payloads", () => {
+  assert.equal(
+    isReportableExceptionProperties({
+      $exception_values: ["Error: WKWebView API client did not respond to this postMessage"],
+    }),
+    false,
+  );
+  assert.equal(
+    isReportableExceptionProperties({
+      $exception_list: [{ value: "TypeError: Cannot set properties of null (setting 'hidden')" }],
+    }),
+    true,
+  );
 });
