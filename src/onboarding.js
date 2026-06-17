@@ -220,10 +220,15 @@ export function createOnboarding({
     let target = document.querySelector(step.target);
     if (!target) return;
 
+    const requestedStepIndex = stepIndex;
     const cardAtTop = isSequenceSolveStep(step) || targetNeedsTopCard(target);
     updateCardPlacement(target, step);
 
     await scrollTargetIntoView(target, cardAtTop, step);
+
+    if (!active || !backdrop || !cardHost) return;
+    if (requestedStepIndex !== stepIndex) return;
+    if (!card.isConnected) return;
 
     target = document.querySelector(step.target);
     if (!target) return;

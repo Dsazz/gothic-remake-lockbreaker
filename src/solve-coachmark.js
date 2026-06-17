@@ -193,7 +193,7 @@ export function createSolveCoachmark({ onDismissed }) {
 
     await scrollTargetIntoView(solveBtn);
 
-    if (!active || currentSolveBtn !== solveBtn) return;
+    if (!active || currentSolveBtn !== solveBtn || !backdrop || !cardHost) return;
 
     updateCardPlacement();
     spotlightRing.show(solveBtn);

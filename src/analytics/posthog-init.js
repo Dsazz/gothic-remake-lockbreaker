@@ -1,3 +1,4 @@
+import { isReportableExceptionProperties } from "./transport.js";
 
 function installStub() {
   if (window.posthog?.__SV) return;
@@ -54,6 +55,12 @@ export function initPostHog() {
     enable_heatmaps: false,
     capture_dead_clicks: false,
     advanced_disable_flags: true,
+    before_send: (event) => {
+      if (event.event === "$exception" && !isReportableExceptionProperties(event.properties)) {
+        return null;
+      }
+      return event;
+    },
     loaded: (ph) => {
       ph.stopSessionRecording?.();
       window.dispatchEvent(new Event("posthog:ready"));
