@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.21.2-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.21.3-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.21.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.21.3** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
@@ -103,7 +103,7 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 1. **The Lock** — choose your **lockpicking tier** (Untrained / Trained / Master), how many
    locks the mechanism has (4–7; defaults to **6**), and at Master how many **picks you've
    snapped** on this lock so you can mark dropped couplings on the tumbler cards. Once you change
-   the setup, **Wipe lock** (trash icon) clears couplings, mastery, and returns the count to 6
+   the setup, **Reset lock** returns couplings, pins, mastery tier, and count to their defaults
    — with a confirm prompt.
 2. **Tumblers** — for each lock (numbered 1 front through N back), mark its **start hole**
    and which other locks move when you turn it: `·` none, `With` same way, `Against`
