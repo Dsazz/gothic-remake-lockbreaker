@@ -1263,6 +1263,44 @@ function gratitudeDonateBtn(onClick) {
   ]);
 }
 
+const PORTRAIT_ICON_SIZE = 128;
+
+function portraitImg(className, src) {
+  return el("img", {
+    class: className,
+    src,
+    alt: "",
+    "aria-hidden": "true",
+    width: String(PORTRAIT_ICON_SIZE),
+    height: String(PORTRAIT_ICON_SIZE),
+  });
+}
+
+function portraitIcon() {
+  return el("span", { class: "app-head-portrait-icon" }, [
+    portraitImg("app-head-portrait-img is-default", "assets/portrait-calm.png"),
+    portraitImg("app-head-portrait-img is-hover", "assets/portrait-scream.png"),
+  ]);
+}
+
+export function renderHeadPortrait(container, handlers) {
+  if (!container) return;
+  container.hidden = false;
+  container.replaceChildren(
+    el("a", {
+      class: "app-head-portrait-link",
+      href: SUPPORT_URL,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      "aria-label": t("support.aria"),
+      onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_PORTRAIT),
+    }, [
+      portraitIcon(),
+      el("span", { class: "app-head-portrait-tip", text: t("support.portraitTip"), "aria-hidden": "true" }),
+    ]),
+  );
+}
+
 const SLEEPER_ICON_SIZE = 128;
 
 function sleeperSupportImg(className, src) {
