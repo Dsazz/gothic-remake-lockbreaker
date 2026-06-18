@@ -26,6 +26,7 @@ import {
   SUPPORT_URL,
 } from "./version.js";
 import { t, tCount } from "./i18n.js";
+import { Key } from "./keyboard-keys.js";
 import { localeSuggestPromptKey } from "./locale-suggest.js";
 
 const LINK_CLASS = { [LINK.NONE]: "link-none", [LINK.SAME]: "link-same", [LINK.OPP]: "link-opp" };
@@ -336,14 +337,17 @@ function linkChips(turned, state, handlers) {
     if (reactor === turned) continue;
     const link = matrix[reactor][turned];
     const removed = removedLinks[reactor][turned];
+    const isUnset = link === LINK.NONE;
     const couplingChip = el("button", {
       class: ["link-chip", LINK_CLASS[link], removed ? "link-removed" : ""].filter(Boolean).join(" "),
-      text: `${lockLabel(reactor)} ${linkLabel(link)}`,
+      text: isUnset ? lockLabel(reactor) : `${lockLabel(reactor)} ${linkLabel(link)}`,
       type: "button",
-      "aria-label": t("tumbler.couplingAria", {
-        lock: lockLabel(reactor),
-        coupling: linkLabel(link),
-      }),
+      "aria-label": isUnset
+        ? t("tumbler.couplingUnsetAria", { lock: lockLabel(reactor) })
+        : t("tumbler.couplingAria", {
+            lock: lockLabel(reactor),
+            coupling: linkLabel(link),
+          }),
       onClick: () => handlers.onCycleCell(reactor, turned),
     });
 
@@ -444,7 +448,10 @@ function tumblerCard(plate, state, handlers) {
     ]),
     el("div", { class: "tumbler-start" }, [
       el("span", { class: "tumbler-field-label", text: t("tumbler.startHole") }),
-      positionGroove(plate, value, handlers),
+      el("div", { class: "tumbler-start-scale" }, [
+        tumblerLegend(),
+        positionGroove(plate, value, handlers),
+      ]),
     ]),
     el("div", { class: "tumbler-links" }, [
       el("span", { class: "tumbler-field-label", text: t("tumbler.turningMoves") }),
@@ -453,11 +460,13 @@ function tumblerCard(plate, state, handlers) {
   ]);
 }
 
-function holeLegend() {
-  return el("div", { class: "hole-legend" }, [
-    el("span", { class: "hole-legend-wall", text: t("legend.wallLeft") }),
-    el("span", { class: "hole-legend-notch", text: t("legend.notch") }),
-    el("span", { class: "hole-legend-wall", text: t("legend.wallRight") }),
+// Per-card legend: labels sit on a 7-column grid matching `.plate-holes`, so
+// "wall"/"notch"/"wall" land directly over holes 1, 4, and 7 on every card.
+function tumblerLegend() {
+  return el("div", { class: "tumbler-legend", "aria-hidden": "true" }, [
+    el("span", { class: "tumbler-legend-wall tumbler-legend-wall--left", text: t("legend.wallLeft") }),
+    el("span", { class: "tumbler-legend-notch", text: t("legend.notch") }),
+    el("span", { class: "tumbler-legend-wall tumbler-legend-wall--right", text: t("legend.wallRight") }),
   ]);
 }
 
@@ -466,7 +475,7 @@ export function renderTumblers(container, state, handlers, ui = {}) {
     tumblerCard(plate, state, handlers),
   );
   container.classList.toggle("is-pulse", Boolean(ui.pulse));
-  container.replaceChildren(holeLegend(), ...cards);
+  container.replaceChildren(...cards);
 }
 
 export function renderSolveButton(button, { mapped, justEnabled }) {
@@ -768,7 +777,7 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
         tabindex: "0",
         onClick: jump,
         onKeydown: (e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === Key.ENTER || e.key === Key.SPACE) {
             e.preventDefault();
             jump();
           }
@@ -914,7 +923,7 @@ export function renderHelpOverlay({ visible, state }, handlers) {
 
   const close = () => handlers.onStepMismatch();
   helpEscapeListener = (e) => {
-    if (e.key === "Escape") close();
+    if (e.key === Key.ESCAPE) close();
   };
   document.addEventListener("keydown", helpEscapeListener);
 
@@ -993,7 +1002,7 @@ export function renderWipeConfirmOverlay({ visible }, handlers) {
 
   const close = () => handlers.onCancelWipe();
   wipeConfirmEscapeListener = (e) => {
-    if (e.key === "Escape") close();
+    if (e.key === Key.ESCAPE) close();
   };
   document.addEventListener("keydown", wipeConfirmEscapeListener);
 

@@ -22,6 +22,7 @@ import { createOnboardingStub } from "./onboarding-stub.js";
 import { createSolveCoachmark } from "./solve-coachmark.js";
 import { oldCampExample } from "./examples.js";
 import { wireHowToMapImage } from "./how-to-map-image.js";
+import { wireInfoModals } from "./info-modal-controller.js";
 import { LandingType, LocaleAutoHintSource } from "./analytics/values.js";
 import { resolveStartup, StartupAction } from "./startup.js";
 import { LocaleSource, DEFAULT_LOCALE } from "./i18n.js";
@@ -162,6 +163,7 @@ function applyAutoSolve(plan) {
 
 function wireApp() {
   wireHowToMapImage();
+  wireInfoModals();
   bindAppEvents();
 
   const plan = resolveStartup({

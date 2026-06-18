@@ -722,41 +722,112 @@ button {
   flex-shrink: 0;
 }
 
-.locale-switcher {
-  display: inline-flex;
-  gap: 6px;
-  padding: 4px;
-  border-radius: var(--radius-sm);
-  background: rgba(11, 12, 14, 0.55);
-  border: 1px solid var(--iron);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
+/* Align the three header controls (language / support / version) on one height. */
+.app-head-meta .locale-switcher-trigger,
+.app-head-meta .app-head-support-link,
+.app-head-meta .app-version {
+  box-sizing: border-box;
+  height: 34px;
 }
 
-.locale-switcher-btn {
+.app-head-meta .app-head-support-link {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.app-head-meta .app-version {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background: transparent;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.locale-switcher {
+  position: relative;
+  display: inline-flex;
+}
+
+.locale-switcher-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--iron-light);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
+  color: var(--parchment);
   cursor: pointer;
-  opacity: 0.72;
-  transition: opacity 0.12s, border-color 0.12s, box-shadow 0.12s;
+  box-shadow: var(--bevel);
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
 
-.locale-switcher-btn:hover,
-.locale-switcher-btn:focus-visible {
-  opacity: 1;
-  outline: none;
+.locale-switcher-trigger:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 2px;
 }
 
-.locale-switcher-btn.is-active {
-  opacity: 1;
+.locale-switcher-trigger-flag {
+  display: inline-flex;
+}
+
+.locale-switcher-code {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--parchment);
+}
+
+.locale-switcher-caret {
+  width: 10px;
+  height: 10px;
+  color: var(--parchment-dim);
+}
+
+.locale-switcher-menu {
+  position: fixed;
+  z-index: 40;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: min(60vh, 320px);
+  overflow-y: auto;
+  display: grid;
+  gap: 2px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone));
+  box-shadow: var(--bevel), 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.locale-switcher-menu[hidden] {
+  display: none;
+}
+
+.locale-switcher-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--parchment-dim);
+  white-space: nowrap;
+}
+
+.locale-switcher-option .locale-switcher-code {
+  color: inherit;
+}
+
+.locale-switcher-option[aria-selected="true"] {
   border-color: var(--bronze-deep);
   box-shadow: 0 0 8px var(--bronze-glow);
+  color: var(--parchment);
+}
+
+.locale-switcher-option.is-highlighted {
+  background: rgba(230, 189, 107, 0.12);
+  color: var(--parchment);
 }
 
 .locale-flag {
@@ -1199,6 +1270,16 @@ button {
   font-size: 0.9rem;
 }
 
+.panel-note ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style-type: disc;
+}
+
+.panel-note li + li {
+  margin-top: 6px;
+}
+
 /* --- controls --- */
 
 .controls {
@@ -1318,26 +1399,41 @@ button {
   );
 }
 
-.hole-legend {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 4px 4px;
-  font-size: 0.72rem;
-  letter-spacing: 0.5px;
-  color: var(--parchment-dim);
+.tumbler-start-scale {
+  display: block;
+}
+
+.tumbler-legend {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1.2vw, 6px);
+  padding: 0 6px 3px;
+  font-size: 0.62rem;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
-  grid-column: 1 / -1;
 }
 
-.hole-legend-wall {
+.tumbler-legend > span {
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tumbler-legend-wall {
   color: var(--blood-bright);
-  font-weight: 700;
 }
 
-.hole-legend-notch {
+.tumbler-legend-notch {
+  grid-column: 4;
   color: var(--bronze);
-  font-weight: 700;
+}
+
+.tumbler-legend-wall--left {
+  grid-column: 1;
+}
+
+.tumbler-legend-wall--right {
+  grid-column: 7;
 }
 
 .tumbler-card {
@@ -1637,10 +1733,9 @@ button {
     gap: 8px;
   }
 
-  .hole-legend {
-    width: auto;
-    margin: 0;
-    padding: 0 0 4px calc(var(--card-label-col) + var(--card-col-gap) + 110px);
+  .tumbler-legend {
+    gap: 6px;
+    padding: 0 10px 3px;
   }
 
   .tumbler-card {
@@ -2084,6 +2179,7 @@ body.wipe-confirm-open {
   cursor: pointer;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 20px var(--bronze-glow), var(--bevel);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
 .solve-btn:active {
@@ -2109,6 +2205,57 @@ body.wipe-confirm-open {
   }
   50% {
     box-shadow: 0 0 28px var(--bronze-bright), 0 0 8px var(--bronze-glow), var(--bevel);
+  }
+}
+
+/* --- hover feedback (pointer devices only, no stuck-hover on touch) --- */
+@media (hover: hover) {
+  /* recessed controls: brighten border toward bronze (matches .icon-btn/.step) */
+  .pill:hover:not([disabled]):not(.is-active):not(.pill-primary):not(.pill-danger):not(.gratitude-donate-btn),
+  .link-chip:hover:not(.link-removed) {
+    border-color: var(--bronze-deep);
+  }
+
+  /* already-bronze controls: intensify glow (matches donate/CTA), no hue shift */
+  .pill-primary:hover:not([disabled]):not(.gratitude-share-btn),
+  .pill.is-active:hover:not([disabled]) {
+    box-shadow: 0 0 24px var(--bronze-glow),
+      0 0 12px rgba(232, 197, 106, 0.4), var(--bevel);
+  }
+
+  /* danger (reset confirm): intensify its own glow */
+  .pill-danger:hover:not([disabled]) {
+    box-shadow: 0 0 16px var(--blood-bg), var(--bevel);
+  }
+
+  /* hole: subtle ring, kept distinct from is-active (filled) and is-notch (bronze ring) */
+  .hole:hover:not(.is-active) {
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+    color: var(--parchment);
+  }
+
+  /* primary CTA: richer glow mirroring the donate button */
+  .solve-btn:hover:not(:disabled) {
+    border-color: var(--bronze-bright);
+    box-shadow: 0 0 28px var(--bronze-glow),
+      0 0 14px rgba(232, 197, 106, 0.4), var(--bevel);
+  }
+
+  /* help links (closed state): brighten the underline */
+  .how-to-map:not([open]) summary:hover,
+  .lockpicking-guide:not([open]) summary:hover {
+    text-decoration-color: var(--bronze-bright);
+  }
+
+  /* language dropdown */
+  .locale-switcher-trigger:hover {
+    border-color: var(--bronze-deep);
+  }
+
+  .locale-switcher-option:hover {
+    background: rgba(230, 189, 107, 0.1);
+    color: var(--parchment);
   }
 }
 
@@ -3157,7 +3304,7 @@ summary.icon-btn:focus-visible {
 }
 
 .how-to-map-body {
-  padding: 0 12px 14px;
+  padding: 14px 12px;
 }
 
 .how-to-map-steps {
@@ -3326,6 +3473,97 @@ summary.icon-btn:focus-visible {
 
 .lockpicking-guide-text:last-child {
   margin-bottom: 0;
+}
+
+/* --- info modals (how-to-map / lockpicking-guide) --- */
+
+.how-to-map summary,
+.lockpicking-guide summary {
+  list-style: none;
+  text-decoration: underline;
+  text-decoration-color: rgba(230, 189, 107, 0.4);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.16s ease;
+}
+
+.how-to-map summary::-webkit-details-marker,
+.lockpicking-guide summary::-webkit-details-marker {
+  display: none;
+}
+
+.info-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+body.info-modal-open {
+  overflow: hidden;
+}
+
+.how-to-map[open],
+.lockpicking-guide[open] {
+  position: fixed;
+  z-index: 46;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(82vh, 760px);
+  margin: 0;
+  overflow-y: auto;
+  border: 1px solid var(--bronze-deep);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone));
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgba(230, 189, 107, 0.15),
+    0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.how-to-map[open] summary,
+.lockpicking-guide[open] summary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--stone-raised);
+  border-bottom: 1px solid var(--iron);
+  text-decoration: none;
+}
+
+.how-to-map[open] summary::after,
+.lockpicking-guide[open] summary::after {
+  content: "×";
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--bronze-deep);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--bronze-bright);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--bevel);
+  transition: border-color 0.12s, color 0.12s, background 0.12s, box-shadow 0.12s;
+}
+
+@media (hover: hover) {
+  .how-to-map[open] summary:hover::after,
+  .lockpicking-guide[open] summary:hover::after {
+    border-color: var(--bronze-bright);
+    color: #fff;
+    background: rgba(230, 189, 107, 0.18);
+    box-shadow: 0 0 10px var(--bronze-glow), var(--bevel);
+  }
 }
 
 /* --- banners --- */

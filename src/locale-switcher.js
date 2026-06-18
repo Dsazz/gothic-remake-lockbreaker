@@ -1,6 +1,10 @@
 import { getLocale, setLocale, Locale, SUPPORTED_LOCALES, t } from "./i18n.js";
+import { Key } from "./keyboard-keys.js";
 
 const FLAG_VIEWBOX = "0 0 60 40";
+const LISTBOX_ID = "locale-listbox";
+
+const switcherControllers = new WeakMap();
 
 function flagSvg(locale) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -45,42 +49,210 @@ function flagSvg(locale) {
   return svg;
 }
 
+function caretSvg() {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 12 12");
+  svg.setAttribute("class", "locale-switcher-caret");
+  svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = `<path d="M2 4.5 L6 8.5 L10 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return svg;
+}
+
+function shortCode(locale) {
+  return locale.toUpperCase();
+}
+
+function optionId(locale) {
+  return `locale-opt-${locale}`;
+}
+
 function mountLocaleSwitcher(container) {
+  switcherControllers.get(container)?.abort();
+  const controller = new AbortController();
+  switcherControllers.set(container, controller);
+  const { signal } = controller;
+
   const group = document.createElement("div");
   group.className = "locale-switcher";
-  group.setAttribute("role", "group");
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "locale-switcher-trigger";
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+  trigger.setAttribute("aria-controls", LISTBOX_ID);
+
+  const triggerFlag = document.createElement("span");
+  triggerFlag.className = "locale-switcher-trigger-flag";
+  const triggerCode = document.createElement("span");
+  triggerCode.className = "locale-switcher-code";
+  trigger.append(triggerFlag, triggerCode, caretSvg());
+
+  const listbox = document.createElement("ul");
+  listbox.className = "locale-switcher-menu";
+  listbox.id = LISTBOX_ID;
+  listbox.setAttribute("role", "listbox");
+  listbox.setAttribute("tabindex", "-1");
+  listbox.hidden = true;
 
   for (const locale of SUPPORTED_LOCALES) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "locale-switcher-btn";
-    btn.dataset.locale = locale;
-    btn.append(flagSvg(locale));
-    group.append(btn);
+    const option = document.createElement("li");
+    option.className = "locale-switcher-option";
+    option.id = optionId(locale);
+    option.setAttribute("role", "option");
+    option.dataset.locale = locale;
+
+    const code = document.createElement("span");
+    code.className = "locale-switcher-code";
+    code.textContent = shortCode(locale);
+    option.append(flagSvg(locale), code);
+    listbox.append(option);
   }
 
+  group.append(trigger, listbox);
   container.replaceChildren(group);
 
-  container.addEventListener("click", (event) => {
-    const btn = event.target.closest("[data-locale]");
-    if (!btn || !container.contains(btn)) return;
-    void setLocale(btn.dataset.locale);
+  let open = false;
+  let activeIndex = 0;
+
+  const options = () => Array.from(listbox.querySelectorAll("[role='option']"));
+
+  function setActive(index) {
+    const opts = options();
+    activeIndex = Math.max(0, Math.min(index, opts.length - 1));
+    const opt = opts[activeIndex];
+    if (!opt) return;
+    listbox.setAttribute("aria-activedescendant", opt.id);
+    for (const o of opts) o.classList.toggle("is-highlighted", o === opt);
+    opt.scrollIntoView({ block: "nearest" });
+  }
+
+  function positionMenu() {
+    const rect = trigger.getBoundingClientRect();
+    listbox.style.minWidth = `${Math.round(rect.width)}px`;
+    listbox.style.top = `${Math.round(rect.bottom + 6)}px`;
+    listbox.style.left = `${Math.round(rect.right - listbox.offsetWidth)}px`;
+  }
+
+  function openMenu() {
+    if (open) return;
+    open = true;
+    listbox.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    positionMenu();
+    const current = getLocale();
+    const idx = options().findIndex((o) => o.dataset.locale === current);
+    setActive(idx < 0 ? 0 : idx);
+    listbox.focus({ preventScroll: true });
+  }
+
+  function closeMenu({ focusTrigger = false } = {}) {
+    if (!open) return;
+    open = false;
+    listbox.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    listbox.removeAttribute("aria-activedescendant");
+    for (const o of options()) o.classList.remove("is-highlighted");
+    if (focusTrigger) trigger.focus();
+  }
+
+  function selectOption(option) {
+    if (!option) return;
+    closeMenu({ focusTrigger: true });
+    void setLocale(option.dataset.locale);
+  }
+
+  trigger.addEventListener("click", () => {
+    if (open) closeMenu({ focusTrigger: true });
+    else openMenu();
   });
+
+  trigger.addEventListener("keydown", (event) => {
+    if ([Key.ARROW_DOWN, Key.ARROW_UP, Key.ENTER, Key.SPACE].includes(event.key)) {
+      event.preventDefault();
+      openMenu();
+    }
+  });
+
+  listbox.addEventListener("click", (event) => {
+    const option = event.target.closest("[role='option']");
+    if (option) selectOption(option);
+  });
+
+  listbox.addEventListener("keydown", (event) => {
+    switch (event.key) {
+      case Key.ARROW_DOWN:
+        event.preventDefault();
+        setActive(activeIndex + 1);
+        break;
+      case Key.ARROW_UP:
+        event.preventDefault();
+        setActive(activeIndex - 1);
+        break;
+      case Key.HOME:
+        event.preventDefault();
+        setActive(0);
+        break;
+      case Key.END:
+        event.preventDefault();
+        setActive(options().length - 1);
+        break;
+      case Key.ENTER:
+      case Key.SPACE:
+        event.preventDefault();
+        selectOption(options()[activeIndex]);
+        break;
+      case Key.ESCAPE:
+        event.preventDefault();
+        closeMenu({ focusTrigger: true });
+        break;
+      case Key.TAB:
+        closeMenu({ focusTrigger: true });
+        break;
+      default:
+        break;
+    }
+  });
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (open && !group.contains(event.target)) closeMenu();
+    },
+    { signal },
+  );
+
+  document.addEventListener(
+    "focusin",
+    (event) => {
+      if (open && !group.contains(event.target)) closeMenu();
+    },
+    { signal },
+  );
+
+  window.addEventListener("scroll", () => closeMenu(), { passive: true, signal });
+  window.addEventListener("resize", () => closeMenu(), { signal });
 }
 
 function updateLocaleSwitcher(container) {
   const group = container.querySelector(".locale-switcher");
   if (!group) return;
 
-  group.setAttribute("aria-label", t("locale.switcher"));
   const current = getLocale();
+  const trigger = group.querySelector(".locale-switcher-trigger");
+  const listbox = group.querySelector(".locale-switcher-menu");
 
-  for (const btn of group.querySelectorAll("[data-locale]")) {
-    const locale = btn.dataset.locale;
-    const active = locale === current;
-    btn.classList.toggle("is-active", active);
-    btn.setAttribute("aria-label", t(`locale.${locale}`));
-    btn.setAttribute("aria-pressed", active ? "true" : "false");
+  trigger.querySelector(".locale-switcher-trigger-flag").replaceChildren(flagSvg(current));
+  trigger.querySelector(".locale-switcher-code").textContent = shortCode(current);
+  trigger.setAttribute("aria-label", `${t("locale.switcher")}: ${t(`locale.${current}`)}`);
+
+  listbox.setAttribute("aria-label", t("locale.switcher"));
+
+  for (const option of listbox.querySelectorAll("[role='option']")) {
+    const locale = option.dataset.locale;
+    const selected = locale === current;
+    option.setAttribute("aria-selected", selected ? "true" : "false");
+    option.setAttribute("aria-label", t(`locale.${locale}`));
   }
 }
 

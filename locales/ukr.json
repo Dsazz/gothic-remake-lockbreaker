@@ -35,7 +35,7 @@
     "imgAlt": "Замок у грі з п'ятьма видимими пластинами та отворами штифтів зверху"
   },
   "panel": {
-    "tumblersNote": "Замки нумеруються від <strong>1 (спереду)</strong> до <strong>N (ззаду)</strong>. Картки складаються <strong>ззаду вгорі, спереду внизу</strong> — як у грі. Отвір <strong>4</strong> — виріз; отвори <strong>1</strong> і <strong>7</strong> — стінки."
+    "tumblersNote": "<ul><li>Замки нумеруються від <strong>1 (спереду)</strong> до <strong>N (ззаду)</strong>.</li><li>Картки складаються <strong>ззаду вгорі, спереду внизу</strong> — як у грі.</li><li>Отвір <strong>4</strong> — виріз; отвори <strong>1</strong> і <strong>7</strong> — стінки.</li><li>Торкніться отвору, щоб задати старт кожної пластини — <strong>заповнене</strong> коло — ваш вибір.</li></ul>"
   },
   "map": {
     "lock1": "Замок 1 · спереду",
@@ -87,13 +87,14 @@
     "turningMoves": "Обертання рухає",
     "holeAria": "Отвір {hole}",
     "couplingAria": "{lock} зв'язок {coupling}",
+    "couplingUnsetAria": "{lock} зв'язок не задано",
     "goneAria": "Позначити зв'язок {lock} як gone",
     "goneUndoAria": "{lock} позначено gone — натисни, щоб скасувати"
   },
   "legend": {
-    "wallLeft": "1 · стінка",
-    "notch": "4 · виріз",
-    "wallRight": "стінка · 7"
+    "wallLeft": "стінка",
+    "notch": "виріз",
+    "wallRight": "стінка"
   },
   "move": {
     "aria": "Замок {lock}, оберт {dir}"
