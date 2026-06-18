@@ -2464,6 +2464,16 @@ summary.icon-btn:focus-visible {
 }
 
 @media (max-width: 899px) {
+  body:not(.onboarding-active) .panel--sequence.is-unmapped {
+    display: none;
+  }
+
+  /* Slide the bottom bar up the first time it appears (after the user maps a
+     lock) instead of popping in abruptly. */
+  body:not(.onboarding-active) .panel--sequence:not(.is-unmapped) {
+    animation: sequence-rise 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   .panel--sequence {
     position: sticky;
     bottom: 0;
@@ -3909,6 +3919,23 @@ body.onboarding-active.onboarding-card-at-bottom .onboarding-target {
     box-shadow: var(--bevel);
   }
 
+}
+
+@keyframes sequence-rise {
+  from {
+    transform: translateY(12%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.onboarding-active) .panel.panel--sequence:not(.is-unmapped) {
+    animation: none;
+  }
 }
 
 .tumblers.is-pulse {

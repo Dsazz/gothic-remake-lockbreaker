@@ -69,3 +69,11 @@ test("getMappingCompleteness tiers for 6-plate lock", () => {
   const threePins = { ...pristine, positions: [1, -1, 2, 0, 0, 0] };
   assert.equal(getMappingCompleteness(threePins), "ready");
 });
+
+test("a single coupling on the default lock is partial, not ready", () => {
+  const matrix = createMatrix(DEFAULT_PLATES);
+  matrix[1][0] = LINK.SAME;
+  const state = { ...freshDefault(), matrix };
+  assert.equal(getMappingCompleteness(state), "partial");
+  assert.equal(isLockReadyToSolve(state), false);
+});
