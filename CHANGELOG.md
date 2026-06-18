@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.25.0] - 2026-06-19
+
+### Changed
+
+- The help sections — **How to map your lock**, **Lockpicking Guide**, and **About this tool** — now open as centered modal dialogs with their own title and close (×) button, and the button you clicked stays in place instead of turning into the modal and disappearing. Close via the × button, the backdrop, or Escape. Added a localized **Close** label across English, German, Polish, and Ukrainian.
+
+### Fixed
+
+- The info icon in the **About this tool** button is now optically centered with its all-caps label.
+
 ## [1.24.1] - 2026-06-18
 
 ### Fixed

@@ -1,4 +1,7 @@
 {
+  "common": {
+    "close": "Close"
+  },
   "seo": {
     "title": "Gothic Remake Lockbreaker — Free Lockpicking Calculator",
     "description": "Free Gothic 1 Remake lockpicking calculator with step-by-step walkthrough. Edge-safe sequences — pick won't snap. Works on phone, no account.",

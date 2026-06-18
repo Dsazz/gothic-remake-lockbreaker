@@ -148,8 +148,10 @@ test("help sections are progressively enhanced into modals", async () => {
   assert.match(modalText, /Escape/);
   assert.match(modalText, /#how-to-map/);
   assert.match(modalText, /\.lockpicking-guide/);
+  assert.match(modalText, /\.app-foot-faq/);
   assert.match(css, /\.how-to-map\[open\]/);
   assert.match(css, /\.lockpicking-guide\[open\]/);
+  assert.match(css, /\.app-foot-faq\[open\]/);
 });
 
 test("core controls have hover feedback gated for touch", async () => {

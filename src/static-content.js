@@ -16,6 +16,11 @@ function setMapLabel(selector, key) {
   if (node) node.textContent = t(key);
 }
 
+function setAriaLabel(selector, key) {
+  const node = document.querySelector(selector);
+  if (node) node.setAttribute("aria-label", t(key));
+}
+
 function setAppDefinition() {
   const titleEl = document.querySelector(".app-title");
   if (titleEl) titleEl.textContent = t("app.srTitle");
@@ -27,6 +32,8 @@ function setAppDefinition() {
 // index.html (crawler-facing), keys live in locales/*.json. No positional coupling.
 function applyGuideContent() {
   setText(".lockpicking-guide summary", "guide.summary");
+  setText(".lockpicking-guide .info-modal-title", "guide.summary");
+  setAriaLabel(".lockpicking-guide .info-modal-close", "common.close");
   const body = document.querySelector(".lockpicking-guide-body");
   if (!body) return;
   for (const node of body.querySelectorAll("[data-i18n]")) {
@@ -42,6 +49,8 @@ export function applyStaticContent() {
   setText(".panel--sequence h2", "section.sequence");
 
   setText("#how-to-map summary", "howto.summary");
+  setText("#how-to-map .info-modal-title", "howto.summary");
+  setAriaLabel("#how-to-map .info-modal-close", "common.close");
   const steps = document.querySelectorAll(".how-to-map-steps li");
   const stepKeys = ["howto.step1", "howto.step2", "howto.step3", "howto.step4"];
   steps.forEach((li, i) => {
