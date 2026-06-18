@@ -137,6 +137,9 @@ function mountLocaleSwitcher(container) {
   function openMenu() {
     if (open) return;
     open = true;
+    // Portal out of `.app-head` (isolation: isolate) so the fixed menu's
+    // z-index competes in the root stacking context, not the header's.
+    document.body.appendChild(listbox);
     listbox.hidden = false;
     trigger.setAttribute("aria-expanded", "true");
     positionMenu();
@@ -150,6 +153,7 @@ function mountLocaleSwitcher(container) {
     if (!open) return;
     open = false;
     listbox.hidden = true;
+    group.appendChild(listbox);
     trigger.setAttribute("aria-expanded", "false");
     listbox.removeAttribute("aria-activedescendant");
     for (const o of options()) o.classList.remove("is-highlighted");
@@ -214,10 +218,14 @@ function mountLocaleSwitcher(container) {
     }
   });
 
+  function isInsideSwitcher(target) {
+    return group.contains(target) || listbox.contains(target);
+  }
+
   document.addEventListener(
     "click",
     (event) => {
-      if (open && !group.contains(event.target)) closeMenu();
+      if (open && !isInsideSwitcher(event.target)) closeMenu();
     },
     { signal },
   );
@@ -225,7 +233,7 @@ function mountLocaleSwitcher(container) {
   document.addEventListener(
     "focusin",
     (event) => {
-      if (open && !group.contains(event.target)) closeMenu();
+      if (open && !isInsideSwitcher(event.target)) closeMenu();
     },
     { signal },
   );

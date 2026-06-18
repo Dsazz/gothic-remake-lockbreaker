@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.24.1] - 2026-06-18
+
+### Fixed
+
+- On phones the language dropdown is no longer hidden behind the lock — the menu now renders above it.
+
 ## [1.24.0] - 2026-06-18
 
 ### Changed
