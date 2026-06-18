@@ -245,10 +245,15 @@ export function createSolveController({
     const hasMoves = Array.isArray(session.solution) && session.solution.length > 0;
     const minimized = session.sequenceMinimized && hasMoves;
     const completeness = mappingCompletenessFor(state);
-    const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
     const mappingPartial = completeness === MappingCompleteness.PARTIAL;
+    const lockReady = completeness === MappingCompleteness.READY;
 
-    view.renderSequencePanel(els.sequencePanel, session.solution, { minimized }, handlers);
+    view.renderSequencePanel(
+      els.sequencePanel,
+      session.solution,
+      { minimized, lockMapped: isLockMapped(state) },
+      handlers,
+    );
     maybeTrackSequenceSupport(state, hasMoves);
     maybeTrackHashBanner(state, hasMoves);
     view.renderHashBanner(
@@ -275,7 +280,7 @@ export function createSolveController({
       {
         minimized,
         blockedMessage: session.blockedMessage,
-        lockReady: mapped,
+        lockReady,
         mappingPartial,
         showMismatchTips: session.showMismatchTips,
         state,

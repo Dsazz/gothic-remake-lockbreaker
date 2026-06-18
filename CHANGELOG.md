@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.23.1] - 2026-06-18
+
+### Changed
+
+- On phones the Sequence panel stays hidden until you actually map a lock (set a coupling or move a pin), so the bottom bar no longer takes up space before there's anything to solve. It now rises into view instead of popping in.
+
+### Fixed
+
+- A partially mapped lock no longer claims "Lock mapped — crack it open." The ready hint only shows once the lock is fully mapped; partial maps keep the mapping guidance.
+
 ## [1.23.0] - 2026-06-18
 
 ### Added

@@ -816,6 +816,9 @@ export function renderSequencePanel(panel, solution, ui, handlers) {
   const minimized = Boolean(ui?.minimized && hasMoves);
   panel.classList.toggle("is-minimized", minimized);
   panel.classList.toggle("has-solution", hasMoves);
+  // On mobile the panel is a sticky bottom bar; keep it dormant until the user
+  // has entered lock data. CSS hides `.is-unmapped` on mobile (onboarding aside).
+  panel.classList.toggle("is-unmapped", !ui?.lockMapped);
 
   if (!actions) return;
   if (!hasMoves) {

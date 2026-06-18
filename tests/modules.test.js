@@ -330,3 +330,29 @@ test("locale switcher is a combobox + listbox with short codes", async () => {
   assert.match(switcherText, /\{ signal \}/);
   assert.match(css, /\.locale-switcher-menu\s*\{[^}]*max-height/s);
 });
+
+test("sequence hint only claims 'mapped' when the lock is ready, not merely partial", async () => {
+  const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  // Controller must derive lockReady from READY and stop passing the partial-true `mapped`.
+  assert.match(solveText, /lockReady = completeness === MappingCompleteness\.READY/);
+  assert.doesNotMatch(solveText, /lockReady:\s*mapped/);
+  assert.match(solveText, /lockMapped: isLockMapped\(state\)/);
+  // View picks the hint from lockReady, so partial locks fall back to hintMap.
+  assert.match(viewText, /ui\?\.lockReady \? t\("solution\.hintReady"\)/);
+});
+
+test("sequence panel stays dormant on mobile until the lock has data", async () => {
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  const html = await readFile(join(root, "index.html"), "utf8");
+  // View toggles the dormant class from injected lockMapped flag.
+  assert.match(viewText, /classList\.toggle\("is-unmapped", !ui\?\.lockMapped\)/);
+  // Mobile hides the dormant panel, but a started tour keeps it for the solve spotlight.
+  assert.match(css, /body:not\(\.onboarding-active\) \.panel--sequence\.is-unmapped\s*\{\s*display:\s*none/s);
+  // Reduced-motion override must win by specificity, not source order.
+  assert.match(css, /body:not\(\.onboarding-active\) \.panel\.panel--sequence:not\(\.is-unmapped\)\s*\{\s*animation:\s*none/s);
+  assert.match(css, /@keyframes sequence-rise/);
+  // Static markup ships dormant so the bottom bar never flashes on cold mobile landing.
+  assert.match(html, /panel--sequence is-unmapped/);
+});
