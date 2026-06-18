@@ -3459,30 +3459,70 @@ summary.icon-btn:focus-visible {
 }
 
 .lockpicking-guide-body {
-  padding: 0 12px 14px;
+  padding: 14px 14px 16px;
+}
+
+.lockpicking-guide-section + .lockpicking-guide-section {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--iron);
 }
 
 .lockpicking-guide-subhead {
-  margin: 18px 0 8px;
+  margin: 0 0 8px;
   font-family: var(--display);
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--bronze-bright);
 }
 
-.lockpicking-guide-subhead:first-child {
-  margin-top: 0;
-}
-
 .lockpicking-guide-text {
   margin: 0 0 10px;
-  font-size: 0.88rem;
-  line-height: 1.45;
-  color: var(--parchment-dim);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--parchment);
 }
 
-.lockpicking-guide-text:last-child {
+.lockpicking-guide-section > :last-child {
   margin-bottom: 0;
+}
+
+.lockpicking-guide-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.lockpicking-guide-list li {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--parchment);
+}
+
+.lockpicking-guide-list li::marker {
+  color: var(--bronze-deep);
+}
+
+.lockpicking-guide-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 7px 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.lockpicking-guide-dl dt {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--bronze-bright);
+}
+
+.lockpicking-guide-dl dd {
+  margin: 0;
+  color: var(--parchment);
 }
 
 /* --- info modals (how-to-map / lockpicking-guide) --- */

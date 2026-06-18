@@ -23,14 +23,16 @@ function setAppDefinition() {
   if (bodyEl) bodyEl.textContent = t("app.definitionBody");
 }
 
-const GUIDE_SECTIONS = [
-  ["guide.puzzleTitle", "guide.puzzleText"],
-  ["guide.couplingTitle", "guide.couplingText"],
-  ["guide.tiersTitle", "guide.tiersText"],
-  ["guide.trainerTitle", "guide.trainerText"],
-  ["guide.edgeSafeTitle", "guide.edgeSafeText"],
-  ["guide.tipsTitle", "guide.tipsText"],
-];
+// Localizes every [data-i18n] node in the guide body — markup shape lives in
+// index.html (crawler-facing), keys live in locales/*.json. No positional coupling.
+function applyGuideContent() {
+  setText(".lockpicking-guide summary", "guide.summary");
+  const body = document.querySelector(".lockpicking-guide-body");
+  if (!body) return;
+  for (const node of body.querySelectorAll("[data-i18n]")) {
+    node.textContent = t(node.dataset.i18n);
+  }
+}
 
 export function applyStaticContent() {
   setAppDefinition();
@@ -84,11 +86,5 @@ export function applyStaticContent() {
   const solveBtn = document.getElementById("solve-btn");
   if (solveBtn) solveBtn.textContent = t("solve.cta");
 
-  setText(".lockpicking-guide summary", "guide.summary");
-  const guideSubheads = document.querySelectorAll(".lockpicking-guide-subhead");
-  const guideTexts = document.querySelectorAll(".lockpicking-guide-text");
-  GUIDE_SECTIONS.forEach(([titleKey, textKey], i) => {
-    if (guideSubheads[i]) guideSubheads[i].textContent = t(titleKey);
-    if (guideTexts[i]) guideTexts[i].textContent = t(textKey);
-  });
+  applyGuideContent();
 }

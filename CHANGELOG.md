@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.24.0] - 2026-06-18
+
+### Changed
+
+- The in-app **Lockpicking Guide** is no longer a wall of text. Couplings are now a With / Against / None definition list, the puzzle mechanics and hard-lock tips are scannable bullet lists, and each section is separated for easier reading. Body copy uses higher contrast and looser line spacing. Localized across English, German, Polish, and Ukrainian.
+
 ## [1.23.1] - 2026-06-18
 
 ### Changed
