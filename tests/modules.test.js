@@ -19,6 +19,7 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/i18n.js");
   await import("../src/static-content.js");
   await import("../src/how-to-map-image.js");
+  await import("../src/info-modal-controller.js");
   await import("../src/onboarding-stub.js");
   await import("../src/analytics/posthog-init.js");
   await import("../src/locale-switcher.js");
@@ -115,6 +116,47 @@ test("renderControls hides wipe until lock differs from default; sequence share 
   assert.match(solveText, /visible: hasMoves/);
   assert.match(solveText, /renderGratitudePrompt/);
   assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
+});
+
+test("hole legend renders per tumbler card, not once above the list", async () => {
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  assert.match(viewText, /function tumblerLegend/);
+  assert.match(viewText, /tumbler-legend/);
+  assert.match(viewText, /container\.replaceChildren\(\.\.\.cards\)/);
+  assert.doesNotMatch(viewText, /function holeLegend/);
+  assert.doesNotMatch(css, /\.hole-legend\b/);
+  assert.match(css, /\.tumbler-legend\s*\{[^}]*repeat\(7,\s*1fr\)/s);
+});
+
+test("unset coupling chip drops the dot glyph and uses a clear aria label", async () => {
+  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const en = JSON.parse(await readFile(join(root, "locales/en.json"), "utf8"));
+  assert.match(viewText, /isUnset/);
+  assert.match(viewText, /tumbler\.couplingUnsetAria/);
+  assert.match(viewText, /isUnset \? lockLabel\(reactor\)/);
+  assert.match(en.tumbler.couplingUnsetAria, /\{lock\}/);
+});
+
+test("help sections are progressively enhanced into modals", async () => {
+  const appText = await readFile(join(root, "src/app.js"), "utf8");
+  const modalText = await readFile(join(root, "src/info-modal-controller.js"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  assert.match(appText, /wireInfoModals/);
+  assert.match(modalText, /info-modal-open/);
+  assert.match(modalText, /info-modal-backdrop/);
+  assert.match(modalText, /Escape/);
+  assert.match(modalText, /#how-to-map/);
+  assert.match(modalText, /\.lockpicking-guide/);
+  assert.match(css, /\.how-to-map\[open\]/);
+  assert.match(css, /\.lockpicking-guide\[open\]/);
+});
+
+test("core controls have hover feedback gated for touch", async () => {
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  assert.match(css, /@media \(hover: hover\)/);
+  assert.match(css, /\.solve-btn:hover/);
+  assert.match(css, /\.hole:hover/);
 });
 
 test("no_path failure offers example lock recovery", async () => {
@@ -271,4 +313,20 @@ test("app bootstraps with catch and splits locale chrome from renderAll", async 
   assert.doesNotMatch(rendererText, /renderHeadSupport/);
   assert.match(switcherText, /function mountLocaleSwitcher/);
   assert.match(switcherText, /function updateLocaleSwitcher/);
+});
+
+test("locale switcher is a combobox + listbox with short codes", async () => {
+  const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
+  assert.match(switcherText, /aria-haspopup", "listbox"/);
+  assert.match(switcherText, /role", "listbox"/);
+  assert.match(switcherText, /role", "option"/);
+  assert.match(switcherText, /function shortCode/);
+  assert.match(switcherText, /locale\.toUpperCase\(\)/);
+  assert.match(switcherText, /case Key\.ESCAPE:/);
+  // Guards for the review fixes: no focus/scroll race, no leaked listeners.
+  assert.match(switcherText, /preventScroll: true/);
+  assert.match(switcherText, /new AbortController\(\)/);
+  assert.match(switcherText, /\{ signal \}/);
+  assert.match(css, /\.locale-switcher-menu\s*\{[^}]*max-height/s);
 });

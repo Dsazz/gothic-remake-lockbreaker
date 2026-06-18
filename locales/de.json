@@ -35,7 +35,7 @@
     "imgAlt": "Spiel-Schloss mit fünf sichtbaren Platten und Nadel-Löchern oben"
   },
   "panel": {
-    "tumblersNote": "Schlösser sind nummeriert <strong>1 (vorne)</strong> bis <strong>N (hinten)</strong>. Karten stapeln <strong>hinten oben, vorne unten</strong> — wie im Spiel. Loch <strong>4</strong> ist die Kerbe; Löcher <strong>1</strong> und <strong>7</strong> sind Wände."
+    "tumblersNote": "<ul><li>Schlösser sind nummeriert <strong>1 (vorne)</strong> bis <strong>N (hinten)</strong>.</li><li>Karten stapeln <strong>hinten oben, vorne unten</strong> — wie im Spiel.</li><li>Loch <strong>4</strong> ist die Kerbe; Löcher <strong>1</strong> und <strong>7</strong> sind Wände.</li><li>Tippe auf ein Loch, um die Startposition jeder Platte festzulegen — der <strong>gefüllte</strong> Kreis ist deine Auswahl.</li></ul>"
   },
   "map": {
     "lock1": "Schloss 1 · vorne",
@@ -87,13 +87,14 @@
     "turningMoves": "Drehen bewegt",
     "holeAria": "Loch {hole}",
     "couplingAria": "{lock} {coupling} Kupplung",
+    "couplingUnsetAria": "{lock} Kupplung nicht gesetzt",
     "goneAria": "{lock} Kupplung als gone markieren",
     "goneUndoAria": "{lock} als gone markiert — tippen zum Rückgängig"
   },
   "legend": {
-    "wallLeft": "1 · Wand",
-    "notch": "4 · Kerbe",
-    "wallRight": "Wand · 7"
+    "wallLeft": "Wand",
+    "notch": "Kerbe",
+    "wallRight": "Wand"
   },
   "move": {
     "aria": "Schloss {lock}, drehe {dir}"

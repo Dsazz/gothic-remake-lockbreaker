@@ -35,7 +35,7 @@
     "imgAlt": "In-game lock with five visible plates and pin holes along the top"
   },
   "panel": {
-    "tumblersNote": "Locks are numbered <strong>1 (front)</strong> to <strong>N (back)</strong>. Cards stack <strong>back at top, front at bottom</strong>, matching the in-game view. Hole <strong>4</strong> is the notch; holes <strong>1</strong> and <strong>7</strong> are walls."
+    "tumblersNote": "<ul><li>Locks are numbered <strong>1 (front)</strong> to <strong>N (back)</strong>.</li><li>Cards stack <strong>back at top, front at bottom</strong>, matching the in-game view.</li><li>Hole <strong>4</strong> is the notch; holes <strong>1</strong> and <strong>7</strong> are walls.</li><li>Tap a hole to set each plate's start — the <strong>filled</strong> circle is your selection.</li></ul>"
   },
   "map": {
     "lock1": "Lock 1 · front",
@@ -98,13 +98,14 @@
     "turningMoves": "Turning this moves",
     "holeAria": "Hole {hole}",
     "couplingAria": "{lock} {coupling} coupling",
+    "couplingUnsetAria": "{lock} coupling not set",
     "goneAria": "Mark {lock} coupling as gone",
     "goneUndoAria": "{lock} marked gone — tap to undo"
   },
   "legend": {
-    "wallLeft": "1 · wall",
-    "notch": "4 · notch",
-    "wallRight": "wall · 7"
+    "wallLeft": "wall",
+    "notch": "notch",
+    "wallRight": "wall"
   },
   "solve": {
     "cta": "Break the Lock"

@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.23.0] - 2026-06-18
+
+### Added
+
+- **Gothic language dropdown** — the four flag buttons collapse into a single accessible listbox showing the active flag and short code (EN / DE / PL / UKR), with full keyboard support (arrow keys, Home/End, Enter, Escape, Tab) and screen-reader labels.
+- **Help sections open as modals** — "How to map your lock" and the Lockpicking Guide now overlay the page instead of pushing it down, with a more distinguished circular close button.
+
+### Changed
+
+- Consistent hover feedback across every interactive control — pills, link chips, holes, the Break/Next buttons, and the help links — on pointer devices.
+- Header language dropdown, tip-ore button, and version badge aligned to a uniform height and spacing.
+- Tumbler reference moved to a per-card legend; the Tumblers panel note rewritten as a scannable bullet list.
+
 ## [1.22.0] - 2026-06-18
 
 ### Added

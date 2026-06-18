@@ -35,7 +35,7 @@
     "imgAlt": "Zamek w grze z pięcioma widocznymi płytkami i otworami szpilek u góry"
   },
   "panel": {
-    "tumblersNote": "Zamki są numerowane <strong>1 (przód)</strong> do <strong>N (tył)</strong>. Karty układają się <strong>tył u góry, przód u dołu</strong> — jak w grze. Otwór <strong>4</strong> to wycięcie; otwory <strong>1</strong> i <strong>7</strong> to ściany."
+    "tumblersNote": "<ul><li>Zamki są numerowane <strong>1 (przód)</strong> do <strong>N (tył)</strong>.</li><li>Karty układają się <strong>tył u góry, przód u dołu</strong> — jak w grze.</li><li>Otwór <strong>4</strong> to wycięcie; otwory <strong>1</strong> i <strong>7</strong> to ściany.</li><li>Dotknij otworu, aby ustawić początek każdej płytki — <strong>wypełnione</strong> kółko to twój wybór.</li></ul>"
   },
   "map": {
     "lock1": "Zamek 1 · przód",
@@ -87,13 +87,14 @@
     "turningMoves": "Obrót tego przesuwa",
     "holeAria": "Otwór {hole}",
     "couplingAria": "{lock} sprzężenie {coupling}",
+    "couplingUnsetAria": "{lock} sprzężenie nieustawione",
     "goneAria": "Oznacz sprzężenie {lock} jako gone",
     "goneUndoAria": "{lock} oznaczony gone — naciśnij, by cofnąć"
   },
   "legend": {
-    "wallLeft": "1 · ściana",
-    "notch": "4 · wycięcie",
-    "wallRight": "ściana · 7"
+    "wallLeft": "ściana",
+    "notch": "wycięcie",
+    "wallRight": "ściana"
   },
   "move": {
     "aria": "Zamek {lock}, obrót {dir}"
