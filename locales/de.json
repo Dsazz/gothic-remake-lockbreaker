@@ -194,7 +194,8 @@
     "tooltip": "Wirf ein Erz — hält den Solver kostenlos",
     "cta": "Erz spenden",
     "sub": "Hält den Solver kostenlos",
-    "sleeperTip": "Der Schläfer erwache!"
+    "sleeperTip": "Der Schläfer erwache!",
+    "portraitTip": "Das ist alles? Du machst wohl Witze!"
   },
   "i18nBanner": {
     "text": "Diese Oberfläche ist maschinell übersetzt — Formulierungen können falsch oder holprig sein.",
