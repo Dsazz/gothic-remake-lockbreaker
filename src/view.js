@@ -169,6 +169,26 @@ function toolIconSvg(kind) {
   return svg;
 }
 
+function infoIconSvg() {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  circle.setAttribute("cx", "12");
+  circle.setAttribute("cy", "12");
+  circle.setAttribute("r", "10");
+  const stem = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  stem.setAttribute("d", "M12 16v-4");
+  const dot = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  dot.setAttribute("d", "M12 8h.01");
+  svg.append(circle, stem, dot);
+  return svg;
+}
+
 function controlsIconSvg(kind) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24");
@@ -1180,13 +1200,33 @@ function footerIssuesLink() {
   });
 }
 
+function infoModalHead(titleKey) {
+  return el("div", { class: "info-modal-head" }, [
+    el("span", { class: "info-modal-title", text: t(titleKey) }),
+    el("button", {
+      class: "info-modal-close",
+      type: "button",
+      "aria-label": t("common.close"),
+      text: "×",
+    }),
+  ]);
+}
+
 function footerFaq() {
   return el("details", { class: "app-foot-faq" }, [
-    el("summary", { text: t("footer.faqSummary") }),
-    el("dl", { class: "app-foot-faq-list" }, FOOTER_FAQ_KEYS.flatMap(([qKey, aKey]) => [
-      el("dt", { text: t(qKey) }),
-      el("dd", { text: t(aKey) }),
-    ])),
+    el("summary", {}, [
+      el("span", { class: "app-foot-faq-label" }, [
+        el("span", { class: "app-foot-faq-icon", "aria-hidden": "true" }, [infoIconSvg()]),
+        el("span", { text: t("footer.faqSummary") }),
+      ]),
+    ]),
+    el("div", { class: "info-modal-panel" }, [
+      infoModalHead("footer.faqSummary"),
+      el("dl", { class: "app-foot-faq-list" }, FOOTER_FAQ_KEYS.flatMap(([qKey, aKey]) => [
+        el("dt", { text: t(qKey) }),
+        el("dd", { text: t(aKey) }),
+      ])),
+    ]),
   ]);
 }
 
