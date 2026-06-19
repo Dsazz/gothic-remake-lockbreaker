@@ -123,7 +123,6 @@
     "hintReady": "Schloss abgebildet — öffne es.",
     "hintMap": "Setze oben Startlöcher und Kupplungen, dann öffne das Schloss.",
     "incompleteMapping": "Abbildung wirkt dünn — ergänze Kupplungen oder Startlöcher vor dem Lösen.",
-    "mappingChecklist": "Setze jedes Startloch. Markiere Kupplungen, die du im Spiel gesehen hast.",
     "gratitudeHead": "Schloss geknackt",
     "oob": "Eine Nadel startet außerhalb des Rahmens (Löcher 1–7). Tippe jedes Startloch zum Korrigieren.",
     "noPath": "Kein sicherer Weg mit diesen Kupplungen. Prüfe With/Against auf jedem Chip oder öffne die Anleitung.",
@@ -137,8 +136,8 @@
     "hideAll": "Liste ausblenden ▲",
     "lockOpen": "Offen",
     "sharedBanner": "Geteiltes Schloss — Sequenz unten bereit.",
-    "shareText": "Link kopieren, um dieses Schloss zu teilen.",
-    "shareBtn": "Teilen",
+    "shareText": "Freund festgesteckt? Kopier genau dieses Schloss und schick es ihm.",
+    "shareBtn": "Link für Freund kopieren",
     "shareCopied": "Link kopiert!",
     "donateBtn": "Erz spenden",
     "dismiss": "Schließen"

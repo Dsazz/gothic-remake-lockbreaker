@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.25.1] - 2026-06-19
+
+### Changed
+
+- The "share this lock" prompt now appears at most once per visit, and only after a genuinely tricky solve (a long solution, or a lock you cracked after a dead end) — instead of after every solve. Its button is honest about what it does ("Copy link for a friend"), the prompt reads "Stuck friend? Copy this exact lock and send it to them.", and it lays out cleanly without clipping the label. Localized across English, German, Polish, and Ukrainian. The post-solve tip-ore button is unaffected.
+
+### Fixed
+
+- Before a lock is solved, the mapping instructions no longer repeat themselves — you now see a single, concise hint instead of two near-identical lines.
+
 ## [1.25.0] - 2026-06-19
 
 ### Changed

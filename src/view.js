@@ -707,11 +707,18 @@ export function renderGratitudePrompt(container, ui, handlers) {
     return;
   }
   const copied = Boolean(ui?.copyCopied);
+  const showShare = Boolean(ui?.showShare);
   container.hidden = false;
-  container.replaceChildren(
-    gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
-    gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
-  );
+  container.classList.toggle("has-share-offer", showShare);
+  const children = [];
+  if (showShare) {
+    children.push(
+      el("p", { class: "gratitude-share-text", text: t("solution.shareText") }),
+      gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
+    );
+  }
+  children.push(gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()));
+  container.replaceChildren(...children);
 }
 
 /** @deprecated use renderGratitudePrompt — kept for test grep compatibility */
@@ -730,13 +737,7 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
 
   if (solution === undefined) {
     const hint = ui?.lockReady ? t("solution.hintReady") : t("solution.hintMap");
-    const children = [el("p", { class: "hint", text: hint })];
-    if (ui?.mappingPartial) {
-      children.push(
-        el("p", { class: "hint mapping-checklist", text: t("solution.mappingChecklist") }),
-      );
-    }
-    container.replaceChildren(...children);
+    container.replaceChildren(el("p", { class: "hint", text: hint }));
     return;
   }
 

@@ -1226,9 +1226,24 @@ button {
 
 .sequence-ctas {
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   gap: 8px;
   margin-bottom: 14px;
+}
+
+.sequence-ctas .gratitude-share-text {
+  flex: 1 0 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--parchment-dim);
+}
+
+/* When the share offer is present, give each CTA its own full-width row so
+   longer labels (e.g. "Send to a friend") are not truncated in a half-width pill. */
+.sequence-ctas.has-share-offer .pill {
+  flex-basis: 100%;
 }
 
 .sequence-ctas .pill {

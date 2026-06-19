@@ -123,7 +123,6 @@
     "hintReady": "Zamek zmapowany — otwórz go.",
     "hintMap": "Ustaw otwory startowe i sprzężenia powyżej, potem otwórz zamek.",
     "incompleteMapping": "Mapowanie wygląda na niepełne — dodaj sprzężenia lub otwory startowe przed rozwiązaniem.",
-    "mappingChecklist": "Ustaw każdy otwór startowy. Zaznacz sprzężenia widziane w grze.",
     "gratitudeHead": "Zamek otwarty",
     "oob": "Szpilka startuje poza ramą (otwory 1–7). Naciśnij każdy otwór startowy, by poprawić.",
     "noPath": "Brak bezpiecznej ścieżki przy tych sprzężeniach. Sprawdź With/Against na każdym chipie lub otwórz przewodnik.",
@@ -138,8 +137,8 @@
     "hideAll": "Ukryj listę ▲",
     "lockOpen": "Otwarty",
     "sharedBanner": "Udostępniony zamek — sekwencja gotowa poniżej.",
-    "shareText": "Skopiuj link, by udostępnić ten zamek.",
-    "shareBtn": "Udostępnij",
+    "shareText": "Znajomy utknął? Skopiuj dokładnie ten zamek i wyślij mu go.",
+    "shareBtn": "Kopiuj link dla znajomego",
     "shareCopied": "Link skopiowany!",
     "donateBtn": "Podaruj rudę",
     "dismiss": "Zamknij"

@@ -15,6 +15,11 @@ export const SolveFailureReason = Object.freeze({
   NO_PATH: "no_path",
 });
 
+export const ShareTrigger = Object.freeze({
+  LONG_SOLUTION: "long_solution",
+  RECOVERED_NO_SOLUTION: "recovered_no_solution",
+});
+
 export const OnboardingStepId = Object.freeze({
   MASTERY_TIER: "mastery_tier",
   PLATE_COUNT: "plate_count",
