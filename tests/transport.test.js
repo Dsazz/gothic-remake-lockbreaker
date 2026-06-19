@@ -23,6 +23,12 @@ test("isReportableError drops iOS in-app browser noise", () => {
   );
 });
 
+test("isReportableError drops anchored noise carrying a PostHog error-type prefix", () => {
+  assert.equal(isReportableError("Error: he"), false);
+  assert.equal(isReportableError("TypeError: he"), false);
+  assert.equal(isReportableError("the header"), true);
+});
+
 test("isReportableError drops browser extension messaging noise", () => {
   assert.equal(
     isReportableError("Error: Invalid call to runtime.sendMessage(). Tab not found."),
@@ -66,5 +72,12 @@ test("isReportableExceptionProperties drops ignored exception payloads", () => {
       $exception_list: [{ value: "TypeError: Cannot set properties of null (setting 'hidden')" }],
     }),
     true,
+  );
+  assert.equal(
+    isReportableExceptionProperties({
+      $exception_values: ["Error: he"],
+      $exception_list: [{ value: "Error: he" }],
+    }),
+    false,
   );
 });

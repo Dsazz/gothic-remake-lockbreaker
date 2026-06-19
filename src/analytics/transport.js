@@ -11,12 +11,21 @@ const IGNORED_MESSAGE_PATTERNS = [
   /standardSelectors/,
 ];
 
+// PostHog stores exceptions as "<Type>: <message>" in $exception_values, while our
+// own window.error handler passes the bare message. Strip the type prefix so anchored
+// patterns (e.g. /^he$/i) match both representations.
+const ERROR_TYPE_PREFIX = /^[A-Za-z]*Error:\s+/;
+
 let capturing = false;
 
 export function isReportableError(message) {
   const text = String(message ?? "").trim();
   if (!text) return true;
-  return !IGNORED_MESSAGE_PATTERNS.some((pattern) => pattern.test(text));
+  const withoutType = text.replace(ERROR_TYPE_PREFIX, "");
+  const candidates = withoutType === text ? [text] : [text, withoutType];
+  return !candidates.some((candidate) =>
+    IGNORED_MESSAGE_PATTERNS.some((pattern) => pattern.test(candidate)),
+  );
 }
 
 export function isReportableExceptionProperties(properties) {

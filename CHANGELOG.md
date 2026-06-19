@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.25.2] - 2026-06-19
+
+### Changed
+
+- The page title and description now lead with **"Lockpick Solver"** — matching how players actually search — instead of calling the tool a "calculator" it explicitly out-performs.
+
+### Fixed
+
+- Error reporting no longer leaks known browser and extension noise that arrives with a PostHog `Error:`/`TypeError:` type prefix — ignore patterns now match both the bare message and the prefixed form.
+
 ## [1.25.1] - 2026-06-19
 
 ### Changed
