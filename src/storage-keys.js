@@ -11,6 +11,7 @@ export const StorageKeys = Object.freeze({
   LOCALE_SUGGEST_SESSION_DISMISSED: "locale_suggest_session_dismissed_v1",
   GRATITUDE_PROMPT_DISMISSED: "gratitude_prompt_dismissed_v1",
   GRATITUDE_PROMPT_SHOWN: "gratitude_prompt_shown_v1",
+  SHARE_PROMPT_SESSION_SHOWN: "share_prompt_session_shown_v1",
   HASH_FAILURE_COACHMARK_SEEN: "hash_failure_coachmark_seen_v1",
 });
 

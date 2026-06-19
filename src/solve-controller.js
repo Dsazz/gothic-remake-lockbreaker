@@ -16,6 +16,7 @@ import {
   LandingType,
   MappingCompleteness,
   PromptKind,
+  ShareTrigger,
   SolveFailureReason,
   SolveSource,
   SupportSource,
@@ -35,6 +36,9 @@ import {
 } from "./analytics/index.js";
 import { createWalkthroughSummaryTracker } from "./walkthrough-summary.js";
 
+// A solve is "hard" (worth a share offer) when its path is at least this long.
+const HARD_SOLVE_MIN_MOVES = 5;
+
 export function createEmptySession() {
   return {
     solution: undefined,
@@ -50,6 +54,7 @@ export function createEmptySession() {
     showMismatchTips: false,
     pendingSolveCoachmark: false,
     pendingHashFailureCoachmark: false,
+    showShareOffer: false,
   };
 }
 
@@ -80,6 +85,7 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   session.showMismatchTips = false;
   session.pendingSolveCoachmark = false;
   session.pendingHashFailureCoachmark = false;
+  session.showShareOffer = false;
 }
 
 export function createSolveController({
@@ -213,15 +219,29 @@ export function createSolveController({
   function maybeTrackSequenceSupport(state, hasMoves) {
     if (!hasMoves || session.sequenceSupportTracked) return;
     session.sequenceSupportTracked = true;
-    trackSharePromptShown({
-      plateCount: state.plateCount,
-      landingType,
-      hasDonationCta: true,
-    });
     trackSupportSurfaceShown({
       source: SupportSource.SEQUENCE_POST_SOLVE,
       plateCount: state.plateCount,
       locale: getLocale(),
+    });
+  }
+
+  function maybeOfferShare(state, previousFailure) {
+    const moveCount = session.solution?.length ?? 0;
+    const recovered = previousFailure === SolveFailureReason.NO_PATH;
+    const trigger = recovered
+      ? ShareTrigger.RECOVERED_NO_SOLUTION
+      : moveCount >= HARD_SOLVE_MIN_MOVES
+        ? ShareTrigger.LONG_SOLUTION
+        : null;
+    if (!trigger || uiPrefs.wasSharePromptShownThisSession()) return;
+    session.showShareOffer = true;
+    uiPrefs.markSharePromptShownThisSession();
+    trackSharePromptShown({
+      plateCount: state.plateCount,
+      landingType,
+      triggerReason: trigger,
+      moveCount,
     });
   }
 
@@ -265,6 +285,7 @@ export function createSolveController({
       els.gratitudePrompt,
       {
         visible: hasMoves,
+        showShare: hasMoves && session.showShareOffer,
         copyCopied: session.copyCopied,
       },
       handlers,
@@ -351,6 +372,7 @@ export function createSolveController({
 
     walkthroughSummary.flush();
     session.blockedMessage = undefined;
+    const previousFailure = session.solveFailureReason;
     if (!isInBounds(state.positions)) {
       session.solution = null;
       session.solveFailureReason = SolveFailureReason.OOB_START;
@@ -380,6 +402,7 @@ export function createSolveController({
       }
     } else if (Array.isArray(session.solution) && session.solution.length > 0) {
       beginWalkthroughSummary(state);
+      maybeOfferShare(state, previousFailure);
     } else {
       walkthroughSummary.clear();
     }

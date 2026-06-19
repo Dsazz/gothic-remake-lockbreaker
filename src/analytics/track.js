@@ -207,11 +207,12 @@ export function trackShareLinkCopyFailed({ plateCount, landingType }) {
   send(Events.SHARE_LINK_COPY_FAILED, shareProps(plateCount, landingType));
 }
 
-export function trackSharePromptShown({ plateCount, landingType, hasDonationCta = false }) {
+export function trackSharePromptShown({ plateCount, landingType, triggerReason, moveCount }) {
   send(
     Events.SHARE_PROMPT_SHOWN,
     shareProps(plateCount, landingType, {
-      ...(hasDonationCta ? { has_donation_cta: true } : {}),
+      ...(triggerReason ? { trigger_reason: triggerReason } : {}),
+      ...(moveCount != null ? { move_count: moveCount } : {}),
     }),
   );
 }
