@@ -32,4 +32,5 @@ export const Events = Object.freeze({
   SUPPORT_SURFACE_SHOWN: "support_surface_shown",
   TRANSLATION_FEEDBACK_CLICKED: "translation_feedback_clicked",
   LOCALE_AUTO_APPLIED: "locale_auto_applied",
+  CAMP_SELECTED: "camp_selected",
 });

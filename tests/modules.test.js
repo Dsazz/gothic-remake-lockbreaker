@@ -30,6 +30,7 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/solve-controller.js");
   await import("../src/lock-controller.js");
   await import("../src/locale-chrome-controller.js");
+  await import("../src/camp-controller.js");
   await import("../src/app-renderer.js");
   await import("../src/app-elements.js");
 });

@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.26.0] - 2026-06-20
+
+### Added
+
+- A **camp banner theme switcher** in the header: pick the Old Camp, New Camp, or Swamp Camp and the whole site re-tints to that faction's colours, with a smooth transition. Your choice is remembered between visits. The neutral state shows the Nameless Hero, who mutters his predicament on hover ("Damn... I belong to no camp?") and opens the camp picker when clicked. Camp names and all picker labels are localized across English, German, Polish, and Ukrainian.
+
 ## [1.25.2] - 2026-06-19
 
 ### Changed

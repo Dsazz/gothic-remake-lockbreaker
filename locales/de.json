@@ -12,6 +12,20 @@
     "definitionBody": " ist ein kostenloser, einsteigerfreundlicher Solver für Lockpicking in Gothic 1 Remake — mappe deine Platten und erhalte eine kantensichere Schritt-für-Schritt-Anleitung.",
     "bootError": "Übersetzungen konnten nicht geladen werden. Der Solver funktioniert möglicherweise nicht richtig — Seite neu laden."
   },
+  "camp": {
+    "heroTip": "Verdammt... ich gehöre zu keinem Lager?",
+    "choose": "Lagerbanner-Thema wählen",
+    "current": "Lager-Thema: {name}. Lager wechseln",
+    "changeTitle": "{name} — Lager wechseln",
+    "apply": "{name}-Thema anwenden",
+    "clear": "Zurücksetzen",
+    "clearLabel": "Lager-Thema zurücksetzen",
+    "names": {
+      "old": "Altes Lager",
+      "new": "Neues Lager",
+      "swamp": "Sumpflager"
+    }
+  },
   "section": {
     "lock": "Das Schloss",
     "tumblers": "Tumbler",

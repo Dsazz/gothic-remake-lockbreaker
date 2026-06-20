@@ -2,6 +2,7 @@
 export function getAppElements() {
   return {
     controls: document.getElementById("controls"),
+    campSelector: document.getElementById("camp-selector"),
     tumblers: document.getElementById("tumblers"),
     tumblersPanel: document.querySelector(".panel--tumblers"),
     sequencePanel: document.querySelector(".panel--sequence"),

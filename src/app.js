@@ -21,11 +21,16 @@ import { applyStaticContent } from "./static-content.js";
 import { createOnboardingStub } from "./onboarding-stub.js";
 import { createSolveCoachmark } from "./solve-coachmark.js";
 import { oldCampExample } from "./examples.js";
+import { initCampTheme, createCampSelector } from "./camp-controller.js";
 import { wireHowToMapImage } from "./how-to-map-image.js";
 import { wireInfoModals } from "./info-modal-controller.js";
 import { LandingType, LocaleAutoHintSource } from "./analytics/values.js";
 import { resolveStartup, StartupAction } from "./startup.js";
 import { LocaleSource, DEFAULT_LOCALE } from "./i18n.js";
+
+// Apply the persisted camp theme before any render to avoid a flash of the
+// neutral palette for returning users who picked a camp.
+const activeCamp = initCampTheme();
 
 const els = getAppElements();
 const uiPrefs = createUiPrefs();
@@ -161,9 +166,21 @@ function applyAutoSolve(plan) {
   solve.onSolve({ auto: true, solveSource: plan.solveSource });
 }
 
+let campSelector = null;
+function wireCampSelector() {
+  if (campSelector) return;
+  campSelector = createCampSelector({
+    container: els.campSelector,
+    initialCamp: activeCamp,
+    onSelect: ({ camp, previousCamp }) =>
+      whenAnalytics((analytics) => analytics.trackCampSelected({ camp, previousCamp })),
+  });
+}
+
 function wireApp() {
   wireHowToMapImage();
   wireInfoModals();
+  wireCampSelector();
   bindAppEvents();
 
   const plan = resolveStartup({

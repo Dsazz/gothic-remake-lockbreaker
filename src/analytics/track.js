@@ -288,6 +288,14 @@ export function trackLocaleAutoApplied({ locale, hintSource }) {
   });
 }
 
+export function trackCampSelected({ camp, previousCamp }) {
+  send(Events.CAMP_SELECTED, {
+    camp,
+    previous_camp: previousCamp,
+    app_version: VERSION,
+  });
+}
+
 
 export function trackLocaleChanged({ locale, previousLocale, source, switchCount }) {
   const change_direction = localeChangeDirection({ locale, previousLocale });

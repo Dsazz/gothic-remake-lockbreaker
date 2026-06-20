@@ -86,6 +86,13 @@ export const LocaleSuggestDeclineAction = Object.freeze({
   DISMISS: "dismiss",
 });
 
+export const CampId = Object.freeze({
+  OLD: "old",
+  NEW: "new",
+  SWAMP: "swamp",
+  NONE: "none",
+});
+
 export const LocaleChangeDirection = Object.freeze({
   TO_TRANSLATION: "to_translation",
   TO_DEFAULT: "to_default",
