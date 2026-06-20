@@ -96,6 +96,80 @@
   --display: "Cinzel", "Trajan Pro", Georgia, "Times New Roman", serif;
 }
 
+/* --- camp themes ---
+   A selected camp re-defines only the bronze accent layer + the background
+   vignette tint. Status colors (--blood, --patina, --amber) stay semantic so
+   errors/success/warnings keep their meaning across camps. The whole UI
+   (panels, pills, buttons, focus rings, glows) inherits the accent shift for
+   free via the existing var(--bronze*) references. */
+
+@property --bronze {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c79a4b;
+}
+@property --bronze-bright {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e6bd6b;
+}
+@property --bronze-deep {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #8a6a2f;
+}
+@property --bronze-glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(230, 189, 107, 0.35);
+}
+
+:root[data-camp="old"] {
+  --bronze: #d6a23f;
+  --bronze-bright: #f2c466;
+  --bronze-deep: #9c6f24;
+  --bronze-glow: rgba(214, 162, 63, 0.38);
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #201d1c 0%, #141010 38%, #0c0a09 72%),
+    radial-gradient(80% 60% at 15% 110%, rgba(176, 56, 44, 0.12) 0%, transparent 60%);
+}
+
+:root[data-camp="new"] {
+  --bronze: #5ea0d6;
+  --bronze-bright: #8cc4ee;
+  --bronze-deep: #356a99;
+  --bronze-glow: rgba(94, 160, 214, 0.4);
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #1a1f26 0%, #0f1318 38%, #0a0c0f 72%),
+    radial-gradient(80% 60% at 15% 110%, rgba(60, 120, 190, 0.13) 0%, transparent 60%);
+}
+
+:root[data-camp="swamp"] {
+  --bronze: #9aa84e;
+  --bronze-bright: #c2cd73;
+  --bronze-deep: #62702c;
+  --bronze-glow: rgba(154, 168, 78, 0.38);
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #1b1f17 0%, #10130d 38%, #0a0c08 72%),
+    radial-gradient(80% 60% at 15% 110%, rgba(96, 132, 54, 0.13) 0%, transparent 60%);
+}
+
+/* Smoothly interpolate the accent layer when switching camps. Registered
+   custom properties above make this animate across the whole inheriting tree. */
+html {
+  transition:
+    --bronze 250ms ease,
+    --bronze-bright 250ms ease,
+    --bronze-deep 250ms ease,
+    --bronze-glow 250ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -190,11 +264,17 @@ button {
   z-index: 1;
 }
 
-.app-head-portrait {
+.app-head-aside {
   position: absolute;
-  top: clamp(6px, 1.8vw, 10px);
-  left: clamp(12px, 3vw, 20px);
+  left: 0;
+  top: -6px;
+  height: calc(100% + 6px);
   z-index: 3;
+}
+
+.app-head-portrait {
+  /* TEMP: hidden until banner alignment is redesigned */
+  display: none;
 }
 
 .app-head-portrait-link {
@@ -202,8 +282,8 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: clamp(48px, 5vw, 72px);
-  min-height: clamp(48px, 5vw, 72px);
+  min-width: clamp(46px, 5vw, 60px);
+  min-height: clamp(46px, 5vw, 60px);
   padding: 0;
   border: none;
   background: transparent;
@@ -219,8 +299,8 @@ button {
   position: relative;
   z-index: 1;
   display: block;
-  width: clamp(48px, 5vw, 72px);
-  height: clamp(48px, 5vw, 72px);
+  width: clamp(46px, 5vw, 60px);
+  height: clamp(46px, 5vw, 60px);
   flex-shrink: 0;
 }
 
@@ -322,20 +402,14 @@ button {
 }
 
 @media (min-width: 900px) {
-  .app-head-portrait {
-    top: 50%;
-    left: clamp(56px, 6vw, 84px);
-    transform: translateY(-50%);
-  }
-
   .app-head-portrait-link {
-    min-width: 128px;
-    min-height: 128px;
+    min-width: 96px;
+    min-height: 96px;
   }
 
   .app-head-portrait-icon {
-    width: 128px;
-    height: 128px;
+    width: 96px;
+    height: 96px;
   }
 
   .app-head-portrait-tip {
@@ -361,11 +435,287 @@ button {
   }
 }
 
+/* --- camp banner: full-height strip on the header's left edge --- */
+
+.camp-selector {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+/* Shared trigger: the clickable banner (active camp or neutral) that opens the
+   picker popover. Fills the strip height so the pennant runs top to bottom.
+   Fixed width + centered object-fit keeps all banners on one center axis
+   regardless of their differing intrinsic aspect ratios. */
+.camp-trigger {
+  position: relative;
+  display: block;
+  width: clamp(96px, 11vw, 112px);
+  height: 100%;
+  padding: 5px 0 0 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.camp-choice {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  border-radius: 3px;
+}
+
+.camp-banner-img {
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55));
+}
+
+.camp-trigger .camp-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.camp-trigger--active .camp-banner-img {
+  filter: drop-shadow(0 0 8px var(--bronze-glow))
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55));
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+/* Hover/focus: lift the banner slightly and intensify its faction glow,
+   mirroring the Sleeper icon's scale-on-hover idiom. */
+.camp-trigger--active:hover .camp-banner-img,
+.camp-trigger--active:focus-visible .camp-banner-img {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 16px var(--bronze-glow))
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+/* Neutral state: a faded, faction-agnostic blank banner inviting a pick. */
+.camp-trigger--neutral .camp-banner-img {
+  opacity: 0.55;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.camp-trigger--neutral:hover .camp-banner-img,
+.camp-trigger--neutral:focus-visible .camp-banner-img {
+  opacity: 0.9;
+  transform: scale(1.03);
+}
+
+/* Nameless Hero overlay: a decorative face centered on the blank neutral
+   banner's crest. pointer-events stay off so clicks reach the trigger button
+   and open the picker; the face + tip react to the trigger's hover. */
+.camp-hero {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: clamp(56px, 7vw, 84px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.camp-hero-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+  transition: opacity 160ms ease;
+}
+
+.camp-hero-img.is-hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.camp-trigger--neutral:hover .camp-hero-img.is-default,
+.camp-trigger--neutral:focus-visible .camp-hero-img.is-default {
+  opacity: 0;
+}
+
+.camp-trigger--neutral:hover .camp-hero-img.is-hover,
+.camp-trigger--neutral:focus-visible .camp-hero-img.is-hover {
+  opacity: 1;
+}
+
+/* Gothic-flavored tip, styled after the old portrait tip; right of the face. */
+.camp-hero-tip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  padding: 8px 14px 9px;
+  border-radius: var(--radius);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised) 0%, var(--stone-sunken) 100%);
+  color: var(--parchment);
+  font-family: var(--display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-6px, -50%);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgba(230, 189, 107, 0.14),
+    0 8px 22px rgba(0, 0, 0, 0.62);
+}
+
+.camp-trigger--neutral:hover .camp-hero-tip,
+.camp-trigger--neutral:focus-visible .camp-hero-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%);
+}
+
+/* Popover is mounted on <body> with position:fixed (JS sets top/left) so it
+   escapes the header's overflow:hidden clip. */
+.camp-popover {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--bronze-deep);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
+  box-shadow: var(--bevel), 0 10px 24px rgba(0, 0, 0, 0.55);
+}
+
+.camp-popover .camp-banner-img {
+  width: 100%;
+  height: auto;
+}
+
+.camp-popover .camp-choice--popover {
+  width: clamp(34px, 9vw, 44px);
+  opacity: 0.85;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.camp-popover .camp-choice--popover:hover,
+.camp-popover .camp-choice--popover:focus-visible {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.camp-clear {
+  padding: 6px 10px;
+  font-family: var(--display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--parchment-dim);
+  background: transparent;
+  border: 1px solid var(--iron-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.camp-clear:hover,
+.camp-clear:focus-visible {
+  color: var(--parchment);
+  border-color: var(--bronze-deep);
+}
+
+.camp-choice:focus-visible,
+.camp-trigger:focus-visible,
+.camp-clear:focus-visible {
+  outline: 2px solid var(--bronze-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camp-choice,
+  .camp-clear,
+  .camp-trigger .camp-banner-img,
+  .camp-hero-img,
+  .camp-hero-tip {
+    transition: none;
+  }
+
+  .camp-trigger:hover .camp-banner-img,
+  .camp-trigger:focus-visible .camp-banner-img {
+    transform: none;
+  }
+
+  .camp-trigger--neutral:hover .camp-hero-tip,
+  .camp-trigger--neutral:focus-visible .camp-hero-tip {
+    transform: translate(0, -50%);
+  }
+}
+
 .app-head-sleeper {
   position: absolute;
   top: clamp(6px, 1.8vw, 10px);
   right: clamp(12px, 3vw, 20px);
   z-index: 3;
+}
+
+/* Mobile: the banner stays pinned full-height on the left and the Sleeper sits
+   top-right, but the title is baked centered into the hero image. To keep that
+   title clear on narrow screens, the flank banner (and the matching gutters)
+   scale with the viewport so they always hug the margins beside the centered
+   title instead of overlapping it. Equal gutters keep the text under the
+   title. */
+@media (max-width: 899px) {
+  /* Pin the banner flush to the header (no top bleed) so the Nameless face and
+     the Sleeper share one vertical axis. */
+  .app-head-aside {
+    top: 0;
+    height: 100%;
+  }
+
+  .camp-trigger {
+    width: clamp(46px, calc(50vw - 150px), 92px);
+  }
+
+  .camp-hero {
+    width: clamp(34px, calc(6vw + 8px), 80px);
+  }
+
+  /* Vertically center the Sleeper to line up with the Nameless face. */
+  .app-head-sleeper {
+    top: 46%;
+    transform: translateY(-50%);
+  }
+
+  /* Gutters clear the banner (left) and the Sleeper (right) and keep the
+     description centered under the baked-in title; the smaller type fits the
+     column in fewer lines. */
+  .app-head-body {
+    padding-inline: clamp(62px, calc(50vw - 140px), 104px);
+  }
+
+  .app-definition {
+    font-size: clamp(0.66rem, 1.7vw, 0.74rem);
+  }
 }
 
 .app-head-sleeper-link {
@@ -656,6 +1006,12 @@ button {
 }
 
 @media (min-width: 900px) {
+  /* Desktop: keep the banner full-height but inset it from the left edge so it
+     sits centered in the left gutter, mirroring the Sleeper's right inset. */
+  .app-head-aside {
+    left: clamp(56px, 6vw, 84px);
+  }
+
   .app-head-sleeper {
     top: 50%;
     right: clamp(56px, 6vw, 84px);

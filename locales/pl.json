@@ -12,6 +12,20 @@
     "definitionBody": " to darmowy, przyjazny początkującym solver do łamania zamków w Gothic 1 Remake — zmapuj płytki i otrzymaj bezpieczną sekwencję krok po kroku.",
     "bootError": "Nie udało się wczytać tłumaczeń. Solver może nie działać poprawnie — odśwież stronę."
   },
+  "camp": {
+    "heroTip": "Cholera... do żadnego obozu nie należę?",
+    "choose": "Wybierz motyw banera obozu",
+    "current": "Motyw obozu: {name}. Zmień obóz",
+    "changeTitle": "{name} — zmień obóz",
+    "apply": "Zastosuj motyw: {name}",
+    "clear": "Wyczyść",
+    "clearLabel": "Wyczyść motyw obozu",
+    "names": {
+      "old": "Stary Obóz",
+      "new": "Nowy Obóz",
+      "swamp": "Obóz na Bagnie"
+    }
+  },
   "section": {
     "lock": "Zamek",
     "tumblers": "Zapadki",

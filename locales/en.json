@@ -12,6 +12,20 @@
     "definitionBody": " is a free, beginner-friendly solver for Gothic 1 Remake lockpicking — map your plates and get an edge-safe, turn-by-turn walkthrough.",
     "bootError": "Could not load translations. The solver may not work correctly — try refreshing the page."
   },
+  "camp": {
+    "heroTip": "Damn... I belong to no camp?",
+    "choose": "Choose a camp banner theme",
+    "current": "Camp theme: {name}. Change camp",
+    "changeTitle": "{name} — change camp",
+    "apply": "Apply {name} theme",
+    "clear": "Clear",
+    "clearLabel": "Clear camp theme",
+    "names": {
+      "old": "Old Camp",
+      "new": "New Camp",
+      "swamp": "Swamp Camp"
+    }
+  },
   "section": {
     "lock": "The Lock",
     "tumblers": "Tumblers",
