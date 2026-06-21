@@ -95,5 +95,11 @@ export function createUiPrefs() {
     markHashFailureCoachmarkSeen() {
       storageSet(StorageKeys.HASH_FAILURE_COACHMARK_SEEN, StorageFlag.SET);
     },
+    isCampHintSeen() {
+      return storageGet(StorageKeys.CAMP_HINT_SEEN) === StorageFlag.SET;
+    },
+    markCampHintSeen() {
+      storageSet(StorageKeys.CAMP_HINT_SEEN, StorageFlag.SET);
+    },
   };
 }

@@ -14,6 +14,7 @@ export const StorageKeys = Object.freeze({
   SHARE_PROMPT_SESSION_SHOWN: "share_prompt_session_shown_v1",
   HASH_FAILURE_COACHMARK_SEEN: "hash_failure_coachmark_seen_v1",
   CAMP: "camp_v1",
+  CAMP_HINT_SEEN: "camp_hint_seen_v1",
 });
 
 /** Persisted boolean flags — localStorage/sessionStorage value when set. */

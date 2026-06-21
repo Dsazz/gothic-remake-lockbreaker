@@ -53,7 +53,32 @@ let locale;
 let solve;
 let renderer;
 let onboarding;
+let solveCoachmark;
 const analyticsPromise = import("./analytics/index.js");
+
+// Deferred so the one-time camp hint never competes with the onboarding tour or
+// the solve coachmark on first paint; it settles after the eye has moved on.
+const CAMP_HINT_DELAY_MS = 1200;
+
+// One-time nudge that the neutral banner is a clickable theme switcher. Gated to
+// the neutral state and to quiet moments (no tour, no coachmark). Idempotent:
+// marking seen on show lets every quiet-moment call site fire it safely.
+function maybeShowCampHint() {
+  if (!canShowCampHint()) return;
+  setTimeout(() => {
+    if (!canShowCampHint()) return;
+    uiPrefs.markCampHintSeen();
+    campSelector.showHint();
+  }, CAMP_HINT_DELAY_MS);
+}
+
+function canShowCampHint() {
+  if (uiPrefs.isCampHintSeen()) return false;
+  if (!campSelector || campSelector.getCamp() !== null) return false;
+  if (solveCoachmark?.isActive()) return false;
+  if (onboarding?.isActive?.()) return false;
+  return true;
+}
 
 function whenAnalytics(run) {
   analyticsPromise.then(run).catch((err) => {
@@ -70,10 +95,11 @@ async function loadOnboarding(callbacks) {
 }
 
 function initControllers() {
-  const solveCoachmark = createSolveCoachmark({
+  solveCoachmark = createSolveCoachmark({
     onDismissed: (ctx) => {
       whenAnalytics((analytics) => analytics.trackOnboardingDismissed(ctx));
       renderLocaleChrome();
+      maybeShowCampHint();
     },
   });
 
@@ -194,6 +220,11 @@ function wireApp() {
   applyAutoSolve(plan);
 
   renderLocaleChrome();
+
+  // Return visitors get no tour and no solve coachmark on paint, so this is the
+  // first quiet moment to surface the camp hint. Cold landings defer it to the
+  // tour/coachmark dismissal callbacks instead.
+  if (landingType !== LandingType.COLD) maybeShowCampHint();
 }
 
 function deferAnalyticsStartup({ localeCode, localeSource }) {
@@ -251,6 +282,7 @@ async function bootstrap() {
         renderLocaleChrome();
         renderAll(store.getState());
       });
+      maybeShowCampHint();
     },
     onComplete: () => {
       setTimeout(() => {
