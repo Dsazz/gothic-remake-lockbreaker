@@ -45,6 +45,31 @@ Boot-sensitive files:
 - User-facing copy: `locales/{en,de,pl,ukr}.json` via `t()` / `tCount()`; Tier C keys need all four locales
 - `innerHTML` only for trusted first-party locale strings (see `src/static-content.js`)
 
+## Analytics events
+
+Catalog of all PostHog events so you don't have to grep `src/analytics/`. Most events carry `app_version`; gameplay events add `plate_count`; solve/share events add `landing_type`. Enums live in `src/analytics/values.js`.
+
+- **Landing/lifecycle:** `landing` (+ referrer/UTM attribution, registers session props).
+- **Solve & lock:** `solve_button_clicked`, `lock_solved` (`move_count`, `is_first_solve`), `lock_already_solved`, `lock_no_solution` (`failure_reason`), `lock_became_mappable`, `example_lock_loaded`, `lock_cleared`, `step_mismatch_clicked`.
+- **Onboarding/tutor:** `tutor_started`, `tutor_not_shown` (`reason`), `tutor_skipped`, `onboarding_dismissed` (`action`/`completed`), `mastery_tier_changed`.
+- **Guide/walkthrough:** `guide_opened` (`source`), `walkthrough_session_summary` (step engagement counters).
+- **Share:** `share_prompt_shown` (`trigger_reason`), `share_prompt_clicked`, `share_link_copied`, `share_link_copy_failed`, `prompt_dismissed`.
+- **Locale/i18n:** `locale_resolved`, `locale_changed` (`change_direction`), `locale_session_end` (pagehide summary), `locale_auto_applied`, `i18n_banner_shown`, `locale_suggest_shown`/`_accepted`/`_declined`, `translation_feedback_clicked`, `hash_banner_shown`.
+- **Support:** `support_link_clicked`, `support_surface_shown` (`source`, `locale`).
+- **Camp:** `camp_selected` (`camp`, `previous_camp`).
+
+Source of truth: `src/analytics/events.js` (names) and `src/analytics/track.js` + `src/analytics/locale-engagement.js` (props). Update this list when adding events.
+
+## Camp themes
+
+Cosmetic faction theme switcher in `src/camp-controller.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through the `onSelect` callback (`camp_selected`).
+
+- Three camps: `old` (gold), `new` (blue), `swamp` (green); neutral = no theme (grey default). Ids in `CampId` (`src/analytics/values.js`).
+- Theme = accent palette swap via a `data-camp` attribute on `<html>`. Palettes live in `styles.css` under `:root[data-camp="..."]`, overriding registered `@property` custom props (`--bronze*`, `--bg-vignette`) so switches animate.
+- `initCampTheme()` applies the persisted camp before first paint (avoids neutral flash); `createCampSelector()` builds the trigger + popover. Both wired in `src/app.js`.
+- Persistence: `StorageKeys.CAMP`. One-time discovery hint is gated by `StorageKeys.CAMP_HINT_SEEN` and deferred so it never competes with onboarding.
+- Labels are localized via `t("camp.*")` — Tier C keys need all four locales.
+
 ## Testing
 
 - Runner: `node --test` in `tests/`

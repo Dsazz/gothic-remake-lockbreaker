@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.28.1] - 2026-06-21
+
+### Changed
+
+- Retuned the neutral, no-camp look from warm bronze/gold to a calmer steel-grey, giving the default state its own identity instead of borrowing the Old Camp's gold.
+- Translucent accents — glows, hover fills, focus rings — now follow the active camp's colour everywhere, so switching camps re-tints the whole UI consistently instead of leaving stray gold highlights.
+- Warmed and brightened the Old Camp gold so its palette reads as distinctly Old Camp.
+
 ## [1.28.0] - 2026-06-21
 
 ### Added
