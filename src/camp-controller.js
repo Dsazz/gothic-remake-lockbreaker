@@ -136,14 +136,9 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
   let camp = isValidCamp(initialCamp) ? initialCamp : null;
   let popoverOpen = false;
   let popoverNode = null;
+  let backdropNode = null;
 
   const POPOVER_MARGIN = 8;
-
-  const onOutsidePointer = (event) => {
-    if (container.contains(event.target)) return;
-    if (popoverNode?.contains(event.target)) return;
-    closePopover();
-  };
 
   const onKeydown = (event) => {
     if (event.key !== Key.ESCAPE) return;
@@ -157,21 +152,26 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
     trigger?.setAttribute("aria-expanded", popoverOpen ? "true" : "false");
   }
 
+  function focusTrigger() {
+    container.querySelector(".camp-trigger")?.focus();
+  }
+
   // The header has `overflow: hidden`, so the popover lives on <body> and is
-  // anchored to the trigger banner in viewport coordinates.
+  // positioned in viewport coordinates. It centers horizontally over the whole
+  // header and drops just below it; on a short viewport it flips above.
   function positionPopover() {
     if (!popoverNode) return;
-    const trigger = container.querySelector(".camp-trigger");
-    if (!trigger) return;
-    const anchor = trigger.getBoundingClientRect();
+    const header = container.closest(".app-head") ?? container;
+    const headerRect = header.getBoundingClientRect();
     const pop = popoverNode.getBoundingClientRect();
-    let top = anchor.bottom + POPOVER_MARGIN;
+    let top = headerRect.bottom + POPOVER_MARGIN;
     if (top + pop.height + POPOVER_MARGIN > window.innerHeight) {
-      const above = anchor.top - POPOVER_MARGIN - pop.height;
+      const above = headerRect.top - POPOVER_MARGIN - pop.height;
       if (above >= POPOVER_MARGIN) top = above;
     }
+    const centeredLeft = headerRect.left + (headerRect.width - pop.width) / 2;
     const maxLeft = window.innerWidth - pop.width - POPOVER_MARGIN;
-    const left = Math.min(Math.max(anchor.left, POPOVER_MARGIN), Math.max(POPOVER_MARGIN, maxLeft));
+    const left = Math.min(Math.max(centeredLeft, POPOVER_MARGIN), Math.max(POPOVER_MARGIN, maxLeft));
     popoverNode.style.top = `${Math.round(top)}px`;
     popoverNode.style.left = `${Math.round(left)}px`;
   }
@@ -179,26 +179,33 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
   function openPopover() {
     if (popoverOpen) return;
     popoverOpen = true;
+    // Full-viewport scrim catches outside clicks (no separate pointer listener)
+    // and covers the trigger, matching the app's other modal overlays.
+    backdropNode = el("div", { class: "camp-backdrop", onclick: () => closePopover() });
     popoverNode = renderPopover();
-    document.body.append(popoverNode);
+    document.body.append(backdropNode, popoverNode);
     positionPopover();
-    document.addEventListener("pointerdown", onOutsidePointer);
     document.addEventListener("keydown", onKeydown);
     window.addEventListener("scroll", onReposition, { passive: true });
     window.addEventListener("resize", onReposition);
     syncTriggerExpanded();
+    popoverNode.querySelector(".camp-choice")?.focus();
   }
 
-  function closePopover() {
+  // restoreFocus is suppressed when the caller re-renders the trigger (a pick),
+  // since that path focuses the freshly built trigger itself.
+  function closePopover({ restoreFocus = true } = {}) {
     if (!popoverOpen) return;
     popoverOpen = false;
-    document.removeEventListener("pointerdown", onOutsidePointer);
     document.removeEventListener("keydown", onKeydown);
     window.removeEventListener("scroll", onReposition);
     window.removeEventListener("resize", onReposition);
     popoverNode?.remove();
+    backdropNode?.remove();
     popoverNode = null;
+    backdropNode = null;
     syncTriggerExpanded();
+    if (restoreFocus) focusTrigger();
   }
 
   function togglePopover() {
@@ -219,17 +226,27 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
   }
 
   function selectCamp(next) {
-    closePopover();
-    if (next === camp) return;
-    apply(next);
-    render();
+    closePopover({ restoreFocus: false });
+    if (next !== camp) {
+      apply(next);
+      render();
+    }
+    focusTrigger();
   }
 
   function clearCamp() {
-    closePopover();
-    if (camp === null) return;
-    apply(null);
-    render();
+    closePopover({ restoreFocus: false });
+    if (camp !== null) {
+      apply(null);
+      render();
+    }
+    focusTrigger();
+  }
+
+  // Visible caption under a banner. aria-hidden because the button's own
+  // aria-label already names the action; this avoids a doubled announcement.
+  function campLabel(text) {
+    return el("span", { class: "camp-choice-label", text, "aria-hidden": "true" });
   }
 
   function choiceButton(target, variant) {
@@ -238,29 +255,44 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
       {
         type: "button",
         class: `camp-choice camp-choice--${variant}`,
+        "data-camp": target,
         "aria-label": t("camp.apply", { name: campName(target) }),
-        title: campName(target),
         onclick: () => selectCamp(target),
       },
-      bannerImage(target),
+      [bannerImage(target), campLabel(campName(target))],
+    );
+  }
+
+  // The "leave the camps" option mirrors the camp tiles: the same blank pennant
+  // the neutral trigger shows, rendered as a banner choice so the popover reads
+  // as one coherent rack of banners instead of banners plus a stray text button.
+  function neutralChoiceButton() {
+    return el(
+      "button",
+      {
+        type: "button",
+        class: "camp-choice camp-choice--popover camp-choice--neutral",
+        "aria-label": t("camp.clearLabel"),
+        onclick: clearCamp,
+      },
+      [bannerImg(NEUTRAL_BANNER), campLabel(campName(CampId.NONE))],
     );
   }
 
   function renderPopover() {
     const choices = CAMP_ORDER.filter((target) => target !== camp);
     const children = choices.map((target) => choiceButton(target, "popover"));
-    if (camp) {
-      children.push(
-        el("button", {
-          type: "button",
-          class: "camp-clear",
-          text: t("camp.clear"),
-          "aria-label": t("camp.clearLabel"),
-          onclick: clearCamp,
-        }),
-      );
-    }
-    return el("div", { class: "camp-popover", role: "menu" }, children);
+    if (camp) children.push(neutralChoiceButton());
+    return el(
+      "div",
+      {
+        class: "camp-popover",
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-label": t("camp.choose"),
+      },
+      children,
+    );
   }
 
   // A single trigger serves both states: the active camp's full-height banner,

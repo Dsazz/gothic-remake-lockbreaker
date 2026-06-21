@@ -18,12 +18,12 @@
     "current": "Camp theme: {name}. Change camp",
     "changeTitle": "{name} — change camp",
     "apply": "Apply {name} theme",
-    "clear": "Clear",
     "clearLabel": "Clear camp theme",
     "names": {
       "old": "Old Camp",
       "new": "New Camp",
-      "swamp": "Swamp Camp"
+      "swamp": "Swamp Camp",
+      "none": "No Camp"
     }
   },
   "section": {

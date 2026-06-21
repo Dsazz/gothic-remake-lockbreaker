@@ -18,12 +18,12 @@
     "current": "Motyw obozu: {name}. Zmień obóz",
     "changeTitle": "{name} — zmień obóz",
     "apply": "Zastosuj motyw: {name}",
-    "clear": "Wyczyść",
     "clearLabel": "Wyczyść motyw obozu",
     "names": {
       "old": "Stary Obóz",
       "new": "Nowy Obóz",
-      "swamp": "Obóz na Bagnie"
+      "swamp": "Obóz na Bagnie",
+      "none": "Brak obozu"
     }
   },
   "section": {
