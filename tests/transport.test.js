@@ -23,6 +23,12 @@ test("isReportableError drops iOS in-app browser noise", () => {
   );
 });
 
+test("isReportableError drops bare 'No response' rejection noise", () => {
+  assert.equal(isReportableError("No response"), false);
+  assert.equal(isReportableError("Error: No response"), false);
+  assert.equal(isReportableError("Server returned No response body for /flags"), true);
+});
+
 test("isReportableError drops anchored noise carrying a PostHog error-type prefix", () => {
   assert.equal(isReportableError("Error: he"), false);
   assert.equal(isReportableError("TypeError: he"), false);

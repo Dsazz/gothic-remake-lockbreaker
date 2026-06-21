@@ -4,6 +4,12 @@ Vanilla ES-module SPA for Gothic 1 Remake lockpicking. Vite builds to `dist/`; G
 
 Read this whole file before non-trivial changes. Product context lives in [README.md](README.md).
 
+## Upstream game version
+
+Solver validated against Gothic 1 Remake v1.0.2 (CL 169494). Patches 1.0.1/1.0.2 introduced no lockpicking mechanic changes — only an in-game difficulty indicator (1.0.1) and a small XP reward on solve (1.0.2), neither modeled here. Audit the next patch as a diff against this baseline.
+
+Changelog source: `https://files.gothic-game.com/changelogs/G1R_Patch_<version>.txt` (e.g. [1.0.2](https://files.gothic-game.com/changelogs/G1R_Patch_1.0.2.txt), [1.0.1](https://files.gothic-game.com/changelogs/G1R_Patch_1.0.1.txt)).
+
 ## Commands
 
 ```bash
