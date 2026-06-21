@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { HREFLANG, LOCALE_PATH, SITE_ORIGIN } from "../src/i18n.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -165,7 +166,7 @@ if (!guideBlock) {
   }
 }
 
-const faqDtCount = (faqBlock.match(/<dt>/g) ?? []).length;
+const faqDtCount = (faqBlock.match(/<dt[\s>]/g) ?? []).length;
 if (faqDtCount !== 4) {
   failures.push(`index.html footer FAQ must have 4 questions, found ${faqDtCount}`);
 }
@@ -199,12 +200,20 @@ if (!/beginner-friendly/i.test(indexHtml)) {
 }
 
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-if (sitemapLocs.length !== 1) {
+// Derived from i18n's LOCALE_PATH so the sitemap contract can't drift from the app's locale config.
+const expectedSitemapLocs = [
+  `${SITE_ORIGIN}/`,
+  ...Object.values(LOCALE_PATH).map((path) => `${SITE_ORIGIN}${path}`),
+];
+if (sitemapLocs.length !== expectedSitemapLocs.length) {
   failures.push(
-    `sitemap.xml must have exactly 1 loc entry (hreflang cluster), found ${sitemapLocs.length}`,
+    `sitemap.xml must have exactly ${expectedSitemapLocs.length} loc entries (en + prerendered locales), found ${sitemapLocs.length}`,
   );
-} else if (sitemapLocs[0] !== "https://gothiclockbreaker.com/") {
-  failures.push(`sitemap.xml loc must be apex homepage, found ${sitemapLocs[0]}`);
+}
+for (const loc of expectedSitemapLocs) {
+  if (!sitemapLocs.includes(loc)) {
+    failures.push(`sitemap.xml missing loc entry ${loc}`);
+  }
 }
 
 const orphanLangLocs = sitemapLocs.filter((loc) => loc.includes("?lang="));
@@ -214,12 +223,14 @@ if (orphanLangLocs.length > 0) {
   );
 }
 
+// hreflang tag comes from HREFLANG (locale id ≠ BCP 47 tag for ukr → uk); href from LOCALE_PATH.
 const expectedSitemapHreflang = [
-  ['hreflang="en"', "https://gothiclockbreaker.com/"],
-  ['hreflang="de"', "https://gothiclockbreaker.com/?lang=de"],
-  ['hreflang="pl"', "https://gothiclockbreaker.com/?lang=pl"],
-  ['hreflang="uk"', "https://gothiclockbreaker.com/?lang=ukr"],
-  ['hreflang="x-default"', "https://gothiclockbreaker.com/"],
+  ['hreflang="en"', `${SITE_ORIGIN}/`],
+  ...Object.entries(LOCALE_PATH).map(([locale, path]) => [
+    `hreflang="${HREFLANG[locale]}"`,
+    `${SITE_ORIGIN}${path}`,
+  ]),
+  ['hreflang="x-default"', `${SITE_ORIGIN}/`],
 ];
 for (const [attr, href] of expectedSitemapHreflang) {
   if (!sitemap.includes(`${attr} href="${href}"`)) {

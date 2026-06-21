@@ -10,18 +10,18 @@ import { t, onLocaleChange } from "./i18n.js";
 const CAMP_ORDER = [CampId.OLD, CampId.NEW, CampId.SWAMP];
 
 const CAMP_META = {
-  [CampId.OLD]: { image: "assets/banners/old-camp.webp" },
-  [CampId.NEW]: { image: "assets/banners/new-camp.webp" },
-  [CampId.SWAMP]: { image: "assets/banners/swamp-camp.webp" },
+  [CampId.OLD]: { image: "/assets/banners/old-camp.webp" },
+  [CampId.NEW]: { image: "/assets/banners/new-camp.webp" },
+  [CampId.SWAMP]: { image: "/assets/banners/swamp-camp.webp" },
 };
 
 function campName(camp) {
   return t(`camp.names.${camp}`);
 }
 
-const NEUTRAL_BANNER = "assets/banners/neutral.webp";
-const HERO_CALM = "assets/portrait-calm.png";
-const HERO_SCREAM = "assets/portrait-scream.png";
+const NEUTRAL_BANNER = "/assets/banners/neutral.webp";
+const HERO_CALM = "/assets/portrait-calm.png";
+const HERO_SCREAM = "/assets/portrait-scream.png";
 
 const SelectorState = Object.freeze({
   NEUTRAL: "neutral",

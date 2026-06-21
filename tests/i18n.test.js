@@ -16,6 +16,7 @@ import {
   localePageUrl,
   pluralForm,
   resolveLocalePreference,
+  resolvePathLocale,
   shouldPersistLocaleOnInit,
 } from "../src/i18n.js";
 
@@ -51,6 +52,33 @@ test("supported locales match Locale constants", () => {
 test("isDefaultLocale identifies English only", () => {
   assert.equal(isDefaultLocale(Locale.EN), true);
   assert.equal(isDefaultLocale(Locale.DE), false);
+});
+
+test("resolvePathLocale maps prerendered subpaths to their locale", () => {
+  assert.equal(resolvePathLocale("/de/"), Locale.DE);
+  assert.equal(resolvePathLocale("/de"), Locale.DE);
+  assert.equal(resolvePathLocale("/pl/"), Locale.PL);
+  assert.equal(resolvePathLocale("/uk/"), Locale.UKR);
+  assert.equal(resolvePathLocale("/uk"), Locale.UKR);
+  assert.equal(resolvePathLocale("/"), null);
+  assert.equal(resolvePathLocale("/ukr/"), null);
+  assert.equal(resolvePathLocale("/de/extra"), null);
+});
+
+test("resolveLocalePreference lets prerendered path win over query, storage, and referrer", () => {
+  assert.deepEqual(
+    resolveLocalePreference({
+      pathLocale: Locale.DE,
+      queryLang: Locale.PL,
+      storedLocale: Locale.EN,
+      referrer: "https://forum.ithardware.pl/topic/1",
+    }),
+    { locale: Locale.DE, source: LocaleSource.PATH },
+  );
+  assert.deepEqual(
+    resolveLocalePreference({ pathLocale: null, queryLang: Locale.PL }),
+    { locale: Locale.PL, source: LocaleSource.QUERY },
+  );
 });
 
 test("resolveLocalePreference prioritizes query over storage over referrer over default", () => {
@@ -93,25 +121,28 @@ test("resolveLocalePreference prioritizes query over storage over referrer over 
   );
 });
 
-test("shouldPersistLocaleOnInit persists query deeplinks and suggest accept", () => {
+test("shouldPersistLocaleOnInit persists path landings, query deeplinks, and suggest accept", () => {
+  assert.equal(shouldPersistLocaleOnInit(LocaleSource.PATH), true);
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.QUERY), true);
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.SUGGEST), true);
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.STORAGE), false);
   assert.equal(shouldPersistLocaleOnInit(LocaleSource.DEFAULT), false);
 });
 
-test("localePageUrl uses root for default locale", () => {
+test("localePageUrl is path-based for every prerendered locale (ukr → /uk/)", () => {
   assert.equal(localePageUrl(Locale.EN), `${SITE_ORIGIN}/`);
-  assert.equal(localePageUrl(Locale.DE), `${SITE_ORIGIN}/?lang=de`);
-  assert.equal(localePageUrl(Locale.UKR), `${SITE_ORIGIN}/?lang=ukr`);
+  assert.equal(localePageUrl(Locale.DE), `${SITE_ORIGIN}/de/`);
+  assert.equal(localePageUrl(Locale.PL), `${SITE_ORIGIN}/pl/`);
+  assert.equal(localePageUrl(Locale.UKR), `${SITE_ORIGIN}/uk/`);
 });
 
-test("localeBrowserPath syncs ?lang= query for non-default locales", () => {
+test("localeBrowserPath uses the prerendered subpath for every non-English locale", () => {
   assert.equal(localeBrowserPath(Locale.EN), "/");
   assert.equal(localeBrowserPath(Locale.EN, "?lang=de"), "/");
-  assert.equal(localeBrowserPath(Locale.DE), "/?lang=de");
-  assert.equal(localeBrowserPath(Locale.PL, "?foo=1"), "/?foo=1&lang=pl");
-  assert.equal(localeBrowserPath(Locale.UKR, "?lang=de"), "/?lang=ukr");
+  assert.equal(localeBrowserPath(Locale.DE), "/de/");
+  assert.equal(localeBrowserPath(Locale.DE, "?lang=pl"), "/de/");
+  assert.equal(localeBrowserPath(Locale.PL, "?foo=1"), "/pl/?foo=1");
+  assert.equal(localeBrowserPath(Locale.UKR, "?lang=de"), "/uk/");
 });
 
 test("frozen keys are defined in English catalog", async () => {

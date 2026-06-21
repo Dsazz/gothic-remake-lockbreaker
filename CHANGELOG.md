@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.29.0] - 2026-06-21
+
+### Added
+
+- German, Polish, and Ukrainian now have their own dedicated pages at `/de/`, `/pl/`, and `/uk/`, with translated titles, descriptions, and content baked into the HTML at build time. Search engines and AI tools can index the localized pages directly, so players land on a page already in their language instead of the English one.
+
+### Changed
+
+- Visiting `/de/`, `/pl/`, or `/uk/` now keeps the page in that language after it finishes loading, instead of briefly showing the translation and then snapping back to English.
+
+### Fixed
+
+- Lock artwork, camp banners, and the How-to-map diagram no longer appear broken on the German and Polish pages.
+- The How-to-map diagram's callout labels (for example "Lock 6 · back") no longer overflow the image or overlap each other when shown in German or Polish.
+
 ## [1.28.2] - 2026-06-21
 
 ### Fixed

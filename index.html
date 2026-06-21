@@ -15,9 +15,9 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://gothiclockbreaker.com/" />
     <link rel="alternate" hreflang="en" id="hreflang-en" href="https://gothiclockbreaker.com/" />
-    <link rel="alternate" hreflang="de" id="hreflang-de" href="https://gothiclockbreaker.com/?lang=de" />
-    <link rel="alternate" hreflang="pl" id="hreflang-pl" href="https://gothiclockbreaker.com/?lang=pl" />
-    <link rel="alternate" hreflang="uk" id="hreflang-ukr" href="https://gothiclockbreaker.com/?lang=ukr" />
+    <link rel="alternate" hreflang="de" id="hreflang-de" href="https://gothiclockbreaker.com/de/" />
+    <link rel="alternate" hreflang="pl" id="hreflang-pl" href="https://gothiclockbreaker.com/pl/" />
+    <link rel="alternate" hreflang="uk" id="hreflang-ukr" href="https://gothiclockbreaker.com/uk/" />
     <link rel="alternate" hreflang="x-default" id="hreflang-x-default" href="https://gothiclockbreaker.com/" />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="Summary for AI systems" />
     <meta property="og:type" content="website" />
@@ -250,25 +250,37 @@
                     aria-hidden="true"
                   >
                     <g class="map-callout map-callout--lock1">
-                      <line class="map-line" x1="356" y1="760" x2="458" y2="528" />
+                      <line class="map-line" x1="356" y1="770" x2="458" y2="528" />
                       <circle class="map-dot" cx="458" cy="528" r="7" />
-                      <rect class="map-label-bg" x="220" y="742" width="260" height="40" rx="6" />
-                      <text class="map-label-text" x="352" y="762" text-anchor="middle" dominant-baseline="middle">Lock 1 · front</text>
+                      <foreignObject class="map-label-fo" x="120" y="724" width="470" height="96">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="map-label">
+                          <span class="map-label-text">Lock 1 · front</span>
+                        </div>
+                      </foreignObject>
                     </g>
                     <g class="map-callout map-callout--notch">
-                      <line class="map-line" x1="560" y1="250" x2="560" y2="300" />
-                      <circle class="map-dot" cx="560" cy="300" r="5" />
-                      <rect class="map-label-bg" x="420" y="230" width="280" height="40" rx="6" />
-                      <text class="map-label-text map-label-text--accent" x="560" y="250" text-anchor="middle" dominant-baseline="middle">Hole 4 · notch</text>
+                      <line class="map-line" x1="500" y1="200" x2="560" y2="300" />
+                      <circle class="map-dot" cx="560" cy="300" r="7" />
+                      <foreignObject class="map-label-fo" x="292" y="140" width="404" height="92">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="map-label">
+                          <span class="map-label-text map-label-text--accent">Hole 4 · notch</span>
+                        </div>
+                      </foreignObject>
                     </g>
                     <g class="map-callout map-callout--lock5">
-                      <line class="map-line" x1="888" y1="268" x2="756" y2="328" />
+                      <line class="map-line" x1="818" y1="250" x2="756" y2="328" />
                       <circle class="map-dot" cx="756" cy="328" r="7" />
-                      <rect class="map-label-bg" x="780" y="232" width="240" height="40" rx="6" />
-                      <text class="map-label-text" x="898" y="252" text-anchor="middle" dominant-baseline="middle">Lock 6 · back</text>
+                      <foreignObject class="map-label-fo" x="580" y="206" width="444" height="92">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="map-label">
+                          <span class="map-label-text">Lock 6 · back</span>
+                        </div>
+                      </foreignObject>
                     </g>
-                    <rect class="map-label-bg" x="162" y="908" width="700" height="44" rx="6" />
-                    <text class="map-label-text map-label-text--callout" x="512" y="934" text-anchor="middle" dominant-baseline="middle">Turn once → watch which plates move</text>
+                    <foreignObject class="map-label-fo" x="112" y="894" width="800" height="84">
+                      <div xmlns="http://www.w3.org/1999/xhtml" class="map-label">
+                        <span class="map-label-text map-label-text--callout">Turn once → watch which plates move</span>
+                      </div>
+                    </foreignObject>
                   </svg>
                 </div>
               </figure>
@@ -431,34 +443,34 @@
                   <path d="M12 8h.01" />
                 </svg>
               </span>
-              <span>About this tool</span>
+              <span data-i18n="footer.faqSummary">About this tool</span>
             </span>
           </summary>
           <div class="info-modal-panel">
           <div class="info-modal-head">
-            <span class="info-modal-title">About this tool</span>
+            <span class="info-modal-title" data-i18n="footer.faqSummary">About this tool</span>
             <button type="button" class="info-modal-close" aria-label="Close">×</button>
           </div>
           <dl class="app-foot-faq-list">
-            <dt>What is Gothic Remake Lock Breaker?</dt>
-            <dd>
+            <dt data-i18n="footer.faq.q1">What is Gothic Remake Lock Breaker?</dt>
+            <dd data-i18n="footer.faq.a1">
               Gothic Remake Lock Breaker is a free browser-based lockpicking solver for Gothic 1
               Remake. Map each plate's starting hole and couplings (With or Against), and it
               returns a step-by-step turn sequence that opens the lock.
             </dd>
-            <dt>How is it different from net-turn calculators?</dt>
-            <dd>
+            <dt data-i18n="footer.faq.q2">How is it different from net-turn calculators?</dt>
+            <dd data-i18n="footer.faq.a2">
               Net-turn calculators only give total turns per plate. Gothic Remake Lock Breaker
               uses edge-safe search to find sequences that never grind a pin against wall holes 1
               or 7, so your pick does not snap mid-sequence.
             </dd>
-            <dt>Is Gothic Remake Lock Breaker free?</dt>
-            <dd>
+            <dt data-i18n="footer.faq.q3">Is Gothic Remake Lock Breaker free?</dt>
+            <dd data-i18n="footer.faq.a3">
               Yes — free, no account, runs in any modern browser. Open gothiclockbreaker.com
               beside the game, map your lock, and follow the step-by-step walkthrough.
             </dd>
-            <dt>Can I use this solver on mobile?</dt>
-            <dd>
+            <dt data-i18n="footer.faq.q4">Can I use this solver on mobile?</dt>
+            <dd data-i18n="footer.faq.a4">
               Yes — Gothic Remake Lock Breaker runs in any modern mobile browser. Map your lock on
               your phone beside the game and follow the step-by-step walkthrough.
             </dd>

@@ -1,10 +1,51 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+test("src JS references assets with root-absolute paths (subpath-safe for /de/ /pl/)", async () => {
+  const entries = await readdir(join(root, "src"), { recursive: true });
+  const offenders = [];
+  for (const entry of entries.filter((f) => f.endsWith(".js"))) {
+    const text = await readFile(join(root, "src", entry), "utf8");
+    // Relative "assets/..." resolves against the current path, so it 404s on /de/ and /pl/.
+    if (/["'`]assets\//.test(text)) offenders.push(entry);
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `use "/assets/..." (root-absolute) so prerendered subpaths load: ${offenders.join(", ")}`,
+  );
+});
+
+test("how-to-map labels use foreignObject and stay wired to static-content selectors", async () => {
+  const indexHtml = await readFile(join(root, "index.html"), "utf8");
+  const staticContent = await readFile(join(root, "src", "static-content.js"), "utf8");
+
+  // Clipping fix: long DE/PL labels overflowed as SVG <text>; foreignObject lets the HTML wrap.
+  assert.equal(
+    (indexHtml.match(/class="map-label-fo"/g) || []).length,
+    4,
+    "expected 4 foreignObject map labels — reverting to <text> reintroduces locale clipping",
+  );
+
+  // Coupling guard: every class static-content.js localizes must exist in the markup,
+  // otherwise the setMapLabel() selectors silently no-op and labels stay English.
+  const selectors = [...staticContent.matchAll(/setMapLabel\(\s*"([^"]+)"/g)].map((m) => m[1]);
+  assert.ok(selectors.length >= 4, "static-content.js no longer wires the map labels");
+  const classes = [
+    ...new Set(selectors.flatMap((sel) => sel.split(/\s+/)).map((part) => part.replace(/^\./, ""))),
+  ];
+  const missing = classes.filter((cls) => !indexHtml.includes(cls));
+  assert.deepEqual(
+    missing,
+    [],
+    `static-content.js targets classes absent from index.html: ${missing.join(", ")}`,
+  );
+});
 
 test("browser modules parse without syntax errors", async () => {
   await import("../src/domain.js");

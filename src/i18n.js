@@ -18,6 +18,7 @@ export const SUPPORTED_LOCALES = Object.freeze([
 ]);
 
 export const LocaleSource = Object.freeze({
+  PATH: "path",
   QUERY: "query",
   STORAGE: "storage",
   DEFAULT: "default",
@@ -52,8 +53,8 @@ const HTML_LANG = Object.freeze({
   [Locale.UKR]: "uk",
 });
 
-/** BCP 47 tags for hreflang. */
-const HREFLANG = Object.freeze({
+/** BCP 47 tags for hreflang. Exported so the SEO guard derives tags from one source. */
+export const HREFLANG = Object.freeze({
   [Locale.EN]: "en",
   [Locale.DE]: "de",
   [Locale.PL]: "pl",
@@ -100,27 +101,60 @@ export function isDefaultLocale(locale) {
   return locale === DEFAULT_LOCALE;
 }
 
-/** True when init should write resolved locale to storage (query deeplink or suggest accept). */
+/** True when init should write resolved locale to storage (prerendered path, query deeplink, or suggest accept). */
 export function shouldPersistLocaleOnInit(source) {
-  return source === LocaleSource.QUERY || source === LocaleSource.SUGGEST;
+  return (
+    source === LocaleSource.PATH ||
+    source === LocaleSource.QUERY ||
+    source === LocaleSource.SUGGEST
+  );
+}
+
+/**
+ * Single source of truth for locales served as standalone prerendered pages, mapped to their
+ * clean subpath. Consumed by canonical/hreflang generation, in-app URL sync, the prerender
+ * script, and the SEO guard — so the locale↔path contract lives in exactly one place.
+ */
+export const LOCALE_PATH = Object.freeze({
+  [Locale.DE]: "/de/",
+  [Locale.PL]: "/pl/",
+  [Locale.UKR]: "/uk/", // ISO 639-1 subpath; internal locale id remains Locale.UKR
+});
+
+/** Locale codes that get a prerendered subpath (derived from LOCALE_PATH — never hardcode this list). */
+export const PRERENDERED_LOCALES = Object.freeze(Object.keys(LOCALE_PATH));
+
+/** Reverse of LOCALE_PATH: the prerendered subpath (/de/, /pl/, and slashless) → locale. */
+export function resolvePathLocale(pathname = "") {
+  for (const [locale, path] of Object.entries(LOCALE_PATH)) {
+    if (pathname === path || pathname === path.replace(/\/$/, "")) return locale;
+  }
+  return null;
 }
 
 export function localePageUrl(locale, origin = SITE_ORIGIN) {
-  return isDefaultLocale(locale) ? `${origin}/` : `${origin}/?lang=${locale}`;
+  if (isDefaultLocale(locale)) return `${origin}/`;
+  const path = LOCALE_PATH[locale];
+  return path ? `${origin}${path}` : `${origin}/?lang=${locale}`;
 }
 
-/** Path + query for in-app locale URL sync (preserves hash; omits ?lang= for English). */
+/**
+ * In-app address-bar URL for a locale — kept in sync with the canonical (`localePageUrl`):
+ * prerendered locales use their clean subpath (`/de/`), English uses `/`, and any locale without a
+ * prerendered page falls back to a `?lang=` apex alternate. Non-`lang` query params are preserved;
+ * the hash is reattached by the caller.
+ */
 export function localeBrowserPath(locale, search = "") {
   const params = new URLSearchParams(
     search.startsWith("?") ? search.slice(1) : search,
   );
-  if (isDefaultLocale(locale)) {
-    params.delete("lang");
-  } else {
+  params.delete("lang");
+  const path = isDefaultLocale(locale) ? "/" : (LOCALE_PATH[locale] ?? "/");
+  if (!isDefaultLocale(locale) && !LOCALE_PATH[locale]) {
     params.set("lang", locale);
   }
   const query = params.toString();
-  return query ? `/?${query}` : "/";
+  return query ? `${path}?${query}` : path;
 }
 
 function syncBrowserLocaleUrl(locale) {
@@ -133,13 +167,17 @@ function syncBrowserLocaleUrl(locale) {
   }
 }
 
-/** Pure resolution for tests and init — query beats storage beats referrer hint beats default. */
+/** Pure resolution for tests and init — path beats query beats storage beats referrer hint beats default. */
 export function resolveLocalePreference({
+  pathLocale,
   queryLang,
   storedLocale,
   referrer = "",
   localeSuggestDismissed = false,
 }) {
+  if (pathLocale && SUPPORTED_LOCALES.includes(pathLocale)) {
+    return { locale: pathLocale, source: LocaleSource.PATH };
+  }
   if (queryLang && SUPPORTED_LOCALES.includes(queryLang)) {
     return { locale: queryLang, source: LocaleSource.QUERY };
   }
@@ -160,6 +198,7 @@ function resolveInitialLocale() {
   const localeSuggestDismissed =
     sessionGet(StorageKeys.LOCALE_SUGGEST_SESSION_DISMISSED) === StorageFlag.SET;
   const { locale, source } = resolveLocalePreference({
+    pathLocale: resolvePathLocale(location.pathname),
     queryLang: params.get("lang"),
     storedLocale: storageGet(StorageKeys.LOCALE),
     referrer: typeof document !== "undefined" ? document.referrer : "",
@@ -190,7 +229,8 @@ function format(template, params = {}) {
 
 async function loadCatalog(locale) {
   if (catalogs[locale]) return catalogs[locale];
-  const response = await fetch(`locales/${locale}.json`);
+  // Root-absolute so prerendered subpath pages (/de/, /pl/) resolve the catalog correctly.
+  const response = await fetch(`/locales/${locale}.json`);
   if (!response.ok) throw new Error(`Failed to load locale ${locale}`);
   catalogs[locale] = await response.json();
   return catalogs[locale];
