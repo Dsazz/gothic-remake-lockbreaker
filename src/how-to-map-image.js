@@ -1,4 +1,4 @@
-const HOW_TO_MAP_IMAGE = "assets/onboarding-game-lock.webp";
+const HOW_TO_MAP_IMAGE = "/assets/onboarding-game-lock.webp";
 
 export function wireHowToMapImage() {
   const details = document.getElementById("how-to-map");

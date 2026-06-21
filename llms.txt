@@ -88,9 +88,9 @@ Set five plates, map starting holes and With/Against couplings after one in-game
 
 ## Localized versions
 
-- German: https://gothiclockbreaker.com/?lang=de
-- Polish: https://gothiclockbreaker.com/?lang=pl
-- Ukrainian: https://gothiclockbreaker.com/?lang=ukr
+- German: https://gothiclockbreaker.com/de/
+- Polish: https://gothiclockbreaker.com/pl/
+- Ukrainian: https://gothiclockbreaker.com/uk/
 
 ## Last updated
 

@@ -1241,7 +1241,7 @@ function footerUtility(version) {
 function supportOreImg(className, size) {
   return el("img", {
     class: className,
-    src: "assets/ore.webp",
+    src: "/assets/ore.webp",
     alt: "",
     "aria-hidden": "true",
     width: String(size),
@@ -1331,8 +1331,8 @@ function portraitImg(className, src) {
 
 function portraitIcon() {
   return el("span", { class: "app-head-portrait-icon" }, [
-    portraitImg("app-head-portrait-img is-default", "assets/portrait-calm.png"),
-    portraitImg("app-head-portrait-img is-hover", "assets/portrait-scream.png"),
+    portraitImg("app-head-portrait-img is-default", "/assets/portrait-calm.png"),
+    portraitImg("app-head-portrait-img is-hover", "/assets/portrait-scream.png"),
   ]);
 }
 
@@ -1369,8 +1369,8 @@ function sleeperSupportImg(className, src) {
 
 function sleeperSupportIcon() {
   return el("span", { class: "app-head-sleeper-icon" }, [
-    sleeperSupportImg("app-head-sleeper-img is-sleep", "assets/sleeper-sleep.webp"),
-    sleeperSupportImg("app-head-sleeper-img is-awake", "assets/sleeper-awake.webp"),
+    sleeperSupportImg("app-head-sleeper-img is-sleep", "/assets/sleeper-sleep.webp"),
+    sleeperSupportImg("app-head-sleeper-img is-awake", "/assets/sleeper-awake.webp"),
   ]);
 }
 
