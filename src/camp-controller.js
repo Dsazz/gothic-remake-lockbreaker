@@ -119,13 +119,14 @@ function heroImg(className, src) {
 // Neutral visual: the blank banner with the Nameless Hero face overlaid on its
 // empty crest. Decorative only (pointer-events off) so clicks reach the trigger
 // button and open the picker. The face + tip react to the trigger's hover.
-function neutralVisual() {
+// `tipText` lets the one-time hint swap the flavor line for an actionable CTA.
+function neutralVisual(tipText) {
   return [
     bannerImg(NEUTRAL_BANNER),
     el("span", { class: "camp-hero", "aria-hidden": "true" }, [
       heroImg("camp-hero-img is-default", HERO_CALM),
       heroImg("camp-hero-img is-hover", HERO_SCREAM),
-      el("span", { class: "camp-hero-tip", text: t("camp.heroTip"), "aria-hidden": "true" }),
+      el("span", { class: "camp-hero-tip", text: tipText, "aria-hidden": "true" }),
     ]),
   ];
 }
@@ -137,8 +138,12 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
   let popoverOpen = false;
   let popoverNode = null;
   let backdropNode = null;
+  let hinting = false;
+  let hintTimer = null;
+  let hintAbort = null;
 
   const POPOVER_MARGIN = 8;
+  const HINT_TIMEOUT_MS = 7000;
 
   const onKeydown = (event) => {
     if (event.key !== Key.ESCAPE) return;
@@ -178,6 +183,7 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
 
   function openPopover() {
     if (popoverOpen) return;
+    hideHint();
     popoverOpen = true;
     // Full-viewport scrim catches outside clicks (no separate pointer listener)
     // and covers the trigger, matching the app's other modal overlays.
@@ -300,12 +306,15 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
   function renderTrigger() {
     const active = Boolean(camp);
     const label = active ? t("camp.current", { name: campName(camp) }) : t("camp.choose");
-    const visual = active ? bannerImage(camp) : neutralVisual();
+    const showingHint = hinting && !active;
+    const tipText = t(showingHint ? "camp.hintCta" : "camp.heroTip");
+    const visual = active ? bannerImage(camp) : neutralVisual(tipText);
+    const stateClass = `camp-trigger--${active ? SelectorState.ACTIVE : SelectorState.NEUTRAL}`;
     const trigger = el(
       "button",
       {
         type: "button",
-        class: `camp-trigger camp-trigger--${active ? SelectorState.ACTIVE : SelectorState.NEUTRAL}`,
+        class: `camp-trigger ${stateClass}${showingHint ? " is-hinting" : ""}`,
         "aria-haspopup": "true",
         "aria-expanded": popoverOpen ? "true" : "false",
         "aria-label": label,
@@ -323,6 +332,40 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
     renderTrigger();
   }
 
+  // Outside interaction ends the hint. Clicks/pointerdowns inside the selector
+  // are left to the trigger's own click (openPopover) so re-rendering here can't
+  // tear the button out from under the pending click.
+  const onOutsidePointer = (event) => {
+    if (container.contains(event.target)) return;
+    hideHint();
+  };
+
+  // One-time, non-blocking nudge that the neutral banner is a clickable theme
+  // switcher. Caller owns the "when" (gating) and the seen flag; this only owns
+  // the visual + dismissal. No-op once a camp is picked.
+  function showHint() {
+    if (hinting || camp !== null) return;
+    hinting = true;
+    render();
+    hintTimer = setTimeout(hideHint, HINT_TIMEOUT_MS);
+    hintAbort = new AbortController();
+    const { signal } = hintAbort;
+    document.addEventListener("pointerdown", onOutsidePointer, { signal });
+    window.addEventListener("scroll", hideHint, { passive: true, signal });
+  }
+
+  function hideHint() {
+    if (!hinting) return;
+    hinting = false;
+    if (hintTimer) {
+      clearTimeout(hintTimer);
+      hintTimer = null;
+    }
+    hintAbort?.abort();
+    hintAbort = null;
+    render();
+  }
+
   render();
 
   // Trigger labels, titles, and the neutral hero tip are localized; rebuild
@@ -331,8 +374,11 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
 
   return {
     getCamp: () => camp,
+    showHint,
+    hideHint,
     destroy() {
       stopLocaleWatch();
+      hideHint();
       closePopover();
       container.replaceChildren();
     },

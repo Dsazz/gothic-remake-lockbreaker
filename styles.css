@@ -594,6 +594,30 @@ button {
   transform: translate(0, -50%);
 }
 
+/* One-time discoverability hint: force the tip open (no hover/touch needed) and
+   draw the eye with a gentle pulse on the neutral pennant. Removed by JS on the
+   first interaction or after a timeout. */
+.camp-trigger--neutral.is-hinting .camp-hero-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%);
+}
+
+.camp-trigger--neutral.is-hinting .camp-banner-img {
+  opacity: 0.9;
+  animation: camp-hint-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes camp-hint-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
 /* Modal scrim behind the camp picker; one step under the popover's z-index so
    the dialog reads above it. Mirrors the app's other overlay backdrops. */
 .camp-backdrop {
@@ -726,6 +750,10 @@ button {
   .camp-trigger--neutral:hover .camp-hero-tip,
   .camp-trigger--neutral:focus-visible .camp-hero-tip {
     transform: translate(0, -50%);
+  }
+
+  .camp-trigger--neutral.is-hinting .camp-banner-img {
+    animation: none;
   }
 }
 
@@ -1087,6 +1115,14 @@ button {
     top: 50%;
     right: clamp(56px, 6vw, 84px);
     transform: translateY(-50%);
+  }
+
+  /* Share the Sleeper's axis (header vertical center). The face is positioned
+     inside .camp-trigger, which the aside lifts by 6px (top: -6px) for the
+     pennant-rod bleed; that pushes its 50% line 3px above the header center, so
+     add it back. Without this the face sits ~12px high of the Sleeper. */
+  .camp-hero {
+    top: calc(50% + 3px);
   }
 
   .app-head-sleeper-link {

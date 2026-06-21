@@ -78,6 +78,43 @@ test("app defers solve coachmark until onboarding tour ends", async () => {
   assert.match(onboardingText, /isActive:\s*\(\)\s*=>\s*active/);
 });
 
+test("camp change hint is one-time, neutral-only, and deferred past the tour/coachmark", async () => {
+  const appText = await readFile(join(root, "src/app.js"), "utf8");
+  const campText = await readFile(join(root, "src/camp-controller.js"), "utf8");
+  const uiPrefsText = await readFile(join(root, "src/ui-prefs.js"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
+
+  // Persistence: a dedicated one-time flag.
+  assert.match(uiPrefsText, /isCampHintSeen/);
+  assert.match(uiPrefsText, /markCampHintSeen/);
+
+  // Controller owns the visual + dismissal lifecycle and the CTA copy.
+  assert.match(campText, /showHint/);
+  assert.match(campText, /hideHint/);
+  assert.match(campText, /camp\.hintCta/);
+
+  // App owns the gating: seen flag, neutral state, and no competing nudges.
+  assert.match(appText, /maybeShowCampHint/);
+  assert.match(appText, /uiPrefs\.isCampHintSeen\(\)/);
+  assert.match(appText, /campSelector\.getCamp\(\) !== null/);
+  assert.match(appText, /solveCoachmark\?\.isActive\(\)/);
+  assert.match(appText, /onboarding\?\.isActive\?\.\(\)/);
+
+  // CSS reveal plus a reduced-motion guard for the pulse.
+  assert.match(css, /\.camp-trigger--neutral\.is-hinting \.camp-hero-tip/);
+  assert.match(css, /@keyframes camp-hint-pulse/);
+  assert.match(
+    css,
+    /prefers-reduced-motion: reduce[\s\S]*\.camp-trigger--neutral\.is-hinting \.camp-banner-img\s*\{\s*animation:\s*none/,
+  );
+
+  // Tier C parity: the CTA exists in every locale.
+  for (const code of ["en", "de", "pl", "ukr"]) {
+    const locale = JSON.parse(await readFile(join(root, `locales/${code}.json`), "utf8"));
+    assert.ok(locale.camp.hintCta, `camp.hintCta missing in ${code}.json`);
+  }
+});
+
 test("header sleeper support link tracks header_sleeper source", async () => {
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
   const start = viewText.indexOf("export function renderHeadSleeper");

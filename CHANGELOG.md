@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.28.0] - 2026-06-21
+
+### Added
+
+- A one-time, gentle hint now points out that the neutral header banner is a clickable **camp theme switcher**: the pennant softly pulses and its tip swaps to "Pick your camp" so first-time visitors notice the feature. It shows only when no camp is picked, never competes with the onboarding tour or the solve coachmark, and disappears for good once you interact with it or choose a camp. Localized across English, German, Polish, and Ukrainian.
+
 ## [1.27.0] - 2026-06-21
 
 ### Changed
