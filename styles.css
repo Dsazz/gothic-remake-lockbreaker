@@ -224,7 +224,7 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: clamp(176px, 20vw, 212px);
+  min-height: clamp(176px, 20vw, 212px);
   padding: clamp(42px, 6vw, 54px) clamp(14px, 4vw, 22px) clamp(12px, 2.5vw, 14px);
   text-align: center;
   overflow: hidden;
@@ -269,7 +269,11 @@ button {
   left: 0;
   top: -6px;
   height: calc(100% + 6px);
-  z-index: 3;
+  /* Above the Sleeper (z-index 3): the neutral camp's hover tip is nowrap and,
+     in longer locales (e.g. DE), overflows rightward across the header into the
+     Sleeper. The tip lives inside this aside's stacking context, so the aside
+     itself must outrank the Sleeper for the opaque tip to paint over it. */
+  z-index: 4;
 }
 
 .app-head-portrait {
@@ -445,11 +449,15 @@ button {
 
 /* Shared trigger: the clickable banner (active camp or neutral) that opens the
    picker popover. Fills the strip height so the pennant runs top to bottom.
-   Fixed width + centered object-fit keeps all banners on one center axis
-   regardless of their differing intrinsic aspect ratios. */
+   Banners are sized by height (width: auto) and left-anchored, so every pennant
+   fills the full header height regardless of its intrinsic aspect ratio. Wider
+   banners overhang the fixed column to the right (into the header), never off the
+   left edge where the header's overflow:hidden would clip them. */
 .camp-trigger {
   position: relative;
-  display: block;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   width: clamp(96px, 11vw, 112px);
   height: 100%;
   padding: 5px 0 0 0;
@@ -476,14 +484,14 @@ button {
 }
 
 .camp-trigger .camp-banner-img {
-  width: 100%;
+  width: auto;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
+  max-width: none;
+  flex-shrink: 0;
 }
 
 .camp-trigger--active .camp-banner-img {
-  filter: drop-shadow(0 0 8px var(--bronze-glow))
+  filter: drop-shadow(0 0 4px var(--bronze-glow))
     drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55));
   transition:
     transform 160ms ease,
@@ -495,7 +503,7 @@ button {
 .camp-trigger--active:hover .camp-banner-img,
 .camp-trigger--active:focus-visible .camp-banner-img {
   transform: scale(1.03);
-  filter: drop-shadow(0 0 16px var(--bronze-glow))
+  filter: drop-shadow(0 0 8px var(--bronze-glow))
     drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
 }
 
@@ -586,6 +594,15 @@ button {
   transform: translate(0, -50%);
 }
 
+/* Modal scrim behind the camp picker; one step under the popover's z-index so
+   the dialog reads above it. Mirrors the app's other overlay backdrops. */
+.camp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.55);
+}
+
 /* Popover is mounted on <body> with position:fixed (JS sets top/left) so it
    escapes the header's overflow:hidden clip. */
 .camp-popover {
@@ -594,66 +611,102 @@ button {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 8px;
-  padding: 10px;
+  justify-content: space-between;
+  gap: clamp(10px, 3vw, 16px);
+  width: min(90vw, 384px);
+  padding: clamp(16px, 4vw, 22px);
   border: 1px solid var(--bronze-deep);
   border-radius: var(--radius);
   background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
   box-shadow: var(--bevel), 0 10px 24px rgba(0, 0, 0, 0.55);
 }
 
+/* Size by height, not width: the banner assets share a height (289px) but vary
+   in width, so width-based sizing made the widest one (Old Camp) render
+   shortest and knocked the captions off a shared baseline. Equal height aligns
+   the captions and keeps every banner the same visual size. */
 .camp-popover .camp-banner-img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: clamp(120px, 30vw, 156px);
+  transition: filter 160ms ease;
 }
 
 .camp-popover .camp-choice--popover {
-  width: clamp(34px, 9vw, 44px);
-  opacity: 0.85;
+  /* Each choice carries its own faction glow keyed off data-camp, since the
+     popover shows the camps you are NOT on (the active --bronze-glow doesn't
+     apply). Default is bronze for safety. */
+  --camp-glow: var(--bronze-glow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.8;
   transition:
     opacity 160ms ease,
     transform 160ms ease;
 }
 
+/* Caption under each banner. Wraps (camp names are multi-word, e.g. "Swamp
+   Camp") rather than overflowing the narrow tile. */
+.camp-choice-label {
+  font-family: var(--display);
+  font-size: clamp(0.62rem, 2.4vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--parchment-dim);
+  transition: color 160ms ease;
+}
+
+.camp-popover .camp-choice--popover:hover .camp-choice-label,
+.camp-popover .camp-choice--popover:focus-visible .camp-choice-label {
+  color: var(--parchment);
+}
+
+.camp-popover .camp-choice--popover[data-camp="old"] {
+  --camp-glow: rgba(214, 162, 63, 0.55);
+}
+
+.camp-popover .camp-choice--popover[data-camp="new"] {
+  --camp-glow: rgba(94, 160, 214, 0.55);
+}
+
+.camp-popover .camp-choice--popover[data-camp="swamp"] {
+  /* Hover glow leans greener than the olive theme accent so it stays distinct
+     from old camp's gold. */
+  --camp-glow: rgba(110, 190, 72, 0.6);
+}
+
+/* "No camp" tile: the blank grey pennant. A cold steel glow keeps it legible as
+   a deliberate choice while reading as faction-less next to the camp banners. */
+.camp-popover .camp-choice--neutral {
+  --camp-glow: rgba(186, 194, 204, 0.5);
+  opacity: 0.62;
+}
+
+/* Hover/focus: grow the banner with its faction-colored glow so a pick reads
+   as a deliberate action, mirroring the active trigger idiom. */
 .camp-popover .camp-choice--popover:hover,
 .camp-popover .camp-choice--popover:focus-visible {
   opacity: 1;
-  transform: translateY(-1px);
+  transform: scale(1.14);
 }
 
-.camp-clear {
-  padding: 6px 10px;
-  font-family: var(--display);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--parchment-dim);
-  background: transparent;
-  border: 1px solid var(--iron-light);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition:
-    color 160ms ease,
-    border-color 160ms ease;
-}
-
-.camp-clear:hover,
-.camp-clear:focus-visible {
-  color: var(--parchment);
-  border-color: var(--bronze-deep);
+.camp-popover .camp-choice--popover:hover .camp-banner-img,
+.camp-popover .camp-choice--popover:focus-visible .camp-banner-img {
+  filter: drop-shadow(0 0 18px var(--camp-glow))
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
 }
 
 .camp-choice:focus-visible,
-.camp-trigger:focus-visible,
-.camp-clear:focus-visible {
+.camp-trigger:focus-visible {
   outline: 2px solid var(--bronze-bright);
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .camp-choice,
-  .camp-clear,
   .camp-trigger .camp-banner-img,
   .camp-hero-img,
   .camp-hero-tip {
@@ -662,6 +715,11 @@ button {
 
   .camp-trigger:hover .camp-banner-img,
   .camp-trigger:focus-visible .camp-banner-img {
+    transform: none;
+  }
+
+  .camp-popover .camp-choice--popover:hover,
+  .camp-popover .camp-choice--popover:focus-visible {
     transform: none;
   }
 
@@ -676,14 +734,17 @@ button {
   top: clamp(6px, 1.8vw, 10px);
   right: clamp(12px, 3vw, 20px);
   z-index: 3;
+  /* Kill the inline-flex link's phantom line-box descender so the wrapper hugs
+     the figure; otherwise the icon top-pins ~3px above the wrapper center and
+     drifts off the Nameless face's shared horizontal axis on mobile. */
+  line-height: 0;
 }
 
-/* Mobile: the banner stays pinned full-height on the left and the Sleeper sits
-   top-right, but the title is baked centered into the hero image. To keep that
-   title clear on narrow screens, the flank banner (and the matching gutters)
-   scale with the viewport so they always hug the margins beside the centered
-   title instead of overlapping it. Equal gutters keep the text under the
-   title. */
+/* Mobile: the banner sits on the left and the Sleeper sits top-right, but the
+   title is baked centered into the hero image. To keep that title clear on
+   narrow screens, the flank banner (and the matching gutters) scale with the
+   viewport so they always hug the margins beside the centered title instead of
+   overlapping it. Equal gutters keep the text under the title. */
 @media (max-width: 899px) {
   /* Pin the banner flush to the header (no top bleed) so the Nameless face and
      the Sleeper share one vertical axis. */
@@ -696,8 +757,18 @@ button {
     width: clamp(46px, calc(50vw - 150px), 92px);
   }
 
+  /* On narrow screens a full-height pennant overhangs its column and collides
+     with the baked-in title. Fit the banner inside the column and center it
+     vertically instead of pinning it to the top. */
+  .camp-trigger .camp-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
   .camp-hero {
-    width: clamp(34px, calc(6vw + 8px), 80px);
+    width: clamp(48px, 8vw, 80px);
   }
 
   /* Vertically center the Sleeper to line up with the Nameless face. */
@@ -710,7 +781,7 @@ button {
      description centered under the baked-in title; the smaller type fits the
      column in fewer lines. */
   .app-head-body {
-    padding-inline: clamp(62px, calc(50vw - 140px), 104px);
+    padding-inline: clamp(72px, calc(50vw - 140px), 104px);
   }
 
   .app-definition {
@@ -746,8 +817,8 @@ button {
   position: relative;
   display: block;
   flex-shrink: 0;
-  width: clamp(48px, 5vw, 72px);
-  height: clamp(48px, 5vw, 72px);
+  width: clamp(56px, 8vw, 80px);
+  height: clamp(56px, 8vw, 80px);
 }
 
 .app-head-sleeper-embers {
@@ -1077,7 +1148,7 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin: auto 0 0;
+  margin: clamp(14px, 3vw, 22px) 0 0;
 }
 
 .app-head-lang {

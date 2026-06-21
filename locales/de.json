@@ -18,12 +18,12 @@
     "current": "Lager-Thema: {name}. Lager wechseln",
     "changeTitle": "{name} — Lager wechseln",
     "apply": "{name}-Thema anwenden",
-    "clear": "Zurücksetzen",
     "clearLabel": "Lager-Thema zurücksetzen",
     "names": {
       "old": "Altes Lager",
       "new": "Neues Lager",
-      "swamp": "Sumpflager"
+      "swamp": "Sumpflager",
+      "none": "Kein Lager"
     }
   },
   "section": {

@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.27.0] - 2026-06-21
+
+### Changed
+
+- The **camp banner picker** is now a proper centered dialog: a dark scrim dims the page, each faction's banner shows under its name, and hovering a banner lights it with that camp's own colour so a pick feels deliberate. Leaving the camps is now its own blank-pennant "No Camp" banner instead of a stray text button, so the choices read as one coherent rack. Keyboard and focus handling are tighter — Escape and outside clicks close it, and focus returns to the trigger. Localized across English, German, Polish, and Ukrainian.
+- Refreshed the Old Camp, New Camp, and neutral banner artwork.
+
 ## [1.26.0] - 2026-06-20
 
 ### Added
