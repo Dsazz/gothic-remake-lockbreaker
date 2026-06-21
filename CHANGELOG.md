@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.28.2] - 2026-06-21
+
+### Fixed
+
+- Error reporting no longer treats bare "No response" promise rejections — background noise from browser extensions and aborted requests — as real errors, so the error feed stays focused on genuine app failures.
+
 ## [1.28.1] - 2026-06-21
 
 ### Changed

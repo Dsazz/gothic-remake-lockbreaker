@@ -5,6 +5,7 @@ const IGNORED_MESSAGE_PATTERNS = [
   /showSearchResults/,
   /^he$/i,
   /WKWebView API client did not respond/,
+  /^No response$/i,
   /runtime\.sendMessage\(\).*Tab not found/i,
   /window\.ethereum\.selectedAddress/,
   /Can't find variable: __firefox__/,

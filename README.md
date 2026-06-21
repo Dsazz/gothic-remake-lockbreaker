@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.28.1-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.28.2-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.28.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.28.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
 
@@ -95,7 +95,12 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
 ## Using it
 
 <div align="center">
-<img src="assets/app-screenshot.png" alt="Gothic Lock Breaker on desktop: horizontal tumbler rows with start holes and coupling chips, sticky sequence sidebar with groove readout walkthrough" width="62%" />
+<table>
+<tr>
+<td align="center" width="62%"><img src="assets/app-screenshot.png" alt="Gothic Lock Breaker on desktop: horizontal tumbler rows with start holes and coupling chips, plus a sticky 'The Sequence' sidebar" width="100%" /></td>
+<td align="center" width="38%"><img src="assets/app-screenshot-mobile.png" alt="Gothic Lock Breaker on mobile: stacked The Lock, tier and lock-count controls, and tumbler mapping" width="100%" /></td>
+</tr>
+</table>
 </div>
 
 <br />
