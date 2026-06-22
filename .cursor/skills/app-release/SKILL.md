@@ -96,6 +96,20 @@ Example: `Release v1.15.0 — Vite build, GitHub Actions deploy, first-load perf
 
 Branch protection requires the `ci` status check to pass before merge; force pushes and direct pushes to `main` are blocked.
 
+## Tag + GitHub Release (automated — do not do by hand)
+
+The `release` job in [`.github/workflows/deploy.yml`](../../../.github/workflows/deploy.yml) runs on every push to `main`:
+
+1. Reads `VERSION` from `src/version.js` → tag `vX.Y.Z`.
+2. Skips if that tag already exists on the remote (idempotent — re-runs and unrelated merges are no-ops).
+3. Otherwise creates the tag at the merge commit and a GitHub Release whose body is the matching `CHANGELOG.md` section, extracted by [`scripts/changelog-notes.js`](../../../scripts/changelog-notes.js).
+
+Implications for this checklist:
+
+- **Never** create tags or run `gh release create` manually — the workflow owns it.
+- A release only happens if `src/version.js` was bumped **and** a matching `## [X.Y.Z]` CHANGELOG entry exists. Both are already in the checklist; the Release section now depends on them.
+- The CHANGELOG entry *is* the public release notes — write it for players, not as a file list.
+
 ## Do not
 
 - Commit `dist/`, `node_modules/`, secrets
