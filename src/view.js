@@ -717,7 +717,10 @@ export function renderGratitudePrompt(container, ui, handlers) {
       gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
     );
   }
-  children.push(gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()));
+  children.push(
+    el("p", { class: "gratitude-donate-reason", text: t("solution.donateReason") }),
+    gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
+  );
   container.replaceChildren(...children);
 }
 
@@ -1270,6 +1273,7 @@ function supportDonateLink({
     href: SUPPORT_URL,
     target: "_blank",
     rel: "noopener noreferrer",
+    title: t("support.tooltip"),
     ...(iconOnly ? { "aria-label": t("support.aria") } : {}),
     onClick,
   }, children);
@@ -1308,6 +1312,7 @@ function gratitudeDonateBtn(onClick) {
     href: SUPPORT_URL,
     target: "_blank",
     rel: "noopener noreferrer",
+    title: t("support.tooltip"),
     "aria-label": t("solution.donateBtn"),
     onClick,
   }, [
@@ -1424,6 +1429,7 @@ export function renderHeadSupport(container, handlers) {
       href: SUPPORT_URL,
       target: "_blank",
       rel: "noopener noreferrer",
+      title: t("support.tooltip"),
       "aria-label": t("support.cta"),
       onClick: () => handlers.onSupportClick?.(SupportSource.HEADER_ORE),
     }, [

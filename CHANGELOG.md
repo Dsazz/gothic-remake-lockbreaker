@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.30.0] - 2026-06-23
+
+### Added
+
+- The donate buttons now show a short hint on hover explaining that an optional tip keeps the solver free and ad-free.
+
+### Changed
+
+- Shortened the support prompt shown after you solve a lock to a brief "keeps it free & ad-free" line, so it stays out of the way of the turn sequence.
+
+### Fixed
+
+- Corrected the Ukrainian wording describing how plates are positioned in the How-to-map guide.
+
 ## [1.29.0] - 2026-06-21
 
 ### Added

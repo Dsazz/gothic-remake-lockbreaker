@@ -1699,7 +1699,8 @@ button {
   margin-bottom: 14px;
 }
 
-.sequence-ctas .gratitude-share-text {
+.sequence-ctas .gratitude-share-text,
+.sequence-ctas .gratitude-donate-reason {
   flex: 1 0 100%;
   margin: 0;
   text-align: center;

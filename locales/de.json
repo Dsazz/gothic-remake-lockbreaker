@@ -155,6 +155,7 @@
     "shareBtn": "Link für Freund kopieren",
     "shareCopied": "Link kopiert!",
     "donateBtn": "Erz spenden",
+    "donateReason": "Hält es kostenlos & werbefrei.",
     "dismiss": "Schließen"
   },
   "sequence": {
@@ -224,10 +225,10 @@
     "buffed": "Buffed"
   },
   "support": {
-    "aria": "Optionaler Tipp auf Ko-fi — unterstützt Wartung. Solver bleibt kostenlos.",
-    "tooltip": "Wirf ein Erz — hält den Solver kostenlos",
+    "aria": "Optionaler Tipp auf Ko-fi — hält den Solver kostenlos, werbefrei und aktuell für neue Patches.",
+    "tooltip": "Wirf ein Erz — hält den Solver kostenlos & werbefrei",
     "cta": "Erz spenden",
-    "sub": "Hält den Solver kostenlos",
+    "sub": "Kostenlos, werbefrei & aktuell",
     "sleeperTip": "Der Schläfer erwache!",
     "portraitTip": "Das ist alles? Du machst wohl Witze!"
   },
