@@ -180,6 +180,7 @@
     "shareBtn": "Copy link for a friend",
     "shareCopied": "Link copied!",
     "donateBtn": "Tip ore",
+    "donateReason": "Keeps it free & ad-free.",
     "dismiss": "Dismiss"
   },
   "sequence": {
@@ -249,10 +250,10 @@
     "buffed": "Buffed"
   },
   "support": {
-    "aria": "Optional tip on Ko-fi — helps cover support and upkeep. Solver stays free.",
-    "tooltip": "Toss an ore — keeps the solver free",
+    "aria": "Optional tip on Ko-fi — keeps the solver free, ad-free, and updated for new patches.",
+    "tooltip": "Toss an ore — keeps the solver free & ad-free",
     "cta": "Toss an ore",
-    "sub": "Keeps the solver free",
+    "sub": "Free, ad-free & updated",
     "sleeperTip": "Der Schläfer erwache!",
     "portraitTip": "Really? Is that all you got?"
   },

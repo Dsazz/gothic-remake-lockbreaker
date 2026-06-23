@@ -67,7 +67,6 @@ export const SupportSource = Object.freeze({
   FOOTER_STRIP: "footer_strip",
   I18N_BANNER: "i18n_banner",
   SEQUENCE_POST_SOLVE: "sequence_post_solve",
-  SEQUENCE_MINIBAR: "sequence_minibar",
 });
 
 export const LocaleAutoHintSource = Object.freeze({

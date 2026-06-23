@@ -156,6 +156,7 @@
     "shareBtn": "Kopiuj link dla znajomego",
     "shareCopied": "Link skopiowany!",
     "donateBtn": "Podaruj rudę",
+    "donateReason": "Darmowy i bez reklam.",
     "dismiss": "Zamknij"
   },
   "sequence": {
@@ -225,10 +226,10 @@
     "buffed": "Buffed"
   },
   "support": {
-    "aria": "Opcjonalny napiwek na Ko-fi — wspiera utrzymanie. Solver pozostaje darmowy.",
-    "tooltip": "Rzuć rudę — utrzymuje solver za darmo",
+    "aria": "Opcjonalny napiwek na Ko-fi — utrzymuje solver darmowym, bez reklam i aktualnym dla nowych łatek.",
+    "tooltip": "Rzuć rudę — utrzymuje solver za darmo i bez reklam",
     "cta": "Rzuć rudę",
-    "sub": "Utrzymuje solver za darmo",
+    "sub": "Darmowy, bez reklam i aktualny",
     "sleeperTip": "Der Schläfer erwache!",
     "portraitTip": "To wszystko? Chyba sobie żartujesz!"
   },
