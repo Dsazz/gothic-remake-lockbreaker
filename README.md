@@ -36,7 +36,7 @@ one against the frame.
 
 **Current release: v1.30.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
-**Localized links for press and communities:** [German (`?lang=de`)](https://gothiclockbreaker.com/?lang=de) · [Polish (`?lang=pl`)](https://gothiclockbreaker.com/?lang=pl)
+**Localized links for press and communities:** [German (`/de/`)](https://gothiclockbreaker.com/de/) · [Polish (`/pl/`)](https://gothiclockbreaker.com/pl/) · [Ukrainian (`/uk/`)](https://gothiclockbreaker.com/uk/)
 
 </div>
 
