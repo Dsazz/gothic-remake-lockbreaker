@@ -18,7 +18,6 @@ test("track.js exports locale analytics helpers", async () => {
 
 test("events.js defines locale session events", async () => {
   const text = await readFile(join(root, "src/analytics/events.js"), "utf8");
-  assert.match(text, /LOCALE_RESOLVED/);
   assert.match(text, /LOCALE_CHANGED/);
   assert.match(text, /LOCALE_SESSION_END/);
   assert.match(text, /I18N_BANNER_SHOWN/);
@@ -58,12 +57,6 @@ test("locale-engagement installs pagehide tracking", async () => {
   assert.match(text, /export function installLocaleEngagementTracking/);
   assert.match(text, /staying_on_translation/);
   assert.match(text, /pagehide/);
-});
-
-test("track.js exports walkthrough session summary", async () => {
-  const text = await readFile(join(root, "src/analytics/track.js"), "utf8");
-  assert.match(text, /export function trackWalkthroughSessionSummary/);
-  assert.match(text, /steps_viewed_max/);
 });
 
 test("values.js defines failure guide source", async () => {
@@ -116,10 +109,31 @@ test("track.js does not export removed high-volume walkthrough/tutor events", as
   assert.doesNotMatch(text, /export function trackTutorNextClicked/);
 });
 
+test("track.js does not export removed quota-trim events", async () => {
+  const text = await readFile(join(root, "src/analytics/track.js"), "utf8");
+  assert.doesNotMatch(text, /export function trackSolveButtonClicked/);
+  assert.doesNotMatch(text, /export function trackWalkthroughSessionSummary/);
+  assert.doesNotMatch(text, /export function trackSharePromptShown/);
+  assert.doesNotMatch(text, /export function trackLockCleared/);
+  assert.doesNotMatch(text, /export function trackMasteryTierChanged/);
+  assert.doesNotMatch(text, /export function trackSupportSurfaceShown/);
+});
+
 test("events.js omits removed high-volume event names", async () => {
   const text = await readFile(join(root, "src/analytics/events.js"), "utf8");
   assert.doesNotMatch(text, /walkthrough_step_changed/);
   assert.doesNotMatch(text, /walkthrough_ui_toggled/);
   assert.doesNotMatch(text, /onboarding_step_viewed/);
   assert.doesNotMatch(text, /tutor_next_clicked/);
+});
+
+test("events.js omits removed quota-trim event names", async () => {
+  const text = await readFile(join(root, "src/analytics/events.js"), "utf8");
+  assert.doesNotMatch(text, /solve_button_clicked/);
+  assert.doesNotMatch(text, /walkthrough_session_summary/);
+  assert.doesNotMatch(text, /share_prompt_shown/);
+  assert.doesNotMatch(text, /locale_resolved/);
+  assert.doesNotMatch(text, /lock_cleared/);
+  assert.doesNotMatch(text, /mastery_tier_changed/);
+  assert.doesNotMatch(text, /support_surface_shown/);
 });

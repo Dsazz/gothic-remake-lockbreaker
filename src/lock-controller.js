@@ -1,10 +1,5 @@
-import { masteryForId } from "./domain.js";
 import { SolveSource } from "./analytics/values.js";
-import {
-  trackExampleLockLoaded,
-  trackLockCleared,
-  trackMasteryTierChanged,
-} from "./analytics/index.js";
+import { trackExampleLockLoaded } from "./analytics/index.js";
 
 export function createLockController({ store, solve, onRerender }) {
   let wipeConfirmOpen = false;
@@ -19,7 +14,6 @@ export function createLockController({ store, solve, onRerender }) {
     solve.invalidate();
     store.clearAll();
     solve.refreshHashBannerVisibility();
-    trackLockCleared();
     wipeConfirmOpen = false;
     onRerender();
   }
@@ -60,7 +54,6 @@ export function createLockController({ store, solve, onRerender }) {
     onSetMasteryLevel(level) {
       onLockEdit();
       store.setMasteryLevel(level);
-      trackMasteryTierChanged({ tier: masteryForId(level).key });
     },
     onAdjustBreaksBudget(delta) {
       onLockEdit();

@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.30.1] - 2026-06-24
+
+### Changed
+
+- Trimmed background usage analytics to a leaner set of events so the tool stays comfortably within its usage limits. No effect on solving, sharing, the step-by-step walkthrough, mastery selection, or language handling.
+
 ## [1.30.0] - 2026-06-23
 
 ### Added

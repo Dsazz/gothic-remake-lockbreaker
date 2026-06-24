@@ -7,7 +7,7 @@ import {
   isInBounds,
 } from "./domain.js";
 import * as view from "./view.js";
-import { getLocale, t } from "./i18n.js";
+import { t } from "./i18n.js";
 import {
   resolveSolveCoachmarkTrigger,
   SolveCoachmarkTrigger,
@@ -26,15 +26,10 @@ import {
   trackShareLinkCopied,
   trackShareLinkCopyFailed,
   trackSharePromptClicked,
-  trackSharePromptShown,
-  trackSolveButtonClicked,
   trackSolveResult,
-  trackWalkthroughSessionSummary,
   trackStepMismatchClicked,
   trackHashBannerShown,
-  trackSupportSurfaceShown,
 } from "./analytics/index.js";
-import { createWalkthroughSummaryTracker } from "./walkthrough-summary.js";
 
 // A solve is "hard" (worth a share offer) when its path is at least this long.
 const HARD_SOLVE_MIN_MOVES = 5;
@@ -50,7 +45,6 @@ export function createEmptySession() {
     blockedMessage: undefined,
     hashBannerVisible: false,
     hashBannerTracked: false,
-    sequenceSupportTracked: false,
     showMismatchTips: false,
     pendingSolveCoachmark: false,
     pendingHashFailureCoachmark: false,
@@ -81,7 +75,6 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   session.showAllSteps = false;
   session.sequenceMinimized = false;
   session.blockedMessage = undefined;
-  session.sequenceSupportTracked = false;
   session.showMismatchTips = false;
   session.pendingSolveCoachmark = false;
   session.pendingHashFailureCoachmark = false;
@@ -102,10 +95,6 @@ export function createSolveController({
 }) {
   const session = createEmptySession();
   session.hashBannerVisible = shouldShowHashBanner();
-
-  const walkthroughSummary = createWalkthroughSummaryTracker({
-    onFlush: (stats) => trackWalkthroughSessionSummary(stats),
-  });
 
   let copyTimer;
   let pulseTimer;
@@ -159,7 +148,6 @@ export function createSolveController({
   }
 
   function invalidate() {
-    walkthroughSummary.flush();
     resetSession(session, {
       dismissCoachmark: () => {
         if (solveCoachmark.isActive()) solveCoachmark.dismissSilent();
@@ -178,13 +166,6 @@ export function createSolveController({
     }
     invalidate();
     onRerender();
-  }
-
-  function beginWalkthroughSummary(state) {
-    const totalSteps = session.solution?.length ?? 0;
-    if (totalSteps === 0) return;
-    walkthroughSummary.begin({ totalSteps, plateCount: state.plateCount });
-    walkthroughSummary.recordStepView(0);
   }
 
   function announceSolveFailure() {
@@ -216,17 +197,7 @@ export function createSolveController({
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function maybeTrackSequenceSupport(state, hasMoves) {
-    if (!hasMoves || session.sequenceSupportTracked) return;
-    session.sequenceSupportTracked = true;
-    trackSupportSurfaceShown({
-      source: SupportSource.SEQUENCE_POST_SOLVE,
-      plateCount: state.plateCount,
-      locale: getLocale(),
-    });
-  }
-
-  function maybeOfferShare(state, previousFailure) {
+  function maybeOfferShare(previousFailure) {
     const moveCount = session.solution?.length ?? 0;
     const recovered = previousFailure === SolveFailureReason.NO_PATH;
     const trigger = recovered
@@ -237,12 +208,6 @@ export function createSolveController({
     if (!trigger || uiPrefs.wasSharePromptShownThisSession()) return;
     session.showShareOffer = true;
     uiPrefs.markSharePromptShownThisSession();
-    trackSharePromptShown({
-      plateCount: state.plateCount,
-      landingType,
-      triggerReason: trigger,
-      moveCount,
-    });
   }
 
   function maybeTrackHashBanner(state, hasMoves) {
@@ -274,7 +239,6 @@ export function createSolveController({
       { minimized, lockMapped: isLockMapped(state) },
       handlers,
     );
-    maybeTrackSequenceSupport(state, hasMoves);
     maybeTrackHashBanner(state, hasMoves);
     view.renderHashBanner(
       els.hashBanner,
@@ -348,20 +312,10 @@ export function createSolveController({
     }, 2000);
   }
 
-  function onSolve({ auto = false, solveSource = SolveSource.MANUAL } = {}) {
+  function onSolve({ solveSource = SolveSource.MANUAL } = {}) {
     const state = store.getState();
     const completeness = mappingCompletenessFor(state);
     const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
-    const lockReady = completeness === MappingCompleteness.READY;
-
-    if (!auto) {
-      trackSolveButtonClicked({
-        plateCount: state.plateCount,
-        lockReady,
-        landingType,
-        mappingCompleteness: completeness,
-      });
-    }
 
     if (!mapped) {
       session.blockedMessage = t("solution.blocked");
@@ -370,7 +324,6 @@ export function createSolveController({
       return;
     }
 
-    walkthroughSummary.flush();
     session.blockedMessage = undefined;
     const previousFailure = session.solveFailureReason;
     if (!isInBounds(state.positions)) {
@@ -401,10 +354,7 @@ export function createSolveController({
         maybeShowHashFailureCoachmark();
       }
     } else if (Array.isArray(session.solution) && session.solution.length > 0) {
-      beginWalkthroughSummary(state);
-      maybeOfferShare(state, previousFailure);
-    } else {
-      walkthroughSummary.clear();
+      maybeOfferShare(previousFailure);
     }
 
     onRenderSolutionArea(state);
@@ -445,8 +395,6 @@ export function createSolveController({
       session.stepIndex = Math.max(0, Math.min(session.stepIndex, total));
       if (session.stepIndex !== prev) {
         session.showMismatchTips = false;
-        if (delta > 0) walkthroughSummary.recordForward(session.stepIndex);
-        else walkthroughSummary.recordBack(session.stepIndex);
       }
       onRenderSolutionArea(store.getState());
     },
@@ -456,13 +404,11 @@ export function createSolveController({
       session.stepIndex = Math.max(0, Math.min(index, total));
       if (session.stepIndex !== prev) {
         session.showMismatchTips = false;
-        walkthroughSummary.recordJump(session.stepIndex);
       }
       onRenderSolutionArea(store.getState());
     },
     onToggleSteps() {
       session.showAllSteps = !session.showAllSteps;
-      if (session.showAllSteps) walkthroughSummary.recordExpandedAll();
       onRenderSolutionArea(store.getState());
     },
     onMinimizeSequence() {
@@ -522,6 +468,5 @@ export function createSolveController({
     getTumblersPulse: () => tumblersPulse,
     getSolveReadyFlash: () => solveReadyFlash,
     getMappingCompleteness: () => mappingCompletenessFor(store.getState()),
-    flushWalkthroughSummary: () => walkthroughSummary.flush(),
   };
 }

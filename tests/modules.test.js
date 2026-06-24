@@ -192,7 +192,6 @@ test("renderControls hides wipe until lock differs from default; sequence share 
   assert.match(viewText, /renderGratitudePrompt/);
   assert.match(viewText, /gratitudeShareBtn/);
   assert.match(viewText, /ui\?\.showShare/);
-  assert.match(solveText, /maybeTrackSequenceSupport/);
   assert.match(solveText, /visible: hasMoves/);
   assert.match(solveText, /renderGratitudePrompt/);
   assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
@@ -206,9 +205,7 @@ test("share prompt is gated once-per-session on a hard solve, decoupled from don
   assert.match(solveText, /markSharePromptShownThisSession/);
   assert.match(solveText, /ShareTrigger/);
   assert.match(solveText, /HARD_SOLVE_MIN_MOVES/);
-  // Donation surface still fires independently of the share prompt.
-  assert.match(solveText, /trackSupportSurfaceShown/);
-  // The share event must not be coupled to the donation impression anymore.
+  // The share offer must not be coupled to the donation impression.
   assert.doesNotMatch(solveText, /hasDonationCta/);
 });
 
