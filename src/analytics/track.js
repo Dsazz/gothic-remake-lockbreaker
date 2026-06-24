@@ -82,11 +82,6 @@ export function trackLanding({ landingType, locale, localeSource }) {
 }
 
 export function trackLocaleResolved({ locale, localeSource }) {
-  send(Events.LOCALE_RESOLVED, {
-    locale,
-    locale_source: localeSource,
-    app_version: VERSION,
-  });
   seedLocaleEngagement({ locale, localeSource });
   const sessionProps = {
     initial_locale: locale,
@@ -129,20 +124,6 @@ export function trackLocaleSuggestDeclined({ suggestedLocale, hintSource, declin
   });
 }
 
-export function trackSolveButtonClicked({
-  plateCount,
-  lockReady,
-  landingType,
-  mappingCompleteness,
-}) {
-  send(Events.SOLVE_BUTTON_CLICKED, {
-    ...baseProps(plateCount),
-    lock_ready: lockReady,
-    landing_type: landingType,
-    ...(mappingCompleteness ? { mapping_completeness: mappingCompleteness } : {}),
-  });
-}
-
 export function trackSolveResult({
   plateCount,
   solution,
@@ -175,26 +156,6 @@ export function trackGuideOpened({ source }) {
   send(Events.GUIDE_OPENED, { source, app_version: VERSION });
 }
 
-export function trackWalkthroughSessionSummary({
-  plateCount,
-  totalSteps,
-  stepsViewedMax,
-  forwardClicks,
-  backClicks,
-  jumpClicks,
-  expandedAll,
-}) {
-  send(Events.WALKTHROUGH_SESSION_SUMMARY, {
-    ...baseProps(plateCount),
-    total_steps: totalSteps,
-    steps_viewed_max: stepsViewedMax,
-    forward_clicks: forwardClicks,
-    back_clicks: backClicks,
-    jump_clicks: jumpClicks,
-    expanded_all: expandedAll,
-  });
-}
-
 export function trackPromptDismissed({ prompt, plateCount }) {
   send(Events.PROMPT_DISMISSED, { ...baseProps(plateCount), prompt });
 }
@@ -207,22 +168,8 @@ export function trackShareLinkCopyFailed({ plateCount, landingType }) {
   send(Events.SHARE_LINK_COPY_FAILED, shareProps(plateCount, landingType));
 }
 
-export function trackSharePromptShown({ plateCount, landingType, triggerReason, moveCount }) {
-  send(
-    Events.SHARE_PROMPT_SHOWN,
-    shareProps(plateCount, landingType, {
-      ...(triggerReason ? { trigger_reason: triggerReason } : {}),
-      ...(moveCount != null ? { move_count: moveCount } : {}),
-    }),
-  );
-}
-
 export function trackSharePromptClicked({ plateCount, landingType }) {
   send(Events.SHARE_PROMPT_CLICKED, shareProps(plateCount, landingType));
-}
-
-export function trackLockCleared() {
-  send(Events.LOCK_CLEARED, { app_version: VERSION });
 }
 
 export function trackOnboardingDismissed({ completed, stepId, stepIndex, action, totalSteps }) {
@@ -253,10 +200,6 @@ export function trackTutorSkipped({ stepId, stepIndex, totalSteps }) {
   });
 }
 
-export function trackMasteryTierChanged({ tier }) {
-  send(Events.MASTERY_TIER_CHANGED, { tier, app_version: VERSION });
-}
-
 export function trackStepMismatchClicked({ stepIndex, plateCount }) {
   send(Events.STEP_MISMATCH_CLICKED, {
     ...baseProps(plateCount),
@@ -266,10 +209,6 @@ export function trackStepMismatchClicked({ stepIndex, plateCount }) {
 
 export function trackSupportLinkClicked({ source, plateCount, locale }) {
   send(Events.SUPPORT_LINK_CLICKED, supportProps({ source, plateCount, locale }));
-}
-
-export function trackSupportSurfaceShown({ source, plateCount, locale }) {
-  send(Events.SUPPORT_SURFACE_SHOWN, supportProps({ source, plateCount, locale }));
 }
 
 export function trackHashBannerShown({ plateCount }) {

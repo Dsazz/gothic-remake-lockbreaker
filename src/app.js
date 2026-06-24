@@ -169,7 +169,6 @@ function initControllers() {
 }
 
 function bindAppEvents() {
-  window.addEventListener("pagehide", () => solve.flushWalkthroughSummary());
   els.solveBtn.addEventListener("click", () => solve.onSolve());
   els.loadExampleLock?.addEventListener("click", () =>
     handlers.onLoadExampleLock(oldCampExample()),
