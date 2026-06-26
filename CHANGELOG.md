@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.30.2] - 2026-06-26
+
+### Fixed
+
+- Fixed a rare crash that could occur when changing the language while the language menu was still open, which left the picker briefly unresponsive.
+
 ## [1.30.1] - 2026-06-24
 
 ### Changed

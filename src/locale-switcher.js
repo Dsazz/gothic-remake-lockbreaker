@@ -248,7 +248,10 @@ function updateLocaleSwitcher(container) {
 
   const current = getLocale();
   const trigger = group.querySelector(".locale-switcher-trigger");
-  const listbox = group.querySelector(".locale-switcher-menu");
+  // The open menu portals out to <body>, so it is no longer a child of `group`.
+  // Resolve it by its stable id to survive a re-render while the menu is open.
+  const listbox = document.getElementById(LISTBOX_ID);
+  if (!trigger || !listbox) return;
 
   trigger.querySelector(".locale-switcher-trigger-flag").replaceChildren(flagSvg(current));
   trigger.querySelector(".locale-switcher-code").textContent = shortCode(current);

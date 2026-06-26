@@ -424,6 +424,17 @@ test("locale switcher is a combobox + listbox with short codes", async () => {
   assert.match(css, /\.locale-switcher-menu\s*\{[^}]*max-height/s);
 });
 
+test("locale switcher update resolves the portaled menu by id, not via the group", async () => {
+  const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
+  const updateStart = switcherText.indexOf("function updateLocaleSwitcher");
+  const updateEnd = switcherText.indexOf("export function renderLocaleSwitcher");
+  const updateBody = switcherText.slice(updateStart, updateEnd);
+  // openMenu() portals the listbox to <body>, so resolving it via group.querySelector
+  // returns null during an async re-render and setAttribute throws (issue #57).
+  assert.match(updateBody, /document\.getElementById\(LISTBOX_ID\)/);
+  assert.doesNotMatch(updateBody, /group\.querySelector\(["'`]\.locale-switcher-menu/);
+});
+
 test("sequence hint only claims 'mapped' when the lock is ready, not merely partial", async () => {
   const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
