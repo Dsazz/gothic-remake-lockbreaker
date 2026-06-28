@@ -657,7 +657,7 @@ button {
   box-shadow: var(--bevel), 0 10px 24px rgba(0, 0, 0, 0.55);
 }
 
-/* Size by height, not width: the banner assets share a height (289px) but vary
+/* Size by height, not width: the banner assets share a common height but vary
    in width, so width-based sizing made the widest one (Old Camp) render
    shortest and knocked the captions off a shared baseline. Equal height aligns
    the captions and keeps every banner the same visual size. */
