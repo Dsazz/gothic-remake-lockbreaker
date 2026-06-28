@@ -321,20 +321,23 @@ button {
   transition: opacity 0.2s ease;
 }
 
+.app-head-portrait-img.is-default {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scream stays fully opaque underneath; only the calm layer fades, so the
+   cross-fade never dips below full opacity (no background flash / flicker). */
 .app-head-portrait-img.is-hover {
   position: absolute;
   inset: 0;
-  opacity: 0;
+  z-index: 0;
+  opacity: 1;
 }
 
 .app-head-portrait-link:hover .app-head-portrait-img.is-default,
 .app-head-portrait-link:focus-visible .app-head-portrait-img.is-default {
   opacity: 0;
-}
-
-.app-head-portrait-link:hover .app-head-portrait-img.is-hover,
-.app-head-portrait-link:focus-visible .app-head-portrait-img.is-hover {
-  opacity: 1;
 }
 
 .app-head-portrait-tip {
@@ -549,24 +552,26 @@ button {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
   transition: opacity 160ms ease;
 }
 
+.camp-hero-img.is-default {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scream stays fully opaque underneath; only the calm layer fades, so the
+   cross-fade never dips below full opacity (no background flash / flicker). */
 .camp-hero-img.is-hover {
   position: absolute;
   inset: 0;
-  opacity: 0;
+  z-index: 0;
+  opacity: 1;
 }
 
 .camp-trigger--neutral:hover .camp-hero-img.is-default,
 .camp-trigger--neutral:focus-visible .camp-hero-img.is-default {
   opacity: 0;
-}
-
-.camp-trigger--neutral:hover .camp-hero-img.is-hover,
-.camp-trigger--neutral:focus-visible .camp-hero-img.is-hover {
-  opacity: 1;
 }
 
 /* Gothic-flavored tip, styled after the old portrait tip; right of the face. */
