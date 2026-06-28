@@ -56,7 +56,7 @@ Boot-sensitive files:
 Catalog of all PostHog events so you don't have to grep `src/analytics/`. Most events carry `app_version`; gameplay events add `plate_count`; solve/share events add `landing_type`. Enums live in `src/analytics/values.js`.
 
 - **Landing/lifecycle:** `landing` (+ referrer/UTM attribution, registers session props).
-- **Solve & lock:** `lock_solved` (`move_count`, `is_first_solve`), `lock_already_solved`, `lock_no_solution` (`failure_reason`), `lock_became_mappable`, `example_lock_loaded`, `step_mismatch_clicked`.
+- **Solve & lock:** `lock_solved` (`move_count`, `is_first_solve`), `lock_already_solved`, `lock_no_solution` (`failure_reason`), `lock_became_mappable`, `example_lock_loaded`, `step_mismatch_clicked`, `steps_revealed` (`move_count`, `step_index`; fired at most once per page load on first "Show all steps" expand — usage signal to decide if the toggle earns its keep).
 - **Onboarding/tutor:** `tutor_started`, `tutor_not_shown` (`reason`), `tutor_skipped`, `onboarding_dismissed` (`action`/`completed`).
 - **Guide:** `guide_opened` (`source`).
 - **Prompts:** `prompt_dismissed` (`prompt` = `hash_banner` / `i18n_banner`). Generic dismissal event for inline banners; not share-related.

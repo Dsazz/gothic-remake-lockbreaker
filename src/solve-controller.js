@@ -7,7 +7,7 @@ import {
   isInBounds,
 } from "./domain.js";
 import * as view from "./view.js";
-import { t } from "./i18n.js";
+import { t, tCount } from "./i18n.js";
 import {
   resolveSolveCoachmarkTrigger,
   SolveCoachmarkTrigger,
@@ -24,8 +24,42 @@ import {
   trackPromptDismissed,
   trackSolveResult,
   trackStepMismatchClicked,
+  trackStepsRevealed,
   trackHashBannerShown,
 } from "./analytics/index.js";
+
+// Fraction of the walkthrough a user must reach before the donation CTA is
+// revealed. Most users never click `Next` to the final step, so gating on
+// literal completion would near-zero impressions; 60% means "nearly done".
+const GRATITUDE_REVEAL_FRACTION = 0.6;
+
+// Step index at or beyond which the donation CTA reveals, for a walkthrough of
+// `total` moves. Pure so it can be unit-tested alongside `buildWalkthrough`.
+// Clamped to >= 1 so the CTA never reveals at step 0 even for a degenerate
+// `total` of 0.
+export function gratitudeRevealStep(total) {
+  return Math.max(1, Math.ceil(total * GRATITUDE_REVEAL_FRACTION));
+}
+
+// Reveals the donation CTA once the user has progressed far enough through the
+// walkthrough. Pure mutation of `session` so it can be driven from the nav
+// handlers (where progress actually happens) and unit-tested without the DOM.
+export function applyGratitudeReveal(session) {
+  const total = session.solution?.length ?? 0;
+  if (total > 0 && session.stepIndex >= gratitudeRevealStep(total)) {
+    session.gratitudeRevealed = true;
+  }
+  return session.gratitudeRevealed;
+}
+
+// Localized success copy for the aria-live channel: empty solution means the
+// lock was already open, otherwise announce the turn count. Pure so the branch
+// can be unit-tested against the bundled English catalog.
+export function solveSuccessText(moveCount) {
+  return moveCount === 0
+    ? t("solution.alreadyOpen")
+    : tCount("solution.turnCount", moveCount);
+}
 
 export function createEmptySession() {
   return {
@@ -38,6 +72,7 @@ export function createEmptySession() {
     hashBannerVisible: false,
     hashBannerTracked: false,
     showMismatchTips: false,
+    gratitudeRevealed: false,
     pendingSolveCoachmark: false,
     pendingHashFailureCoachmark: false,
   };
@@ -67,6 +102,7 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   session.sequenceMinimized = false;
   session.blockedMessage = undefined;
   session.showMismatchTips = false;
+  session.gratitudeRevealed = false;
   session.pendingSolveCoachmark = false;
   session.pendingHashFailureCoachmark = false;
 }
@@ -90,6 +126,7 @@ export function createSolveController({
   let flashTimer;
   let tumblersPulse = false;
   let solveReadyFlash = false;
+  let stepsRevealedTracked = false;
 
   function shouldShowHashBanner() {
     if (uiPrefs.isHashBannerDismissed()) return false;
@@ -163,6 +200,12 @@ export function createSolveController({
     els.ariaLive.textContent = isOob ? t("solution.oob") : t("solution.noPath");
   }
 
+  function announceSolveSuccess() {
+    if (!els.ariaLive) return;
+    const moveCount = Array.isArray(session.solution) ? session.solution.length : 0;
+    els.ariaLive.textContent = solveSuccessText(moveCount);
+  }
+
   function pulseTumblers() {
     tumblersPulse = true;
     onRerender();
@@ -184,6 +227,18 @@ export function createSolveController({
 
   function scrollSequencePanel() {
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function maybeTrackStepsRevealed() {
+    if (stepsRevealedTracked) return;
+    const moveCount = Array.isArray(session.solution) ? session.solution.length : 0;
+    if (moveCount === 0) return;
+    stepsRevealedTracked = true;
+    trackStepsRevealed({
+      plateCount: store.getState().plateCount,
+      moveCount,
+      stepIndex: session.stepIndex,
+    });
   }
 
   function maybeTrackHashBanner(state, hasMoves) {
@@ -221,11 +276,6 @@ export function createSolveController({
       { visible: session.hashBannerVisible && hasMoves },
       handlers,
     );
-    view.renderGratitudePrompt(
-      els.gratitudePrompt,
-      { visible: hasMoves },
-      handlers,
-    );
     view.renderMappingWarning(
       els.mappingWarning,
       { visible: mappingPartial && !hasMoves },
@@ -240,6 +290,7 @@ export function createSolveController({
         lockReady,
         mappingPartial,
         showMismatchTips: session.showMismatchTips,
+        gratitudeRevealed: session.gratitudeRevealed,
         state,
         failureReason: session.solveFailureReason,
       },
@@ -295,6 +346,8 @@ export function createSolveController({
         session.pendingHashFailureCoachmark = true;
         maybeShowHashFailureCoachmark();
       }
+    } else {
+      announceSolveSuccess();
     }
 
     onRenderSolutionArea(state);
@@ -323,6 +376,7 @@ export function createSolveController({
       if (session.stepIndex !== prev) {
         session.showMismatchTips = false;
       }
+      applyGratitudeReveal(session);
       onRenderSolutionArea(store.getState());
     },
     onJumpTo(index) {
@@ -332,10 +386,12 @@ export function createSolveController({
       if (session.stepIndex !== prev) {
         session.showMismatchTips = false;
       }
+      applyGratitudeReveal(session);
       onRenderSolutionArea(store.getState());
     },
     onToggleSteps() {
       session.showAllSteps = !session.showAllSteps;
+      if (session.showAllSteps) maybeTrackStepsRevealed();
       onRenderSolutionArea(store.getState());
     },
     onMinimizeSequence() {

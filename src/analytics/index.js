@@ -15,6 +15,7 @@ export {
   trackTutorNotShown,
   trackTutorSkipped,
   trackStepMismatchClicked,
+  trackStepsRevealed,
   trackSupportLinkClicked,
   trackHashBannerShown,
   trackTranslationFeedbackClicked,

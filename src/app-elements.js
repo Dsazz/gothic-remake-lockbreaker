@@ -11,7 +11,6 @@ export function getAppElements() {
     i18nBanner: document.getElementById("i18n-banner"),
     hashBanner: document.getElementById("hash-banner"),
     mappingWarning: document.getElementById("mapping-warning"),
-    gratitudePrompt: document.getElementById("gratitude-prompt"),
     solution: document.getElementById("solution"),
     solveBtn: document.getElementById("solve-btn"),
     guide: document.getElementById("how-to-map"),

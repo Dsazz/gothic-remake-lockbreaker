@@ -1729,7 +1729,7 @@ button {
   flex-wrap: wrap;
   align-items: stretch;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-top: 14px;
 }
 
 .sequence-ctas .gratitude-donate-reason {
@@ -2092,10 +2092,12 @@ button {
   transform: translateY(-1px);
 }
 
+/* Danger is also signalled by border style/weight, not hue alone, so the cue
+   survives for colorblind users: thick solid ring at a wall, dashed near one. */
 .plate-holes--readout .hole.is-active.at-edge,
 .plate-holes--readout .hole.is-active.is-wall {
   background: radial-gradient(circle at 50% 55%, #d65b50 0%, #6b2822 100%);
-  border: 1px solid var(--blood-bright);
+  border: 2px solid var(--blood-bright);
   color: #1a0806;
   box-shadow: inset 0 1px 0 rgba(255, 180, 170, 0.3),
     inset 0 -2px 4px rgba(0, 0, 0, 0.4),
@@ -2104,7 +2106,7 @@ button {
 
 .plate-holes--readout .hole.is-active.near-edge {
   background: radial-gradient(circle at 50% 55%, rgba(217, 145, 63, 0.62) 0%, rgba(90, 58, 22, 0.85) 100%);
-  border: 1px solid var(--amber);
+  border: 2px dashed var(--amber);
   color: #1a1004;
   box-shadow: inset 0 1px 0 rgba(255, 220, 160, 0.25),
     inset 0 -2px 4px rgba(0, 0, 0, 0.4),
@@ -2179,11 +2181,6 @@ button {
     -webkit-overflow-scrolling: touch;
   }
 
-  .solution-count {
-    margin-bottom: 10px;
-    font-size: 1.15rem;
-  }
-
   .walkthrough {
     margin-top: 12px;
     padding: 12px;
@@ -2195,17 +2192,17 @@ button {
   }
 
   .move-cmd--focus .move-lock {
-    font-size: 1.4rem;
+    font-size: 2rem;
   }
 
   .move-cmd--focus .move-arrow {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3rem;
+    height: 3rem;
   }
 
   .move-cmd--focus .move-arrow svg {
-    width: 2.45rem;
-    height: 2.45rem;
+    width: 2.1rem;
+    height: 2.1rem;
   }
 
   .wt-board {
@@ -2450,15 +2447,15 @@ button {
 
 .wt-help-trigger {
   margin: 0;
-  padding: 0;
+  padding: 4px 8px;
   border: none;
   background: none;
   font-family: inherit;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 500;
-  color: var(--parchment-faint);
+  color: var(--parchment-dim);
   text-decoration: underline;
-  text-decoration-color: transparent;
+  text-decoration-color: var(--parchment-faint);
   text-underline-offset: 3px;
   cursor: pointer;
   transition: color 0.12s, text-decoration-color 0.12s;
@@ -2466,8 +2463,8 @@ button {
 
 .wt-help-trigger:hover,
 .wt-help-trigger:focus-visible {
-  color: var(--parchment-dim);
-  text-decoration-color: var(--parchment-faint);
+  color: var(--parchment);
+  text-decoration-color: var(--parchment-dim);
 }
 
 .wt-help-trigger.is-open {
@@ -2765,7 +2762,6 @@ body.wipe-confirm-open {
 }
 
 .solution {
-  margin-top: 16px;
   max-width: 100%;
   overflow-x: clip;
 }
@@ -3008,11 +3004,6 @@ summary.icon-btn:focus-visible {
     display: none;
   }
 
-  .panel--sequence .solution-count {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-  }
-
   .panel--sequence .walkthrough {
     padding: 10px;
     margin-top: 10px;
@@ -3024,17 +3015,17 @@ summary.icon-btn:focus-visible {
   }
 
   .panel--sequence .move-cmd--focus .move-lock {
-    font-size: 1.25rem;
+    font-size: 1.7rem;
   }
 
   .panel--sequence .move-cmd--focus .move-arrow {
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 2.85rem;
+    height: 2.85rem;
   }
 
   .panel--sequence .move-cmd--focus .move-arrow svg {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 1.95rem;
+    height: 1.95rem;
   }
 
   .panel--sequence .wt-board {
@@ -3071,14 +3062,6 @@ summary.icon-btn:focus-visible {
   letter-spacing: 1px;
   color: var(--patina);
   font-weight: 700;
-}
-
-.solution-count {
-  margin: 0 0 14px;
-  font-size: 1.35rem;
-  letter-spacing: 2px;
-  text-align: center;
-  text-transform: uppercase;
 }
 
 .alert {
@@ -3201,6 +3184,12 @@ summary.icon-btn:focus-visible {
   overflow-x: clip;
 }
 
+/* The walkthrough is the sole first child of .solution, whose own top margin
+   already separates it from the header — drop the redundant stacked margin. */
+.solution > .walkthrough:first-child {
+  margin-top: 0;
+}
+
 .wt-nav {
   display: flex;
   align-items: center;
@@ -3213,6 +3202,12 @@ summary.icon-btn:focus-visible {
   flex: 1;
 }
 
+.wt-help-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
 .wt-progress {
   display: grid;
   gap: 8px;
@@ -3222,16 +3217,83 @@ summary.icon-btn:focus-visible {
 .wt-progress-head {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
 }
 
 .wt-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3ch;
   font-family: var(--display);
-  letter-spacing: 1px;
-  color: var(--parchment-dim);
   font-weight: 700;
-  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.wt-counter-current {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--bronze-bright);
+}
+
+.wt-counter-total {
+  font-size: 1.05rem;
+  color: var(--parchment);
+}
+
+.wt-counter.is-done {
+  align-items: center;
+}
+
+.wt-counter-open {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--patina);
+  filter: drop-shadow(0 0 8px rgb(106 168 122 / 0.45));
+}
+
+.wt-counter-open svg {
+  width: 2rem;
+  height: 2rem;
+  animation: wt-lock-pop 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wt-lock-shackle {
+  transform-box: fill-box;
+  transform-origin: right bottom;
+  animation: wt-lock-shackle 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes wt-lock-pop {
+  0% {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wt-lock-shackle {
+  0%,
+  30% {
+    transform: translateY(3px) rotate(7deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-counter-open svg,
+  .wt-lock-shackle {
+    animation: none;
+  }
 }
 
 .wt-bar {
@@ -3278,8 +3340,8 @@ summary.icon-btn:focus-visible {
 }
 
 .wt-plate.is-current {
-  border-color: var(--bronze);
-  box-shadow: var(--bevel), 0 0 14px var(--bronze-glow);
+  border-color: var(--bronze-bright);
+  box-shadow: var(--bevel), 0 0 20px var(--bronze-glow), 0 0 8px var(--bronze-glow);
 }
 
 .wt-plate.is-current .wt-label {
@@ -3481,7 +3543,7 @@ summary.icon-btn:focus-visible {
 }
 
 .move-cmd--focus .move-lock {
-  font-size: 1.75rem;
+  font-size: 2.1rem;
 }
 
 .move-cmd--focus .move-arrow {
