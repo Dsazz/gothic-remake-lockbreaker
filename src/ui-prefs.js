@@ -32,6 +32,10 @@ function sessionSet(key, value) {
   }
 }
 
+function readCampHintCount() {
+  return Number.parseInt(storageGet(StorageKeys.CAMP_HINT_SHOWN_COUNT) ?? "0", 10) || 0;
+}
+
 /** UI flag persistence — banners, visit marker, locale suggest dismiss. */
 export function createUiPrefs() {
   return {
@@ -89,11 +93,23 @@ export function createUiPrefs() {
     markHashFailureCoachmarkSeen() {
       storageSet(StorageKeys.HASH_FAILURE_COACHMARK_SEEN, StorageFlag.SET);
     },
-    isCampHintSeen() {
-      return storageGet(StorageKeys.CAMP_HINT_SEEN) === StorageFlag.SET;
+    isCampPickerOpened() {
+      return storageGet(StorageKeys.CAMP_PICKER_OPENED) === StorageFlag.SET;
     },
-    markCampHintSeen() {
-      storageSet(StorageKeys.CAMP_HINT_SEEN, StorageFlag.SET);
+    markCampPickerOpened() {
+      storageSet(StorageKeys.CAMP_PICKER_OPENED, StorageFlag.SET);
+    },
+    campHintShownCount() {
+      return readCampHintCount();
+    },
+    wasCampHintShownThisSession() {
+      return sessionGet(StorageKeys.CAMP_HINT_SESSION_SHOWN) === StorageFlag.SET;
+    },
+    // One increment per session: bumps the lifetime count and marks the session
+    // so the gate fires the hint at most once per visit until the cap is hit.
+    recordCampHintShown() {
+      sessionSet(StorageKeys.CAMP_HINT_SESSION_SHOWN, StorageFlag.SET);
+      storageSet(StorageKeys.CAMP_HINT_SHOWN_COUNT, String(readCampHintCount() + 1));
     },
   };
 }

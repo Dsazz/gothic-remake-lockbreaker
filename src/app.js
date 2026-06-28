@@ -59,21 +59,27 @@ const analyticsPromise = import("./analytics/index.js");
 // Deferred so the one-time camp hint never competes with the onboarding tour or
 // the solve coachmark on first paint; it settles after the eye has moved on.
 const CAMP_HINT_DELAY_MS = 1200;
+// Re-show the discovery nudge across visits (at most once per session) until the
+// user opens the picker or we've nudged them this many separate sessions. A
+// single missed 7-9s window no longer burns the only chance to teach the control.
+const CAMP_HINT_MAX_SESSIONS = 3;
 
-// One-time nudge that the neutral banner is a clickable theme switcher. Gated to
-// the neutral state and to quiet moments (no tour, no coachmark). Idempotent:
-// marking seen on show lets every quiet-moment call site fire it safely.
+// Nudge that the neutral banner is a clickable camp switcher. Gated to the
+// neutral state and to quiet moments (no tour, no coachmark). Idempotent:
+// persisting only a real render (once per session) lets every quiet-moment call
+// site fire it safely without burning a session/count on a no-op.
 function maybeShowCampHint() {
   if (!canShowCampHint()) return;
   setTimeout(() => {
     if (!canShowCampHint()) return;
-    uiPrefs.markCampHintSeen();
-    campSelector.showHint();
+    if (campSelector.showHint()) uiPrefs.recordCampHintShown();
   }, CAMP_HINT_DELAY_MS);
 }
 
 function canShowCampHint() {
-  if (uiPrefs.isCampHintSeen()) return false;
+  if (uiPrefs.isCampPickerOpened()) return false;
+  if (uiPrefs.wasCampHintShownThisSession()) return false;
+  if (uiPrefs.campHintShownCount() >= CAMP_HINT_MAX_SESSIONS) return false;
   if (!campSelector || campSelector.getCamp() !== null) return false;
   if (solveCoachmark?.isActive()) return false;
   if (onboarding?.isActive?.()) return false;
@@ -199,6 +205,11 @@ function wireCampSelector() {
     initialCamp: activeCamp,
     onSelect: ({ camp, previousCamp }) =>
       whenAnalytics((analytics) => analytics.trackCampSelected({ camp, previousCamp })),
+    onHintShown: () => whenAnalytics((analytics) => analytics.trackCampHintShown()),
+    onPickerOpened: ({ source, hadCamp }) => {
+      uiPrefs.markCampPickerOpened();
+      whenAnalytics((analytics) => analytics.trackCampPickerOpened({ source, hadCamp }));
+    },
   });
 }
 

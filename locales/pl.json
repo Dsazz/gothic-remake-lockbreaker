@@ -14,12 +14,12 @@
   },
   "camp": {
     "heroTip": "Cholera... do żadnego obozu nie należę?",
-    "hintCta": "Wybierz obóz",
-    "choose": "Wybierz motyw banera obozu",
-    "current": "Motyw obozu: {name}. Zmień obóz",
+    "hintCta": "Dołącz do obozu",
+    "choose": "Wybierz swój obóz",
+    "current": "Obóz: {name}. Zmień obóz",
     "changeTitle": "{name} — zmień obóz",
-    "apply": "Zastosuj motyw: {name}",
-    "clearLabel": "Wyczyść motyw obozu",
+    "apply": "Dołącz do: {name}",
+    "clearLabel": "Opuść obozy",
     "names": {
       "old": "Stary Obóz",
       "new": "Nowy Obóz",

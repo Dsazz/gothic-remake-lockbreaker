@@ -23,4 +23,6 @@ export const Events = Object.freeze({
   TRANSLATION_FEEDBACK_CLICKED: "translation_feedback_clicked",
   LOCALE_AUTO_APPLIED: "locale_auto_applied",
   CAMP_SELECTED: "camp_selected",
+  CAMP_HINT_SHOWN: "camp_hint_shown",
+  CAMP_PICKER_OPENED: "camp_picker_opened",
 });

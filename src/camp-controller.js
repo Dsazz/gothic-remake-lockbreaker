@@ -3,7 +3,7 @@
 // coupling to store, solver, or domain. Analytics is delivered via `onSelect`.
 
 import { StorageKeys } from "./storage-keys.js";
-import { CampId } from "./analytics/values.js";
+import { CampId, CampPickerSource } from "./analytics/values.js";
 import { Key } from "./keyboard-keys.js";
 import { t, onLocaleChange } from "./i18n.js";
 
@@ -131,8 +131,16 @@ function neutralVisual(tipText) {
   ];
 }
 
-export function createCampSelector({ container, initialCamp, onSelect } = {}) {
-  if (!container) return { destroy() {}, getCamp: () => null };
+export function createCampSelector({
+  container,
+  initialCamp,
+  onSelect,
+  onHintShown,
+  onPickerOpened,
+} = {}) {
+  if (!container) {
+    return { destroy() {}, getCamp: () => null, showHint: () => false, hideHint() {} };
+  }
 
   let camp = isValidCamp(initialCamp) ? initialCamp : null;
   let popoverOpen = false;
@@ -143,7 +151,7 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
   let hintAbort = null;
 
   const POPOVER_MARGIN = 8;
-  const HINT_TIMEOUT_MS = 7000;
+  const HINT_TIMEOUT_MS = 9000;
 
   const onKeydown = (event) => {
     if (event.key !== Key.ESCAPE) return;
@@ -183,8 +191,13 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
 
   function openPopover() {
     if (popoverOpen) return;
+    const openedFromHint = hinting;
     hideHint();
     popoverOpen = true;
+    onPickerOpened?.({
+      source: openedFromHint ? CampPickerSource.HINT : CampPickerSource.MANUAL,
+      hadCamp: camp !== null,
+    });
     // Full-viewport scrim catches outside clicks (no separate pointer listener)
     // and covers the trigger, matching the app's other modal overlays.
     backdropNode = el("div", { class: "camp-backdrop", onclick: () => closePopover() });
@@ -340,18 +353,23 @@ export function createCampSelector({ container, initialCamp, onSelect } = {}) {
     hideHint();
   };
 
-  // One-time, non-blocking nudge that the neutral banner is a clickable theme
-  // switcher. Caller owns the "when" (gating) and the seen flag; this only owns
-  // the visual + dismissal. No-op once a camp is picked.
-  function showHint() {
-    if (hinting || camp !== null) return;
+// Non-blocking nudge that the neutral banner is a clickable theme switcher.
+// Caller owns the "when" (gating); this owns the visual + dismissal. Returns
+// whether it actually rendered, so the caller only persists a real show — a
+// no-op (already hinting or a camp is picked) must not burn a session/count.
+function showHint() {
+    if (hinting || camp !== null) return false;
     hinting = true;
     render();
+    onHintShown?.();
     hintTimer = setTimeout(hideHint, HINT_TIMEOUT_MS);
     hintAbort = new AbortController();
     const { signal } = hintAbort;
+    // A tap outside dismisses, but scrolling must NOT — mobile users scroll within
+    // a second or two of paint, and a scroll-dismiss kills the nudge before it
+    // registers. The timeout still bounds how long it lingers.
     document.addEventListener("pointerdown", onOutsidePointer, { signal });
-    window.addEventListener("scroll", hideHint, { passive: true, signal });
+    return true;
   }
 
   function hideHint() {
