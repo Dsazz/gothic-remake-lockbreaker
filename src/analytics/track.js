@@ -12,14 +12,6 @@ function baseProps(plateCount) {
   return { plate_count: plateCount, app_version: VERSION };
 }
 
-function shareProps(plateCount, landingType, extra = {}) {
-  return {
-    ...baseProps(plateCount),
-    landing_type: landingType,
-    ...extra,
-  };
-}
-
 function supportProps({ source, plateCount, locale }) {
   return {
     source,
@@ -158,18 +150,6 @@ export function trackGuideOpened({ source }) {
 
 export function trackPromptDismissed({ prompt, plateCount }) {
   send(Events.PROMPT_DISMISSED, { ...baseProps(plateCount), prompt });
-}
-
-export function trackShareLinkCopied({ plateCount, landingType }) {
-  send(Events.SHARE_LINK_COPIED, shareProps(plateCount, landingType));
-}
-
-export function trackShareLinkCopyFailed({ plateCount, landingType }) {
-  send(Events.SHARE_LINK_COPY_FAILED, shareProps(plateCount, landingType));
-}
-
-export function trackSharePromptClicked({ plateCount, landingType }) {
-  send(Events.SHARE_PROMPT_CLICKED, shareProps(plateCount, landingType));
 }
 
 export function trackOnboardingDismissed({ completed, stepId, stepIndex, action, totalSteps }) {

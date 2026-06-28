@@ -40,7 +40,6 @@ test("resetSession clears all solve session fields", () => {
   session.showMismatchTips = true;
   session.pendingSolveCoachmark = true;
   session.pendingHashFailureCoachmark = true;
-  session.showShareOffer = true;
 
   let dismissed = false;
   resetSession(session, { dismissCoachmark: () => { dismissed = true; } });
@@ -55,7 +54,6 @@ test("resetSession clears all solve session fields", () => {
   assert.equal(session.showMismatchTips, false);
   assert.equal(session.pendingSolveCoachmark, false);
   assert.equal(session.pendingHashFailureCoachmark, false);
-  assert.equal(session.showShareOffer, false);
 });
 
 test("buildWalkthrough clamps step index to available states", () => {

@@ -1699,19 +1699,12 @@ button {
   margin-bottom: 14px;
 }
 
-.sequence-ctas .gratitude-share-text,
 .sequence-ctas .gratitude-donate-reason {
   flex: 1 0 100%;
   margin: 0;
   text-align: center;
   font-size: 0.9rem;
   color: var(--parchment-dim);
-}
-
-/* When the share offer is present, give each CTA its own full-width row so
-   longer labels (e.g. "Send to a friend") are not truncated in a half-width pill. */
-.sequence-ctas.has-share-offer .pill {
-  flex-basis: 100%;
 }
 
 .sequence-ctas .pill {
@@ -1731,16 +1724,6 @@ button {
 .sequence-ctas .gratitude-donate-ore {
   width: 20px;
   height: 20px;
-}
-
-.sequence-ctas .gratitude-action-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.sequence-ctas .gratitude-action-icon svg {
-  width: 16px;
-  height: 16px;
 }
 
 .sequence-head h2 {
@@ -2706,7 +2689,7 @@ body.wipe-confirm-open {
   }
 
   /* already-bronze controls: intensify glow (matches donate/CTA), no hue shift */
-  .pill-primary:hover:not([disabled]):not(.gratitude-share-btn),
+  .pill-primary:hover:not([disabled]),
   .pill.is-active:hover:not([disabled]) {
     box-shadow: 0 0 24px var(--bronze-glow),
       0 0 12px rgba(232, 197, 106, 0.4), var(--bevel);
@@ -4185,20 +4168,6 @@ body.info-modal-open {
   text-overflow: ellipsis;
 }
 
-.gratitude-action-icon {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-.gratitude-action-icon svg {
-  width: 16px;
-  height: 16px;
-}
-
 .gratitude-donate-btn {
   background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
   border-color: var(--bronze-deep);
@@ -4237,59 +4206,13 @@ body.info-modal-open {
   object-fit: contain;
 }
 
-.gratitude-share-btn.is-copied {
-  border-color: var(--patina);
-  color: var(--patina);
-}
-
-.gratitude-share-btn:not(.is-copied) {
-  transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    border-color 0.16s ease;
-}
-
-.gratitude-share-btn:not(.is-copied):hover {
-  transform: translateY(-2px);
-  border-color: #e8c56a;
-  box-shadow:
-    0 0 24px var(--bronze-glow),
-    0 0 12px rgba(232, 197, 106, 0.45),
-    var(--bevel);
-}
-
-.gratitude-share-btn:not(.is-copied):hover .gratitude-action-icon {
-  animation: gratitude-link-hover 0.55s ease-in-out;
-}
-
-.gratitude-share-btn:not(.is-copied):active {
-  transform: translateY(0);
-}
-
-@keyframes gratitude-link-hover {
-  0%,
-  100% {
-    transform: translateX(0) rotate(0deg);
-  }
-
-  35% {
-    transform: translateX(-2px) rotate(-14deg);
-  }
-
-  65% {
-    transform: translateX(2px) rotate(14deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .gratitude-share-btn:not(.is-copied),
   .gratitude-donate-btn,
   .support-cta,
   .app-head-support-link {
     transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
   }
 
-  .gratitude-share-btn:not(.is-copied):hover,
   .gratitude-donate-btn:hover,
   .support-cta:hover,
   .support-cta:focus-visible,
@@ -4298,7 +4221,6 @@ body.info-modal-open {
     transform: none;
   }
 
-  .gratitude-share-btn:not(.is-copied):hover .gratitude-action-icon,
   .gratitude-donate-btn:hover .gratitude-donate-ore,
   .support-cta:hover .support-ore,
   .support-cta:focus-visible .support-ore,

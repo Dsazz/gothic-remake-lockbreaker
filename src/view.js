@@ -189,30 +189,6 @@ function infoIconSvg() {
   return svg;
 }
 
-function controlsIconSvg(kind) {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  svg.setAttribute("fill", "none");
-  svg.setAttribute("stroke", "currentColor");
-  svg.setAttribute("stroke-width", "2");
-  svg.setAttribute("stroke-linecap", "round");
-  svg.setAttribute("stroke-linejoin", "round");
-  if (kind === "link") {
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute(
-      "d",
-      "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71",
-    );
-    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path2.setAttribute(
-      "d",
-      "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
-    );
-    svg.append(path, path2);
-  }
-  return svg;
-}
-
 function holeLabel(value) {
   return String(value + 4);
 }
@@ -706,27 +682,11 @@ export function renderGratitudePrompt(container, ui, handlers) {
     container.hidden = true;
     return;
   }
-  const copied = Boolean(ui?.copyCopied);
-  const showShare = Boolean(ui?.showShare);
   container.hidden = false;
-  container.classList.toggle("has-share-offer", showShare);
-  const children = [];
-  if (showShare) {
-    children.push(
-      el("p", { class: "gratitude-share-text", text: t("solution.shareText") }),
-      gratitudeShareBtn(copied, handlers.onGratitudeShareClick),
-    );
-  }
-  children.push(
+  container.replaceChildren(
     el("p", { class: "gratitude-donate-reason", text: t("solution.donateReason") }),
     gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
   );
-  container.replaceChildren(...children);
-}
-
-/** @deprecated use renderGratitudePrompt — kept for test grep compatibility */
-export function renderSharePrompt(container, ui, handlers) {
-  renderGratitudePrompt(container, ui, handlers);
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
@@ -1277,33 +1237,6 @@ function supportDonateLink({
     ...(iconOnly ? { "aria-label": t("support.aria") } : {}),
     onClick,
   }, children);
-}
-
-function gratitudeShareBtn(copied, onClick) {
-  if (copied) {
-    return el("button", {
-      class: "pill pill-primary gratitude-share-btn is-copied",
-      type: "button",
-      "aria-label": t("solution.shareCopied"),
-      onClick,
-    }, [
-      el("span", { class: "gratitude-action-icon", "aria-hidden": "true" }, [
-        ackCheckSvg(),
-      ]),
-      el("span", { class: "gratitude-btn-label", text: t("solution.shareCopied") }),
-    ]);
-  }
-  return el("button", {
-    class: "pill pill-primary gratitude-share-btn",
-    type: "button",
-    "aria-label": t("solution.shareBtn"),
-    onClick,
-  }, [
-    el("span", { class: "gratitude-action-icon", "aria-hidden": "true" }, [
-      controlsIconSvg("link"),
-    ]),
-    el("span", { class: "gratitude-btn-label", text: t("solution.shareBtn") }),
-  ]);
 }
 
 function gratitudeDonateBtn(onClick) {

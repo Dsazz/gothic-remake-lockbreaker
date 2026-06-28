@@ -176,9 +176,6 @@
     "hideAll": "Hide full list ▲",
     "lockOpen": "Lock open",
     "sharedBanner": "Shared lock — sequence ready below.",
-    "shareText": "Stuck friend? Copy this exact lock and send it to them.",
-    "shareBtn": "Copy link for a friend",
-    "shareCopied": "Link copied!",
     "donateBtn": "Tip ore",
     "donateReason": "Keeps it free & ad-free.",
     "dismiss": "Dismiss"
@@ -239,10 +236,6 @@
   "confirm": {
     "wipe": "Reset the lock? Couplings, pins, mastery tier, and count will return to defaults.",
     "cancel": "Cancel"
-  },
-  "aria": {
-    "copyOk": "Link copied to clipboard.",
-    "copyFail": "Could not copy link."
   },
   "press": {
     "featured": "Featured in",

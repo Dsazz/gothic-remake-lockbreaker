@@ -152,9 +152,6 @@
     "hideAll": "Ukryj listę ▲",
     "lockOpen": "Otwarty",
     "sharedBanner": "Udostępniony zamek — sekwencja gotowa poniżej.",
-    "shareText": "Znajomy utknął? Skopiuj dokładnie ten zamek i wyślij mu go.",
-    "shareBtn": "Kopiuj link dla znajomego",
-    "shareCopied": "Link skopiowany!",
     "donateBtn": "Podaruj rudę",
     "donateReason": "Darmowy i bez reklam.",
     "dismiss": "Zamknij"
@@ -215,10 +212,6 @@
   "confirm": {
     "wipe": "Zresetować zamek? Sprzężenia, szpilki, poziom i liczba wrócą do ustawień domyślnych.",
     "cancel": "Anuluj"
-  },
-  "aria": {
-    "copyOk": "Link skopiowany do schowka.",
-    "copyFail": "Nie udało się skopiować linku."
   },
   "press": {
     "featured": "Wspomniane w",

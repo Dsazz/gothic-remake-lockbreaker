@@ -59,12 +59,14 @@ Catalog of all PostHog events so you don't have to grep `src/analytics/`. Most e
 - **Solve & lock:** `lock_solved` (`move_count`, `is_first_solve`), `lock_already_solved`, `lock_no_solution` (`failure_reason`), `lock_became_mappable`, `example_lock_loaded`, `step_mismatch_clicked`.
 - **Onboarding/tutor:** `tutor_started`, `tutor_not_shown` (`reason`), `tutor_skipped`, `onboarding_dismissed` (`action`/`completed`).
 - **Guide:** `guide_opened` (`source`).
-- **Share:** `share_prompt_clicked`, `share_link_copied`, `share_link_copy_failed`, `prompt_dismissed`.
+- **Prompts:** `prompt_dismissed` (`prompt` = `hash_banner` / `i18n_banner`). Generic dismissal event for inline banners; not share-related.
 - **Locale/i18n:** `locale_changed` (`change_direction`), `locale_session_end` (pagehide summary), `locale_auto_applied`, `i18n_banner_shown`, `locale_suggest_shown`/`_accepted`/`_declined`, `translation_feedback_clicked`, `hash_banner_shown`. Note: locale still rides every event via registered session properties (set during locale resolution and on each `locale_changed`).
 - **Support:** `support_link_clicked` (`source`, `locale`).
 - **Camp:** `camp_selected` (`camp`, `previous_camp`).
 
 Source of truth: `src/analytics/events.js` (names) and `src/analytics/track.js` + `src/analytics/locale-engagement.js` (props). Update this list when adding events.
+
+Removed with the share feature in v1.31.0 (dead feature — ~0.7% of solvers ever shared; see CHANGELOG): `share_prompt_clicked`, `share_link_copied`, `share_link_copy_failed`.
 
 Removed to stay under PostHog quota (emitted by old cached clients only, referenced by zero saved insights/notebooks/cohorts): `solve_button_clicked` (redundant with the `lock_*` solve-result events), `walkthrough_session_summary`, `share_prompt_shown`, `locale_resolved` (locale already rides every event), `lock_cleared`, `mastery_tier_changed`, `support_surface_shown`.
 

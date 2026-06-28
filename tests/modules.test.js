@@ -181,7 +181,7 @@ test("view.js has no duplicate function declarations", async () => {
   );
 });
 
-test("renderControls hides wipe until lock differs from default; sequence share is section-only", async () => {
+test("renderControls hides wipe until lock differs from default; gratitude prompt is donate-only", async () => {
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
   const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
   assert.match(viewText, /isPristineDefault/);
@@ -190,23 +190,14 @@ test("renderControls hides wipe until lock differs from default; sequence share 
   assert.match(viewText, /controls\.wipeLock/);
   assert.doesNotMatch(viewText, /controls-share/);
   assert.match(viewText, /renderGratitudePrompt/);
-  assert.match(viewText, /gratitudeShareBtn/);
-  assert.match(viewText, /ui\?\.showShare/);
+  assert.match(viewText, /gratitudeDonateBtn/);
+  // The share-out feature was removed; no share button or share offer remains.
+  assert.doesNotMatch(viewText, /gratitudeShareBtn/);
+  assert.doesNotMatch(viewText, /showShare/);
   assert.match(solveText, /visible: hasMoves/);
   assert.match(solveText, /renderGratitudePrompt/);
-  assert.doesNotMatch(solveText, /SHARE_PROMPT_KEY/);
-});
-
-test("share prompt is gated once-per-session on a hard solve, decoupled from donations", async () => {
-  const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
-  // Share offer is gated, not fired on every solve.
-  assert.match(solveText, /maybeOfferShare/);
-  assert.match(solveText, /wasSharePromptShownThisSession/);
-  assert.match(solveText, /markSharePromptShownThisSession/);
-  assert.match(solveText, /ShareTrigger/);
-  assert.match(solveText, /HARD_SOLVE_MIN_MOVES/);
-  // The share offer must not be coupled to the donation impression.
-  assert.doesNotMatch(solveText, /hasDonationCta/);
+  assert.doesNotMatch(solveText, /maybeOfferShare/);
+  assert.doesNotMatch(solveText, /ShareTrigger/);
 });
 
 test("hole legend renders per tumbler card, not once above the list", async () => {
