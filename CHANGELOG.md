@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.32.3] - 2026-06-28
+
+### Changed
+
+- Hovering your selected camp banner now shows the camp's name in a styled Gothic tooltip that matches the rest of the header, instead of the browser's plain default tooltip.
+
 ## [1.32.2] - 2026-06-28
 
 ### Changed

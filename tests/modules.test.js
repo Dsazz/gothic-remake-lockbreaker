@@ -176,6 +176,27 @@ test("camp hint re-shows per session, neutral-only, deferred past tour/coachmark
   }
 });
 
+test("active camp trigger names the camp via a styled tip, not a native title", async () => {
+  const campText = await readFile(join(root, "src/camp-controller.js"), "utf8");
+  const css = await readFile(join(root, "styles.css"), "utf8");
+
+  // The active visual renders the styled tip with the camp's name; the native
+  // `title` tooltip is gone (replaced by .camp-trigger-tip).
+  assert.match(campText, /campTip\(campName\(camp\)\)/);
+  assert.match(campText, /class: "camp-trigger-tip"/);
+  assert.doesNotMatch(campText, /\btitle:/);
+
+  // CSS reveals the active tip on hover and keyboard focus.
+  assert.match(css, /\.camp-trigger--active:hover \.camp-trigger-tip/);
+  assert.match(css, /\.camp-trigger--active:focus-visible \.camp-trigger-tip/);
+
+  // The old title key is fully retired across every locale.
+  for (const code of ["en", "de", "pl", "ukr"]) {
+    const locale = JSON.parse(await readFile(join(root, `locales/${code}.json`), "utf8"));
+    assert.ok(!locale.camp.changeTitle, `camp.changeTitle should be removed from ${code}.json`);
+  }
+});
+
 test("header sleeper support link tracks header_sleeper source", async () => {
   const viewText = await readFile(join(root, "src/view.js"), "utf8");
   const start = viewText.indexOf("export function renderHeadSleeper");

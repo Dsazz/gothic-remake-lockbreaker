@@ -17,7 +17,6 @@
     "hintCta": "Join a camp",
     "choose": "Choose your camp",
     "current": "Camp: {name}. Change camp",
-    "changeTitle": "{name} — change camp",
     "apply": "Join the {name}",
     "clearLabel": "Leave the camps",
     "names": {

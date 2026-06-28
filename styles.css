@@ -574,11 +574,13 @@ button {
   opacity: 0;
 }
 
-/* Gothic-flavored tip, styled after the old portrait tip; right of the face. */
-.camp-hero-tip {
+/* Shared Gothic tip skin, styled after the old portrait tip. Positioning lives
+   in per-state blocks below: each tip anchors to a different box (the neutral
+   Nameless face vs the whole active trigger), so their offsets must stay
+   independent even though they coincide today. */
+.camp-hero-tip,
+.camp-trigger-tip {
   position: absolute;
-  top: 50%;
-  left: calc(100% + 10px);
   padding: 8px 14px 9px;
   border-radius: var(--radius);
   border: 1px solid var(--bronze-deep);
@@ -593,7 +595,6 @@ button {
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transform: translate(-6px, -50%);
   transition:
     opacity 0.18s ease,
     transform 0.18s ease,
@@ -604,8 +605,24 @@ button {
     0 8px 22px rgba(0, 0, 0, 0.62);
 }
 
+/* Neutral: to the right of the centered Nameless face. */
+.camp-hero-tip {
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translate(-6px, -50%);
+}
+
+/* Active: to the right of the camp banner, centered on the trigger. */
+.camp-trigger-tip {
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translate(-6px, -50%);
+}
+
 .camp-trigger--neutral:hover .camp-hero-tip,
-.camp-trigger--neutral:focus-visible .camp-hero-tip {
+.camp-trigger--neutral:focus-visible .camp-hero-tip,
+.camp-trigger--active:hover .camp-trigger-tip,
+.camp-trigger--active:focus-visible .camp-trigger-tip {
   opacity: 1;
   visibility: visible;
   transform: translate(0, -50%);
@@ -750,7 +767,8 @@ button {
   .camp-choice,
   .camp-trigger .camp-banner-img,
   .camp-hero-img,
-  .camp-hero-tip {
+  .camp-hero-tip,
+  .camp-trigger-tip {
     transition: none;
   }
 
@@ -765,7 +783,9 @@ button {
   }
 
   .camp-trigger--neutral:hover .camp-hero-tip,
-  .camp-trigger--neutral:focus-visible .camp-hero-tip {
+  .camp-trigger--neutral:focus-visible .camp-hero-tip,
+  .camp-trigger--active:hover .camp-trigger-tip,
+  .camp-trigger--active:focus-visible .camp-trigger-tip {
     transform: translate(0, -50%);
   }
 
