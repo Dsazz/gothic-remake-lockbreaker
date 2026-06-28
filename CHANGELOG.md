@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.32.1] - 2026-06-28
+
+### Fixed
+
+- The camp banners (Old, New, and Swamp Camp) now render at higher resolution, so they stay crisp on high-DPI / Retina screens instead of looking soft.
+
 ## [1.32.0] - 2026-06-28
 
 ### Changed
