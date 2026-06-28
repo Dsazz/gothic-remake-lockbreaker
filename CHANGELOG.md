@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.32.2] - 2026-06-28
+
+### Changed
+
+- Refreshed the screaming Nameless Hero portrait (the face that appears when you hover the camp banner) and matched its styling to the calm face, dropping an inconsistent shadow.
+
+### Fixed
+
+- The Nameless Hero portrait no longer flickers while swapping from the calm to the screaming face on hover.
+
 ## [1.32.1] - 2026-06-28
 
 ### Fixed
