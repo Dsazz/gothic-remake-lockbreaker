@@ -14,12 +14,12 @@
   },
   "camp": {
     "heroTip": "Verdammt... ich gehöre zu keinem Lager?",
-    "hintCta": "Wähle dein Lager",
-    "choose": "Lagerbanner-Thema wählen",
-    "current": "Lager-Thema: {name}. Lager wechseln",
+    "hintCta": "Tritt einem Lager bei",
+    "choose": "Wähle dein Lager",
+    "current": "Lager: {name}. Lager wechseln",
     "changeTitle": "{name} — Lager wechseln",
-    "apply": "{name}-Thema anwenden",
-    "clearLabel": "Lager-Thema zurücksetzen",
+    "apply": "{name} beitreten",
+    "clearLabel": "Die Lager verlassen",
     "names": {
       "old": "Altes Lager",
       "new": "Neues Lager",

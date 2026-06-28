@@ -21,6 +21,8 @@ export {
   trackLocaleAutoApplied,
   trackLocaleChanged,
   trackCampSelected,
+  trackCampHintShown,
+  trackCampPickerOpened,
 } from "./track.js";
 export { installErrorCapture, sendOnPageHide } from "./transport.js";
 export { installLocaleEngagementTracking } from "./locale-engagement.js";

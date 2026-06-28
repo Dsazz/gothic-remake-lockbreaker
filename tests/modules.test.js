@@ -119,27 +119,47 @@ test("app defers solve coachmark until onboarding tour ends", async () => {
   assert.match(onboardingText, /isActive:\s*\(\)\s*=>\s*active/);
 });
 
-test("camp change hint is one-time, neutral-only, and deferred past the tour/coachmark", async () => {
+test("camp hint re-shows per session, neutral-only, deferred past tour/coachmark, and is instrumented", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
   const campText = await readFile(join(root, "src/camp-controller.js"), "utf8");
   const uiPrefsText = await readFile(join(root, "src/ui-prefs.js"), "utf8");
   const css = await readFile(join(root, "styles.css"), "utf8");
 
-  // Persistence: a dedicated one-time flag.
-  assert.match(uiPrefsText, /isCampHintSeen/);
-  assert.match(uiPrefsText, /markCampHintSeen/);
+  // Persistence: re-show gating (picker-opened + per-session + lifetime cap)
+  // replaces the old one-time seen flag.
+  assert.match(uiPrefsText, /isCampPickerOpened/);
+  assert.match(uiPrefsText, /markCampPickerOpened/);
+  assert.match(uiPrefsText, /recordCampHintShown/);
+  assert.match(uiPrefsText, /wasCampHintShownThisSession/);
+  assert.match(uiPrefsText, /campHintShownCount/);
+  assert.doesNotMatch(uiPrefsText, /isCampHintSeen|markCampHintSeen/);
 
-  // Controller owns the visual + dismissal lifecycle and the CTA copy.
+  // Controller owns the visual + dismissal lifecycle and the CTA copy, and
+  // surfaces the funnel through injected callbacks (no analytics import).
   assert.match(campText, /showHint/);
   assert.match(campText, /hideHint/);
   assert.match(campText, /camp\.hintCta/);
+  assert.match(campText, /onHintShown/);
+  assert.match(campText, /onPickerOpened/);
+  // Decoupled: enums are fine, but no analytics transport/track calls here.
+  assert.doesNotMatch(campText, /trackCamp|analytics\/track|analytics\/index/);
+  // Scroll must not dismiss the hint (mobile users scroll within ~1-2s of paint).
+  assert.doesNotMatch(campText, /"scroll",\s*hideHint/);
 
-  // App owns the gating: seen flag, neutral state, and no competing nudges.
+  // App owns the gating: picker-opened + per-session + lifetime cap, neutral
+  // state, and no competing nudges.
   assert.match(appText, /maybeShowCampHint/);
-  assert.match(appText, /uiPrefs\.isCampHintSeen\(\)/);
+  assert.match(appText, /uiPrefs\.isCampPickerOpened\(\)/);
+  assert.match(appText, /uiPrefs\.wasCampHintShownThisSession\(\)/);
+  assert.match(appText, /uiPrefs\.campHintShownCount\(\) >= CAMP_HINT_MAX_SESSIONS/);
+  assert.match(appText, /uiPrefs\.recordCampHintShown\(\)/);
   assert.match(appText, /campSelector\.getCamp\(\) !== null/);
   assert.match(appText, /solveCoachmark\?\.isActive\(\)/);
   assert.match(appText, /onboarding\?\.isActive\?\.\(\)/);
+  // Opening the picker is persisted (suppresses future hints) and tracked.
+  assert.match(appText, /uiPrefs\.markCampPickerOpened\(\)/);
+  assert.match(appText, /trackCampHintShown/);
+  assert.match(appText, /trackCampPickerOpened/);
 
   // CSS reveal plus a reduced-motion guard for the pulse.
   assert.match(css, /\.camp-trigger--neutral\.is-hinting \.camp-hero-tip/);

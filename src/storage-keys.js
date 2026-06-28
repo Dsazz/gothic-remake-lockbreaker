@@ -13,7 +13,9 @@ export const StorageKeys = Object.freeze({
   GRATITUDE_PROMPT_SHOWN: "gratitude_prompt_shown_v1",
   HASH_FAILURE_COACHMARK_SEEN: "hash_failure_coachmark_seen_v1",
   CAMP: "camp_v1",
-  CAMP_HINT_SEEN: "camp_hint_seen_v1",
+  CAMP_PICKER_OPENED: "camp_picker_opened_v1",
+  CAMP_HINT_SHOWN_COUNT: "camp_hint_shown_count_v1",
+  CAMP_HINT_SESSION_SHOWN: "camp_hint_session_shown_v1",
 });
 
 /** Persisted boolean flags — localStorage/sessionStorage value when set. */

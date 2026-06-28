@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.32.0] - 2026-06-28
+
+### Changed
+
+- Refreshed the Old Camp, New Camp, and Swamp Camp banner artwork with higher-detail designs.
+- The camp picker now speaks in faction terms — "Join a camp", "Choose your camp", "Join the Old Camp", "Leave the camps" — instead of the old generic "theme" wording.
+- The neutral (no camp) banner is brighter so it clearly reads as a tappable control rather than a disabled placeholder.
+- The "pick your camp" nudge now reappears on later visits (up to three sessions) until you open the picker, stays visible a little longer, and no longer disappears the instant you scroll on mobile.
+
+### Fixed
+
+- Hovering the Swamp Camp banner no longer floods it with green — the glow now stays as a clean outer halo, keeping the banner readable.
+
 ## [1.31.0] - 2026-06-28
 
 ### Removed

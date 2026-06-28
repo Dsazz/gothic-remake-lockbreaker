@@ -62,7 +62,7 @@ Catalog of all PostHog events so you don't have to grep `src/analytics/`. Most e
 - **Prompts:** `prompt_dismissed` (`prompt` = `hash_banner` / `i18n_banner`). Generic dismissal event for inline banners; not share-related.
 - **Locale/i18n:** `locale_changed` (`change_direction`), `locale_session_end` (pagehide summary), `locale_auto_applied`, `i18n_banner_shown`, `locale_suggest_shown`/`_accepted`/`_declined`, `translation_feedback_clicked`, `hash_banner_shown`. Note: locale still rides every event via registered session properties (set during locale resolution and on each `locale_changed`).
 - **Support:** `support_link_clicked` (`source`, `locale`).
-- **Camp:** `camp_selected` (`camp`, `previous_camp`).
+- **Camp:** `camp_selected` (`camp`, `previous_camp`), `camp_hint_shown` (discovery nudge surfaced), `camp_picker_opened` (`source` = hint/manual, `had_camp`).
 
 Source of truth: `src/analytics/events.js` (names) and `src/analytics/track.js` + `src/analytics/locale-engagement.js` (props). Update this list when adding events.
 
@@ -72,12 +72,12 @@ Removed to stay under PostHog quota (emitted by old cached clients only, referen
 
 ## Camp themes
 
-Cosmetic faction theme switcher in `src/camp-controller.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through the `onSelect` callback (`camp_selected`).
+Cosmetic faction theme switcher in `src/camp-controller.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through injected callbacks (`onSelect` -> `camp_selected`, `onHintShown` -> `camp_hint_shown`, `onPickerOpened` -> `camp_picker_opened`); the controller imports no analytics.
 
 - Three camps: `old` (gold), `new` (blue), `swamp` (green); neutral = no theme (grey default). Ids in `CampId` (`src/analytics/values.js`).
 - Theme = accent palette swap via a `data-camp` attribute on `<html>`. Palettes live in `styles.css` under `:root[data-camp="..."]`, overriding registered `@property` custom props (`--bronze*`, `--bg-vignette`) so switches animate.
 - `initCampTheme()` applies the persisted camp before first paint (avoids neutral flash); `createCampSelector()` builds the trigger + popover. Both wired in `src/app.js`.
-- Persistence: `StorageKeys.CAMP`. One-time discovery hint is gated by `StorageKeys.CAMP_HINT_SEEN` and deferred so it never competes with onboarding.
+- Persistence: `StorageKeys.CAMP`. The discovery hint re-shows at most once per session (`CAMP_HINT_SESSION_SHOWN`) for up to `CAMP_HINT_MAX_SESSIONS` visits, then stops once the picker is ever opened (`CAMP_PICKER_OPENED`) or the lifetime cap (`CAMP_HINT_SHOWN_COUNT`) is hit; it stays deferred so it never competes with onboarding.
 - Labels are localized via `t("camp.*")` — Tier C keys need all four locales.
 
 ## Testing

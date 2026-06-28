@@ -86,6 +86,11 @@ export const CampId = Object.freeze({
   NONE: "none",
 });
 
+export const CampPickerSource = Object.freeze({
+  HINT: "hint",
+  MANUAL: "manual",
+});
+
 export const LocaleChangeDirection = Object.freeze({
   TO_TRANSLATION: "to_translation",
   TO_DEFAULT: "to_default",

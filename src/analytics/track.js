@@ -215,6 +215,18 @@ export function trackCampSelected({ camp, previousCamp }) {
   });
 }
 
+export function trackCampHintShown() {
+  send(Events.CAMP_HINT_SHOWN, { app_version: VERSION });
+}
+
+export function trackCampPickerOpened({ source, hadCamp }) {
+  send(Events.CAMP_PICKER_OPENED, {
+    source,
+    had_camp: hadCamp,
+    app_version: VERSION,
+  });
+}
+
 
 export function trackLocaleChanged({ locale, previousLocale, source, switchCount }) {
   const change_direction = localeChangeDirection({ locale, previousLocale });

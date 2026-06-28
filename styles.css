@@ -511,12 +511,20 @@ button {
     drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
 }
 
-/* Neutral state: a faded, faction-agnostic blank banner inviting a pick. */
+/* Neutral state: a faction-agnostic blank banner inviting a pick. Kept close to
+   full strength so it reads as an active control, not a disabled placeholder. */
 .camp-trigger--neutral .camp-banner-img {
-  opacity: 0.55;
+  opacity: 0.82;
   transition:
     opacity 160ms ease,
     transform 160ms ease;
+}
+
+/* Touch devices have no hover, so the pennant must never look dimmed/disabled. */
+@media (hover: none) {
+  .camp-trigger--neutral .camp-banner-img {
+    opacity: 0.95;
+  }
 }
 
 .camp-trigger--neutral:hover .camp-banner-img,
