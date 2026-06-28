@@ -116,6 +116,18 @@ function heroImg(className, src) {
   });
 }
 
+// Styled hover/focus tooltip naming the active camp, replacing the native
+// `title`. Decorative (aria-hidden) — the trigger's aria-label already names
+// the camp and the action for assistive tech.
+function campTip(text) {
+  return el("span", { class: "camp-trigger-tip", text, "aria-hidden": "true" });
+}
+
+// Active visual: the chosen camp's banner plus the styled name tip.
+function activeVisual(camp) {
+  return [bannerImage(camp), campTip(campName(camp))];
+}
+
 // Neutral visual: the blank banner with the Nameless Hero face overlaid on its
 // empty crest. Decorative only (pointer-events off) so clicks reach the trigger
 // button and open the picker. The face + tip react to the trigger's hover.
@@ -321,7 +333,7 @@ export function createCampSelector({
     const label = active ? t("camp.current", { name: campName(camp) }) : t("camp.choose");
     const showingHint = hinting && !active;
     const tipText = t(showingHint ? "camp.hintCta" : "camp.heroTip");
-    const visual = active ? bannerImage(camp) : neutralVisual(tipText);
+    const visual = active ? activeVisual(camp) : neutralVisual(tipText);
     const stateClass = `camp-trigger--${active ? SelectorState.ACTIVE : SelectorState.NEUTRAL}`;
     const trigger = el(
       "button",
@@ -331,7 +343,6 @@ export function createCampSelector({
         "aria-haspopup": "true",
         "aria-expanded": popoverOpen ? "true" : "false",
         "aria-label": label,
-        title: active ? t("camp.changeTitle", { name: campName(camp) }) : t("camp.choose"),
         onclick: togglePopover,
       },
       visual,
@@ -386,8 +397,8 @@ function showHint() {
 
   render();
 
-  // Trigger labels, titles, and the neutral hero tip are localized; rebuild
-  // them when the locale changes.
+  // Trigger labels and the styled hover tips are localized; rebuild them when
+  // the locale changes.
   const stopLocaleWatch = onLocaleChange(() => render());
 
   return {

@@ -17,7 +17,6 @@
     "hintCta": "Tritt einem Lager bei",
     "choose": "Wähle dein Lager",
     "current": "Lager: {name}. Lager wechseln",
-    "changeTitle": "{name} — Lager wechseln",
     "apply": "{name} beitreten",
     "clearLabel": "Die Lager verlassen",
     "names": {

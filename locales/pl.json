@@ -17,7 +17,6 @@
     "hintCta": "Dołącz do obozu",
     "choose": "Wybierz swój obóz",
     "current": "Obóz: {name}. Zmień obóz",
-    "changeTitle": "{name} — zmień obóz",
     "apply": "Dołącz do: {name}",
     "clearLabel": "Opuść obozy",
     "names": {
