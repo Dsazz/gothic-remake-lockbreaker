@@ -16,23 +16,16 @@ import {
   LandingType,
   MappingCompleteness,
   PromptKind,
-  ShareTrigger,
   SolveFailureReason,
   SolveSource,
   SupportSource,
 } from "./analytics/values.js";
 import {
   trackPromptDismissed,
-  trackShareLinkCopied,
-  trackShareLinkCopyFailed,
-  trackSharePromptClicked,
   trackSolveResult,
   trackStepMismatchClicked,
   trackHashBannerShown,
 } from "./analytics/index.js";
-
-// A solve is "hard" (worth a share offer) when its path is at least this long.
-const HARD_SOLVE_MIN_MOVES = 5;
 
 export function createEmptySession() {
   return {
@@ -41,14 +34,12 @@ export function createEmptySession() {
     stepIndex: 0,
     showAllSteps: false,
     sequenceMinimized: false,
-    copyCopied: false,
     blockedMessage: undefined,
     hashBannerVisible: false,
     hashBannerTracked: false,
     showMismatchTips: false,
     pendingSolveCoachmark: false,
     pendingHashFailureCoachmark: false,
-    showShareOffer: false,
   };
 }
 
@@ -78,7 +69,6 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   session.showMismatchTips = false;
   session.pendingSolveCoachmark = false;
   session.pendingHashFailureCoachmark = false;
-  session.showShareOffer = false;
 }
 
 export function createSolveController({
@@ -96,7 +86,6 @@ export function createSolveController({
   const session = createEmptySession();
   session.hashBannerVisible = shouldShowHashBanner();
 
-  let copyTimer;
   let pulseTimer;
   let flashTimer;
   let tumblersPulse = false;
@@ -197,19 +186,6 @@ export function createSolveController({
     els.sequencePanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function maybeOfferShare(previousFailure) {
-    const moveCount = session.solution?.length ?? 0;
-    const recovered = previousFailure === SolveFailureReason.NO_PATH;
-    const trigger = recovered
-      ? ShareTrigger.RECOVERED_NO_SOLUTION
-      : moveCount >= HARD_SOLVE_MIN_MOVES
-        ? ShareTrigger.LONG_SOLUTION
-        : null;
-    if (!trigger || uiPrefs.wasSharePromptShownThisSession()) return;
-    session.showShareOffer = true;
-    uiPrefs.markSharePromptShownThisSession();
-  }
-
   function maybeTrackHashBanner(state, hasMoves) {
     if (!session.hashBannerVisible || !hasMoves || session.hashBannerTracked) return;
     session.hashBannerTracked = true;
@@ -247,11 +223,7 @@ export function createSolveController({
     );
     view.renderGratitudePrompt(
       els.gratitudePrompt,
-      {
-        visible: hasMoves,
-        showShare: hasMoves && session.showShareOffer,
-        copyCopied: session.copyCopied,
-      },
+      { visible: hasMoves },
       handlers,
     );
     view.renderMappingWarning(
@@ -283,35 +255,6 @@ export function createSolveController({
     );
   }
 
-  async function copyShareUrl(url) {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(url);
-      return;
-    }
-    const area = document.createElement("textarea");
-    area.value = url;
-    area.setAttribute("readonly", "");
-    area.style.position = "fixed";
-    area.style.left = "-9999px";
-    document.body.append(area);
-    area.select();
-    const ok = document.execCommand("copy");
-    area.remove();
-    if (!ok) throw new Error("copy failed");
-  }
-
-  function showCopyFeedback() {
-    session.copyCopied = true;
-    if (els.ariaLive) els.ariaLive.textContent = t("aria.copyOk");
-    onRerender();
-    clearTimeout(copyTimer);
-    copyTimer = setTimeout(() => {
-      session.copyCopied = false;
-      if (els.ariaLive) els.ariaLive.textContent = "";
-      onRerender();
-    }, 2000);
-  }
-
   function onSolve({ solveSource = SolveSource.MANUAL } = {}) {
     const state = store.getState();
     const completeness = mappingCompletenessFor(state);
@@ -325,7 +268,6 @@ export function createSolveController({
     }
 
     session.blockedMessage = undefined;
-    const previousFailure = session.solveFailureReason;
     if (!isInBounds(state.positions)) {
       session.solution = null;
       session.solveFailureReason = SolveFailureReason.OOB_START;
@@ -353,8 +295,6 @@ export function createSolveController({
         session.pendingHashFailureCoachmark = true;
         maybeShowHashFailureCoachmark();
       }
-    } else if (Array.isArray(session.solution) && session.solution.length > 0) {
-      maybeOfferShare(previousFailure);
     }
 
     onRenderSolutionArea(state);
@@ -375,19 +315,6 @@ export function createSolveController({
   }
 
   const handlers = {
-    async onCopyShareLink() {
-      const plateCount = store.getState().plateCount;
-      try {
-        await copyShareUrl(location.href);
-        showCopyFeedback();
-        trackShareLinkCopied({ plateCount, landingType });
-        return true;
-      } catch {
-        if (els.ariaLive) els.ariaLive.textContent = t("aria.copyFail");
-        trackShareLinkCopyFailed({ plateCount, landingType });
-        return false;
-      }
-    },
     onWalk(delta) {
       const total = session.solution?.length ?? 0;
       const prev = session.stepIndex;
@@ -433,13 +360,6 @@ export function createSolveController({
         plateCount: store.getState().plateCount,
       });
       onRenderSolutionArea(store.getState());
-    },
-    async onGratitudeShareClick() {
-      trackSharePromptClicked({
-        plateCount: store.getState().plateCount,
-        landingType,
-      });
-      await handlers.onCopyShareLink();
     },
     onGratitudeDonateClick() {
       getHandlers().onSupportClick(SupportSource.SEQUENCE_POST_SOLVE);

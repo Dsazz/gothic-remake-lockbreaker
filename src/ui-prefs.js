@@ -83,12 +83,6 @@ export function createUiPrefs() {
     markGratitudePromptShown() {
       storageSet(StorageKeys.GRATITUDE_PROMPT_SHOWN, StorageFlag.SET);
     },
-    wasSharePromptShownThisSession() {
-      return sessionGet(StorageKeys.SHARE_PROMPT_SESSION_SHOWN) === StorageFlag.SET;
-    },
-    markSharePromptShownThisSession() {
-      sessionSet(StorageKeys.SHARE_PROMPT_SESSION_SHOWN, StorageFlag.SET);
-    },
     isHashFailureCoachmarkSeen() {
       return storageGet(StorageKeys.HASH_FAILURE_COACHMARK_SEEN) === StorageFlag.SET;
     },

@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.30.2-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.31.0-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.30.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.31.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [🇩🇪 German](https://gothiclockbreaker.com/de/) · [🇵🇱 Polish](https://gothiclockbreaker.com/pl/) · [🇺🇦 Ukrainian](https://gothiclockbreaker.com/uk/)
 
@@ -115,7 +115,6 @@ State space tops out at `7^7 ≈ 820,000` states, so it solves instantly.
    opposite.
 3. **Break the Lock** — read the focus card, then **Next** to walk the sequence one turn
    at a time. Each lock row shows a read-only 7-hole groove (like the tumbler cards).
-   After a solve with steps, a **Share lock** banner copies the URL for the current lock.
    **Minimize** collapses the panel to a compact bar; **Clear** (eraser) drops the
    solved sequence. Open **Show all N steps** for the full list.
 
@@ -153,7 +152,7 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 | `src/view.js` | Pure `state -> DOM` rendering; handlers injected. Reads domain constants; no store access. |
 | `src/app.js` | Composition root: bootstraps i18n, composes controllers, subscribes store to renderer. |
 | `src/ui-prefs.js` | UI flag persistence (banners, visit marker, locale suggest dismiss). |
-| `src/solve-controller.js` | Solve session, walkthrough, share/hash banners, solve coachmark deferral. |
+| `src/solve-controller.js` | Solve session, walkthrough, hash banner, solve coachmark deferral. |
 | `src/lock-controller.js` | Lock mutation handlers; invalidates solve session on change. |
 | `src/locale-chrome-controller.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
 | `src/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
@@ -163,7 +162,7 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 
 ## Analytics
 
-Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture, session replay, web vitals, heatmaps, surveys, and rageclick/dead-click capture are **disabled**. Each session sends one SDK `$pageview` on load (plus a 45s visibility ping so Web Analytics Live stays accurate during long solves), explicit custom events (landing with referrer/UTM, mapping milestones, solve funnel, walkthrough summary, tutor/onboarding, share, guide, lock wipe, i18n), and registers `initial_locale` / `locale` session props. Geo country (for locale suggest) is enriched server-side from IP — no lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture, session replay, web vitals, heatmaps, surveys, and rageclick/dead-click capture are **disabled**. Each session sends one SDK `$pageview` on load (plus a 45s visibility ping so Web Analytics Live stays accurate during long solves), explicit custom events (landing with referrer/UTM, mapping milestones, solve funnel, tutor/onboarding, guide, i18n), and registers `initial_locale` / `locale` session props. Geo country (for locale suggest) is enriched server-side from IP — no lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
 ## Deploy your own
 

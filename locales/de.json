@@ -151,9 +151,6 @@
     "hideAll": "Liste ausblenden ▲",
     "lockOpen": "Offen",
     "sharedBanner": "Geteiltes Schloss — Sequenz unten bereit.",
-    "shareText": "Freund festgesteckt? Kopier genau dieses Schloss und schick es ihm.",
-    "shareBtn": "Link für Freund kopieren",
-    "shareCopied": "Link kopiert!",
     "donateBtn": "Erz spenden",
     "donateReason": "Hält es kostenlos & werbefrei.",
     "dismiss": "Schließen"
@@ -214,10 +211,6 @@
   "confirm": {
     "wipe": "Schloss zurücksetzen? Kupplungen, Nadeln, Stufe und Anzahl werden auf Standard zurückgesetzt.",
     "cancel": "Abbrechen"
-  },
-  "aria": {
-    "copyOk": "Link in Zwischenablage kopiert.",
-    "copyFail": "Link konnte nicht kopiert werden."
   },
   "press": {
     "featured": "Erwähnt in",

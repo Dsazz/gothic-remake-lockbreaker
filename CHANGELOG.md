@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.31.0] - 2026-06-28
+
+### Removed
+
+- Removed the "share this lock" feature. Usage data showed it was effectively dead — only ~0.7% of players who solved a lock ever copied a share link — so the post-solve share button and its prompt are gone. Solving, the step-by-step walkthrough, language switching, and opening a shared link someone sends you all keep working.
+
 ## [1.30.2] - 2026-06-26
 
 ### Fixed
