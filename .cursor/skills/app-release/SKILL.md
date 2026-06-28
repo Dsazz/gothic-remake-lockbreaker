@@ -35,7 +35,8 @@ Copy and track:
 - [ ] llms.txt + sitemap.xml — Last updated / lastmod date = changelog date (if SEO-relevant)
 - [ ] make lint && make test (includes check-version and check-seo)
 - [ ] Optional: make build && make preview — smoke fonts, locales, hash, cold onboarding
-- [ ] Commit on release branch + open/merge PR to `main` (only if user asked)
+- [ ] Commit on release branch + open PR to `main` (only if user asked)
+- [ ] Wait for ALL PR checks green, then merge with branch delete, then wait for deploy run — see "Merge procedure"
 ```
 
 `main` is protected — all changes via PR, `ci` status check required. `make check-version` does **not** check the README badge — update it manually.
@@ -86,13 +87,41 @@ Release vX.Y.Z — one-line summary of the headline change.
 
 Example: `Release v1.15.0 — Vite build, GitHub Actions deploy, first-load perf, Biome.`
 
-**Do not commit** unless the user explicitly asks. When they do, one commit on a release branch with all release files + any pending feature work for that release. Open a PR to `main`; merge after CI passes.
+**Do not commit** unless the user explicitly asks. When they do, one commit on a release branch with all release files + any pending feature work for that release. Open a PR to `main`.
 
-## Deploy (after PR merge to main)
+## Merge procedure (agent must follow in order)
+
+Never merge on a hunch. Run these steps; do not skip the wait.
+
+1. **Wait for every PR check to pass** — not just `ci`. Block on the live result:
+
+```bash
+gh pr checks <pr-number> --watch
+```
+
+This watches all PR workflows (`ci` and `lighthouse`). It exits non-zero if any check fails — if so, **stop**, fix, push, and re-watch. Do not merge a red or pending PR.
+
+2. **Merge only once all checks are green, and delete the PR branch in the same step:**
+
+```bash
+gh pr merge <pr-number> --merge --delete-branch
+```
+
+Branch protection blocks the merge if `ci` is not green, and rejects force/direct pushes to `main`. `--delete-branch` removes the remote PR branch after the merge.
+
+3. **Wait for the post-merge `Deploy` workflow (which includes the `release` job) to finish:**
+
+```bash
+gh run watch "$(gh run list --workflow=deploy.yml --branch=main --limit=1 --json databaseId --jq '.[0].databaseId')" --exit-status
+```
+
+`--exit-status` fails if any job (`ci`, `build`, `deploy`, `release`) fails. Only after this run is green is the release actually shipped and tagged.
+
+## Deploy (runs after PR merge to main)
 
 1. GitHub **Settings → Pages → Build and deployment** → source **GitHub Actions** (not branch root)
-2. Merging the PR triggers [`.github/workflows/deploy.yml`](../../../.github/workflows/deploy.yml): CI → `vite build` → Pages artifact
-3. Confirm Actions green; spot-check [gothiclockbreaker.com](https://gothiclockbreaker.com/)
+2. Merging the PR triggers [`.github/workflows/deploy.yml`](../../../.github/workflows/deploy.yml): CI → `vite build` → Pages artifact → `release` job
+3. After the merge step above reports green, spot-check [gothiclockbreaker.com](https://gothiclockbreaker.com/)
 
 Branch protection requires the `ci` status check to pass before merge; force pushes and direct pushes to `main` are blocked.
 

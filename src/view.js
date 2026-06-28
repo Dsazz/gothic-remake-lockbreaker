@@ -25,7 +25,7 @@ import {
   PRESS_PCGAMES_URL,
   SUPPORT_URL,
 } from "./version.js";
-import { t, tCount } from "./i18n.js";
+import { t } from "./i18n.js";
 import { Key } from "./keyboard-keys.js";
 import { localeSuggestPromptKey } from "./locale-suggest.js";
 
@@ -38,6 +38,10 @@ function linkLabel(link) {
   return "·";
 }
 
+// The on-screen/in-game groove axis is mirrored relative to the solver's
+// POS_MIN..POS_MAX axis, so DIR.LEFT (-1) is shown to the player as "right" (and
+// vice versa). This inversion is intentional and validated against the game —
+// keep label and arrow flipped together; do not "correct" it.
 function dirLabel(dir) {
   return dir === DIR.LEFT ? t("direction.right") : t("direction.left");
 }
@@ -107,9 +111,40 @@ function renderMoveCmd(move, size = "focus") {
   );
 }
 
+function openLockSvg() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  const shackle = document.createElementNS(ns, "path");
+  shackle.setAttribute("class", "wt-lock-shackle");
+  shackle.setAttribute("d", "M7 11V7a5 5 0 0 1 9.9-1");
+  const body = document.createElementNS(ns, "rect");
+  body.setAttribute("x", "4");
+  body.setAttribute("y", "11");
+  body.setAttribute("width", "16");
+  body.setAttribute("height", "10");
+  body.setAttribute("rx", "2");
+  const keyhole = document.createElementNS(ns, "path");
+  keyhole.setAttribute("d", "M12 15v2.5");
+  svg.append(shackle, body, keyhole);
+  return svg;
+}
+
 function stepCounter(stepIndex, total, done) {
-  if (done) return `${total}/${total}`;
-  return `${stepIndex + 1}/${total}`;
+  if (done) {
+    return el("span", { class: "wt-counter is-done" }, [
+      el("span", { class: "wt-counter-open", "aria-hidden": "true" }, [openLockSvg()]),
+    ]);
+  }
+  return el("span", { class: "wt-counter" }, [
+    el("span", { class: "wt-counter-current", text: String(stepIndex + 1) }),
+    el("span", { class: "wt-counter-total", text: `/ ${total}` }),
+  ]);
 }
 
 function iconBtn({ label, className = "", onClick, disabled, svg }) {
@@ -675,18 +710,14 @@ export function renderMappingWarning(container, ui) {
   );
 }
 
-export function renderGratitudePrompt(container, ui, handlers) {
-  if (!container) return;
-  if (!ui?.visible) {
-    container.replaceChildren();
-    container.hidden = true;
-    return;
-  }
-  container.hidden = false;
-  container.replaceChildren(
+// Post-value donation CTA, rendered inline within the solution area so it can
+// sit between the walkthrough nav and the "show all steps" toggle. Visibility
+// is decided by the controller (`ui.gratitudeRevealed`).
+function gratitudeCtas(handlers) {
+  return el("div", { class: "sequence-ctas" }, [
     el("p", { class: "gratitude-donate-reason", text: t("solution.donateReason") }),
     gratitudeDonateBtn(() => handlers.onGratitudeDonateClick?.()),
-  );
+  ]);
 }
 
 // solution: undefined (not run), [] (already solved), Move[] (steps), or null (no safe path)
@@ -744,7 +775,9 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
   }
 
   if (ui?.minimized) {
-    container.replaceChildren(renderMinimizedSummary(walkthrough, handlers));
+    const minChildren = [renderMinimizedSummary(walkthrough, handlers)];
+    if (ui?.gratitudeRevealed) minChildren.push(gratitudeCtas(handlers));
+    container.replaceChildren(...minChildren);
     return;
   }
 
@@ -780,14 +813,9 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
     onClick: () => handlers.onToggleSteps(),
   });
 
-  const children = [
-    el("p", {
-      class: "success solution-count",
-      text: tCount("solution.turnCount", solution.length),
-    }),
-    renderWalkthrough(walkthrough, ui.state, handlers, ui),
-    toggle,
-  ];
+  const children = [renderWalkthrough(walkthrough, ui.state, handlers, ui)];
+  if (ui?.gratitudeRevealed) children.push(gratitudeCtas(handlers));
+  children.push(toggle);
   if (showAll) children.push(el("ol", { class: "step-list" }, steps));
 
   container.replaceChildren(...children);
@@ -1067,10 +1095,8 @@ function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
   const pct = total === 0 ? 100 : Math.round((stepIndex / total) * 100);
   const counter = stepCounter(stepIndex, total, !move);
 
-  const progressHeadChildren = [el("span", { class: "wt-counter", text: counter })];
-  if (move) {
-    progressHeadChildren.push(
-      el("button", {
+  const helpTrigger = move
+    ? el("button", {
         class: `wt-help-trigger${ui.showMismatchTips ? " is-open" : ""}`,
         type: "button",
         text: ui.showMismatchTips ? t("walkthrough.hideTips") : t("walkthrough.somethingOff"),
@@ -1079,9 +1105,8 @@ function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
           : t("walkthrough.somethingOff"),
         "aria-expanded": ui.showMismatchTips ? "true" : "false",
         onClick: handlers.onStepMismatch,
-      }),
-    );
-  }
+      })
+    : null;
 
   const current = move
     ? el("div", { class: "wt-current" }, [renderMoveCmd(move, "focus")])
@@ -1091,7 +1116,7 @@ function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
 
   const children = [
     el("div", { class: "wt-progress" }, [
-      el("div", { class: "wt-progress-head" }, progressHeadChildren),
+      el("div", { class: "wt-progress-head" }, [counter]),
       el("div", { class: "wt-bar" }, [
         el("div", { class: "wt-bar-fill", style: `width:${pct}%` }),
       ]),
@@ -1099,6 +1124,10 @@ function renderWalkthrough(walkthrough, _state, handlers, ui = {}) {
     current,
     el("div", { class: "wt-board" }, pins),
   ];
+
+  if (helpTrigger) {
+    children.push(el("div", { class: "wt-help-row" }, [helpTrigger]));
+  }
 
   children.push(
     el("div", { class: "wt-nav" }, [

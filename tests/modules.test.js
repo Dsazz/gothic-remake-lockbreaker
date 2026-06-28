@@ -230,13 +230,17 @@ test("renderControls hides wipe until lock differs from default; gratitude promp
   assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
   assert.match(viewText, /controls\.wipeLock/);
   assert.doesNotMatch(viewText, /controls-share/);
-  assert.match(viewText, /renderGratitudePrompt/);
+  // Donation CTA is folded into the solution area, gated by `gratitudeRevealed`,
+  // and rendered between the walkthrough and the show-all-steps toggle.
+  assert.match(viewText, /gratitudeCtas/);
+  assert.match(viewText, /ui\?\.gratitudeRevealed/);
   assert.match(viewText, /gratitudeDonateBtn/);
+  assert.doesNotMatch(viewText, /renderGratitudePrompt/);
   // The share-out feature was removed; no share button or share offer remains.
   assert.doesNotMatch(viewText, /gratitudeShareBtn/);
   assert.doesNotMatch(viewText, /showShare/);
-  assert.match(solveText, /visible: hasMoves/);
-  assert.match(solveText, /renderGratitudePrompt/);
+  assert.match(solveText, /gratitudeRevealed: session\.gratitudeRevealed/);
+  assert.doesNotMatch(solveText, /renderGratitudePrompt/);
   assert.doesNotMatch(solveText, /maybeOfferShare/);
   assert.doesNotMatch(solveText, /ShareTrigger/);
 });

@@ -1,4 +1,4 @@
-export const VERSION = "1.32.3";
+export const VERSION = "1.33.0";
 
 export const CHANGELOG_URL =
   "https://github.com/dsazz/gothic-remake-lockbreaker/blob/main/CHANGELOG.md";

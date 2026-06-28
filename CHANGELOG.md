@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.33.0] - 2026-06-28
+
+### Changed
+
+- Polished the step-by-step sequence: the current turn now shows as a large, prominent step number alongside a clear "X / total" counter, and finishing every turn plays a small animated open-lock icon instead of a plain done count.
+- Removed the redundant turn-count banner above the walkthrough; the solve result is now announced to screen readers as you reach it.
+- Moved the "something feels off?" help link onto its own row beneath the current move so it no longer crowds the step counter.
+- The thank-you / support prompt now appears once you're most of the way through a walkthrough rather than the instant a solution loads, so it lands after the tool has actually helped you.
+- Lock-position warnings now use border style as well as color — a thick solid ring when a pin is against a wall and a dashed ring as it approaches one — so the danger cue stays visible for colorblind players.
+
 ## [1.32.3] - 2026-06-28
 
 ### Changed

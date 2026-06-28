@@ -187,6 +187,14 @@ export function trackStepMismatchClicked({ stepIndex, plateCount }) {
   });
 }
 
+export function trackStepsRevealed({ plateCount, moveCount, stepIndex }) {
+  send(Events.STEPS_REVEALED, {
+    ...baseProps(plateCount),
+    move_count: moveCount,
+    step_index: stepIndex,
+  });
+}
+
 export function trackSupportLinkClicked({ source, plateCount, locale }) {
   send(Events.SUPPORT_LINK_CLICKED, supportProps({ source, plateCount, locale }));
 }

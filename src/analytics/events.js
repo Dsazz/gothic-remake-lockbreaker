@@ -12,6 +12,7 @@ export const Events = Object.freeze({
   TUTOR_NOT_SHOWN: "tutor_not_shown",
   TUTOR_SKIPPED: "tutor_skipped",
   STEP_MISMATCH_CLICKED: "step_mismatch_clicked",
+  STEPS_REVEALED: "steps_revealed",
   SUPPORT_LINK_CLICKED: "support_link_clicked",
   LOCALE_CHANGED: "locale_changed",
   I18N_BANNER_SHOWN: "i18n_banner_shown",
