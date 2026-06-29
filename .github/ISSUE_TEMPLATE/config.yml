@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support the project (Ko-fi)
+    url: https://ko-fi.com/swarmconductor
+    about: Optional tips keep the solver free and ad-free — not for bug reports.
+  - name: Ideas & questions (Discussions)
+    url: https://github.com/Dsazz/gothic-remake-lockbreaker/discussions
+    about: Feature ideas and how-to questions — use Issues for bugs and translation fixes.
