@@ -57,7 +57,7 @@ Two principles behind that list:
 1. **Features are cross-cutting, not folders.** A user-facing feature (camp, walkthrough, locale) lives across its layer homes by design — e.g. camp = `controllers/camp.js` + camp rendering in `view/` + `styles/camp-*.css` + locale keys. Do not create per-feature folders.
 2. **A subsystem earns its own folder** only when it's a cohesive concern reused across features (the bar that `i18n` / `analytics` / `onboarding` / `solver` / `storage` clear). Otherwise it belongs in a layer folder.
 
-`src/view/index.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view/index.js`. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
+`src/view/index.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view/index.js`. `src/view/links.js` is the external-link registry (changelog, support, issues, press) consumed by the chrome/banner surfaces. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
 
 Boot-sensitive files:
 

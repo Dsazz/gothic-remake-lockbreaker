@@ -157,7 +157,8 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 | `src/controllers/locale-chrome.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
 | `src/bootstrap/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
 | `src/analytics/` | Product analytics facade; PostHog init in `posthog-init.js`, transport in `transport.js`. |
-| `src/version.js` | Release version and changelog URL for the footer badge. |
+| `src/version.js` | Release version (single source of truth, reconciled against CHANGELOG/README). |
+| `src/view/links.js` | External-link registry (changelog, support, GitHub issues, press) for the view layer. |
 | `index.html`, `styles.css` + `styles/*.css` | Shell and theme. `styles.css` is an `@import` entry over cascade-ordered partials, flattened to one stylesheet at build. |
 
 ## Analytics

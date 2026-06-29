@@ -7,7 +7,7 @@ import {
   GITHUB_ISSUES_URL,
   PRESS_PCGAMES_URL,
   SUPPORT_URL,
-} from "../version.js";
+} from "./links.js";
 import { SupportSource } from "../analytics/values.js";
 import { t } from "../i18n/index.js";
 import { el, infoIconSvg } from "./dom.js";

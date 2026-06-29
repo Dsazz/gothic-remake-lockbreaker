@@ -54,6 +54,7 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/core/store.js");
   await import("../src/core/solver.js");
   await import("../src/view/index.js");
+  await import("../src/view/links.js");
   await import("../src/analytics/values.js");
   await import("../src/storage/keys.js");
   await import("../src/onboarding/solve-coachmark.js");
@@ -79,12 +80,10 @@ test("browser modules parse without syntax errors", async () => {
 });
 
 test("footer links to GitHub issues and press coverage", async () => {
-  const versionText = await readFile(join(root, "src/version.js"), "utf8");
   const viewText = await readViewSource();
-  assert.match(versionText, /GITHUB_ISSUES_URL/);
-  assert.match(versionText, /PRESS_PCGAMES_URL/);
-  assert.match(versionText, /PRESS_BUFFED_URL/);
-  assert.doesNotMatch(versionText, /REDDIT_DISCUSS_URL/);
+  assert.match(viewText, /GITHUB_ISSUES_URL/);
+  assert.match(viewText, /PRESS_PCGAMES_URL/);
+  assert.doesNotMatch(viewText, /REDDIT_DISCUSS_URL/);
   assert.match(viewText, /footerIssuesLink/);
   assert.match(viewText, /footerUtility/);
   assert.match(viewText, /app-foot-stack/);

@@ -2,7 +2,7 @@
 // feedback toast, shared-hash notice, and the incomplete-mapping warning.
 // State -> DOM only; handlers injected by the controller.
 
-import { GITHUB_ISSUES_URL } from "../version.js";
+import { GITHUB_ISSUES_URL } from "./links.js";
 import { t } from "../i18n/index.js";
 import { localeSuggestPromptKey } from "../i18n/locale-suggest.js";
 import { el, dismissCrossSvg, ackCheckSvg } from "./dom.js";
