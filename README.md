@@ -165,6 +165,14 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 
 Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture, session replay, web vitals, heatmaps, surveys, and rageclick/dead-click capture are **disabled**. Each session sends one SDK `$pageview` on load (plus a 45s visibility ping so Web Analytics Live stays accurate during long solves), explicit custom events (landing with referrer/UTM, mapping milestones, solve funnel, tutor/onboarding, guide, i18n), and registers `initial_locale` / `locale` session props. Geo country (for locale suggest) is enriched server-side from IP — no lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
 
+## Feedback & issues
+
+- **Bugs, translation fixes, feature ideas** — [GitHub issue templates](https://github.com/Dsazz/gothic-remake-lockbreaker/issues/new/choose) (see [CONTRIBUTING.md](CONTRIBUTING.md)). The site footer opens the chooser; the in-app translation banner links straight to the translation template.
+- **Ideas & questions** — [GitHub Discussions](https://github.com/Dsazz/gothic-remake-lockbreaker/discussions).
+- **Tips** — optional [Ko-fi](https://ko-fi.com/swarmconductor) support; not for bug reports.
+
+German, Polish, and Ukrainian UI copy is machine-translated and may be wrong — reports are welcome via the translation template.
+
 ## Deploy your own
 
 1. Create a branch, make changes, open a PR to `main`. CI (lint + test) runs on the PR and must pass before merge. `main` is protected — no direct pushes, no force pushes.

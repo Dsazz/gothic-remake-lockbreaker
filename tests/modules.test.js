@@ -86,7 +86,11 @@ test("browser modules parse without syntax errors", async () => {
 
 test("footer links to GitHub issues and press coverage", async () => {
   const viewText = await readViewSource();
+  const linksText = await readFile(join(root, "src/view/links.js"), "utf8");
   assert.match(viewText, /GITHUB_ISSUES_URL/);
+  assert.match(linksText, /issues\/new\/choose/);
+  assert.match(viewText, /GITHUB_TRANSLATION_ISSUE_URL/);
+  assert.match(linksText, /template=translation\.yml/);
   assert.match(viewText, /PRESS_PCGAMES_URL/);
   assert.doesNotMatch(viewText, /REDDIT_DISCUSS_URL/);
   assert.match(viewText, /footerIssuesLink/);

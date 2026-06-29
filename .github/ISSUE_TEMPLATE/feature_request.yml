@@ -1,0 +1,29 @@
+name: Feature idea
+description: Suggest a change or improvement to the solver or UI
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For open-ended chat, consider [Discussions](https://github.com/Dsazz/gothic-remake-lockbreaker/discussions) instead.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or motivation
+      description: What pain does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed change
+      description: What would you like to see?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional — other ways to address the problem
