@@ -1,4 +1,4 @@
-import { parseReferrerHost } from "../locale-suggest.js";
+import { parseReferrerHost } from "../i18n/locale-suggest.js";
 
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
 

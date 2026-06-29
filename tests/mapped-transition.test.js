@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { advanceMappedTracking } from "../src/mapped-transition.js";
+import { advanceMappedTracking } from "../src/bootstrap/mapped-transition.js";
 
 test("pristine to mapped", () => {
   assert.deepEqual(advanceMappedTracking(false, true), {

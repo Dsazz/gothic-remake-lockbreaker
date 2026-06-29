@@ -11,7 +11,7 @@ export default defineConfig({
       clientFiles: [
         "./src/app.js",
         "./src/analytics/index.js",
-        "./src/onboarding.js",
+        "./src/onboarding/tour.js",
       ],
     },
   },
@@ -21,7 +21,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("/src/onboarding.js")) return "onboarding";
+          if (id.includes("/src/onboarding/tour.js")) return "onboarding";
           if (id.includes("/src/analytics/")) return "analytics";
         },
       },

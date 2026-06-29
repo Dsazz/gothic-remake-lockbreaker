@@ -9,7 +9,7 @@ import {
   SUPPORT_URL,
 } from "../version.js";
 import { SupportSource } from "../analytics/values.js";
-import { t } from "../i18n.js";
+import { t } from "../i18n/index.js";
 import { el, infoIconSvg } from "./dom.js";
 
 function versionLink(version) {

@@ -1,9 +1,9 @@
-import { isDefaultLocale, Locale, LocaleSource } from "./i18n.js";
+import { isDefaultLocale, Locale, LocaleSource } from "./index.js";
 import {
   parseReferrerHost,
   REFERRER_LOCALE_HINTS,
   resolveReferrerLocaleHint as resolveReferrerLocaleHintRaw,
-} from "./referrer-locale-hints.js";
+} from "./referrer-hints.js";
 
 export { REFERRER_LOCALE_HINTS, parseReferrerHost };
 

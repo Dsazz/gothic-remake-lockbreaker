@@ -1,4 +1,4 @@
-import { t } from "./i18n.js";
+import { t } from "./index.js";
 
 // innerHTML: locale strings are trusted first-party JSON only — never user input.
 function setHtml(selector, key) {

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { resolveStartup, StartupAction } from "../src/startup.js";
+import { resolveStartup, StartupAction } from "../src/bootstrap/startup.js";
 import { LandingType, SolveSource, TutorNotShownReason } from "../src/analytics/values.js";
 
 test("resolveStartup auto-solves when hash landing is mapped", () => {

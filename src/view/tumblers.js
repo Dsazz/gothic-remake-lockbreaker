@@ -2,7 +2,7 @@
 // the solve button. State -> DOM only; handlers injected by the controller.
 
 import { LINK, MASTERY, countRemovedLinks, POS_MIN, POS_MAX } from "../core/domain.js";
-import { t } from "../i18n.js";
+import { t } from "../i18n/index.js";
 import { el } from "./dom.js";
 import {
   linkLabel,

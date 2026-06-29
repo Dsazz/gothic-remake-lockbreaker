@@ -3,7 +3,7 @@
 // with an explicit clear, so re-renders never stack listeners.
 
 import { MASTERY } from "../core/domain.js";
-import { t } from "../i18n.js";
+import { t } from "../i18n/index.js";
 import { Key } from "../keyboard-keys.js";
 import { el } from "./dom.js";
 

@@ -1,4 +1,4 @@
-import { TutorNotShownReason } from "./analytics/values.js";
+import { TutorNotShownReason } from "../analytics/values.js";
 
 export function createOnboardingStub({ onNotShown } = {}) {
   return {

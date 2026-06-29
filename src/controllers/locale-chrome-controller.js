@@ -7,17 +7,17 @@ import {
   isDefaultLocale,
   LocaleSource,
   DEFAULT_LOCALE,
-} from "../i18n.js";
+} from "../i18n/index.js";
 import {
   isLocaleSuggestEligible,
   LocaleHintSource,
   resolveGeoLocaleHint,
   resolveNavigatorLocaleHint,
   resolveReferrerLocaleHint,
-} from "../locale-suggest.js";
+} from "../i18n/locale-suggest.js";
 import { waitForGeoCountryCode as defaultWaitForGeoCountryCode } from "../analytics/geo-hint.js";
-import { applyStaticContent } from "../static-content.js";
-import { renderLocaleSwitcher } from "../locale-switcher.js";
+import { applyStaticContent } from "../i18n/static-content.js";
+import { renderLocaleSwitcher } from "../i18n/locale-switcher.js";
 import {
   GuideSource,
   LocaleChangeSource,

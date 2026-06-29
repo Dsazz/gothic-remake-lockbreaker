@@ -1,5 +1,5 @@
-import { getLocale, setLocale, Locale, SUPPORTED_LOCALES, t } from "./i18n.js";
-import { Key } from "./keyboard-keys.js";
+import { getLocale, setLocale, Locale, SUPPORTED_LOCALES, t } from "./index.js";
+import { Key } from "../keyboard-keys.js";
 
 const FLAG_VIEWBOX = "0 0 60 40";
 const LISTBOX_ID = "locale-listbox";

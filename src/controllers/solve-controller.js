@@ -8,11 +8,11 @@ import {
   isInBounds,
 } from "../core/domain.js";
 import * as view from "../view.js";
-import { t, tCount } from "../i18n.js";
+import { t, tCount } from "../i18n/index.js";
 import {
   resolveSolveCoachmarkTrigger,
   SolveCoachmarkTrigger,
-} from "../solve-coachmark-schedule.js";
+} from "../onboarding/solve-coachmark-schedule.js";
 import {
   LandingType,
   MappingCompleteness,

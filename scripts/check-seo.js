@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { HREFLANG, LOCALE_PATH, SITE_ORIGIN } from "../src/i18n.js";
+import { HREFLANG, LOCALE_PATH, SITE_ORIGIN } from "../src/i18n/index.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 

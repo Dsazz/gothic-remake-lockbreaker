@@ -1,8 +1,8 @@
-import { isLockMapped } from "./core/domain.js";
-import { MappingCompleteness } from "./analytics/values.js";
-import * as view from "./view.js";
+import { isLockMapped } from "../core/domain.js";
+import { MappingCompleteness } from "../analytics/values.js";
+import * as view from "../view.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
-import { trackLockBecameMappable } from "./analytics/index.js";
+import { trackLockBecameMappable } from "../analytics/index.js";
 
 export function createAppRenderer({
   els,

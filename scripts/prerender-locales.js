@@ -7,8 +7,8 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Window } from "happy-dom";
-import { LOCALE_PATH, PRERENDERED_LOCALES, initI18n, localePageUrl, t } from "../src/i18n.js";
-import { applyStaticContent } from "../src/static-content.js";
+import { LOCALE_PATH, PRERENDERED_LOCALES, initI18n, localePageUrl, t } from "../src/i18n/index.js";
+import { applyStaticContent } from "../src/i18n/static-content.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 

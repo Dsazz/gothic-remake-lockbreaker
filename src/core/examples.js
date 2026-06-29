@@ -1,4 +1,4 @@
-import { LINK, createMatrix } from "./core/domain.js";
+import { LINK, createMatrix } from "./domain.js";
 
 /** Verified Old Camp tower door (6 plates). */
 export function oldCampExample() {

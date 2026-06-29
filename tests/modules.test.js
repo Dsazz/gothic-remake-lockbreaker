@@ -25,7 +25,7 @@ test("src JS references assets with root-absolute paths (subpath-safe for /de/ /
 
 test("how-to-map labels use foreignObject and stay wired to static-content selectors", async () => {
   const indexHtml = await readFile(join(root, "index.html"), "utf8");
-  const staticContent = await readFile(join(root, "src", "static-content.js"), "utf8");
+  const staticContent = await readFile(join(root, "src", "i18n", "static-content.js"), "utf8");
 
   // Clipping fix: long DE/PL labels overflowed as SVG <text>; foreignObject lets the HTML wrap.
   assert.equal(
@@ -56,26 +56,26 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/view.js");
   await import("../src/analytics/values.js");
   await import("../src/storage-keys.js");
-  await import("../src/solve-coachmark.js");
-  await import("../src/spotlight-ring.js");
-  await import("../src/solve-coachmark-schedule.js");
-  await import("../src/i18n.js");
-  await import("../src/static-content.js");
+  await import("../src/onboarding/solve-coachmark.js");
+  await import("../src/onboarding/spotlight-ring.js");
+  await import("../src/onboarding/solve-coachmark-schedule.js");
+  await import("../src/i18n/index.js");
+  await import("../src/i18n/static-content.js");
   await import("../src/how-to-map-image.js");
   await import("../src/controllers/info-modal-controller.js");
-  await import("../src/onboarding-stub.js");
+  await import("../src/onboarding/stub.js");
   await import("../src/analytics/posthog-init.js");
-  await import("../src/locale-switcher.js");
-  await import("../src/locale-suggest.js");
+  await import("../src/i18n/locale-switcher.js");
+  await import("../src/i18n/locale-suggest.js");
   await import("../src/analytics/geo-hint.js");
   await import("../src/ui-prefs.js");
-  await import("../src/landing.js");
+  await import("../src/bootstrap/landing.js");
   await import("../src/controllers/solve-controller.js");
   await import("../src/controllers/lock-controller.js");
   await import("../src/controllers/locale-chrome-controller.js");
   await import("../src/controllers/camp-controller.js");
-  await import("../src/app-renderer.js");
-  await import("../src/app-elements.js");
+  await import("../src/bootstrap/app-renderer.js");
+  await import("../src/bootstrap/app-elements.js");
 });
 
 test("footer links to GitHub issues and press coverage", async () => {
@@ -99,7 +99,7 @@ test("footer links to GitHub issues and press coverage", async () => {
 
 test("tour opt-in start does not re-render controls and orphan step 1 spotlight", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
+  const rendererText = await readFile(join(root, "src/bootstrap/app-renderer.js"), "utf8");
   const onStart = appText.slice(
     appText.indexOf("onTutorOptInStart"),
     appText.indexOf("onTutorOptInDismiss"),
@@ -112,7 +112,7 @@ test("tour opt-in start does not re-render controls and orphan step 1 spotlight"
 test("app defers solve coachmark until onboarding tour ends", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
   const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
-  const onboardingText = await readFile(join(root, "src/onboarding.js"), "utf8");
+  const onboardingText = await readFile(join(root, "src/onboarding/tour.js"), "utf8");
   assert.match(appText, /flushPendingCoachmark/);
   assert.match(solveText, /pendingSolveCoachmark/);
   assert.match(solveText, /flushPendingCoachmark/);
@@ -324,7 +324,7 @@ test("walkthrough uses tertiary help trigger, not pill mismatch button", async (
 test("wipe lock uses in-app confirm modal instead of native confirm", async () => {
   const lockText = await readFile(join(root, "src/controllers/lock-controller.js"), "utf8");
   const viewText = await readViewSource();
-  const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
+  const rendererText = await readFile(join(root, "src/bootstrap/app-renderer.js"), "utf8");
   assert.doesNotMatch(lockText, /confirm\(/);
   assert.match(lockText, /wipeConfirmOpen/);
   assert.match(lockText, /onConfirmWipe/);
@@ -370,7 +370,7 @@ test("walkthrough moving hole styles use thin-border glow without spread rings",
 });
 
 test("static-content.js does not hydrate footer press or FAQ", async () => {
-  const staticContentText = await readFile(join(root, "src/static-content.js"), "utf8");
+  const staticContentText = await readFile(join(root, "src/i18n/static-content.js"), "utf8");
   assert.doesNotMatch(staticContentText, /applyPressStaticContent/);
   assert.doesNotMatch(staticContentText, /PRESS_PCGAMES_URL/);
   assert.doesNotMatch(staticContentText, /app-foot-faq/);
@@ -438,9 +438,9 @@ test("locale suggest uses region semantics, not dialog", async () => {
 
 test("app bootstraps with catch and splits locale chrome from renderAll", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
+  const rendererText = await readFile(join(root, "src/bootstrap/app-renderer.js"), "utf8");
   const localeText = await readFile(join(root, "src/controllers/locale-chrome-controller.js"), "utf8");
-  const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
+  const switcherText = await readFile(join(root, "src/i18n/locale-switcher.js"), "utf8");
   assert.match(appText, /bootstrap\(\)\.catch/);
   assert.match(appText, /function wireApp/);
   assert.match(appText, /createAppRenderer/);
@@ -462,7 +462,7 @@ test("app bootstraps with catch and splits locale chrome from renderAll", async 
 });
 
 test("locale switcher is a combobox + listbox with short codes", async () => {
-  const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
+  const switcherText = await readFile(join(root, "src/i18n/locale-switcher.js"), "utf8");
   const css = await readStyles();
   assert.match(switcherText, /aria-haspopup", "listbox"/);
   assert.match(switcherText, /role", "listbox"/);
@@ -478,7 +478,7 @@ test("locale switcher is a combobox + listbox with short codes", async () => {
 });
 
 test("locale switcher update resolves the portaled menu by id, not via the group", async () => {
-  const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
+  const switcherText = await readFile(join(root, "src/i18n/locale-switcher.js"), "utf8");
   const updateStart = switcherText.indexOf("function updateLocaleSwitcher");
   const updateEnd = switcherText.indexOf("export function renderLocaleSwitcher");
   const updateBody = switcherText.slice(updateStart, updateEnd);

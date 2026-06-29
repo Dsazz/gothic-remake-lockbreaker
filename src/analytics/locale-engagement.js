@@ -1,5 +1,5 @@
 import { VERSION } from "../version.js";
-import { getLocale, getLocaleSource, isDefaultLocale } from "../i18n.js";
+import { getLocale, getLocaleSource, isDefaultLocale } from "../i18n/index.js";
 import { StorageKeys, StorageFlag } from "../storage-keys.js";
 import { Events } from "./events.js";
 import { LocaleChangeDirection } from "./values.js";

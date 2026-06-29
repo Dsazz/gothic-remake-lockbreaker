@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { readViewSource, readStyles } from "./read-sources.js";
-import { ONBOARDING_STEPS } from "../src/onboarding.js";
+import { ONBOARDING_STEPS } from "../src/onboarding/tour.js";
 import { OnboardingStepId, TutorNotShownReason } from "../src/analytics/values.js";
 import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
 
@@ -321,7 +321,7 @@ test("enterColdLanding shows opt-in chip for fresh cold users", async () => {
   };
 
   try {
-    const { createOnboarding } = await import("../src/onboarding.js");
+    const { createOnboarding } = await import("../src/onboarding/tour.js");
     const onboarding = createOnboarding({});
     onboarding.enterColdLanding();
     assert.equal(onboarding.isChipVisible(), true);
@@ -332,7 +332,7 @@ test("enterColdLanding shows opt-in chip for fresh cold users", async () => {
 });
 
 test("applySpotlight guards async races in source", async () => {
-  const text = await readFile(join(root, "src/onboarding.js"), "utf8");
+  const text = await readFile(join(root, "src/onboarding/tour.js"), "utf8");
   assert.match(text, /const requestedStepIndex = stepIndex;/);
   assert.match(text, /if \(!active \|\| !backdrop \|\| !cardHost\) return;/);
   assert.match(text, /if \(requestedStepIndex !== stepIndex\) return;/);
@@ -342,7 +342,7 @@ test("applySpotlight guards async races in source", async () => {
 test("applySpotlight survives dismiss during async scroll", async () => {
   const env = installOnboardingTestEnv();
   try {
-    const { createOnboarding } = await import("../src/onboarding.js");
+    const { createOnboarding } = await import("../src/onboarding/tour.js");
     const onboarding = createOnboarding({});
     onboarding.startFromOptIn();
 
@@ -360,7 +360,7 @@ test("applySpotlight survives dismiss during async scroll", async () => {
 test("applySpotlight ignores stale scroll after step advance", async () => {
   const env = installOnboardingTestEnv();
   try {
-    const { createOnboarding } = await import("../src/onboarding.js");
+    const { createOnboarding } = await import("../src/onboarding/tour.js");
     const onboarding = createOnboarding({});
     onboarding.startFromOptIn();
 
@@ -388,7 +388,7 @@ test("enterColdLanding reports previously dismissed when tour was dismissed", as
   };
 
   try {
-    const { createOnboarding } = await import("../src/onboarding.js");
+    const { createOnboarding } = await import("../src/onboarding/tour.js");
     let reportedReason;
     const onboarding = createOnboarding({
       onNotShown: ({ reason }) => {

@@ -2,7 +2,7 @@
 // localized text / CSS class names. No DOM construction.
 
 import { LINK, DIR, POS_MIN, POS_MAX, CENTER, EDGE, NEAR_EDGE } from "../core/domain.js";
-import { t } from "../i18n.js";
+import { t } from "../i18n/index.js";
 
 export function linkLabel(link) {
   if (link === LINK.SAME) return t("coupling.with");

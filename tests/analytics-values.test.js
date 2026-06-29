@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { ONBOARDING_STEPS } from "../src/onboarding.js";
+import { ONBOARDING_STEPS } from "../src/onboarding/tour.js";
 import {
   LandingType,
   LocaleChangeSource,
@@ -14,7 +14,7 @@ import {
   SupportSource,
   TutorNotShownReason,
 } from "../src/analytics/values.js";
-import { LocaleSource } from "../src/i18n.js";
+import { LocaleSource } from "../src/i18n/index.js";
 import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
 
 const FROZEN_MAPS = [

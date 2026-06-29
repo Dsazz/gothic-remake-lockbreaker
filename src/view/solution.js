@@ -4,7 +4,7 @@
 
 import { DIR, isInBounds } from "../core/domain.js";
 import { GuideSource, SolveFailureReason } from "../analytics/values.js";
-import { t } from "../i18n.js";
+import { t } from "../i18n/index.js";
 import { Key } from "../keyboard-keys.js";
 import {
   el,

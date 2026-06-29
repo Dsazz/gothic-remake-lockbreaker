@@ -30,18 +30,21 @@ Tests import `src/` directly — never point tests at `dist/`.
 
 | Layer | Files | Rules |
 | --- | --- | --- |
-| Pure | `core/{domain,solver,store}.js` | No DOM, no `window` |
+| Pure | `core/{domain,solver,store,examples}.js` | No DOM, no `window` |
 | View | `view.js` (barrel) + `view/*.js` | State → DOM; handlers injected; no store |
 | Controllers | `controllers/*-controller.js` | Orchestration, session UX |
-| Root | `app.js` + supporting modules at `src/` root | Bootstrap and wiring only |
+| i18n | `i18n/*.js` (`index` catalog + `locale-suggest`, `locale-switcher`, `referrer-hints`, `static-content`) | Locale resolution, copy, static-content hydration |
+| Onboarding | `onboarding/*.js` (`tour`, `stub`, `solve-coachmark`, `solve-coachmark-schedule`, `spotlight-ring`) | First-run tour + post-solve coachmark UX |
+| Bootstrap | `bootstrap/*.js` (`app-renderer`, `app-elements`, `startup`, `landing`, `mapped-transition`) | App wiring, render loop |
+| Root | `app.js` (entry) + cross-cutting primitives (`version`, `storage-keys`, `keyboard-keys`, `ui-prefs`, `how-to-map-image`) | Composition root + shared constants |
 
-Dependency flow: `app.js` → `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`.
+Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver.worker.js` + `solver-client.js`.
 
 `src/view.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view.js`. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
 
 Boot-sensitive files:
 
-- `src/i18n.js` — English catalog imported synchronously; `FROZEN_KEYS` keep compact UI in English
+- `src/i18n/index.js` — English catalog imported synchronously; `FROZEN_KEYS` keep compact UI in English
 - `src/analytics/posthog-init.js` — lean PostHog, deferred after first paint
 - `public/` — symlinks to `assets/`, `locales/`, `CNAME`, `robots.txt`, `sitemap.xml`, `llms.txt` (Vite copies to `dist/`)
 
@@ -51,7 +54,7 @@ Boot-sensitive files:
 - Storage keys: `src/storage-keys.js` — no magic strings
 - Analytics enums/events: `src/analytics/values.js`, `src/analytics/events.js`
 - User-facing copy: `locales/{en,de,pl,ukr}.json` via `t()` / `tCount()`; Tier C keys need all four locales
-- `innerHTML` only for trusted first-party locale strings (see `src/static-content.js`)
+- `innerHTML` only for trusted first-party locale strings (see `src/i18n/static-content.js`)
 
 ## Analytics events
 

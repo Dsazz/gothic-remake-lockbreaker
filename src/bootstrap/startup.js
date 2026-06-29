@@ -1,4 +1,4 @@
-import { LandingType, SolveSource, TutorNotShownReason } from "./analytics/values.js";
+import { LandingType, SolveSource, TutorNotShownReason } from "../analytics/values.js";
 
 export const StartupAction = {
   AUTO_SOLVE: "auto_solve",

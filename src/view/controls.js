@@ -10,7 +10,7 @@ import {
   MAX_PLATES,
   isPristineDefault,
 } from "../core/domain.js";
-import { t } from "../i18n.js";
+import { t } from "../i18n/index.js";
 import { el } from "./dom.js";
 import { masteryLabel } from "./labels.js";
 

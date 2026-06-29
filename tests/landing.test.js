@@ -8,7 +8,7 @@ import {
   createPositions,
   createRemovedLinks,
 } from "../src/core/domain.js";
-import { resolveLandingType } from "../src/landing.js";
+import { resolveLandingType } from "../src/bootstrap/landing.js";
 import { LandingType } from "../src/analytics/values.js";
 
 function pristineState() {

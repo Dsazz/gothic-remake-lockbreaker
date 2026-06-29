@@ -5,7 +5,7 @@
 import { StorageKeys } from "../storage-keys.js";
 import { CampId, CampPickerSource } from "../analytics/values.js";
 import { Key } from "../keyboard-keys.js";
-import { t, onLocaleChange } from "../i18n.js";
+import { t, onLocaleChange } from "../i18n/index.js";
 
 const CAMP_ORDER = [CampId.OLD, CampId.NEW, CampId.SWAMP];
 

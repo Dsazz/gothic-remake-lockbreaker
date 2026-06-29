@@ -155,7 +155,7 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 | `src/controllers/solve-controller.js` | Solve session, walkthrough, hash banner, solve coachmark deferral. |
 | `src/controllers/lock-controller.js` | Lock mutation handlers; invalidates solve session on change. |
 | `src/controllers/locale-chrome-controller.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
-| `src/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
+| `src/bootstrap/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
 | `src/analytics/` | Product analytics facade; PostHog init in `posthog-init.js`, transport in `transport.js`. |
 | `src/version.js` | Release version and changelog URL for the footer badge. |
 | `index.html`, `styles.css` + `styles/*.css` | Shell and theme. `styles.css` is an `@import` entry over cascade-ordered partials, flattened to one stylesheet at build. |
