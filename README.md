@@ -149,7 +149,7 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 | `src/core/domain.js` | Constants (`POS_MIN/MAX`, `CENTER`, `LINK`, `DIR`, `MASTERY`) and pure helpers including `effectiveMatrix()`. No DOM, no storage. |
 | `src/core/solver.js` | Pure `solve()` BFS + `statesAlong()`. Depends only on the domain. |
 | `src/core/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. Depends only on the domain. |
-| `src/view.js` + `src/view/*.js` | Pure `state -> DOM` rendering; handlers injected. `view.js` is a barrel over per-surface modules. Reads domain constants; no store access. |
+| `src/view/index.js` + `src/view/*.js` | Pure `state -> DOM` rendering; handlers injected. `view/index.js` is a barrel over per-surface modules. Reads domain constants; no store access. |
 | `src/app.js` | Composition root: bootstraps i18n, composes controllers, subscribes store to renderer. |
 | `src/storage/prefs.js` | UI flag persistence (banners, visit marker, locale suggest dismiss). |
 | `src/controllers/solve.js` | Solve session, walkthrough, hash banner, solve coachmark deferral. |

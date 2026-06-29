@@ -7,7 +7,7 @@ import {
   effectiveMatrix,
   isInBounds,
 } from "../core/domain.js";
-import * as view from "../view.js";
+import * as view from "../view/index.js";
 import { t, tCount } from "../i18n/index.js";
 import {
   resolveSolveCoachmarkTrigger,

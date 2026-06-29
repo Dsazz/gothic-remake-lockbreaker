@@ -31,7 +31,7 @@ Tests import `src/` directly — never point tests at `dist/`.
 | Layer | Files | Rules |
 | --- | --- | --- |
 | Pure | `core/{domain,solver,store,examples}.js` | No DOM, no `window` |
-| View | `view.js` (barrel) + `view/*.js` | State → DOM; handlers injected; no store |
+| View | `view/index.js` (barrel) + `view/*.js` | State → DOM; handlers injected; no store |
 | Controllers | `controllers/*.js` | Orchestration, session UX |
 | i18n | `i18n/*.js` (`index` catalog + `locale-suggest`, `locale-switcher`, `referrer-hints`, `static-content`) | Locale resolution, copy, static-content hydration |
 | Onboarding | `onboarding/*.js` (`tour`, `stub`, `solve-coachmark`, `solve-coachmark-schedule`, `spotlight-ring`) | First-run tour + post-solve coachmark UX |
@@ -46,7 +46,7 @@ Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/
 Decision list (first match wins):
 
 - Pure logic, no DOM / no `window` → `core/`
-- Pure `state → DOM` rendering → `view/` (+ the `view.js` barrel)
+- Pure `state → DOM` rendering → `view/` (+ the `view/index.js` barrel)
 - Session / UX orchestration → `controllers/*.js`
 - App lifecycle / render wiring → `bootstrap/` (the entry is `app.js` at root)
 - Part of a cohesive cross-feature subsystem → `i18n/` | `analytics/` | `onboarding/` | `solver/` | `storage/`
@@ -57,7 +57,7 @@ Two principles behind that list:
 1. **Features are cross-cutting, not folders.** A user-facing feature (camp, walkthrough, locale) lives across its layer homes by design — e.g. camp = `controllers/camp.js` + camp rendering in `view/` + `styles/camp-*.css` + locale keys. Do not create per-feature folders.
 2. **A subsystem earns its own folder** only when it's a cohesive concern reused across features (the bar that `i18n` / `analytics` / `onboarding` / `solver` / `storage` clear). Otherwise it belongs in a layer folder.
 
-`src/view.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view.js`. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
+`src/view/index.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view/index.js`. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
 
 Boot-sensitive files:
 

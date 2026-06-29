@@ -1,5 +1,5 @@
 import { VERSION } from "../version.js";
-import * as view from "../view.js";
+import * as view from "../view/index.js";
 import {
   getLocale,
   getLocaleSource,

@@ -1,6 +1,6 @@
 import { isLockMapped } from "../core/domain.js";
 import { MappingCompleteness } from "../analytics/values.js";
-import * as view from "../view.js";
+import * as view from "../view/index.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
 import { trackLockBecameMappable } from "../analytics/index.js";
 

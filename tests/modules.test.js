@@ -53,7 +53,7 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/core/domain.js");
   await import("../src/core/store.js");
   await import("../src/core/solver.js");
-  await import("../src/view.js");
+  await import("../src/view/index.js");
   await import("../src/analytics/values.js");
   await import("../src/storage/keys.js");
   await import("../src/onboarding/solve-coachmark.js");
@@ -228,7 +228,7 @@ test("view layer renders only — no module imports store.js", async () => {
   const dir = join(root, "src", "view");
   const files = (await readdir(dir)).filter((f) => f.endsWith(".js"));
   const offenders = [];
-  for (const file of [join(root, "src", "view.js"), ...files.map((f) => join(dir, f))]) {
+  for (const file of files.map((f) => join(dir, f))) {
     const text = await readFile(file, "utf8");
     if (/from\s+["'][./]*store\.js["']/.test(text)) offenders.push(file);
   }

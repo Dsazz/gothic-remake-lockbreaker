@@ -15,7 +15,7 @@ Architecture, commands, and boundaries: [AGENTS.md](../../AGENTS.md).
 
 ## View and i18n
 
-- View layer (`view.js` barrel + `view/*.js`): render only; handlers via arguments; **no module imports `store.js`** (now `core/store.js`)
+- View layer (`view/index.js` barrel + `view/*.js`): render only; handlers via arguments; **no module imports `store.js`** (now `core/store.js`)
 - Tier C keys: all four locale files; respect `FROZEN_KEYS` in `i18n/index.js`
 - Use `t()` / `tCount()`; never hardcode copy in the view layer for localized surfaces
 

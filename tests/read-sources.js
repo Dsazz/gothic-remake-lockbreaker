@@ -1,7 +1,7 @@
 // Shared source-text readers for grep-based invariant tests.
 //
 // Two layers were decomposed from single files into folders:
-//   - the view layer: src/view.js (now a barrel) -> src/view/*.js
+//   - the view layer: src/view/index.js (barrel) -> src/view/*.js
 //   - the stylesheet: styles.css (now an @import entry) -> styles/*.css
 // These helpers concatenate the split sources so source assertions keep working
 // and survive further internal reshuffling. Order is preserved (sorted for the
