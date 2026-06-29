@@ -113,6 +113,31 @@ export function toolIconSvg(kind) {
   return svg;
 }
 
+export function keyboardIconSvg() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.6");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  const body = document.createElementNS(ns, "rect");
+  body.setAttribute("x", "2");
+  body.setAttribute("y", "6");
+  body.setAttribute("width", "20");
+  body.setAttribute("height", "12");
+  body.setAttribute("rx", "2");
+  const keys = document.createElementNS(ns, "path");
+  keys.setAttribute(
+    "d",
+    "M6 9.5h.01M10 9.5h.01M14 9.5h.01M18 9.5h.01M6 12.5h.01M10 12.5h.01M14 12.5h.01M18 12.5h.01M8 15.5h8",
+  );
+  svg.append(body, keys);
+  return svg;
+}
+
 export function infoIconSvg() {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24");

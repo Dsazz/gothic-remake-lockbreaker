@@ -124,6 +124,21 @@
     "goneAria": "Oznacz sprzężenie {lock} jako gone",
     "goneUndoAria": "{lock} oznaczony gone — naciśnij, by cofnąć"
   },
+  "shortcuts": {
+    "hint": "Skróty klawiszowe",
+    "title": "Skróty klawiszowe",
+    "close": "Zamknij",
+    "groupWalkthrough": "Przewodnik rozwiązania",
+    "groupMapping": "Mapowanie zamka",
+    "walkStep": "Przechodź między ruchami",
+    "mapMove": "Przesuń otwór startowy",
+    "mapPlate": "Zmień płytki",
+    "mapDigit": "Ustaw otwór startowy bezpośrednio",
+    "mapCycle": "Przełącz sprzężenie",
+    "solve": "Złam zamek",
+    "mapTab": "Przechodź między elementami",
+    "openHelp": "Otwórz tę pomoc"
+  },
   "legend": {
     "wallLeft": "ściana",
     "notch": "wycięcie",

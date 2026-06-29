@@ -179,6 +179,14 @@
   transform: scale(0.96);
 }
 
+/* Keyboard focus ring for the roving-tabindex groove + coupling toolbar. */
+.hole:focus-visible,
+.link-chip:focus-visible,
+.link-gone-btn:focus-visible {
+  outline: 2px solid var(--bronze-bright);
+  outline-offset: 2px;
+}
+
 .plate-holes--readout {
   pointer-events: none;
   width: 100%;
@@ -502,6 +510,47 @@
 .link-chip.link-removed {
   text-decoration: line-through;
   opacity: 0.7;
+}
+
+/* Desktop-only nudge that the lock can be mapped with the keyboard. Hidden on
+   touch (no keyboard, no arrows/typing) via the hover gate. */
+.shortcuts-hint-host {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.shortcuts-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--iron);
+  border-radius: var(--radius-sm);
+  background: var(--stone-sunken);
+  color: var(--parchment-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.shortcuts-hint svg {
+  width: 16px;
+  height: 16px;
+}
+
+.shortcuts-hint:hover,
+.shortcuts-hint:focus-visible {
+  border-color: var(--bronze);
+  color: var(--bronze-bright);
+}
+
+@media (hover: none) {
+  .shortcuts-hint-host {
+    display: none;
+  }
 }
 
 .mastery-block {

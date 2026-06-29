@@ -91,6 +91,16 @@ export const CampPickerSource = Object.freeze({
   MANUAL: "manual",
 });
 
+export const ShortcutsSource = Object.freeze({
+  ICON: "icon",
+  KEY: "key",
+});
+
+export const KeyboardSurface = Object.freeze({
+  WALKTHROUGH: "walkthrough",
+  MAPPING: "mapping",
+});
+
 export const LocaleChangeDirection = Object.freeze({
   TO_TRANSLATION: "to_translation",
   TO_DEFAULT: "to_default",

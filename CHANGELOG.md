@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.34.0] - 2026-06-29
+
+### Added
+
+- Full keyboard control: map a lock without touching the mouse — arrow keys move the start hole and cycle a coupling, number keys set the start hole directly, and you can switch plates, break the lock, and tab between controls all from the keyboard.
+- Keyboard navigation for the solution walkthrough — step forward and back through the moves with the arrow keys.
+- A "Keyboard shortcuts" help panel, reachable from a header hint or a shortcut key, listing every walkthrough and mapping shortcut.
+
 ## [1.33.1] - 2026-06-29
 
 ### Changed

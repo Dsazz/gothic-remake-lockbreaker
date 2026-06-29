@@ -77,6 +77,9 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/controllers/camp.js");
   await import("../src/bootstrap/app-renderer.js");
   await import("../src/bootstrap/app-elements.js");
+  await import("../src/view/focus.js");
+  await import("../src/controllers/keyboard.js");
+  await import("../src/breakpoints.js");
 });
 
 test("footer links to GitHub issues and press coverage", async () => {
@@ -511,4 +514,42 @@ test("sequence panel stays dormant on mobile until the lock has data", async () 
   assert.match(css, /@keyframes sequence-rise/);
   // Static markup ships dormant so the bottom bar never flashes on cold mobile landing.
   assert.match(html, /panel--sequence is-unmapped/);
+});
+
+test("roving-focus DOM contract lives only in view/focus.js", async () => {
+  // The selectors + dataset reads the view writes and the keyboard controller
+  // reads must have one owner. A copy-pasted literal anywhere else is the exact
+  // drift this refactor removed — fail the build if it reappears.
+  const CONTRACT_OWNER = "view/focus.js";
+  const contractPatterns = [
+    /\.plate-holes\[role=/,
+    /\.link-chip-row\[role=/,
+    /\[aria-checked="true"\]/,
+    /\.dataset\.plate\b/,
+    /\.dataset\.value\b/,
+    /\.dataset\.reactor\b/,
+  ];
+
+  const entries = await readdir(join(root, "src"), { recursive: true });
+  const offenders = [];
+  for (const entry of entries.filter((f) => f.endsWith(".js"))) {
+    const rel = entry.split("\\").join("/");
+    if (rel === CONTRACT_OWNER) continue;
+    const text = await readFile(join(root, "src", entry), "utf8");
+    if (contractPatterns.some((re) => re.test(text))) offenders.push(rel);
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `roving-focus contract literals must come from view/focus.js, not: ${offenders.join(", ")}`,
+  );
+});
+
+test("focus contract consumers import from view/focus.js", async () => {
+  const keyboard = await readFile(join(root, "src/controllers/keyboard.js"), "utf8");
+  const renderer = await readFile(join(root, "src/bootstrap/app-renderer.js"), "utf8");
+  assert.match(keyboard, /from "\.\.\/view\/focus\.js"/);
+  assert.match(renderer, /from "\.\.\/view\/focus\.js"/);
+  // The lateral controller->bootstrap import this refactor removed must stay gone.
+  assert.doesNotMatch(keyboard, /from "\.\.\/bootstrap\//);
 });

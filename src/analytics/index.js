@@ -24,6 +24,8 @@ export {
   trackCampSelected,
   trackCampHintShown,
   trackCampPickerOpened,
+  trackShortcutsOpened,
+  trackKeyboardNavUsed,
 } from "./track.js";
 export { installErrorCapture, sendOnPageHide } from "./transport.js";
 export { installLocaleEngagementTracking } from "./locale-engagement.js";

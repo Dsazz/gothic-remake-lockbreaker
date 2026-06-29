@@ -235,6 +235,14 @@ export function trackCampPickerOpened({ source, hadCamp }) {
   });
 }
 
+export function trackShortcutsOpened({ source }) {
+  send(Events.SHORTCUTS_OPENED, { source, app_version: VERSION });
+}
+
+export function trackKeyboardNavUsed({ surface }) {
+  send(Events.KEYBOARD_NAV_USED, { surface, app_version: VERSION });
+}
+
 
 export function trackLocaleChanged({ locale, previousLocale, source, switchCount }) {
   const change_direction = localeChangeDirection({ locale, previousLocale });

@@ -6,10 +6,8 @@ import {
 } from "../analytics/values.js";
 import { t } from "../i18n/index.js";
 import { createSpotlightRing } from "./spotlight-ring.js";
+import { MOBILE_MEDIA, DESKTOP_SEQUENCE_MEDIA } from "../breakpoints.js";
 
-const MOBILE_BREAKPOINT = 768;
-const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
-const DESKTOP_SEQUENCE_MEDIA = "(min-width: 900px)";
 const TARGET_LOWER_RATIO = 0.45;
 const FALLBACK_CARD_HEIGHT = 220;
 

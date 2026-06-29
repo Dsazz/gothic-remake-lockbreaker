@@ -28,30 +28,8 @@ import {
   trackStepsRevealed,
   trackHashBannerShown,
 } from "../analytics/index.js";
-
-// Fraction of the walkthrough a user must reach before the donation CTA is
-// revealed. Most users never click `Next` to the final step, so gating on
-// literal completion would near-zero impressions; 60% means "nearly done".
-const GRATITUDE_REVEAL_FRACTION = 0.6;
-
-// Step index at or beyond which the donation CTA reveals, for a walkthrough of
-// `total` moves. Pure so it can be unit-tested alongside `buildWalkthrough`.
-// Clamped to >= 1 so the CTA never reveals at step 0 even for a degenerate
-// `total` of 0.
-export function gratitudeRevealStep(total) {
-  return Math.max(1, Math.ceil(total * GRATITUDE_REVEAL_FRACTION));
-}
-
-// Reveals the donation CTA once the user has progressed far enough through the
-// walkthrough. Pure mutation of `session` so it can be driven from the nav
-// handlers (where progress actually happens) and unit-tested without the DOM.
-export function applyGratitudeReveal(session) {
-  const total = session.solution?.length ?? 0;
-  if (total > 0 && session.stepIndex >= gratitudeRevealStep(total)) {
-    session.gratitudeRevealed = true;
-  }
-  return session.gratitudeRevealed;
-}
+import { SolveSession } from "../core/solve-session.js";
+import { CoachmarkVariant } from "../onboarding/solve-coachmark.js";
 
 // Localized success copy for the aria-live channel: empty solution means the
 // lock was already open, otherwise announce the turn count. Pure so the branch
@@ -62,26 +40,8 @@ export function solveSuccessText(moveCount) {
     : tCount("solution.turnCount", moveCount);
 }
 
-export function createEmptySession() {
-  return {
-    solution: undefined,
-    solveFailureReason: undefined,
-    solving: false,
-    stepIndex: 0,
-    showAllSteps: false,
-    sequenceMinimized: false,
-    blockedMessage: undefined,
-    hashBannerVisible: false,
-    hashBannerTracked: false,
-    showMismatchTips: false,
-    gratitudeRevealed: false,
-    pendingSolveCoachmark: false,
-    pendingHashFailureCoachmark: false,
-  };
-}
-
-export function buildWalkthrough(session, state, solverMatrixFn) {
-  const { solution, stepIndex, showAllSteps } = session;
+export function buildWalkthrough(cursor, state, solverMatrixFn) {
+  const { solution, stepIndex, showAllSteps } = cursor;
   if (!solution || solution.length === 0) return null;
   const matrix = solverMatrixFn(state);
   const states = statesAlong(state.positions, matrix, solution);
@@ -93,21 +53,6 @@ export function buildWalkthrough(session, state, solverMatrixFn) {
     showAll: showAllSteps,
     clampedStepIndex: clamped,
   };
-}
-
-export function resetSession(session, { dismissCoachmark } = {}) {
-  if (dismissCoachmark) dismissCoachmark();
-  session.solution = undefined;
-  session.solveFailureReason = undefined;
-  session.solving = false;
-  session.stepIndex = 0;
-  session.showAllSteps = false;
-  session.sequenceMinimized = false;
-  session.blockedMessage = undefined;
-  session.showMismatchTips = false;
-  session.gratitudeRevealed = false;
-  session.pendingSolveCoachmark = false;
-  session.pendingHashFailureCoachmark = false;
 }
 
 export function createSolveController({
@@ -122,8 +67,8 @@ export function createSolveController({
   onRenderSolutionArea,
   getHandlers,
 }) {
-  const session = createEmptySession();
-  session.hashBannerVisible = shouldShowHashBanner();
+  const session = new SolveSession();
+  session.setHashBannerVisible(shouldShowHashBanner());
 
   let pulseTimer;
   let flashTimer;
@@ -150,7 +95,7 @@ export function createSolveController({
 
   function flushPendingCoachmark() {
     if (!session.pendingSolveCoachmark || onboarding.isActive()) return;
-    session.pendingSolveCoachmark = false;
+    session.clearPendingSolveCoachmark();
     const state = store.getState();
     if (!isLockMapped(state)) return;
     void solveCoachmark.show(els.solveBtn);
@@ -159,9 +104,9 @@ export function createSolveController({
   function maybeShowHashFailureCoachmark() {
     if (!session.pendingHashFailureCoachmark || uiPrefs.isHashFailureCoachmarkSeen()) return;
     if (onboarding.isActive()) return;
-    session.pendingHashFailureCoachmark = false;
+    session.clearPendingHashFailureCoachmark();
     uiPrefs.markHashFailureCoachmarkSeen();
-    void solveCoachmark.show(els.solveBtn, { variant: "hash_failure" });
+    void solveCoachmark.show(els.solveBtn, { variant: CoachmarkVariant.HASH_FAILURE });
   }
 
   function handleSolveCoachmarkOnMapped(state) {
@@ -172,7 +117,7 @@ export function createSolveController({
       mapped: isLockMapped(state),
     });
     if (trigger === SolveCoachmarkTrigger.DEFER) {
-      session.pendingSolveCoachmark = true;
+      session.deferSolveCoachmark();
       return;
     }
     if (trigger === SolveCoachmarkTrigger.SHOW) {
@@ -184,19 +129,13 @@ export function createSolveController({
     // Abandon any in-flight solve so its result can't land on a stale board.
     solveToken++;
     cancelSolve();
-    resetSession(session, {
-      dismissCoachmark: () => {
-        if (solveCoachmark.isActive()) solveCoachmark.dismissSilent();
-      },
-    });
+    if (solveCoachmark.isActive()) solveCoachmark.dismissSilent();
+    session.reset();
   }
 
   function invalidateOnLockEdit() {
-    if (session.solution === null && session.solveFailureReason) {
-      session.showMismatchTips = false;
-      session.sequenceMinimized = false;
-      session.showAllSteps = false;
-      session.stepIndex = 0;
+    if (session.solveFailed) {
+      session.clearWalkthroughView();
       onRerender();
       return;
     }
@@ -253,13 +192,21 @@ export function createSolveController({
 
   function maybeTrackHashBanner(state, hasMoves) {
     if (!session.hashBannerVisible || !hasMoves || session.hashBannerTracked) return;
-    session.hashBannerTracked = true;
+    session.markHashBannerTracked();
     trackHashBannerShown({ plateCount: state.plateCount });
   }
 
   function renderSolutionArea(state, handlers) {
-    const built = buildWalkthrough(session, state, solverMatrix);
-    if (built) session.stepIndex = built.clampedStepIndex;
+    const built = buildWalkthrough(
+      {
+        solution: session.solution,
+        stepIndex: session.stepIndex,
+        showAllSteps: session.showAllSteps,
+      },
+      state,
+      solverMatrix,
+    );
+    if (built) session.clampStepIndexTo(built.clampedStepIndex);
     const walkthrough = built
       ? {
           states: built.states,
@@ -328,14 +275,12 @@ export function createSolveController({
       failureReason: session.solveFailureReason,
       mappingCompleteness: completeness,
     });
-    session.stepIndex = 0;
-    session.showAllSteps = false;
 
     if (session.solution === null) {
       pulseTumblers();
       announceSolveFailure();
       if (solveSource === SolveSource.HASH && landingType === LandingType.HASH) {
-        session.pendingHashFailureCoachmark = true;
+        session.deferHashFailureCoachmark();
         maybeShowHashFailureCoachmark();
       }
     } else {
@@ -352,18 +297,17 @@ export function createSolveController({
     const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
 
     if (!mapped) {
-      session.blockedMessage = t("solution.blocked");
+      session.setBlockedMessage(t("solution.blocked"));
       pulseTumblers();
       onRenderSolutionArea(state);
       return;
     }
 
-    session.blockedMessage = undefined;
+    session.setBlockedMessage(undefined);
 
     // Out-of-bounds is decidable without the solver — short-circuit synchronously.
     if (!isInBounds(state.positions)) {
-      session.solution = null;
-      session.solveFailureReason = SolveFailureReason.OOB_START;
+      session.applySolution(null, SolveFailureReason.OOB_START);
       applySolveResult(state, completeness, solveSource);
       return;
     }
@@ -371,11 +315,7 @@ export function createSolveController({
     // Run the (potentially heavy) BFS off the main thread. Show the spinner,
     // keep the page interactive, then apply the result only if not superseded.
     const token = ++solveToken;
-    session.solving = true;
-    session.solution = undefined;
-    session.solveFailureReason = undefined;
-    session.stepIndex = 0;
-    session.showAllSteps = false;
+    session.beginSolve();
     onRerender();
 
     let solution;
@@ -388,10 +328,8 @@ export function createSolveController({
 
     if (token !== solveToken) return; // superseded by an edit or a newer solve
 
-    session.solving = false;
-    session.solution = solution;
-    session.solveFailureReason =
-      solution === null ? SolveFailureReason.NO_PATH : undefined;
+    const failureReason = solution === null ? SolveFailureReason.NO_PATH : undefined;
+    session.applySolution(solution, failureReason);
     applySolveResult(state, completeness, solveSource);
   }
 
@@ -401,47 +339,32 @@ export function createSolveController({
   }
 
   function refreshHashBannerVisibility() {
-    session.hashBannerVisible = shouldShowHashBanner();
+    session.setHashBannerVisible(shouldShowHashBanner());
   }
 
   function onLocaleChangeRefresh() {
-    if (session.blockedMessage) session.blockedMessage = t("solution.blocked");
+    session.refreshBlockedMessage(t("solution.blocked"));
   }
 
   const handlers = {
     onWalk(delta) {
-      const total = session.solution?.length ?? 0;
-      const prev = session.stepIndex;
-      session.stepIndex += delta;
-      session.stepIndex = Math.max(0, Math.min(session.stepIndex, total));
-      if (session.stepIndex !== prev) {
-        session.showMismatchTips = false;
-      }
-      applyGratitudeReveal(session);
+      session.walk(delta);
       onRenderSolutionArea(store.getState());
     },
     onJumpTo(index) {
-      const total = session.solution?.length ?? 0;
-      const prev = session.stepIndex;
-      session.stepIndex = Math.max(0, Math.min(index, total));
-      if (session.stepIndex !== prev) {
-        session.showMismatchTips = false;
-      }
-      applyGratitudeReveal(session);
+      session.jumpTo(index);
       onRenderSolutionArea(store.getState());
     },
     onToggleSteps() {
-      session.showAllSteps = !session.showAllSteps;
-      if (session.showAllSteps) maybeTrackStepsRevealed();
+      if (session.toggleSteps()) maybeTrackStepsRevealed();
       onRenderSolutionArea(store.getState());
     },
     onMinimizeSequence() {
-      session.sequenceMinimized = true;
-      session.showAllSteps = false;
+      session.minimizeSequence();
       onRenderSolutionArea(store.getState());
     },
     onExpandSequence() {
-      session.sequenceMinimized = false;
+      session.expandSequence();
       onRenderSolutionArea(store.getState());
       scrollSequencePanel();
     },
@@ -450,7 +373,7 @@ export function createSolveController({
       onRerender();
     },
     onDismissHashBanner() {
-      session.hashBannerVisible = false;
+      session.setHashBannerVisible(false);
       uiPrefs.dismissHashBanner();
       trackPromptDismissed({
         prompt: PromptKind.HASH_BANNER,
@@ -462,7 +385,7 @@ export function createSolveController({
       getHandlers().onSupportClick(SupportSource.SEQUENCE_POST_SOLVE);
     },
     onStepMismatch() {
-      session.showMismatchTips = !session.showMismatchTips;
+      session.toggleMismatchTips();
       trackStepMismatchClicked({
         stepIndex: session.stepIndex,
         plateCount: store.getState().plateCount,
@@ -485,6 +408,12 @@ export function createSolveController({
     getTumblersPulse: () => tumblersPulse,
     getSolveReadyFlash: () => solveReadyFlash,
     getSolving: () => session.solving,
+    // Whether `←/→` should step the walkthrough: a non-empty solution is on
+    // screen and not collapsed. False while solving (solution is undefined).
+    canWalk: () =>
+      Array.isArray(session.solution) &&
+      session.solution.length > 0 &&
+      !session.sequenceMinimized,
     getMappingCompleteness: () => mappingCompletenessFor(store.getState()),
   };
 }

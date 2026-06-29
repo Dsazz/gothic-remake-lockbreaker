@@ -9,14 +9,8 @@ import {
   createRemovedLinks,
   effectiveMatrix,
 } from "../src/core/domain.js";
-import {
-  applyGratitudeReveal,
-  buildWalkthrough,
-  createEmptySession,
-  gratitudeRevealStep,
-  resetSession,
-  solveSuccessText,
-} from "../src/controllers/solve.js";
+import { buildWalkthrough, solveSuccessText } from "../src/controllers/solve.js";
+import { SolveSession, gratitudeRevealStep } from "../src/core/solve-session.js";
 
 function sampleState() {
   const plateCount = 4;
@@ -32,25 +26,37 @@ function sampleState() {
   };
 }
 
-test("resetSession clears all solve session fields", () => {
-  const session = createEmptySession();
-  session.solution = [{ plate: 0, dir: 1 }];
-  session.solveFailureReason = "no_path";
-  session.stepIndex = 3;
-  session.showAllSteps = true;
-  session.sequenceMinimized = true;
-  session.blockedMessage = "blocked";
-  session.showMismatchTips = true;
-  session.gratitudeRevealed = true;
-  session.pendingSolveCoachmark = true;
-  session.pendingHashFailureCoachmark = true;
+test("reset clears solve session state but preserves hash banner state", () => {
+  const session = new SolveSession();
+  session.setHashBannerVisible(true);
+  session.markHashBannerTracked();
+  session.applySolution(
+    [
+      { plate: 0, dir: 1 },
+      { plate: 1, dir: 1 },
+      { plate: 2, dir: 1 },
+    ],
+    "no_path",
+  );
+  session.jumpTo(3);
+  session.toggleMismatchTips();
+  session.minimizeSequence();
+  session.toggleSteps(); // showAllSteps=true while still minimized
+  session.setBlockedMessage("blocked");
+  session.deferSolveCoachmark();
+  session.deferHashFailureCoachmark();
+  session.applyGratitudeReveal();
 
-  let dismissed = false;
-  resetSession(session, { dismissCoachmark: () => { dismissed = true; } });
+  // Sanity: state is dirty before the reset.
+  assert.equal(session.gratitudeRevealed, true);
+  assert.equal(session.sequenceMinimized, true);
+  assert.equal(session.showAllSteps, true);
 
-  assert.equal(dismissed, true);
+  session.reset();
+
   assert.equal(session.solution, undefined);
   assert.equal(session.solveFailureReason, undefined);
+  assert.equal(session.solving, false);
   assert.equal(session.stepIndex, 0);
   assert.equal(session.showAllSteps, false);
   assert.equal(session.sequenceMinimized, false);
@@ -59,6 +65,10 @@ test("resetSession clears all solve session fields", () => {
   assert.equal(session.gratitudeRevealed, false);
   assert.equal(session.pendingSolveCoachmark, false);
   assert.equal(session.pendingHashFailureCoachmark, false);
+
+  // Hash banner state outlives a reset.
+  assert.equal(session.hashBannerVisible, true);
+  assert.equal(session.hashBannerTracked, true);
 });
 
 test("gratitudeRevealStep reveals the donation CTA at ~60% of steps", () => {
@@ -72,30 +82,32 @@ test("gratitudeRevealStep reveals the donation CTA at ~60% of steps", () => {
 });
 
 test("applyGratitudeReveal flips only at/above the threshold and stays sticky", () => {
-  const session = createEmptySession();
-  session.solution = Array.from({ length: 10 }, (_, i) => ({ plate: i, dir: 1 }));
+  const session = new SolveSession();
+  session.applySolution(
+    Array.from({ length: 10 }, (_, i) => ({ plate: i, dir: 1 })),
+    undefined,
+  );
 
   // Below threshold (reveal step is 6): no reveal.
-  session.stepIndex = 5;
-  assert.equal(applyGratitudeReveal(session), false);
+  session.jumpTo(5);
+  assert.equal(session.applyGratitudeReveal(), false);
   assert.equal(session.gratitudeRevealed, false);
 
   // At threshold: reveals.
-  session.stepIndex = 6;
-  assert.equal(applyGratitudeReveal(session), true);
+  session.jumpTo(6);
+  assert.equal(session.applyGratitudeReveal(), true);
   assert.equal(session.gratitudeRevealed, true);
 
   // Sticky: stepping back keeps it revealed.
-  session.stepIndex = 0;
-  assert.equal(applyGratitudeReveal(session), true);
+  session.jumpTo(0);
+  assert.equal(session.applyGratitudeReveal(), true);
   assert.equal(session.gratitudeRevealed, true);
 });
 
 test("applyGratitudeReveal never reveals without a solution", () => {
-  const session = createEmptySession();
-  session.solution = undefined;
-  session.stepIndex = 99;
-  assert.equal(applyGratitudeReveal(session), false);
+  const session = new SolveSession();
+  // No solution: the cursor can't advance, so the CTA stays hidden.
+  assert.equal(session.applyGratitudeReveal(), false);
   assert.equal(session.gratitudeRevealed, false);
 });
 
@@ -109,16 +121,17 @@ test("solveSuccessText distinguishes already-open from a turn count", () => {
 });
 
 test("buildWalkthrough clamps step index to available states", () => {
-  const session = createEmptySession();
-  session.solution = [
-    { plate: 0, dir: 1 },
-    { plate: 1, dir: 1 },
-  ];
-  session.stepIndex = 99;
-  session.showAllSteps = true;
+  const cursor = {
+    solution: [
+      { plate: 0, dir: 1 },
+      { plate: 1, dir: 1 },
+    ],
+    stepIndex: 99,
+    showAllSteps: true,
+  };
 
   const state = sampleState();
-  const built = buildWalkthrough(session, state, (s) =>
+  const built = buildWalkthrough(cursor, state, (s) =>
     effectiveMatrix(s.matrix, s.removedLinks),
   );
 
@@ -129,12 +142,11 @@ test("buildWalkthrough clamps step index to available states", () => {
 });
 
 test("buildWalkthrough returns null when solution is empty", () => {
-  const session = createEmptySession();
-  session.solution = [];
+  const cursor = { solution: [], stepIndex: 0, showAllSteps: false };
   const state = pristineState();
 
   assert.equal(
-    buildWalkthrough(session, state, (s) => effectiveMatrix(s.matrix, s.removedLinks)),
+    buildWalkthrough(cursor, state, (s) => effectiveMatrix(s.matrix, s.removedLinks)),
     null,
   );
 });

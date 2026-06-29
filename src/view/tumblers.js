@@ -2,8 +2,10 @@
 // the solve button. State -> DOM only; handlers injected by the controller.
 
 import { LINK, MASTERY, countRemovedLinks, POS_MIN, POS_MAX } from "../core/domain.js";
+import { ShortcutsSource } from "../analytics/values.js";
 import { t } from "../i18n/index.js";
-import { el } from "./dom.js";
+import { el, keyboardIconSvg } from "./dom.js";
+import { RovingAttr } from "./focus.js";
 import {
   linkLabel,
   lockLabel,
@@ -20,6 +22,14 @@ function linkChips(turned, state, handlers) {
   const masterGone = masteryLevel === MASTERY.MASTER.id && breaksBudget > 0;
   const removedCount = countRemovedLinks(removedLinks);
   const chips = [];
+  // Roving tabindex: only the first coupling chip is a tab stop; arrow keys
+  // (controllers/keyboard.js) move focus across the rest of the toolbar.
+  let firstTabstop = true;
+  const rovingTabindex = () => {
+    const value = firstTabstop ? "0" : "-1";
+    firstTabstop = false;
+    return value;
+  };
 
   for (let reactor = 0; reactor < plateCount; reactor++) {
     if (reactor === turned) continue;
@@ -30,6 +40,9 @@ function linkChips(turned, state, handlers) {
       class: ["link-chip", LINK_CLASS[link], removed ? "link-removed" : ""].filter(Boolean).join(" "),
       text: isUnset ? lockLabel(reactor) : `${lockLabel(reactor)} ${linkLabel(link)}`,
       type: "button",
+      tabindex: rovingTabindex(),
+      [RovingAttr.ROVING]: "",
+      [RovingAttr.REACTOR]: String(reactor),
       "aria-label": isUnset
         ? t("tumbler.couplingUnsetAria", { lock: lockLabel(reactor) })
         : t("tumbler.couplingAria", {
@@ -49,6 +62,9 @@ function linkChips(turned, state, handlers) {
       class: `link-gone-btn${removed ? " is-active" : ""}`,
       text: removed ? t("coupling.goneDone") : t("coupling.gone"),
       type: "button",
+      tabindex: "-1",
+      [RovingAttr.ROVING]: "",
+      [RovingAttr.REACTOR]: String(reactor),
       "aria-label": removed
         ? t("tumbler.goneUndoAria", { lock: lockLabel(reactor) })
         : t("tumbler.goneAria", { lock: lockLabel(reactor) }),
@@ -67,10 +83,19 @@ function holeGrooveElements(value, { interactive, plate, handlers, moving = fals
     const hole = holeLabel(v);
     const className = holeClassList(v, value, { moving });
     if (interactive) {
+      const active = v === value;
+      // ARIA radiogroup: the selected hole is the single tab stop; arrow keys
+      // (handled in controllers/keyboard.js) roam the rest. `data-*` give the
+      // keyboard controller and view/focus.js stable hooks.
       holes.push(
         el("button", {
           class: className,
           text: hole,
+          role: "radio",
+          "aria-checked": active ? "true" : "false",
+          tabindex: active ? "0" : "-1",
+          [RovingAttr.ROVING]: "",
+          [RovingAttr.VALUE]: String(v),
           "aria-label": t("tumbler.holeAria", { hole }),
           onClick: () => handlers.onSetPosition(plate, v),
         }),
@@ -91,7 +116,12 @@ function holeGrooveElements(value, { interactive, plate, handlers, moving = fals
 function positionGroove(plate, value, handlers) {
   return el(
     "div",
-    { class: "plate-holes" },
+    {
+      class: "plate-holes",
+      role: "radiogroup",
+      "aria-label": `${t("tumbler.startHole")} ${lockLabel(plate)}`,
+      [RovingAttr.PLATE]: String(plate),
+    },
     holeGrooveElements(value, { interactive: true, plate, handlers }),
   );
 }
@@ -128,7 +158,16 @@ function tumblerCard(plate, state, handlers) {
     ]),
     el("div", { class: "tumbler-links" }, [
       el("span", { class: "tumbler-field-label", text: t("tumbler.turningMoves") }),
-      el("div", { class: "link-chip-row" }, linkChips(plate, state, handlers)),
+      el(
+        "div",
+        {
+          class: "link-chip-row",
+          role: "toolbar",
+          "aria-label": `${t("tumbler.turningMoves")} ${lockLabel(plate)}`,
+          [RovingAttr.PLATE]: String(plate),
+        },
+        linkChips(plate, state, handlers),
+      ),
     ]),
   ]);
 }
@@ -141,6 +180,23 @@ function tumblerLegend() {
     el("span", { class: "tumbler-legend-notch", text: t("legend.notch") }),
     el("span", { class: "tumbler-legend-wall tumbler-legend-wall--right", text: t("legend.wallRight") }),
   ]);
+}
+
+// Desktop-only affordance: a single button (icon + label) that opens the
+// shortcuts modal. CSS (`@media (hover: none)`) hides it on touch.
+export function renderShortcutsHint(container, handlers) {
+  if (!container) return;
+  container.replaceChildren(
+    el(
+      "button",
+      {
+        class: "shortcuts-hint",
+        type: "button",
+        onClick: () => handlers.onOpenShortcuts(ShortcutsSource.ICON),
+      },
+      [keyboardIconSvg(), el("span", { class: "shortcuts-hint-label", text: t("shortcuts.hint") })],
+    ),
+  );
 }
 
 export function renderTumblers(container, state, handlers, ui = {}) {

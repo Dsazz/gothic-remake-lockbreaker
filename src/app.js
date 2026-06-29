@@ -8,6 +8,7 @@ import { createUiPrefs } from "./storage/prefs.js";
 import { resolveLandingType } from "./bootstrap/landing.js";
 import { createSolveController } from "./controllers/solve.js";
 import { createLockController } from "./controllers/lock.js";
+import { createKeyboardController } from "./controllers/keyboard.js";
 import { createLocaleChromeController } from "./controllers/locale-chrome.js";
 import { createAppRenderer } from "./bootstrap/app-renderer.js";
 import {
@@ -27,6 +28,7 @@ import { wireInfoModals } from "./controllers/info-modal.js";
 import { LandingType, LocaleAutoHintSource } from "./analytics/values.js";
 import { resolveStartup, StartupAction } from "./bootstrap/startup.js";
 import { LocaleSource, DEFAULT_LOCALE } from "./i18n/index.js";
+import { DESKTOP_SEQUENCE_MEDIA } from "./breakpoints.js";
 
 // Apply the persisted camp theme before any render to avoid a flash of the
 // neutral palette for returning users who picked a camp.
@@ -51,6 +53,7 @@ let renderLocaleChrome = () => {};
 
 let locale;
 let solve;
+let keyboard;
 let renderer;
 let onboarding;
 let solveCoachmark;
@@ -139,6 +142,13 @@ function initControllers() {
     onRerender: () => renderAll(store.getState()),
   });
 
+  keyboard = createKeyboardController({
+    solve,
+    getHandlers,
+    els,
+    onRerender: () => renderAll(store.getState()),
+  });
+
   handlers = {
     ...lock.handlers,
     ...solve.handlers,
@@ -155,6 +165,8 @@ function initControllers() {
       renderAll(store.getState());
       renderLocaleChrome();
     },
+    onOpenShortcuts: (source) => keyboard.openShortcuts(source),
+    onCloseShortcuts: () => keyboard.closeShortcuts(),
   };
 
   renderLocaleChrome = () => {
@@ -170,6 +182,7 @@ function initControllers() {
     onRenderLocaleChrome: () => renderLocaleChrome(),
     handlers,
     getWipeConfirmVisible: () => lock.isWipeConfirmOpen(),
+    getShortcutsVisible: () => keyboard.isShortcutsOpen(),
   });
   renderAll = (state) => renderer.render(state);
 }
@@ -179,6 +192,7 @@ function bindAppEvents() {
   els.loadExampleLock?.addEventListener("click", () =>
     handlers.onLoadExampleLock(oldCampExample()),
   );
+  document.addEventListener("keydown", keyboard.handle);
   store.subscribe(renderAll);
 }
 
@@ -296,7 +310,7 @@ async function bootstrap() {
     },
     onComplete: () => {
       setTimeout(() => {
-        if (window.matchMedia("(min-width: 900px)").matches) return;
+        if (window.matchMedia(DESKTOP_SEQUENCE_MEDIA).matches) return;
         els.solveBtn?.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }, 0);
     },
