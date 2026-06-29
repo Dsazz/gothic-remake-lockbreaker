@@ -1,0 +1,71 @@
+name: Bug report
+description: Something is broken — solver, UI, or crash
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not paste your lock URL, couplings, or pin positions** — they encode your lock state.
+        Plate count and walkthrough step number are fine when relevant.
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Shown in the site footer (e.g. v1.35.0)
+      placeholder: v1.35.0
+    validations:
+      required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Interface language
+      options:
+        - English
+        - German
+        - Polish
+        - Ukrainian
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      description: e.g. Firefox 128 on Android, Safari on iPhone
+      placeholder: Chrome 131 on Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What you did before the problem appeared
+      placeholder: Mapped 6 locks, tapped Break the Lock, step 12 did not match in-game…
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+    validations:
+      required: true
+  - type: input
+    id: context
+    attributes:
+      label: Plate count / walkthrough step (optional)
+      description: Safe context only — no URL hash or coupling details
+      placeholder: 6 plates, step 12 of 45
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I have not included my lock URL, couplings, or pin positions in this report
+          required: true

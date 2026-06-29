@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.35.1] - 2026-06-29
+
+### Added
+
+- GitHub issue templates for bugs, translation fixes, and feature ideas — footer **Report an issue** opens the chooser; the translation banner links straight to the translation form.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — where to report problems, privacy rules (no lock URL in issues), and how to open a PR.
+
+### Changed
+
+- README adds a **Feedback & issues** section (templates, Discussions, Ko-fi).
+
 ## [1.35.0] - 2026-06-29
 
 ### Added

@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.35.0-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.35.1-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.35.0** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.35.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [🇩🇪 German](https://gothiclockbreaker.com/de/) · [🇵🇱 Polish](https://gothiclockbreaker.com/pl/) · [🇺🇦 Ukrainian](https://gothiclockbreaker.com/uk/)
 
@@ -164,6 +164,14 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 ## Analytics
 
 Production builds send **anonymous** usage data to [PostHog EU](https://eu.posthog.com) (hosted in the EU). We do not collect accounts, names, or personal information. Autocapture, session replay, web vitals, heatmaps, surveys, and rageclick/dead-click capture are **disabled**. Each session sends one SDK `$pageview` on load (plus a 45s visibility ping so Web Analytics Live stays accurate during long solves), explicit custom events (landing with referrer/UTM, mapping milestones, solve funnel, tutor/onboarding, guide, i18n), and registers `initial_locale` / `locale` session props. Geo country (for locale suggest) is enriched server-side from IP — no lock couplings, pin positions, or URL hash are sent. Analytics is disabled on `localhost` and `127.0.0.1` during local development.
+
+## Feedback & issues
+
+- **Bugs, translation fixes, feature ideas** — [GitHub issue templates](https://github.com/Dsazz/gothic-remake-lockbreaker/issues/new/choose) (see [CONTRIBUTING.md](CONTRIBUTING.md)). The site footer opens the chooser; the in-app translation banner links straight to the translation template.
+- **Ideas & questions** — [GitHub Discussions](https://github.com/Dsazz/gothic-remake-lockbreaker/discussions).
+- **Tips** — optional [Ko-fi](https://ko-fi.com/swarmconductor) support; not for bug reports.
+
+German, Polish, and Ukrainian UI copy is machine-translated and may be wrong — reports are welcome via the translation template.
 
 ## Deploy your own
 
