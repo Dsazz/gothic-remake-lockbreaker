@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.35.0] - 2026-06-29
+
+### Added
+
+- "NEW" badges now flag recently-added features for returning players: if a feature shipped after your first visit, its button wears a small "NEW" pill until you open it. First-time visitors don't see them, so the cue only points at what's genuinely new to you. The keyboard shortcuts panel is the first feature to carry one.
+
 ## [1.34.0] - 2026-06-29
 
 ### Added

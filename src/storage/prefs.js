@@ -1,4 +1,7 @@
 import { StorageKeys, StorageFlag } from "./keys.js";
+import { EARLIEST_BASELINE } from "../core/feature-badges.js";
+
+const BADGE_SEPARATOR = ",";
 
 function storageGet(key) {
   try {
@@ -110,6 +113,30 @@ export function createUiPrefs() {
     recordCampHintShown() {
       sessionSet(StorageKeys.CAMP_HINT_SESSION_SHOWN, StorageFlag.SET);
       storageSet(StorageKeys.CAMP_HINT_SHOWN_COUNT, String(readCampHintCount() + 1));
+    },
+    firstSeenVersion() {
+      return storageGet(StorageKeys.FIRST_SEEN_VERSION);
+    },
+    // Stamps the "NEW"-badge baseline once. Already-visited users get the
+    // earliest baseline so every current badge counts as new to them; first-time
+    // visitors get the current version, suppressing badges for features they are
+    // meeting for the first time anyway. Idempotent — only the first call writes.
+    ensureFirstSeenVersion(currentVersion, alreadyVisited) {
+      const existing = storageGet(StorageKeys.FIRST_SEEN_VERSION);
+      if (existing) return existing;
+      const baseline = alreadyVisited ? EARLIEST_BASELINE : currentVersion;
+      storageSet(StorageKeys.FIRST_SEEN_VERSION, baseline);
+      return baseline;
+    },
+    dismissedBadges() {
+      const raw = storageGet(StorageKeys.BADGES_DISMISSED);
+      return raw ? raw.split(BADGE_SEPARATOR).filter(Boolean) : [];
+    },
+    dismissBadge(id) {
+      const current = this.dismissedBadges();
+      if (current.includes(id)) return;
+      current.push(id);
+      storageSet(StorageKeys.BADGES_DISMISSED, current.join(BADGE_SEPARATOR));
     },
   };
 }
