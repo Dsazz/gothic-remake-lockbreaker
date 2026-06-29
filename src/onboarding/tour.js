@@ -1,4 +1,4 @@
-import { StorageKeys, StorageFlag } from "../storage-keys.js";
+import { StorageKeys, StorageFlag } from "../storage/keys.js";
 import {
   OnboardingAction,
   OnboardingStepId,

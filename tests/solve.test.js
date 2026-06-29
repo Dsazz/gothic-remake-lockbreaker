@@ -16,7 +16,7 @@ import {
   gratitudeRevealStep,
   resetSession,
   solveSuccessText,
-} from "../src/controllers/solve-controller.js";
+} from "../src/controllers/solve.js";
 
 function sampleState() {
   const plateCount = 4;

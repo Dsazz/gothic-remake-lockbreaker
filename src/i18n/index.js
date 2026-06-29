@@ -1,4 +1,4 @@
-import { StorageKeys, StorageFlag } from "../storage-keys.js";
+import { StorageKeys, StorageFlag } from "../storage/keys.js";
 import { resolveReferrerLocaleHint } from "./referrer-hints.js";
 import enCatalog from "../../locales/en.json" with { type: "json" };
 

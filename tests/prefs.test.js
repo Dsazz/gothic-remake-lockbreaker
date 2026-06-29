@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
+import { StorageKeys, StorageFlag } from "../src/storage/keys.js";
 
 const storage = new Map();
 const sessionStorageMap = new Map();
@@ -22,7 +22,7 @@ test("createUiPrefs round-trips UI flags", async () => {
   };
 
   try {
-    const { createUiPrefs } = await import("../src/ui-prefs.js");
+    const { createUiPrefs } = await import("../src/storage/prefs.js");
     const prefs = createUiPrefs();
 
     assert.equal(prefs.hasVisited(), false);

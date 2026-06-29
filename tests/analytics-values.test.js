@@ -15,7 +15,7 @@ import {
   TutorNotShownReason,
 } from "../src/analytics/values.js";
 import { LocaleSource } from "../src/i18n/index.js";
-import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
+import { StorageKeys, StorageFlag } from "../src/storage/keys.js";
 
 const FROZEN_MAPS = [
   LandingType,

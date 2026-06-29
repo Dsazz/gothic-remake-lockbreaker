@@ -1,14 +1,14 @@
 // Composition root: wires store, controllers, and view. Business logic lives in
-// *-controller modules; this file only bootstraps and connects them.
+// the controllers/ modules; this file only bootstraps and connects them.
 
 import { createStore } from "./core/store.js";
 import { isLockMapped } from "./core/domain.js";
 import { getAppElements } from "./bootstrap/app-elements.js";
-import { createUiPrefs } from "./ui-prefs.js";
+import { createUiPrefs } from "./storage/prefs.js";
 import { resolveLandingType } from "./bootstrap/landing.js";
-import { createSolveController } from "./controllers/solve-controller.js";
-import { createLockController } from "./controllers/lock-controller.js";
-import { createLocaleChromeController } from "./controllers/locale-chrome-controller.js";
+import { createSolveController } from "./controllers/solve.js";
+import { createLockController } from "./controllers/lock.js";
+import { createLocaleChromeController } from "./controllers/locale-chrome.js";
 import { createAppRenderer } from "./bootstrap/app-renderer.js";
 import {
   initI18n,
@@ -21,9 +21,9 @@ import { applyStaticContent } from "./i18n/static-content.js";
 import { createOnboardingStub } from "./onboarding/stub.js";
 import { createSolveCoachmark } from "./onboarding/solve-coachmark.js";
 import { oldCampExample } from "./core/examples.js";
-import { initCampTheme, createCampSelector } from "./controllers/camp-controller.js";
-import { wireHowToMapImage } from "./how-to-map-image.js";
-import { wireInfoModals } from "./controllers/info-modal-controller.js";
+import { initCampTheme, createCampSelector } from "./controllers/camp.js";
+import { wireHowToMapImage } from "./bootstrap/how-to-map-image.js";
+import { wireInfoModals } from "./controllers/info-modal.js";
 import { LandingType, LocaleAutoHintSource } from "./analytics/values.js";
 import { resolveStartup, StartupAction } from "./bootstrap/startup.js";
 import { LocaleSource, DEFAULT_LOCALE } from "./i18n/index.js";

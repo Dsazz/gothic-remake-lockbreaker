@@ -55,25 +55,25 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/core/solver.js");
   await import("../src/view.js");
   await import("../src/analytics/values.js");
-  await import("../src/storage-keys.js");
+  await import("../src/storage/keys.js");
   await import("../src/onboarding/solve-coachmark.js");
   await import("../src/onboarding/spotlight-ring.js");
   await import("../src/onboarding/solve-coachmark-schedule.js");
   await import("../src/i18n/index.js");
   await import("../src/i18n/static-content.js");
-  await import("../src/how-to-map-image.js");
-  await import("../src/controllers/info-modal-controller.js");
+  await import("../src/bootstrap/how-to-map-image.js");
+  await import("../src/controllers/info-modal.js");
   await import("../src/onboarding/stub.js");
   await import("../src/analytics/posthog-init.js");
   await import("../src/i18n/locale-switcher.js");
   await import("../src/i18n/locale-suggest.js");
   await import("../src/analytics/geo-hint.js");
-  await import("../src/ui-prefs.js");
+  await import("../src/storage/prefs.js");
   await import("../src/bootstrap/landing.js");
-  await import("../src/controllers/solve-controller.js");
-  await import("../src/controllers/lock-controller.js");
-  await import("../src/controllers/locale-chrome-controller.js");
-  await import("../src/controllers/camp-controller.js");
+  await import("../src/controllers/solve.js");
+  await import("../src/controllers/lock.js");
+  await import("../src/controllers/locale-chrome.js");
+  await import("../src/controllers/camp.js");
   await import("../src/bootstrap/app-renderer.js");
   await import("../src/bootstrap/app-elements.js");
 });
@@ -111,7 +111,7 @@ test("tour opt-in start does not re-render controls and orphan step 1 spotlight"
 
 test("app defers solve coachmark until onboarding tour ends", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
+  const solveText = await readFile(join(root, "src/controllers/solve.js"), "utf8");
   const onboardingText = await readFile(join(root, "src/onboarding/tour.js"), "utf8");
   assert.match(appText, /flushPendingCoachmark/);
   assert.match(solveText, /pendingSolveCoachmark/);
@@ -123,8 +123,8 @@ test("app defers solve coachmark until onboarding tour ends", async () => {
 
 test("camp hint re-shows per session, neutral-only, deferred past tour/coachmark, and is instrumented", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const campText = await readFile(join(root, "src/controllers/camp-controller.js"), "utf8");
-  const uiPrefsText = await readFile(join(root, "src/ui-prefs.js"), "utf8");
+  const campText = await readFile(join(root, "src/controllers/camp.js"), "utf8");
+  const uiPrefsText = await readFile(join(root, "src/storage/prefs.js"), "utf8");
   const css = await readStyles();
 
   // Persistence: re-show gating (picker-opened + per-session + lifetime cap)
@@ -179,7 +179,7 @@ test("camp hint re-shows per session, neutral-only, deferred past tour/coachmark
 });
 
 test("active camp trigger names the camp via a styled tip, not a native title", async () => {
-  const campText = await readFile(join(root, "src/controllers/camp-controller.js"), "utf8");
+  const campText = await readFile(join(root, "src/controllers/camp.js"), "utf8");
   const css = await readStyles();
 
   // The active visual renders the styled tip with the camp's name; the native
@@ -241,7 +241,7 @@ test("view layer renders only — no module imports store.js", async () => {
 
 test("renderControls hides wipe until lock differs from default; gratitude prompt is donate-only", async () => {
   const viewText = await readViewSource();
-  const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
+  const solveText = await readFile(join(root, "src/controllers/solve.js"), "utf8");
   assert.match(viewText, /isPristineDefault/);
   assert.match(viewText, /showLockActions/);
   assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
@@ -284,7 +284,7 @@ test("unset coupling chip drops the dot glyph and uses a clear aria label", asyn
 
 test("help sections are progressively enhanced into modals", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const modalText = await readFile(join(root, "src/controllers/info-modal-controller.js"), "utf8");
+  const modalText = await readFile(join(root, "src/controllers/info-modal.js"), "utf8");
   const css = await readStyles();
   assert.match(appText, /wireInfoModals/);
   assert.match(modalText, /info-modal-open/);
@@ -322,7 +322,7 @@ test("walkthrough uses tertiary help trigger, not pill mismatch button", async (
 });
 
 test("wipe lock uses in-app confirm modal instead of native confirm", async () => {
-  const lockText = await readFile(join(root, "src/controllers/lock-controller.js"), "utf8");
+  const lockText = await readFile(join(root, "src/controllers/lock.js"), "utf8");
   const viewText = await readViewSource();
   const rendererText = await readFile(join(root, "src/bootstrap/app-renderer.js"), "utf8");
   assert.doesNotMatch(lockText, /confirm\(/);
@@ -439,7 +439,7 @@ test("locale suggest uses region semantics, not dialog", async () => {
 test("app bootstraps with catch and splits locale chrome from renderAll", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
   const rendererText = await readFile(join(root, "src/bootstrap/app-renderer.js"), "utf8");
-  const localeText = await readFile(join(root, "src/controllers/locale-chrome-controller.js"), "utf8");
+  const localeText = await readFile(join(root, "src/controllers/locale-chrome.js"), "utf8");
   const switcherText = await readFile(join(root, "src/i18n/locale-switcher.js"), "utf8");
   assert.match(appText, /bootstrap\(\)\.catch/);
   assert.match(appText, /function wireApp/);
@@ -489,7 +489,7 @@ test("locale switcher update resolves the portaled menu by id, not via the group
 });
 
 test("sequence hint only claims 'mapped' when the lock is ready, not merely partial", async () => {
-  const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
+  const solveText = await readFile(join(root, "src/controllers/solve.js"), "utf8");
   const viewText = await readViewSource();
   // Controller must derive lockReady from READY and stop passing the partial-true `mapped`.
   assert.match(solveText, /lockReady = completeness === MappingCompleteness\.READY/);

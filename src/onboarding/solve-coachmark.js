@@ -1,4 +1,4 @@
-import { StorageKeys, StorageFlag } from "../storage-keys.js";
+import { StorageKeys, StorageFlag } from "../storage/keys.js";
 import { OnboardingAction, OnboardingStepId } from "../analytics/values.js";
 import { t } from "../i18n/index.js";
 import { createSpotlightRing } from "./spotlight-ring.js";

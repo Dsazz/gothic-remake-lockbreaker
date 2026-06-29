@@ -2,7 +2,7 @@
 // palette via a `data-camp` attribute on <html>. Pure UI + persistence; no
 // coupling to store, solver, or domain. Analytics is delivered via `onSelect`.
 
-import { StorageKeys } from "../storage-keys.js";
+import { StorageKeys } from "../storage/keys.js";
 import { CampId, CampPickerSource } from "../analytics/values.js";
 import { Key } from "../keyboard-keys.js";
 import { t, onLocaleChange } from "../i18n/index.js";

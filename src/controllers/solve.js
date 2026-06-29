@@ -1,5 +1,5 @@
 import { statesAlong } from "../core/solver.js";
-import { solveAsync, cancelSolve } from "../solver-client.js";
+import { solveAsync, cancelSolve } from "../solver/client.js";
 import {
   getMappingCompleteness,
   isLockMapped,

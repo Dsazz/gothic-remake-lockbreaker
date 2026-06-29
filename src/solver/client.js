@@ -8,19 +8,19 @@
 let activeWorker = null;
 
 function spawnWorker() {
-  return new Worker(new URL("./solver.worker.js", import.meta.url), {
+  return new Worker(new URL("./worker.js", import.meta.url), {
     type: "module",
   });
 }
 
 function solveInline(start, matrix) {
-  return import("./core/solver.js").then(({ solve }) => solve(start, matrix));
+  return import("../core/solver.js").then(({ solve }) => solve(start, matrix));
 }
 
 /**
  * @param {number[]} start
  * @param {number[][]} matrix
- * @returns {Promise<import("./core/solver.js").Move[] | null>}
+ * @returns {Promise<import("../core/solver.js").Move[] | null>}
  */
 export function solveAsync(start, matrix) {
   if (typeof Worker === "undefined") return solveInline(start, matrix);

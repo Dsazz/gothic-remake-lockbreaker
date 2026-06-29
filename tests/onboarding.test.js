@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { readViewSource, readStyles } from "./read-sources.js";
 import { ONBOARDING_STEPS } from "../src/onboarding/tour.js";
 import { OnboardingStepId, TutorNotShownReason } from "../src/analytics/values.js";
-import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
+import { StorageKeys, StorageFlag } from "../src/storage/keys.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 

@@ -1,6 +1,6 @@
 import { VERSION } from "../version.js";
 import { getLocale, getLocaleSource, isDefaultLocale } from "../i18n/index.js";
-import { StorageKeys, StorageFlag } from "../storage-keys.js";
+import { StorageKeys, StorageFlag } from "../storage/keys.js";
 import { Events } from "./events.js";
 import { LocaleChangeDirection } from "./values.js";
 import { sendOnPageHide } from "./transport.js";

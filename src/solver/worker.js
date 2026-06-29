@@ -2,7 +2,7 @@
 // (7 plates ≈ 800k states, ~1s+) never freeze the page. Thin adapter only — the
 // algorithm and all correctness live in the pure `core/solver.js`.
 
-import { solve } from "./core/solver.js";
+import { solve } from "../core/solver.js";
 
 self.onmessage = (event) => {
   const { start, matrix } = event.data;
