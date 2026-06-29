@@ -53,6 +53,8 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/core/domain.js");
   await import("../src/core/store.js");
   await import("../src/core/solver.js");
+  await import("../src/core/feature-badges.js");
+  await import("../src/controllers/whats-new.js");
   await import("../src/view/index.js");
   await import("../src/view/links.js");
   await import("../src/analytics/values.js");

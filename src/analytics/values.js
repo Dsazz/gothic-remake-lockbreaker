@@ -94,6 +94,7 @@ export const CampPickerSource = Object.freeze({
 export const ShortcutsSource = Object.freeze({
   ICON: "icon",
   KEY: "key",
+  NEW_BADGE: "new_badge",
 });
 
 export const KeyboardSurface = Object.freeze({

@@ -1,4 +1,7 @@
 {
+  "whatsNew": {
+    "badge": "Nowość"
+  },
   "common": {
     "close": "Zamknij"
   },

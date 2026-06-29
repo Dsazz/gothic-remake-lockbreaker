@@ -1,0 +1,58 @@
+/* In-context "NEW" feature badges. Rendered as a pseudo-element on the stable
+   container (#camp-selector, #shortcuts-hint) so it survives the inner control's
+   re-renders, and toggled by a single data-attribute so the camp/keyboard view
+   code stays unaware of badges. data-badge-label carries the localized word, so
+   this stylesheet holds no copy. Placement is tuned per anchor to avoid covering
+   the control's own content. */
+
+[data-badge="new"] {
+  position: relative;
+}
+
+[data-badge="new"]::after {
+  content: attr(data-badge-label);
+  position: absolute;
+  z-index: 6;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-family: var(--display);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: #241704;
+  background: linear-gradient(180deg, #e9c977 0%, #c79a3f 55%, #a9792b 100%);
+  border: 1px solid rgba(36, 23, 4, 0.55);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 245, 214, 0.45);
+  text-shadow: 0 1px 0 rgba(255, 240, 205, 0.35);
+  opacity: 0.88;
+  pointer-events: none;
+  transform-origin: center;
+  animation: whats-new-pop 200ms ease-out;
+}
+
+/* Shortcuts hint is a compact text pill; float the tag just above its top edge
+   so it reads as a flag instead of covering the "Keyboard shortcuts" label. */
+#shortcuts-hint[data-badge="new"]::after {
+  top: -8px;
+  right: 6px;
+}
+
+@keyframes whats-new-pop {
+  from {
+    transform: scale(0.7);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-badge="new"]::after {
+    animation: none;
+  }
+}

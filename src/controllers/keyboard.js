@@ -90,7 +90,7 @@ export function resolveChipKeyAction(key) {
   }
 }
 
-export function createKeyboardController({ solve, getHandlers, els, onRerender }) {
+export function createKeyboardController({ solve, getHandlers, els, onRerender, onShortcutsOpened }) {
   let shortcutsOpen = false;
   let preOpenFocus = null;
   let navUsed = false;
@@ -106,6 +106,9 @@ export function createKeyboardController({ solve, getHandlers, els, onRerender }
     preOpenFocus = document.activeElement;
     shortcutsOpen = true;
     trackShortcutsOpened({ source });
+    // Opening the panel by any path (icon or `?`) counts as discovering the
+    // feature, so retire its "NEW" badge.
+    onShortcutsOpened?.();
     onRerender();
   }
 
