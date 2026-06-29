@@ -32,13 +32,30 @@ Tests import `src/` directly — never point tests at `dist/`.
 | --- | --- | --- |
 | Pure | `core/{domain,solver,store,examples}.js` | No DOM, no `window` |
 | View | `view.js` (barrel) + `view/*.js` | State → DOM; handlers injected; no store |
-| Controllers | `controllers/*-controller.js` | Orchestration, session UX |
+| Controllers | `controllers/*.js` | Orchestration, session UX |
 | i18n | `i18n/*.js` (`index` catalog + `locale-suggest`, `locale-switcher`, `referrer-hints`, `static-content`) | Locale resolution, copy, static-content hydration |
 | Onboarding | `onboarding/*.js` (`tour`, `stub`, `solve-coachmark`, `solve-coachmark-schedule`, `spotlight-ring`) | First-run tour + post-solve coachmark UX |
-| Bootstrap | `bootstrap/*.js` (`app-renderer`, `app-elements`, `startup`, `landing`, `mapped-transition`) | App wiring, render loop |
-| Root | `app.js` (entry) + cross-cutting primitives (`version`, `storage-keys`, `keyboard-keys`, `ui-prefs`, `how-to-map-image`) | Composition root + shared constants |
+| Bootstrap | `bootstrap/*.js` (`app-renderer`, `app-elements`, `startup`, `landing`, `mapped-transition`, `how-to-map-image`) | App wiring, render loop |
+| Storage | `storage/*.js` (`keys` constants + `prefs` adapter) | localStorage/sessionStorage keys + persistence façade |
+| Root | `app.js` (entry) + cross-cutting primitives (`version`, `keyboard-keys`) | Composition root + shared constants |
 
-Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver.worker.js` + `solver-client.js`.
+Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`.
+
+### Where does new code go?
+
+Decision list (first match wins):
+
+- Pure logic, no DOM / no `window` → `core/`
+- Pure `state → DOM` rendering → `view/` (+ the `view.js` barrel)
+- Session / UX orchestration → `controllers/*.js`
+- App lifecycle / render wiring → `bootstrap/` (the entry is `app.js` at root)
+- Part of a cohesive cross-feature subsystem → `i18n/` | `analytics/` | `onboarding/` | `solver/` | `storage/`
+- Cross-cutting primitive/constant used by 3+ layers → `src/` root (`version`, `keyboard-keys`)
+
+Two principles behind that list:
+
+1. **Features are cross-cutting, not folders.** A user-facing feature (camp, walkthrough, locale) lives across its layer homes by design — e.g. camp = `controllers/camp.js` + camp rendering in `view/` + `styles/camp-*.css` + locale keys. Do not create per-feature folders.
+2. **A subsystem earns its own folder** only when it's a cohesive concern reused across features (the bar that `i18n` / `analytics` / `onboarding` / `solver` / `storage` clear). Otherwise it belongs in a layer folder.
 
 `src/view.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view.js`. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
 
@@ -51,7 +68,7 @@ Boot-sensitive files:
 ## Code conventions
 
 - ES modules only; no framework
-- Storage keys: `src/storage-keys.js` — no magic strings
+- Storage keys: `src/storage/keys.js` — no magic strings
 - Analytics enums/events: `src/analytics/values.js`, `src/analytics/events.js`
 - User-facing copy: `locales/{en,de,pl,ukr}.json` via `t()` / `tCount()`; Tier C keys need all four locales
 - `innerHTML` only for trusted first-party locale strings (see `src/i18n/static-content.js`)
@@ -77,7 +94,7 @@ Removed to stay under PostHog quota (emitted by old cached clients only, referen
 
 ## Camp themes
 
-Cosmetic faction theme switcher in `src/controllers/camp-controller.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through injected callbacks (`onSelect` -> `camp_selected`, `onHintShown` -> `camp_hint_shown`, `onPickerOpened` -> `camp_picker_opened`); the controller imports no analytics.
+Cosmetic faction theme switcher in `src/controllers/camp.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through injected callbacks (`onSelect` -> `camp_selected`, `onHintShown` -> `camp_hint_shown`, `onPickerOpened` -> `camp_picker_opened`); the controller imports no analytics.
 
 - Three camps: `old` (gold), `new` (blue), `swamp` (green); neutral = no theme (grey default). Ids in `CampId` (`src/analytics/values.js`).
 - Theme = accent palette swap via a `data-camp` attribute on `<html>`. Palettes live in `styles.css` under `:root[data-camp="..."]`, overriding registered `@property` custom props (`--bronze*`, `--bg-vignette`) so switches animate.
