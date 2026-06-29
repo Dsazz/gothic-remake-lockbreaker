@@ -26,4 +26,6 @@ export const Events = Object.freeze({
   CAMP_SELECTED: "camp_selected",
   CAMP_HINT_SHOWN: "camp_hint_shown",
   CAMP_PICKER_OPENED: "camp_picker_opened",
+  SHORTCUTS_OPENED: "shortcuts_opened",
+  KEYBOARD_NAV_USED: "keyboard_nav_used",
 });

@@ -124,6 +124,21 @@
     "goneAria": "{lock} Kupplung als gone markieren",
     "goneUndoAria": "{lock} als gone markiert — tippen zum Rückgängig"
   },
+  "shortcuts": {
+    "hint": "Tastenkürzel",
+    "title": "Tastenkürzel",
+    "close": "Schließen",
+    "groupWalkthrough": "Lösungsweg",
+    "groupMapping": "Schloss erfassen",
+    "walkStep": "Durch die Züge blättern",
+    "mapMove": "Startloch verschieben",
+    "mapPlate": "Platten wechseln",
+    "mapDigit": "Startloch direkt setzen",
+    "mapCycle": "Kopplung durchschalten",
+    "solve": "Das Schloss knacken",
+    "mapTab": "Zwischen Elementen wechseln",
+    "openHelp": "Diese Hilfe öffnen"
+  },
   "legend": {
     "wallLeft": "Wand",
     "notch": "Kerbe",

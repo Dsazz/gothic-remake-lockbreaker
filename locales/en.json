@@ -135,6 +135,21 @@
     "goneAria": "Mark {lock} coupling as gone",
     "goneUndoAria": "{lock} marked gone — tap to undo"
   },
+  "shortcuts": {
+    "hint": "Keyboard shortcuts",
+    "title": "Keyboard shortcuts",
+    "close": "Close",
+    "groupWalkthrough": "Solution walkthrough",
+    "groupMapping": "Mapping the lock",
+    "walkStep": "Step through the moves",
+    "mapMove": "Move the start hole",
+    "mapPlate": "Switch plates",
+    "mapDigit": "Set the start hole directly",
+    "mapCycle": "Cycle a coupling",
+    "solve": "Break the lock",
+    "mapTab": "Move between controls",
+    "openHelp": "Open this help"
+  },
   "legend": {
     "wallLeft": "wall",
     "notch": "notch",

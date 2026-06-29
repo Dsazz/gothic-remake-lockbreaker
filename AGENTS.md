@@ -85,6 +85,7 @@ Catalog of all PostHog events so you don't have to grep `src/analytics/`. Most e
 - **Locale/i18n:** `locale_changed` (`change_direction`), `locale_session_end` (pagehide summary), `locale_auto_applied`, `i18n_banner_shown`, `locale_suggest_shown`/`_accepted`/`_declined`, `translation_feedback_clicked`, `hash_banner_shown`. Note: locale still rides every event via registered session properties (set during locale resolution and on each `locale_changed`).
 - **Support:** `support_link_clicked` (`source`, `locale`).
 - **Camp:** `camp_selected` (`camp`, `previous_camp`), `camp_hint_shown` (discovery nudge surfaced), `camp_picker_opened` (`source` = hint/manual, `had_camp`).
+- **Keyboard:** `shortcuts_opened` (`source` = icon/key; mirrors `guide_opened`), `keyboard_nav_used` (`surface` = walkthrough/mapping; fires at most once per session on first keyboard navigation).
 
 Source of truth: `src/analytics/events.js` (names) and `src/analytics/track.js` + `src/analytics/locale-engagement.js` (props). Update this list when adding events.
 

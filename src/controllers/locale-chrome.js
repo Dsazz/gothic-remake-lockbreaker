@@ -36,6 +36,7 @@ import {
   trackLocaleChanged,
   trackTranslationFeedbackClicked,
 } from "../analytics/index.js";
+import { MOBILE_MEDIA } from "../breakpoints.js";
 
 export function createLocaleChromeController({
   store,
@@ -125,7 +126,7 @@ export function createLocaleChromeController({
     if (!els.guide) return;
     els.guide.open = true;
     trackGuideOpened({ source });
-    const block = window.matchMedia("(max-width: 768px)").matches ? "start" : "nearest";
+    const block = window.matchMedia(MOBILE_MEDIA).matches ? "start" : "nearest";
     els.guide.scrollIntoView({ behavior: "smooth", block });
   }
 

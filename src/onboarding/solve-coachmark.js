@@ -2,10 +2,12 @@ import { StorageKeys, StorageFlag } from "../storage/keys.js";
 import { OnboardingAction, OnboardingStepId } from "../analytics/values.js";
 import { t } from "../i18n/index.js";
 import { createSpotlightRing } from "./spotlight-ring.js";
+import { MOBILE_MEDIA, DESKTOP_SEQUENCE_MEDIA } from "../breakpoints.js";
 
-const MOBILE_BREAKPOINT = 768;
-const MOBILE_MEDIA = `(max-width: ${MOBILE_BREAKPOINT}px)`;
-const DESKTOP_SEQUENCE_MEDIA = "(min-width: 900px)";
+// Coachmark presentation variant. Absence (undefined) is the default first-solve
+// nudge; HASH_FAILURE is the post-hash-failure recovery card.
+export const CoachmarkVariant = Object.freeze({ HASH_FAILURE: "hash_failure" });
+
 const FALLBACK_CARD_HEIGHT = 220;
 
 export function createSolveCoachmark({ onDismissed }) {
@@ -117,7 +119,7 @@ export function createSolveCoachmark({ onDismissed }) {
   }
 
   function buildCard(variant) {
-    const isHashFailure = variant === "hash_failure";
+    const isHashFailure = variant === CoachmarkVariant.HASH_FAILURE;
     const titleKey = isHashFailure ? "coachmark.hashFailureTitle" : "coachmark.title";
     const bodyKey = isHashFailure ? "coachmark.hashFailureBody" : "coachmark.body";
     const card = document.createElement("div");
@@ -155,7 +157,7 @@ export function createSolveCoachmark({ onDismissed }) {
   function dismiss(action, solveBtn, { silent = false } = {}) {
     if (!active) return;
     const btn = solveBtn ?? currentSolveBtn;
-    const isHashFailure = currentVariant === "hash_failure";
+    const isHashFailure = currentVariant === CoachmarkVariant.HASH_FAILURE;
     if (!silent && !isHashFailure) {
       markSeen();
       onDismissed?.({
@@ -176,7 +178,7 @@ export function createSolveCoachmark({ onDismissed }) {
 
   async function show(solveBtn, { variant } = {}) {
     if (!solveBtn || active) return;
-    const isHashFailure = variant === "hash_failure";
+    const isHashFailure = variant === CoachmarkVariant.HASH_FAILURE;
     if (!isHashFailure && isSeen()) return;
 
     const host = ensureLayers();

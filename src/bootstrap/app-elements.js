@@ -4,6 +4,7 @@ export function getAppElements() {
     controls: document.getElementById("controls"),
     campSelector: document.getElementById("camp-selector"),
     tumblers: document.getElementById("tumblers"),
+    shortcutsHint: document.getElementById("shortcuts-hint"),
     tumblersPanel: document.querySelector(".panel--tumblers"),
     sequencePanel: document.querySelector(".panel--sequence"),
     localeSuggest: document.getElementById("locale-suggest"),
