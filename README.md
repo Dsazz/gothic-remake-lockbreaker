@@ -56,7 +56,7 @@ state space and only ever returns moves that keep every pin in range. The UI sta
 — three sections, visual mapper, built-in guide — so beginners are not fighting a spreadsheet.
 
 <div align="center">
-<img src="assets/walkthrough.png" alt="Mobile sequence walkthrough: step 6 of 15 — L2 turn left, with 7-hole readout grooves for each lock" width="62%" />
+<img src="assets/walkthrough.png" alt="Mobile sequence walkthrough: step 22 of 45 — L4 turn right, with 7-hole readout grooves for each lock and pins glowing red at the walls and amber one nudge away" width="62%" />
 </div>
 
 You get a numbered run of turns and a step-through board. Pins against the frame glow
