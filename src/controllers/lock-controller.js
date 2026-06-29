@@ -1,5 +1,5 @@
-import { SolveSource } from "./analytics/values.js";
-import { trackExampleLockLoaded } from "./analytics/index.js";
+import { SolveSource } from "../analytics/values.js";
+import { trackExampleLockLoaded } from "../analytics/index.js";
 
 export function createLockController({ store, solve, onRerender }) {
   let wipeConfirmOpen = false;

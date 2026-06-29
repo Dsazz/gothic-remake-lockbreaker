@@ -1,0 +1,88 @@
+/* --- wipe confirm dialog --- */
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.55);
+  cursor: default;
+}
+
+.confirm-dialog-host {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.confirm-dialog {
+  width: var(--modal-width-compact);
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone));
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgb(var(--bronze-rgb) / 0.15),
+    0 12px 40px rgba(0, 0, 0, 0.6);
+  pointer-events: auto;
+}
+
+.confirm-dialog-title {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  color: var(--bronze-bright);
+  font-size: 1.05rem;
+}
+
+.confirm-dialog-body {
+  margin: 0 0 16px;
+  color: var(--parchment);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+body.wipe-confirm-open {
+  overflow: hidden;
+}
+
+.wt-help-lead {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--parchment-dim);
+}
+
+.mismatch-checklist {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--parchment-dim);
+  text-align: left;
+}
+
+.mismatch-checklist li + li {
+  margin-top: 6px;
+}
+
+.wt-open-text {
+  font-weight: 600;
+  color: var(--patina);
+}

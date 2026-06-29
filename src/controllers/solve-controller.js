@@ -1,17 +1,18 @@
-import { solve, statesAlong } from "./solver.js";
+import { statesAlong } from "../core/solver.js";
+import { solveAsync, cancelSolve } from "../solver-client.js";
 import {
   getMappingCompleteness,
   isLockMapped,
   isPristineDefault,
   effectiveMatrix,
   isInBounds,
-} from "./domain.js";
-import * as view from "./view.js";
-import { t, tCount } from "./i18n.js";
+} from "../core/domain.js";
+import * as view from "../view.js";
+import { t, tCount } from "../i18n.js";
 import {
   resolveSolveCoachmarkTrigger,
   SolveCoachmarkTrigger,
-} from "./solve-coachmark-schedule.js";
+} from "../solve-coachmark-schedule.js";
 import {
   LandingType,
   MappingCompleteness,
@@ -19,14 +20,14 @@ import {
   SolveFailureReason,
   SolveSource,
   SupportSource,
-} from "./analytics/values.js";
+} from "../analytics/values.js";
 import {
   trackPromptDismissed,
   trackSolveResult,
   trackStepMismatchClicked,
   trackStepsRevealed,
   trackHashBannerShown,
-} from "./analytics/index.js";
+} from "../analytics/index.js";
 
 // Fraction of the walkthrough a user must reach before the donation CTA is
 // revealed. Most users never click `Next` to the final step, so gating on
@@ -65,6 +66,7 @@ export function createEmptySession() {
   return {
     solution: undefined,
     solveFailureReason: undefined,
+    solving: false,
     stepIndex: 0,
     showAllSteps: false,
     sequenceMinimized: false,
@@ -97,6 +99,7 @@ export function resetSession(session, { dismissCoachmark } = {}) {
   if (dismissCoachmark) dismissCoachmark();
   session.solution = undefined;
   session.solveFailureReason = undefined;
+  session.solving = false;
   session.stepIndex = 0;
   session.showAllSteps = false;
   session.sequenceMinimized = false;
@@ -127,6 +130,10 @@ export function createSolveController({
   let tumblersPulse = false;
   let solveReadyFlash = false;
   let stepsRevealedTracked = false;
+  // Monotonic id for the latest solve request. A result is applied only if its
+  // token still matches — lock edits and re-solves bump it, so a stale worker
+  // result (or one for an edited board) is silently discarded.
+  let solveToken = 0;
 
   function shouldShowHashBanner() {
     if (uiPrefs.isHashBannerDismissed()) return false;
@@ -174,6 +181,9 @@ export function createSolveController({
   }
 
   function invalidate() {
+    // Abandon any in-flight solve so its result can't land on a stale board.
+    solveToken++;
+    cancelSolve();
     resetSession(session, {
       dismissCoachmark: () => {
         if (solveCoachmark.isActive()) solveCoachmark.dismissSilent();
@@ -306,28 +316,10 @@ export function createSolveController({
     );
   }
 
-  function onSolve({ solveSource = SolveSource.MANUAL } = {}) {
-    const state = store.getState();
-    const completeness = mappingCompletenessFor(state);
-    const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
-
-    if (!mapped) {
-      session.blockedMessage = t("solution.blocked");
-      pulseTumblers();
-      onRenderSolutionArea(state);
-      return;
-    }
-
-    session.blockedMessage = undefined;
-    if (!isInBounds(state.positions)) {
-      session.solution = null;
-      session.solveFailureReason = SolveFailureReason.OOB_START;
-    } else {
-      session.solution = solve(state.positions, solverMatrix(state));
-      session.solveFailureReason =
-        session.solution === null ? SolveFailureReason.NO_PATH : undefined;
-    }
-
+  // Applies a finished solve result (success or failure) to the session: tracks
+  // analytics, announces, and renders. Shared by the out-of-bounds short-circuit
+  // and the async worker path so both branches behave identically.
+  function applySolveResult(state, completeness, solveSource) {
     trackSolveResult({
       plateCount: state.plateCount,
       solution: session.solution,
@@ -350,8 +342,57 @@ export function createSolveController({
       announceSolveSuccess();
     }
 
-    onRenderSolutionArea(state);
+    onRerender();
     scrollSequencePanel();
+  }
+
+  async function onSolve({ solveSource = SolveSource.MANUAL } = {}) {
+    const state = store.getState();
+    const completeness = mappingCompletenessFor(state);
+    const mapped = completeness !== MappingCompleteness.INSUFFICIENT;
+
+    if (!mapped) {
+      session.blockedMessage = t("solution.blocked");
+      pulseTumblers();
+      onRenderSolutionArea(state);
+      return;
+    }
+
+    session.blockedMessage = undefined;
+
+    // Out-of-bounds is decidable without the solver — short-circuit synchronously.
+    if (!isInBounds(state.positions)) {
+      session.solution = null;
+      session.solveFailureReason = SolveFailureReason.OOB_START;
+      applySolveResult(state, completeness, solveSource);
+      return;
+    }
+
+    // Run the (potentially heavy) BFS off the main thread. Show the spinner,
+    // keep the page interactive, then apply the result only if not superseded.
+    const token = ++solveToken;
+    session.solving = true;
+    session.solution = undefined;
+    session.solveFailureReason = undefined;
+    session.stepIndex = 0;
+    session.showAllSteps = false;
+    onRerender();
+
+    let solution;
+    try {
+      solution = await solveAsync(state.positions, solverMatrix(state));
+    } catch {
+      // Worker crashed unexpectedly: surface as "no path" rather than hanging.
+      solution = null;
+    }
+
+    if (token !== solveToken) return; // superseded by an edit or a newer solve
+
+    session.solving = false;
+    session.solution = solution;
+    session.solveFailureReason =
+      solution === null ? SolveFailureReason.NO_PATH : undefined;
+    applySolveResult(state, completeness, solveSource);
   }
 
   function onMapped(state) {
@@ -443,6 +484,7 @@ export function createSolveController({
     onLocaleChangeRefresh,
     getTumblersPulse: () => tumblersPulse,
     getSolveReadyFlash: () => solveReadyFlash,
+    getSolving: () => session.solving,
     getMappingCompleteness: () => mappingCompletenessFor(store.getState()),
   };
 }

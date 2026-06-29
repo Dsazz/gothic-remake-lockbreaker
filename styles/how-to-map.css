@@ -1,0 +1,158 @@
+/* --- how-to-map guide --- */
+
+.how-to-map {
+  margin: 0 0 12px;
+  border: 1px solid var(--iron);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.how-to-map:has(+ .lockpicking-guide) {
+  margin-bottom: 0;
+}
+
+.how-to-map + .lockpicking-guide {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.how-to-map summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  font-family: var(--display);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  color: var(--bronze-bright);
+}
+
+.how-to-map-body {
+  padding: 14px 12px;
+}
+
+.how-to-map-steps {
+  margin: 0 0 14px;
+  padding-left: 1.2rem;
+  color: var(--parchment-dim);
+  font-size: 0.88rem;
+}
+
+.how-to-map-steps li + li {
+  margin-top: 8px;
+}
+
+.how-to-map-subhead {
+  margin: 18px 0 8px;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--bronze-bright);
+}
+
+.how-to-map-tier-note {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--parchment-dim);
+}
+
+.how-to-map-table {
+  width: 100%;
+  margin: 0 0 12px;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.how-to-map-table th,
+.how-to-map-table td {
+  padding: 8px 10px;
+  border: 1px solid var(--iron);
+  text-align: left;
+}
+
+.how-to-map-table th {
+  background: var(--stone-sunken);
+  color: var(--parchment);
+  font-weight: 700;
+}
+
+.how-to-map-visual {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--iron);
+}
+
+.how-to-map-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.how-to-map-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.map-line {
+  stroke: var(--bronze-bright);
+  stroke-width: 3;
+}
+
+.map-dot {
+  fill: var(--bronze-bright);
+  stroke: rgba(11, 12, 14, 0.9);
+  stroke-width: 2;
+}
+
+/* HTML labels inside the SVG overlay: auto-size and wrap, so any locale fits the image. */
+.map-label-fo {
+  overflow: visible;
+}
+
+.map-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.map-label-text {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 4px 12px;
+  border: 1.5px solid var(--bronze-deep);
+  border-radius: 6px;
+  background: rgba(11, 12, 14, 0.88);
+  color: var(--parchment);
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0.5px;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.map-label-text--accent {
+  color: var(--bronze-bright);
+}
+
+.map-label-text--callout {
+  color: var(--patina);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.how-to-map-example {
+  margin-top: 12px;
+}

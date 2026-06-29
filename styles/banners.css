@@ -1,0 +1,149 @@
+/* --- banners --- */
+
+.hash-banner,
+.mapping-warning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--iron-light);
+  background: rgba(233, 185, 105, 0.08);
+}
+
+.mapping-warning {
+  display: block;
+  border-color: rgba(233, 185, 105, 0.45);
+  background: rgba(233, 185, 105, 0.12);
+  color: var(--parchment);
+  font-size: 0.88rem;
+}
+
+.gratitude-btn-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gratitude-donate-btn {
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone-sunken));
+  border-color: var(--bronze-deep);
+  color: var(--bronze-bright);
+  font-weight: 600;
+  text-shadow: none;
+  box-shadow: var(--bevel);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.gratitude-donate-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--bronze-bright);
+  box-shadow:
+    0 0 24px var(--bronze-glow),
+    0 0 12px rgba(232, 197, 106, 0.35),
+    var(--bevel);
+}
+
+.gratitude-donate-btn:hover .gratitude-donate-ore {
+  animation: support-ore-hover 0.55s ease-in-out;
+}
+
+.gratitude-donate-btn:active {
+  transform: translateY(0);
+}
+
+.gratitude-donate-ore {
+  flex-shrink: 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gratitude-donate-btn,
+  .support-cta,
+  .app-head-support-link {
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  }
+
+  .gratitude-donate-btn:hover,
+  .support-cta:hover,
+  .support-cta:focus-visible,
+  .app-head-support-link:hover,
+  .app-head-support-link:focus-visible {
+    transform: none;
+  }
+
+  .gratitude-donate-btn:hover .gratitude-donate-ore,
+  .support-cta:hover .support-ore,
+  .support-cta:focus-visible .support-ore,
+  .app-head-support-link:hover .app-head-support-ore,
+  .app-head-support-link:focus-visible .app-head-support-ore,
+  .icon-btn.sequence-min-ore:hover .support-ore,
+  .icon-btn.sequence-min-ore:focus-visible .support-ore {
+    animation: none;
+  }
+
+  .app-head-support-ore,
+  .support-cta .support-ore {
+    animation: none;
+    filter: drop-shadow(0 0 3px rgba(56, 132, 255, 0.14));
+  }
+
+  .app-head-support-link,
+  .support-cta {
+    animation: none;
+    box-shadow:
+      0 0 6px var(--support-blue-glow-soft),
+      0 0 2px rgba(72, 148, 255, 0.06);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-head-support-label {
+    display: none;
+  }
+
+  .app-head-support-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 38px;
+    gap: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .app-head-support-ore {
+    height: 32px;
+    width: auto;
+  }
+
+  .app-head-support-link:hover,
+  .app-head-support-link:focus-visible {
+    transform: none;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.hash-banner-text {
+  margin: 0;
+  flex: 1 1 180px;
+  color: var(--parchment);
+  font-size: 0.88rem;
+}
+
+.hash-banner-dismiss {
+  margin-left: auto;
+  flex-shrink: 0;
+}

@@ -1,14 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { solve, statesAlong } from "../src/solver.js";
+import { solve, statesAlong } from "../src/core/solver.js";
 import {
   LINK,
   applyMove,
   isInBounds,
   isSolved,
   createMatrix,
-} from "../src/domain.js";
+} from "../src/core/domain.js";
 
 function assertValidSolution(start, matrix, solution) {
   assert.notEqual(solution, null, "expected an edge-safe solution");

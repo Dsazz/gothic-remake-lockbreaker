@@ -30,12 +30,14 @@ Tests import `src/` directly — never point tests at `dist/`.
 
 | Layer | Files | Rules |
 | --- | --- | --- |
-| Pure | `domain.js`, `solver.js`, `store.js` | No DOM, no `window` |
-| View | `view.js` | State → DOM; handlers injected; no store |
-| Controllers | `*-controller.js` | Orchestration, session UX |
-| Root | `app.js` | Bootstrap and wiring only |
+| Pure | `core/{domain,solver,store}.js` | No DOM, no `window` |
+| View | `view.js` (barrel) + `view/*.js` | State → DOM; handlers injected; no store |
+| Controllers | `controllers/*-controller.js` | Orchestration, session UX |
+| Root | `app.js` + supporting modules at `src/` root | Bootstrap and wiring only |
 
-Dependency flow: `app.js` → controllers → `view.js` / `store.js` → `domain.js`; `solver.js` → `domain.js`.
+Dependency flow: `app.js` → `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`.
+
+`src/view.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view.js`. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
 
 Boot-sensitive files:
 
@@ -72,7 +74,7 @@ Removed to stay under PostHog quota (emitted by old cached clients only, referen
 
 ## Camp themes
 
-Cosmetic faction theme switcher in `src/camp-controller.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through injected callbacks (`onSelect` -> `camp_selected`, `onHintShown` -> `camp_hint_shown`, `onPickerOpened` -> `camp_picker_opened`); the controller imports no analytics.
+Cosmetic faction theme switcher in `src/controllers/camp-controller.js` — a banner picker in the header. Pure UI + persistence; no coupling to `store.js`, `solver.js`, or `domain.js`. Analytics flows only through injected callbacks (`onSelect` -> `camp_selected`, `onHintShown` -> `camp_hint_shown`, `onPickerOpened` -> `camp_picker_opened`); the controller imports no analytics.
 
 - Three camps: `old` (gold), `new` (blue), `swamp` (green); neutral = no theme (grey default). Ids in `CampId` (`src/analytics/values.js`).
 - Theme = accent palette swap via a `data-camp` attribute on `<html>`. Palettes live in `styles.css` under `:root[data-camp="..."]`, overriding registered `@property` custom props (`--bronze*`, `--bg-vignette`) so switches animate.

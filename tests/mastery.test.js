@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { solve } from "../src/solver.js";
+import { solve } from "../src/core/solver.js";
 import {
   LINK,
   MASTERY,
@@ -10,7 +10,7 @@ import {
   effectiveMatrix,
   countRemovedLinks,
   isDefaultMastery,
-} from "../src/domain.js";
+} from "../src/core/domain.js";
 
 test("effectiveMatrix clears removed couplings only", () => {
   const matrix = createMatrix(3);

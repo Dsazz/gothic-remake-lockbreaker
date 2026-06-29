@@ -1,0 +1,95 @@
+/* --- solution --- */
+
+.solve-btn {
+  width: 100%;
+  min-height: 54px;
+  border: 1px solid var(--bronze-bright);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, var(--bronze-bright), var(--bronze-deep));
+  color: #160f04;
+  font-family: var(--display);
+  font-size: clamp(0.95rem, 3.2vw, 1.12rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: normal;
+  line-height: 1.25;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 20px var(--bronze-glow), var(--bevel);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.solve-btn:active {
+  transform: translateY(1px);
+}
+
+.solve-btn.is-disabled,
+.solve-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: grayscale(0.35);
+}
+
+.solve-btn.is-ready-flash:not(:disabled) {
+  animation: solve-ready-flash 0.9s ease;
+}
+
+/* Busy state: the solver is running off-thread. Override the disabled greying
+   so it reads as "working", hide the label, and show a centered spinner. */
+.solve-btn.is-solving,
+.solve-btn.is-solving:disabled {
+  position: relative;
+  opacity: 1;
+  filter: none;
+  cursor: progress;
+  color: transparent;
+  text-shadow: none;
+  box-shadow: 0 0 20px var(--bronze-glow), var(--bevel);
+}
+
+.solve-btn.is-solving::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 22px;
+  height: 22px;
+  margin: auto;
+  border-radius: 50%;
+  border: 3px solid rgba(22, 15, 4, 0.35);
+  border-top-color: #160f04;
+  animation: solve-spin 0.8s linear infinite;
+}
+
+@keyframes solve-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solve-btn.is-solving::after {
+    animation: solve-spin-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes solve-spin-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes solve-ready-flash {
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--bronze-glow), var(--bevel);
+  }
+  50% {
+    box-shadow: 0 0 28px var(--bronze-bright), 0 0 8px var(--bronze-glow), var(--bevel);
+  }
+}

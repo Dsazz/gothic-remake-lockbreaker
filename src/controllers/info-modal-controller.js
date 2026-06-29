@@ -10,7 +10,7 @@
 // resolve panels from the DOM on demand. This covers all panels uniformly,
 // including ones that are replaced after boot.
 
-import { Key } from "./keyboard-keys.js";
+import { Key } from "../keyboard-keys.js";
 
 const OPEN_BODY_CLASS = "info-modal-open";
 const BACKDROP_CLASS = "info-modal-backdrop";

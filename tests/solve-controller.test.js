@@ -8,7 +8,7 @@ import {
   createPositions,
   createRemovedLinks,
   effectiveMatrix,
-} from "../src/domain.js";
+} from "../src/core/domain.js";
 import {
   applyGratitudeReveal,
   buildWalkthrough,
@@ -16,7 +16,7 @@ import {
   gratitudeRevealStep,
   resetSession,
   solveSuccessText,
-} from "../src/solve-controller.js";
+} from "../src/controllers/solve-controller.js";
 
 function sampleState() {
   const plateCount = 4;

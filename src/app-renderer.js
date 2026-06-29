@@ -1,4 +1,4 @@
-import { isLockMapped } from "./domain.js";
+import { isLockMapped } from "./core/domain.js";
 import { MappingCompleteness } from "./analytics/values.js";
 import * as view from "./view.js";
 import { advanceMappedTracking } from "./mapped-transition.js";
@@ -33,6 +33,7 @@ export function createAppRenderer({
     view.renderSolveButton(els.solveBtn, {
       mapped: solveEnabled,
       justEnabled: solve.getSolveReadyFlash(),
+      solving: solve.getSolving(),
     });
     view.renderTutorOptInChip(els.tutorOptIn, { visible: onboarding.isChipVisible() }, handlers);
     view.renderWipeConfirmOverlay({ visible: getWipeConfirmVisible() }, handlers);

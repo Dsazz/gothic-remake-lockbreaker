@@ -1,5 +1,5 @@
-import { VERSION } from "./version.js";
-import * as view from "./view.js";
+import { VERSION } from "../version.js";
+import * as view from "../view.js";
 import {
   getLocale,
   getLocaleSource,
@@ -7,24 +7,24 @@ import {
   isDefaultLocale,
   LocaleSource,
   DEFAULT_LOCALE,
-} from "./i18n.js";
+} from "../i18n.js";
 import {
   isLocaleSuggestEligible,
   LocaleHintSource,
   resolveGeoLocaleHint,
   resolveNavigatorLocaleHint,
   resolveReferrerLocaleHint,
-} from "./locale-suggest.js";
-import { waitForGeoCountryCode as defaultWaitForGeoCountryCode } from "./analytics/geo-hint.js";
-import { applyStaticContent } from "./static-content.js";
-import { renderLocaleSwitcher } from "./locale-switcher.js";
+} from "../locale-suggest.js";
+import { waitForGeoCountryCode as defaultWaitForGeoCountryCode } from "../analytics/geo-hint.js";
+import { applyStaticContent } from "../static-content.js";
+import { renderLocaleSwitcher } from "../locale-switcher.js";
 import {
   GuideSource,
   LocaleChangeSource,
   LocaleSuggestDeclineAction,
   PromptKind,
   SupportSource,
-} from "./analytics/values.js";
+} from "../analytics/values.js";
 import {
   trackGuideOpened,
   trackI18nBannerShown,
@@ -35,7 +35,7 @@ import {
   trackSupportLinkClicked,
   trackLocaleChanged,
   trackTranslationFeedbackClicked,
-} from "./analytics/index.js";
+} from "../analytics/index.js";
 
 export function createLocaleChromeController({
   store,

@@ -4,6 +4,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { readViewSource, readStyles } from "./read-sources.js";
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 test("src JS references assets with root-absolute paths (subpath-safe for /de/ /pl/)", async () => {
@@ -48,9 +50,9 @@ test("how-to-map labels use foreignObject and stay wired to static-content selec
 });
 
 test("browser modules parse without syntax errors", async () => {
-  await import("../src/domain.js");
-  await import("../src/store.js");
-  await import("../src/solver.js");
+  await import("../src/core/domain.js");
+  await import("../src/core/store.js");
+  await import("../src/core/solver.js");
   await import("../src/view.js");
   await import("../src/analytics/values.js");
   await import("../src/storage-keys.js");
@@ -60,7 +62,7 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/i18n.js");
   await import("../src/static-content.js");
   await import("../src/how-to-map-image.js");
-  await import("../src/info-modal-controller.js");
+  await import("../src/controllers/info-modal-controller.js");
   await import("../src/onboarding-stub.js");
   await import("../src/analytics/posthog-init.js");
   await import("../src/locale-switcher.js");
@@ -68,17 +70,17 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/analytics/geo-hint.js");
   await import("../src/ui-prefs.js");
   await import("../src/landing.js");
-  await import("../src/solve-controller.js");
-  await import("../src/lock-controller.js");
-  await import("../src/locale-chrome-controller.js");
-  await import("../src/camp-controller.js");
+  await import("../src/controllers/solve-controller.js");
+  await import("../src/controllers/lock-controller.js");
+  await import("../src/controllers/locale-chrome-controller.js");
+  await import("../src/controllers/camp-controller.js");
   await import("../src/app-renderer.js");
   await import("../src/app-elements.js");
 });
 
 test("footer links to GitHub issues and press coverage", async () => {
   const versionText = await readFile(join(root, "src/version.js"), "utf8");
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const viewText = await readViewSource();
   assert.match(versionText, /GITHUB_ISSUES_URL/);
   assert.match(versionText, /PRESS_PCGAMES_URL/);
   assert.match(versionText, /PRESS_BUFFED_URL/);
@@ -109,7 +111,7 @@ test("tour opt-in start does not re-render controls and orphan step 1 spotlight"
 
 test("app defers solve coachmark until onboarding tour ends", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
+  const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
   const onboardingText = await readFile(join(root, "src/onboarding.js"), "utf8");
   assert.match(appText, /flushPendingCoachmark/);
   assert.match(solveText, /pendingSolveCoachmark/);
@@ -121,9 +123,9 @@ test("app defers solve coachmark until onboarding tour ends", async () => {
 
 test("camp hint re-shows per session, neutral-only, deferred past tour/coachmark, and is instrumented", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const campText = await readFile(join(root, "src/camp-controller.js"), "utf8");
+  const campText = await readFile(join(root, "src/controllers/camp-controller.js"), "utf8");
   const uiPrefsText = await readFile(join(root, "src/ui-prefs.js"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
 
   // Persistence: re-show gating (picker-opened + per-session + lifetime cap)
   // replaces the old one-time seen flag.
@@ -177,8 +179,8 @@ test("camp hint re-shows per session, neutral-only, deferred past tour/coachmark
 });
 
 test("active camp trigger names the camp via a styled tip, not a native title", async () => {
-  const campText = await readFile(join(root, "src/camp-controller.js"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const campText = await readFile(join(root, "src/controllers/camp-controller.js"), "utf8");
+  const css = await readStyles();
 
   // The active visual renders the styled tip with the camp's name; the native
   // `title` tooltip is gone (replaced by .camp-trigger-tip).
@@ -198,7 +200,7 @@ test("active camp trigger names the camp via a styled tip, not a native title", 
 });
 
 test("header sleeper support link tracks header_sleeper source", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const viewText = await readViewSource();
   const start = viewText.indexOf("export function renderHeadSleeper");
   const end = viewText.indexOf("export function renderHeadSupport");
   const body = viewText.slice(start, end);
@@ -206,11 +208,11 @@ test("header sleeper support link tracks header_sleeper source", async () => {
   assert.match(body, /handlers\.onSupportClick/);
 });
 
-test("view.js has no duplicate function declarations", async () => {
-  const text = await readFile(join(root, "src/view.js"), "utf8");
+test("view layer has no duplicate function declarations across modules", async () => {
+  const text = await readViewSource();
   const seen = new Set();
   const dupes = [];
-  for (const match of text.matchAll(/^function (\w+)/gm)) {
+  for (const match of text.matchAll(/^(?:export )?function (\w+)/gm)) {
     const name = match[1];
     if (seen.has(name)) dupes.push(name);
     seen.add(name);
@@ -222,9 +224,24 @@ test("view.js has no duplicate function declarations", async () => {
   );
 });
 
+test("view layer renders only — no module imports store.js", async () => {
+  const dir = join(root, "src", "view");
+  const files = (await readdir(dir)).filter((f) => f.endsWith(".js"));
+  const offenders = [];
+  for (const file of [join(root, "src", "view.js"), ...files.map((f) => join(dir, f))]) {
+    const text = await readFile(file, "utf8");
+    if (/from\s+["'][./]*store\.js["']/.test(text)) offenders.push(file);
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `view layer must not import store.js (render-only, handlers injected): ${offenders.join(", ")}`,
+  );
+});
+
 test("renderControls hides wipe until lock differs from default; gratitude prompt is donate-only", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
-  const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
+  const viewText = await readViewSource();
+  const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
   assert.match(viewText, /isPristineDefault/);
   assert.match(viewText, /showLockActions/);
   assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
@@ -246,8 +263,8 @@ test("renderControls hides wipe until lock differs from default; gratitude promp
 });
 
 test("hole legend renders per tumbler card, not once above the list", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const viewText = await readViewSource();
+  const css = await readStyles();
   assert.match(viewText, /function tumblerLegend/);
   assert.match(viewText, /tumbler-legend/);
   assert.match(viewText, /container\.replaceChildren\(\.\.\.cards\)/);
@@ -257,7 +274,7 @@ test("hole legend renders per tumbler card, not once above the list", async () =
 });
 
 test("unset coupling chip drops the dot glyph and uses a clear aria label", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const viewText = await readViewSource();
   const en = JSON.parse(await readFile(join(root, "locales/en.json"), "utf8"));
   assert.match(viewText, /isUnset/);
   assert.match(viewText, /tumbler\.couplingUnsetAria/);
@@ -267,8 +284,8 @@ test("unset coupling chip drops the dot glyph and uses a clear aria label", asyn
 
 test("help sections are progressively enhanced into modals", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
-  const modalText = await readFile(join(root, "src/info-modal-controller.js"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const modalText = await readFile(join(root, "src/controllers/info-modal-controller.js"), "utf8");
+  const css = await readStyles();
   assert.match(appText, /wireInfoModals/);
   assert.match(modalText, /info-modal-open/);
   assert.match(modalText, /info-modal-backdrop/);
@@ -282,20 +299,20 @@ test("help sections are progressively enhanced into modals", async () => {
 });
 
 test("core controls have hover feedback gated for touch", async () => {
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
   assert.match(css, /@media \(hover: hover\)/);
   assert.match(css, /\.solve-btn:hover/);
   assert.match(css, /\.hole:hover/);
 });
 
 test("no_path failure offers example lock recovery", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const viewText = await readViewSource();
   assert.match(viewText, /solution\.loadExample/);
   assert.match(viewText, /onLoadExampleFromFailure/);
 });
 
 test("walkthrough uses tertiary help trigger, not pill mismatch button", async () => {
-  const text = await readFile(join(root, "src/view.js"), "utf8");
+  const text = await readViewSource();
   assert.match(text, /wt-help-trigger/);
   assert.match(text, /walkthrough\.somethingOff/);
   assert.match(text, /renderHelpOverlay/);
@@ -305,8 +322,8 @@ test("walkthrough uses tertiary help trigger, not pill mismatch button", async (
 });
 
 test("wipe lock uses in-app confirm modal instead of native confirm", async () => {
-  const lockText = await readFile(join(root, "src/lock-controller.js"), "utf8");
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const lockText = await readFile(join(root, "src/controllers/lock-controller.js"), "utf8");
+  const viewText = await readViewSource();
   const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
   assert.doesNotMatch(lockText, /confirm\(/);
   assert.match(lockText, /wipeConfirmOpen/);
@@ -333,14 +350,14 @@ test("src does not use native confirm dialogs", async () => {
 });
 
 test("walkthrough layout avoids fixed min column widths that cause horizontal scroll", async () => {
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
   assert.match(css, /\.wt-plate\s*\{[^}]*grid-template-columns:\s*2\.5rem minmax\(0,\s*1fr\)/s);
   assert.match(css, /\.wt-plate \.plate-holes--readout\s*\{[^}]*repeat\(7,\s*minmax\(0,\s*1fr\)\)/s);
   assert.doesNotMatch(css, /repeat\(7,\s*minmax\(26px/);
 });
 
 test("walkthrough moving hole styles use thin-border glow without spread rings", async () => {
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
   assert.match(css, /\.wt-plate\.is-current \.hole\.is-active\.is-moving/);
   assert.match(css, /@keyframes hole-moving-glow/);
   assert.match(css, /hole-moving-glow 3s ease-in-out infinite/);
@@ -362,7 +379,7 @@ test("static-content.js does not hydrate footer press or FAQ", async () => {
 
 test("index.html includes SEO metadata", async () => {
   const html = await readFile(join(root, "index.html"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
   assert.match(html, /<meta\s+name="description"/);
   assert.match(html, /<link\s+rel="canonical"/);
   assert.match(html, /href="\/llms\.txt"/);
@@ -411,7 +428,7 @@ test("README and llms.txt promote press, not Reddit in README", async () => {
 });
 
 test("locale suggest uses region semantics, not dialog", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const viewText = await readViewSource();
   const fnStart = viewText.indexOf("export function renderLocaleSuggest");
   const fnEnd = viewText.indexOf("export function renderI18nBanner");
   const fnBody = viewText.slice(fnStart, fnEnd);
@@ -422,7 +439,7 @@ test("locale suggest uses region semantics, not dialog", async () => {
 test("app bootstraps with catch and splits locale chrome from renderAll", async () => {
   const appText = await readFile(join(root, "src/app.js"), "utf8");
   const rendererText = await readFile(join(root, "src/app-renderer.js"), "utf8");
-  const localeText = await readFile(join(root, "src/locale-chrome-controller.js"), "utf8");
+  const localeText = await readFile(join(root, "src/controllers/locale-chrome-controller.js"), "utf8");
   const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
   assert.match(appText, /bootstrap\(\)\.catch/);
   assert.match(appText, /function wireApp/);
@@ -446,7 +463,7 @@ test("app bootstraps with catch and splits locale chrome from renderAll", async 
 
 test("locale switcher is a combobox + listbox with short codes", async () => {
   const switcherText = await readFile(join(root, "src/locale-switcher.js"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
   assert.match(switcherText, /aria-haspopup", "listbox"/);
   assert.match(switcherText, /role", "listbox"/);
   assert.match(switcherText, /role", "option"/);
@@ -472,8 +489,8 @@ test("locale switcher update resolves the portaled menu by id, not via the group
 });
 
 test("sequence hint only claims 'mapped' when the lock is ready, not merely partial", async () => {
-  const solveText = await readFile(join(root, "src/solve-controller.js"), "utf8");
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
+  const solveText = await readFile(join(root, "src/controllers/solve-controller.js"), "utf8");
+  const viewText = await readViewSource();
   // Controller must derive lockReady from READY and stop passing the partial-true `mapped`.
   assert.match(solveText, /lockReady = completeness === MappingCompleteness\.READY/);
   assert.doesNotMatch(solveText, /lockReady:\s*mapped/);
@@ -483,8 +500,8 @@ test("sequence hint only claims 'mapped' when the lock is ready, not merely part
 });
 
 test("sequence panel stays dormant on mobile until the lock has data", async () => {
-  const viewText = await readFile(join(root, "src/view.js"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const viewText = await readViewSource();
+  const css = await readStyles();
   const html = await readFile(join(root, "index.html"), "utf8");
   // View toggles the dormant class from injected lockMapped flag.
   assert.match(viewText, /classList\.toggle\("is-unmapped", !ui\?\.lockMapped\)/);

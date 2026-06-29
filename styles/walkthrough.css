@@ -1,0 +1,418 @@
+/* --- walkthrough --- */
+
+.walkthrough {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--stone-sunken);
+  border: 1px solid var(--iron);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+/* The walkthrough is the sole first child of .solution, whose own top margin
+   already separates it from the header — drop the redundant stacked margin. */
+.solution > .walkthrough:first-child {
+  margin-top: 0;
+}
+
+.wt-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.wt-nav .pill {
+  flex: 1;
+}
+
+.wt-help-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.wt-progress {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.wt-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+}
+
+.wt-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3ch;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.wt-counter-current {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--bronze-bright);
+}
+
+.wt-counter-total {
+  font-size: 1.05rem;
+  color: var(--parchment);
+}
+
+.wt-counter.is-done {
+  align-items: center;
+}
+
+.wt-counter-open {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--patina);
+  filter: drop-shadow(0 0 8px rgb(106 168 122 / 0.45));
+}
+
+.wt-counter-open svg {
+  width: 2rem;
+  height: 2rem;
+  animation: wt-lock-pop 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wt-lock-shackle {
+  transform-box: fill-box;
+  transform-origin: right bottom;
+  animation: wt-lock-shackle 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes wt-lock-pop {
+  0% {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wt-lock-shackle {
+  0%,
+  30% {
+    transform: translateY(3px) rotate(7deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-counter-open svg,
+  .wt-lock-shackle {
+    animation: none;
+  }
+}
+
+.wt-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--stone-raised);
+  border: 1px solid var(--iron);
+  overflow: hidden;
+}
+
+.wt-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bronze-deep), var(--bronze-bright));
+  transition: width 0.18s ease;
+}
+
+.pill-primary {
+  background: linear-gradient(180deg, var(--bronze-bright), var(--bronze-deep));
+  border-color: var(--bronze-bright);
+  color: #1a1206;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 14px var(--bronze-glow), var(--bevel);
+}
+
+.wt-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding: 4px 0;
+  min-width: 0;
+}
+
+.wt-plate {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  min-width: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--iron);
+  background: linear-gradient(180deg, var(--iron), var(--iron-dark));
+  box-shadow: var(--bevel);
+}
+
+.wt-plate.is-current {
+  border-color: var(--bronze-bright);
+  box-shadow: var(--bevel), 0 0 20px var(--bronze-glow), 0 0 8px var(--bronze-glow);
+}
+
+.wt-plate.is-current .wt-label {
+  color: var(--bronze-bright);
+}
+
+.wt-plate.is-current .plate-holes--readout {
+  overflow: visible;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving:not(.is-notch):not(.at-edge):not(.near-edge) {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  animation: hole-moving-glow 3s ease-in-out infinite;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving.is-notch {
+  animation: hole-moving-glow-notch 3s ease-in-out infinite;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving.near-edge {
+  border: 1px solid var(--amber);
+  animation: hole-moving-glow-near-edge 3s ease-in-out infinite;
+}
+
+.wt-plate.is-current .hole.is-active.is-moving.at-edge,
+.wt-plate.is-current .hole.is-active.is-moving.is-wall {
+  border: 1px solid var(--blood-bright);
+  animation: hole-moving-glow-at-edge 3s ease-in-out infinite;
+}
+
+/* drop-shadow sits outside the circle edge; fill/border stay on base .is-active rules */
+@keyframes hole-moving-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(217, 207, 184, 0.35));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.55));
+  }
+}
+
+@keyframes hole-moving-glow-notch {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(230, 189, 107, 0.3));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 18px rgba(230, 189, 107, 0.65));
+  }
+}
+
+@keyframes hole-moving-glow-near-edge {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(217, 145, 63, 0.45));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 170, 60, 0.85));
+  }
+}
+
+@keyframes hole-moving-glow-at-edge {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(214, 91, 80, 0.45));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 100, 90, 0.85));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-plate.is-current .hole.is-active.is-moving:not(.is-notch):not(.at-edge):not(.near-edge) {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
+  }
+
+  .wt-plate.is-current .hole.is-active.is-moving.is-notch {
+    animation: none;
+    filter: drop-shadow(0 0 12px rgba(230, 189, 107, 0.5));
+  }
+
+  .wt-plate.is-current .hole.is-active.is-moving.near-edge {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 170, 60, 0.7));
+  }
+
+  .wt-plate.is-current .hole.is-active.is-moving.at-edge,
+  .wt-plate.is-current .hole.is-active.is-moving.is-wall {
+    animation: none;
+    filter: drop-shadow(0 0 14px rgba(255, 100, 90, 0.7));
+  }
+}
+
+.wt-label {
+  font-family: var(--display);
+  color: var(--parchment-faint);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.wt-plate .plate-holes--readout {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding: 6px 4px;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
+}
+
+.wt-plate .plate-holes--readout .hole {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  max-width: 32px;
+  height: auto;
+  aspect-ratio: 1;
+  justify-self: center;
+  font-size: 0.72rem;
+}
+
+.wt-current {
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  min-height: 4rem;
+}
+
+.wt-current.is-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--display);
+  letter-spacing: 0.5px;
+  color: var(--patina);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.move-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.move-lock {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--bronze-bright);
+}
+
+.move-arrow {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, var(--bronze-bright), var(--bronze-deep));
+  border: 1px solid var(--bronze-bright);
+  box-shadow: 0 0 18px var(--bronze-glow), 0 0 4px var(--bronze-bright),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #160f04;
+}
+
+.move-arrow svg {
+  display: block;
+  fill: currentColor;
+}
+
+.move-cmd--focus .move-arrow--right svg {
+  transform: translateX(2px);
+}
+
+.move-cmd--focus .move-arrow--left svg {
+  transform: translateX(-2px);
+}
+
+.move-cmd--list .move-arrow--right svg {
+  transform: translateX(1px);
+}
+
+.move-cmd--list .move-arrow--left svg {
+  transform: translateX(-1px);
+}
+
+.move-cmd--min .move-arrow--right svg {
+  transform: translateX(1px);
+}
+
+.move-cmd--min .move-arrow--left svg {
+  transform: translateX(-1px);
+}
+
+.move-cmd--focus .move-lock {
+  font-size: 2.1rem;
+}
+
+.move-cmd--focus .move-arrow {
+  width: 4rem;
+  height: 4rem;
+}
+
+.move-cmd--focus .move-arrow svg {
+  width: 2.85rem;
+  height: 2.85rem;
+}
+
+.move-cmd--list .move-lock {
+  font-size: 1rem;
+}
+
+.move-cmd--list .move-arrow {
+  width: 2rem;
+  height: 2rem;
+}
+
+.move-cmd--list .move-arrow svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.move-cmd--min .move-lock {
+  font-size: 1.1rem;
+}
+
+.move-cmd--min .move-arrow {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.move-cmd--min .move-arrow svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.step.is-current .move-arrow {
+  box-shadow: 0 0 18px var(--bronze-glow), 0 0 4px var(--bronze-bright),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}

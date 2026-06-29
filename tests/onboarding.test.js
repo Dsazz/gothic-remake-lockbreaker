@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { readViewSource, readStyles } from "./read-sources.js";
 import { ONBOARDING_STEPS } from "../src/onboarding.js";
 import { OnboardingStepId, TutorNotShownReason } from "../src/analytics/values.js";
 import { StorageKeys, StorageFlag } from "../src/storage-keys.js";
@@ -266,9 +267,12 @@ function installOnboardingTestEnv() {
 }
 
 test("onboarding step targets are specific and present in view markup", async () => {
-  const view = await readFile(join(root, "src/view.js"), "utf8");
+  // The view layer is split across src/view/*.js and the stylesheet across
+  // styles/*.css; concatenate both so step-target class lookups still see every
+  // rendered surface.
+  const view = await readViewSource();
   const html = await readFile(join(root, "index.html"), "utf8");
-  const css = await readFile(join(root, "styles.css"), "utf8");
+  const css = await readStyles();
   const targets = new Set();
 
   for (const step of ONBOARDING_STEPS) {

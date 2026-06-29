@@ -1,0 +1,98 @@
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-500-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-700-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* Cold dungeon stone + tarnished iron + aged bronze + blood red */
+  --bg: #0b0c0e;
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #1c2026 0%, #101216 38%, #0b0c0e 72%),
+    radial-gradient(80% 60% at 15% 110%, rgb(var(--bronze-rgb) / 0.08) 0%, transparent 60%);
+
+  --stone: #15171c;
+  --stone-raised: #1c1f26;
+  --stone-sunken: #101217;
+
+  --iron: #2a2f39;
+  --iron-light: #3b424f;
+  --iron-dark: #0c0e12;
+
+  --bronze-rgb: 154 166 178;
+  --bronze: #9aa6b2;
+  --bronze-bright: #c2ccd6;
+  --bronze-deep: #6b7886;
+  --bronze-glow: rgba(154, 166, 178, 0.32);
+
+  --support-blue-glow: rgba(56, 132, 255, 0.16);
+  --support-blue-glow-soft: rgba(72, 148, 255, 0.08);
+
+  --parchment: #d9cfb8;
+  --parchment-dim: #9c937e;
+  --parchment-faint: #6a6457;
+
+  --patina: #6fa07e;
+  --patina-bg: rgba(95, 140, 110, 0.14);
+  --patina-line: rgba(111, 160, 126, 0.5);
+
+  --blood: #c0463c;
+  --blood-bright: #d65b50;
+  --blood-bg: rgba(160, 45, 38, 0.16);
+  --blood-line: rgba(192, 70, 60, 0.5);
+
+  --amber: #d9913f;
+  --amber-bg: rgba(217, 145, 63, 0.14);
+  --amber-line: rgba(217, 145, 63, 0.5);
+
+  --radius: 6px;
+  --radius-sm: 5px;
+
+  /* Shared modal sizing: identical 16px viewport gutter, two width tiers
+     (wide content sheets vs compact action dialogs). */
+  --modal-gutter: 16px;
+  --modal-width-wide: min(720px, calc(100vw - 2 * var(--modal-gutter)));
+  --modal-width-compact: min(560px, calc(100vw - 2 * var(--modal-gutter)));
+
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+  --display: "Cinzel", "Trajan Pro", Georgia, "Times New Roman", serif;
+}

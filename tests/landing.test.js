@@ -7,7 +7,7 @@ import {
   createMatrix,
   createPositions,
   createRemovedLinks,
-} from "../src/domain.js";
+} from "../src/core/domain.js";
 import { resolveLandingType } from "../src/landing.js";
 import { LandingType } from "../src/analytics/values.js";
 

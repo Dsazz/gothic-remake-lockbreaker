@@ -5,7 +5,7 @@ globalThis.window = globalThis;
 globalThis.posthog = { capture: mock.fn(), get_property: () => null };
 globalThis.document = { referrer: "" };
 
-const { createLocaleChromeController } = await import("../src/locale-chrome-controller.js");
+const { createLocaleChromeController } = await import("../src/controllers/locale-chrome-controller.js");
 const { LocaleHintSource } = await import("../src/locale-suggest.js");
 
 function buildController({

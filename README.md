@@ -146,19 +146,19 @@ Native ES modules. `app.js` is the composition root; `store`, `solver`, and `vie
 
 | File | Responsibility |
 | --- | --- |
-| `src/domain.js` | Constants (`POS_MIN/MAX`, `CENTER`, `LINK`, `DIR`, `MASTERY`) and pure helpers including `effectiveMatrix()`. No DOM, no storage. |
-| `src/solver.js` | Pure `solve()` BFS + `statesAlong()`. Depends only on the domain. |
-| `src/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. Depends only on the domain. |
-| `src/view.js` | Pure `state -> DOM` rendering; handlers injected. Reads domain constants; no store access. |
+| `src/core/domain.js` | Constants (`POS_MIN/MAX`, `CENTER`, `LINK`, `DIR`, `MASTERY`) and pure helpers including `effectiveMatrix()`. No DOM, no storage. |
+| `src/core/solver.js` | Pure `solve()` BFS + `statesAlong()`. Depends only on the domain. |
+| `src/core/store.js` | Single source of truth for the lock; persistence (localStorage + URL hash) hidden inside. Depends only on the domain. |
+| `src/view.js` + `src/view/*.js` | Pure `state -> DOM` rendering; handlers injected. `view.js` is a barrel over per-surface modules. Reads domain constants; no store access. |
 | `src/app.js` | Composition root: bootstraps i18n, composes controllers, subscribes store to renderer. |
 | `src/ui-prefs.js` | UI flag persistence (banners, visit marker, locale suggest dismiss). |
-| `src/solve-controller.js` | Solve session, walkthrough, hash banner, solve coachmark deferral. |
-| `src/lock-controller.js` | Lock mutation handlers; invalidates solve session on change. |
-| `src/locale-chrome-controller.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
+| `src/controllers/solve-controller.js` | Solve session, walkthrough, hash banner, solve coachmark deferral. |
+| `src/controllers/lock-controller.js` | Lock mutation handlers; invalidates solve session on change. |
+| `src/controllers/locale-chrome-controller.js` | Locale suggest, i18n banner, geo hint, footer/header chrome. |
 | `src/app-renderer.js` | Lock panel render loop (controls, tumblers, solve button, solution area). |
 | `src/analytics/` | Product analytics facade; PostHog init in `posthog-init.js`, transport in `transport.js`. |
 | `src/version.js` | Release version and changelog URL for the footer badge. |
-| `index.html`, `styles.css` | Shell and theme. |
+| `index.html`, `styles.css` + `styles/*.css` | Shell and theme. `styles.css` is an `@import` entry over cascade-ordered partials, flattened to one stylesheet at build. |
 
 ## Analytics
 

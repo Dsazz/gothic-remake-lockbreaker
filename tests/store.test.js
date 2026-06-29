@@ -1,14 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { encodeState, decodeState } from "../src/store.js";
+import { encodeState, decodeState } from "../src/core/store.js";
 import {
   LINK,
   MASTERY,
   DEFAULT_MASTERY_ID,
   createMatrix,
   createRemovedLinks,
-} from "../src/domain.js";
+} from "../src/core/domain.js";
 
 function sampleState(overrides = {}) {
   const plateCount = 4;
