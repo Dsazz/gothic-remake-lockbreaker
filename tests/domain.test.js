@@ -12,7 +12,7 @@ import {
   isLockMapped,
   getMappingCompleteness,
   isLockReadyToSolve,
-} from "../src/domain.js";
+} from "../src/core/domain.js";
 
 function freshDefault(plateCount = DEFAULT_PLATES) {
   return {

@@ -10,14 +10,14 @@ Architecture, commands, and boundaries: [AGENTS.md](../../AGENTS.md).
 ## Bootstrap and performance
 
 - Defer analytics: `src/analytics/posthog-init.js` + dynamic `import("./analytics/index.js")` after first render
-- Lazy-load `onboarding.js` on cold landing only; use `onboarding-stub.js` for returning/hash users
-- English locale is bundled in `i18n.js`; other locales fetch `locales/*.json`
+- Lazy-load `onboarding/tour.js` on cold landing only; use `onboarding/stub.js` for returning/hash users
+- English locale is bundled in `i18n/index.js`; other locales fetch `locales/*.json`
 
 ## View and i18n
 
-- `view.js`: render only; handlers via arguments; **do not import `store.js`**
-- Tier C keys: all four locale files; respect `FROZEN_KEYS` in `i18n.js`
-- Use `t()` / `tCount()`; never hardcode copy in `view.js` for localized surfaces
+- View layer (`view/index.js` barrel + `view/*.js`): render only; handlers via arguments; **no module imports `store.js`** (now `core/store.js`)
+- Tier C keys: all four locale files; respect `FROZEN_KEYS` in `i18n/index.js`
+- Use `t()` / `tCount()`; never hardcode copy in the view layer for localized surfaces
 
 ## Analytics and assets
 

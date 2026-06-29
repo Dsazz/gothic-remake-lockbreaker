@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { HREFLANG, LOCALE_PATH, SITE_ORIGIN } from "../src/i18n.js";
+import { HREFLANG, LOCALE_PATH, SITE_ORIGIN } from "../src/i18n/index.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -15,7 +15,7 @@ function pressUrlFromModule(source, constantName) {
   );
   const match = source.match(pattern);
   if (!match) {
-    throw new Error(`Could not parse ${constantName} from src/version.js`);
+    throw new Error(`Could not parse ${constantName} from src/view/links.js`);
   }
   return match[1];
 }
@@ -37,13 +37,13 @@ function extractJsonLdBlocks(html) {
   return blocks;
 }
 
-const versionSource = read("src/version.js");
+const linksSource = read("src/view/links.js");
 const indexHtml = read("index.html");
 const llmsTxt = read("llms.txt");
 const changelog = read("CHANGELOG.md");
 const sitemap = read("sitemap.xml");
 
-const pressPcGames = pressUrlFromModule(versionSource, "PRESS_PCGAMES_URL");
+const pressPcGames = pressUrlFromModule(linksSource, "PRESS_PCGAMES_URL");
 const { date: changelogDate } = latestChangelogDate(changelog);
 
 const failures = [];

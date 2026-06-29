@@ -1,0 +1,226 @@
+/* --- header --- */
+
+.app-head {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: clamp(176px, 20vw, 212px);
+  padding: clamp(42px, 6vw, 54px) clamp(14px, 4vw, 22px) clamp(12px, 2.5vw, 14px);
+  text-align: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--iron);
+  background: var(--stone-sunken) url("../assets/hero.webp") center top / cover no-repeat;
+}
+
+.app-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 12, 14, 0.12) 0%,
+    rgba(11, 12, 14, 0.28) 38%,
+    rgba(11, 12, 14, 0.78) 72%,
+    rgba(11, 12, 14, 0.92) 100%
+  );
+  pointer-events: none;
+}
+
+.app-head::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  z-index: 2;
+  width: 120px;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--bronze), transparent);
+}
+
+.app-head > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-head-aside {
+  position: absolute;
+  left: 0;
+  top: -6px;
+  height: calc(100% + 6px);
+  /* Above the Sleeper (z-index 3): the neutral camp's hover tip is nowrap and,
+     in longer locales (e.g. DE), overflows rightward across the header into the
+     Sleeper. The tip lives inside this aside's stacking context, so the aside
+     itself must outrank the Sleeper for the opaque tip to paint over it. */
+  z-index: 4;
+}
+
+.app-head-portrait {
+  /* TEMP: hidden until banner alignment is redesigned */
+  display: none;
+}
+
+.app-head-portrait-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(46px, 5vw, 60px);
+  min-height: clamp(46px, 5vw, 60px);
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+}
+
+.app-head-portrait-link:focus-visible {
+  outline: 2px solid var(--bronze-bright);
+  outline-offset: 3px;
+}
+
+.app-head-portrait-icon {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: clamp(46px, 5vw, 60px);
+  height: clamp(46px, 5vw, 60px);
+  flex-shrink: 0;
+}
+
+.app-head-portrait-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  transition: opacity 0.2s ease;
+}
+
+.app-head-portrait-img.is-default {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scream stays fully opaque underneath; only the calm layer fades, so the
+   cross-fade never dips below full opacity (no background flash / flicker). */
+.app-head-portrait-img.is-hover {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 1;
+}
+
+.app-head-portrait-link:hover .app-head-portrait-img.is-default,
+.app-head-portrait-link:focus-visible .app-head-portrait-img.is-default {
+  opacity: 0;
+}
+
+.app-head-portrait-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  padding: 8px 14px 9px;
+  border-radius: var(--radius);
+  border: 1px solid var(--bronze-deep);
+  background: linear-gradient(180deg, var(--stone-raised) 0%, var(--stone-sunken) 100%);
+  color: var(--parchment);
+  font-family: var(--display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgb(var(--bronze-rgb) / 0.14),
+    0 8px 22px rgba(0, 0, 0, 0.62);
+}
+
+.app-head-portrait-tip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bronze-bright), transparent);
+  opacity: 0.65;
+}
+
+.app-head-portrait-tip::after {
+  content: "";
+  position: absolute;
+  bottom: calc(100% - 5px);
+  left: 22px;
+  width: 9px;
+  height: 9px;
+  background: var(--stone-raised);
+  border-left: 1px solid var(--bronze-deep);
+  border-top: 1px solid var(--bronze-deep);
+  transform: rotate(45deg);
+}
+
+.app-head-portrait-link:hover .app-head-portrait-tip,
+.app-head-portrait-link:focus-visible .app-head-portrait-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-head-portrait-img,
+  .app-head-portrait-tip {
+    transition: none;
+  }
+
+  .app-head-portrait-link:hover .app-head-portrait-tip,
+  .app-head-portrait-link:focus-visible .app-head-portrait-tip {
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 900px) {
+  .app-head-portrait-link {
+    min-width: 96px;
+    min-height: 96px;
+  }
+
+  .app-head-portrait-icon {
+    width: 96px;
+    height: 96px;
+  }
+
+  .app-head-portrait-tip {
+    top: 50%;
+    left: calc(100% + 14px);
+    transform: translate(-6px, -50%);
+  }
+
+  .app-head-portrait-tip::after {
+    bottom: auto;
+    left: -5px;
+    top: 50%;
+    border-left: none;
+    border-top: none;
+    border-right: 1px solid var(--bronze-deep);
+    border-bottom: 1px solid var(--bronze-deep);
+    transform: translateY(-50%) rotate(135deg);
+  }
+
+  .app-head-portrait-link:hover .app-head-portrait-tip,
+  .app-head-portrait-link:focus-visible .app-head-portrait-tip {
+    transform: translate(0, -50%);
+  }
+}

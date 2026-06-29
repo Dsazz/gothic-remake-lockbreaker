@@ -1,0 +1,122 @@
+/* --- info modals (how-to-map / lockpicking-guide) --- */
+
+.how-to-map summary,
+.lockpicking-guide summary {
+  list-style: none;
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--bronze-rgb) / 0.4);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.16s ease;
+}
+
+.how-to-map summary::-webkit-details-marker,
+.lockpicking-guide summary::-webkit-details-marker {
+  display: none;
+}
+
+.info-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+body.info-modal-open {
+  overflow: hidden;
+}
+
+/* Trigger summaries stay in normal flow (in place); only the panel floats as a
+   centered modal, so the clicked button never disappears. */
+.how-to-map[open] .info-modal-panel,
+.lockpicking-guide[open] .info-modal-panel,
+.app-foot-faq[open] .info-modal-panel {
+  position: fixed;
+  z-index: 46;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--modal-width-wide);
+  max-height: min(82vh, 760px);
+  margin: 0;
+  overflow-y: auto;
+  border: 1px solid var(--bronze-deep);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--stone-raised), var(--stone));
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px rgb(var(--bronze-rgb) / 0.15),
+    0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.info-modal-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--stone-raised);
+  border-bottom: 1px solid var(--iron);
+}
+
+.info-modal-title {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--bronze-bright);
+}
+
+.info-modal-close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--bronze-deep);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--bronze-bright);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--bevel);
+  transition: border-color 0.12s, color 0.12s, background 0.12s, box-shadow 0.12s;
+}
+
+@media (hover: hover) {
+  .info-modal-close:hover {
+    border-color: var(--bronze-bright);
+    color: #fff;
+    background: rgb(var(--bronze-rgb) / 0.18);
+    box-shadow: 0 0 10px var(--bronze-glow), var(--bevel);
+  }
+}
+
+.app-foot-faq[open] .app-foot-faq-list {
+  padding: 14px 14px 16px;
+}
+
+.app-foot-faq[open] .app-foot-faq-list dt {
+  margin-top: 18px;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--bronze-bright);
+}
+
+.app-foot-faq[open] .app-foot-faq-list dt:first-child {
+  margin-top: 0;
+}
+
+.app-foot-faq[open] .app-foot-faq-list dd {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--parchment);
+}

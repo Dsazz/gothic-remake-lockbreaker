@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { Locale, LocaleSource } from "../src/i18n.js";
+import { Locale, LocaleSource } from "../src/i18n/index.js";
 import {
   LocaleHintSource,
   isLocaleSuggestEligible,
@@ -10,7 +10,7 @@ import {
   resolveGeoLocaleHint,
   resolveNavigatorLocaleHint,
   resolveReferrerLocaleHint,
-} from "../src/locale-suggest.js";
+} from "../src/i18n/locale-suggest.js";
 
 test("parseReferrerHost extracts hostname", () => {
   assert.equal(parseReferrerHost("https://www.pcgames.de/foo"), "www.pcgames.de");

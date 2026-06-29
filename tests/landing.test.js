@@ -7,8 +7,8 @@ import {
   createMatrix,
   createPositions,
   createRemovedLinks,
-} from "../src/domain.js";
-import { resolveLandingType } from "../src/landing.js";
+} from "../src/core/domain.js";
+import { resolveLandingType } from "../src/bootstrap/landing.js";
 import { LandingType } from "../src/analytics/values.js";
 
 function pristineState() {

@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE } from "../i18n.js";
+import { DEFAULT_LOCALE } from "../i18n/index.js";
 import { LocaleChangeDirection } from "./values.js";
 
 export function localeChangeDirection({

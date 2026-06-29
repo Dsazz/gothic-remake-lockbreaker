@@ -1,0 +1,121 @@
+/* --- camp themes ---
+   A selected camp re-defines only the bronze accent layer + the background
+   vignette tint. Status colors (--blood, --patina, --amber) stay semantic so
+   errors/success/warnings keep their meaning across camps. The whole UI
+   (panels, pills, buttons, focus rings, glows) inherits the accent shift for
+   free via the existing var(--bronze*) references. */
+
+@property --bronze {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #9aa6b2;
+}
+@property --bronze-bright {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c2ccd6;
+}
+@property --bronze-deep {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #5f6b78;
+}
+@property --bronze-glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(154, 166, 178, 0.32);
+}
+
+:root[data-camp="old"] {
+  --bronze-rgb: 227 178 60;
+  --bronze: #e3b23c;
+  --bronze-bright: #ffd76b;
+  --bronze-deep: #a87a1e;
+  --bronze-glow: rgba(227, 178, 60, 0.45);
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #221d12 0%, #15110a 38%, #0c0a06 72%),
+    radial-gradient(80% 60% at 15% 110%, rgba(200, 150, 50, 0.14) 0%, transparent 60%);
+}
+
+:root[data-camp="new"] {
+  --bronze-rgb: 94 160 214;
+  --bronze: #5ea0d6;
+  --bronze-bright: #8cc4ee;
+  --bronze-deep: #356a99;
+  --bronze-glow: rgba(94, 160, 214, 0.4);
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #1a1f26 0%, #0f1318 38%, #0a0c0f 72%),
+    radial-gradient(80% 60% at 15% 110%, rgba(60, 120, 190, 0.13) 0%, transparent 60%);
+}
+
+:root[data-camp="swamp"] {
+  --bronze-rgb: 154 168 78;
+  --bronze: #9aa84e;
+  --bronze-bright: #c2cd73;
+  --bronze-deep: #62702c;
+  --bronze-glow: rgba(154, 168, 78, 0.38);
+  --bg-vignette:
+    radial-gradient(140% 90% at 50% -10%, #1b1f17 0%, #10130d 38%, #0a0c08 72%),
+    radial-gradient(80% 60% at 15% 110%, rgba(96, 132, 54, 0.13) 0%, transparent 60%);
+}
+
+/* Smoothly interpolate the accent layer when switching camps. Registered
+   custom properties above make this animate across the whole inheriting tree. */
+html {
+  transition:
+    --bronze 250ms ease,
+    --bronze-bright 250ms ease,
+    --bronze-deep 250ms ease,
+    --bronze-glow 250ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-vignette);
+  background-color: var(--bg);
+  background-attachment: fixed;
+  color: var(--parchment);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(14px, 4vw, 26px) clamp(12px, 3.5vw, 20px)
+    calc(40px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: clamp(12px, 3vw, 18px);
+}
+
+.app-input {
+  display: grid;
+  gap: clamp(16px, 4vw, 24px);
+}

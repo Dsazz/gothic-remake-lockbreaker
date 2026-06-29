@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.33.1] - 2026-06-29
+
+### Changed
+
+- Internal-only restructure of the source tree into cohesive subsystems and a split of the single stylesheet into cascade-ordered partials. No gameplay, solver, UI, or URL changes — this release exists purely as a clean rollback point for the reorganization.
+
 ## [1.33.0] - 2026-06-28
 
 ### Changed

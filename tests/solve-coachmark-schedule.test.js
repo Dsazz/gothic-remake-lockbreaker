@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import {
   resolveSolveCoachmarkTrigger,
   SolveCoachmarkTrigger,
-} from "../src/solve-coachmark-schedule.js";
+} from "../src/onboarding/solve-coachmark-schedule.js";
 
 test("cold + justBecameMapped + tourActive defers coachmark", () => {
   assert.equal(

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { DEFAULT_LOCALE, Locale } from "../src/i18n.js";
+import { DEFAULT_LOCALE, Locale } from "../src/i18n/index.js";
 import { localeChangeDirection } from "../src/analytics/locale-metrics.js";
 import { LocaleChangeDirection } from "../src/analytics/values.js";
 

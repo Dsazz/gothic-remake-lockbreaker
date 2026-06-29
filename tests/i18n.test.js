@@ -18,7 +18,7 @@ import {
   resolveLocalePreference,
   resolvePathLocale,
   shouldPersistLocaleOnInit,
-} from "../src/i18n.js";
+} from "../src/i18n/index.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
