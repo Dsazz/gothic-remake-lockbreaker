@@ -30,3 +30,25 @@ The in-app footer **Report an issue** link opens the template chooser. The trans
 3. Open a pull request to `main`. CI must pass before merge.
 
 See [README.md](README.md) for local dev commands and deploy workflow.
+
+## Maintainer: PostHog issue automation
+
+Cursor Automation triages issues opened by the PostHog GitHub integration (`app/posthog-eu`). Workflow: [.github/workflows/cursor-posthog-issue.yml](.github/workflows/cursor-posthog-issue.yml).
+
+### One-time setup
+
+1. **Save the automation** in Cursor Automations (name: *Fix PostHog errors from GitHub Issues*). Copy the webhook URL and generate an API token (`crsr_…`).
+2. **Repo secrets** ([Settings → Secrets → Actions](https://github.com/Dsazz/gothic-remake-lockbreaker/settings/secrets/actions)):
+   - `CURSOR_WEBHOOK_URL` — webhook URL from the Automations UI
+   - `CURSOR_AUTOMATION_TOKEN` — API token from the Automations UI
+3. **PostHog MCP** connected on [cursor.com](https://cursor.com) for the Cloud Agent account.
+4. **Cloud Agents** enabled for this repo in the [Cloud Agents dashboard](https://cursor.com/dashboard?tab=cloud-agents).
+5. **Labels** (created once): `cursor-processing`, `cursor-fixed`, `cursor-skipped`, `cursor-fix`.
+
+### Pre-flight
+
+Before merging the workflow PR, POST a test payload to the webhook and confirm the automation run log shows PostHog MCP tools. If the webhook returns 401, regenerate the API token.
+
+### Manual retry
+
+Add the `cursor-fix` label to an issue to re-trigger (strips `cursor-fixed` / `cursor-skipped` first). Blocked while `cursor-processing` is set.
