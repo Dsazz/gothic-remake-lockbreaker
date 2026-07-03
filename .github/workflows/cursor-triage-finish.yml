@@ -18,6 +18,10 @@ on:
         description: Markdown comment to post on the issue
         required: true
         type: string
+      pr_number:
+        description: Fix PR number to link and mark ready (fixed verdict only)
+        required: false
+        type: number
 
 concurrency:
   group: cursor-triage-finish-${{ inputs.issue_number }}
@@ -49,6 +53,13 @@ jobs:
             --repo "${{ github.repository }}" \
             --remove-label cursor-processing,cursor-fix \
             --add-label "$add_label"
+
+      - name: Mark fix PR ready for review
+        if: inputs.verdict == 'fixed' && inputs.pr_number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr ready "${{ inputs.pr_number }}" --repo "${{ github.repository }}"
 
       - name: Close triaged issue
         env:
