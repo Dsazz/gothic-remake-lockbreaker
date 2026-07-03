@@ -24,7 +24,7 @@ one against the frame.
 &nbsp;
 [![Tip jar](https://img.shields.io/badge/tip-Ko--fi-e9b969?style=for-the-badge)](https://ko-fi.com/swarmconductor)
 &nbsp;
-![Version](https://img.shields.io/badge/version-1.35.1-e9b969?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.35.2-e9b969?style=for-the-badge)
 &nbsp;
 ![Dev deps only](https://img.shields.io/badge/npm-dev%20deps%20only-7fb47a?style=for-the-badge)
 &nbsp;
@@ -34,7 +34,7 @@ one against the frame.
 
 <br />
 
-**Current release: v1.35.1** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Current release: v1.35.2** — see [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 **Localized links for press and communities:** [🇩🇪 German](https://gothiclockbreaker.com/de/) · [🇵🇱 Polish](https://gothiclockbreaker.com/pl/) · [🇺🇦 Ukrainian](https://gothiclockbreaker.com/uk/)
 
@@ -168,7 +168,7 @@ Production builds send **anonymous** usage data to [PostHog EU](https://eu.posth
 ## Feedback & issues
 
 - **Bugs, translation fixes, feature ideas** — [GitHub issue templates](https://github.com/Dsazz/gothic-remake-lockbreaker/issues/new/choose) (see [CONTRIBUTING.md](CONTRIBUTING.md)). The site footer opens the chooser; the in-app translation banner links straight to the translation template.
-- **Ideas & questions** — [GitHub Discussions](https://github.com/Dsazz/gothic-remake-lockbreaker/discussions).
+- **Discuss on Reddit** — [r/worldofgothic launch thread](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/).
 - **Tips** — optional [Ko-fi](https://ko-fi.com/swarmconductor) support; not for bug reports.
 
 German, Polish, and Ukrainian UI copy is machine-translated and may be wrong — reports are welcome via the translation template.
