@@ -61,4 +61,6 @@ Cloud Agent tokens cannot write GitHub issues. After triage, dispatch [.github/w
 - `verdict` — `skipped` or `fixed`
 - `comment_body` — markdown triage summary
 
-This posts the comment and swaps `cursor-processing` / `cursor-fix` for `cursor-skipped` or `cursor-fixed`.
+This posts the comment, swaps `cursor-processing` / `cursor-fix` for `cursor-skipped` or `cursor-fixed`, and **closes the issue**. Triage comments remain on the closed issue as the audit trail.
+
+Re-open manually or add the `cursor-fix` label to retry triage on a closed issue (the trigger workflow reopens it first).
