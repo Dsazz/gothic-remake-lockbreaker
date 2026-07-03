@@ -1,0 +1,51 @@
+name: Finish Cursor PostHog triage
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: GitHub issue number
+        required: true
+        type: number
+      verdict:
+        description: Triage outcome
+        required: true
+        type: choice
+        options:
+          - skipped
+          - fixed
+      comment_body:
+        description: Markdown comment to post on the issue
+        required: true
+        type: string
+
+concurrency:
+  group: cursor-triage-finish-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  finish:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Post triage comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMENT_BODY: ${{ inputs.comment_body }}
+        run: |
+          printf '%s\n' "$COMMENT_BODY" > /tmp/triage-comment.md
+          gh issue comment "${{ inputs.issue_number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/triage-comment.md
+
+      - name: Update triage labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          verdict="${{ inputs.verdict }}"
+          add_label="cursor-${verdict}"
+          gh issue edit "${{ inputs.issue_number }}" \
+            --repo "${{ github.repository }}" \
+            --remove-label cursor-processing,cursor-fix \
+            --add-label "$add_label"
