@@ -417,13 +417,27 @@ test("index.html includes SEO metadata", async () => {
   assert.match(css, /\.app-foot-press,\s*\n\.app-foot-press-static/);
 });
 
-test("README and llms.txt promote press, not Reddit in README", async () => {
+test("README routes community to Reddit; llms.txt keeps Community section", async () => {
   const readme = await readFile(join(root, "README.md"), "utf8");
   const llms = await readFile(join(root, "llms.txt"), "utf8");
+  const contributing = await readFile(join(root, "CONTRIBUTING.md"), "utf8");
+  const issueConfig = await readFile(join(root, ".github/ISSUE_TEMPLATE/config.yml"), "utf8");
+  const featureRequest = await readFile(join(root, ".github/ISSUE_TEMPLATE/feature_request.yml"), "utf8");
   const en = JSON.parse(await readFile(join(root, "locales/en.json"), "utf8"));
+  const redditThread =
+    /reddit\.com\/r\/worldofgothic\/comments\/1tz9wwa/i;
+  const discussionsUrl = /github\.com\/Dsazz\/gothic-remake-lockbreaker\/discussions/i;
+
   assert.match(readme, /pcgames\.de/);
   assert.match(readme, /buffed\.de/);
-  assert.doesNotMatch(readme, /reddit\.com/);
+  assert.match(readme, redditThread);
+  assert.doesNotMatch(readme, discussionsUrl);
+  assert.match(contributing, redditThread);
+  assert.doesNotMatch(contributing, discussionsUrl);
+  assert.match(issueConfig, redditThread);
+  assert.doesNotMatch(issueConfig, discussionsUrl);
+  assert.match(featureRequest, redditThread);
+  assert.doesNotMatch(featureRequest, discussionsUrl);
   assert.match(llms, /## Press coverage/);
   assert.match(llms, /## Comparison/);
   assert.match(llms, /## FAQ/);
@@ -432,7 +446,7 @@ test("README and llms.txt promote press, not Reddit in README", async () => {
   assert.match(en.app.srTitle, /Gothic Remake Lock Breaker/);
   assert.match(en.seo.title, /Gothic Remake Lockbreaker/);
   assert.match(en.seo.description, /lockpicking calculator/i);
-  assert.match(llms, /reddit\.com/);
+  assert.match(llms, redditThread);
 });
 
 test("locale suggest uses region semantics, not dialog", async () => {

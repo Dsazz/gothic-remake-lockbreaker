@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.35.2] - 2026-07-03
+
+### Changed
+
+- Community feedback routing: GitHub Discussions replaced with the [r/worldofgothic launch thread](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/) in README, CONTRIBUTING, and issue templates.
+
 ## [1.35.1] - 2026-06-29
 
 ### Added
