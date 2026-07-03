@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        For open-ended chat, consider [Discussions](https://github.com/Dsazz/gothic-remake-lockbreaker/discussions) instead.
+        For open-ended chat, consider the [r/worldofgothic launch thread](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/) instead.
   - type: textarea
     id: problem
     attributes:

@@ -10,14 +10,14 @@ Thanks for helping improve Gothic Lock Breaker. This page is for **users and tra
 | **Translation** (DE / PL / UKR wording) | [Open a translation fix](https://github.com/Dsazz/gothic-remake-lockbreaker/issues/new?template=translation.yml) |
 | **Feature idea** | [Open a feature request](https://github.com/Dsazz/gothic-remake-lockbreaker/issues/new?template=feature_request.yml) |
 | **Not sure which** | [Issue template chooser](https://github.com/Dsazz/gothic-remake-lockbreaker/issues/new/choose) |
-| **Ideas & how-to chat** | [GitHub Discussions](https://github.com/Dsazz/gothic-remake-lockbreaker/discussions) |
+| **Discuss on Reddit** | [r/worldofgothic launch thread](https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/) |
 | **Tips / support the project** | [Ko-fi](https://ko-fi.com/swarmconductor) — voluntary; not for bug reports |
 
 The in-app footer **Report an issue** link opens the template chooser. The translation banner (non-English locales) links straight to the translation template.
 
 ## Privacy
 
-**Do not post lock state in issues or discussions.**
+**Do not post lock state in issues or Reddit posts.**
 
 - No full page URL / hash (it encodes your lock)
 - No coupling matrix or pin positions
