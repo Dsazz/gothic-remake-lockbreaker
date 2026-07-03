@@ -1,9 +1,6 @@
 name: Finish Cursor PostHog triage
 
 on:
-  push:
-    branches:
-      - cursor/triage-process-investigation-a9ed
   workflow_dispatch:
     inputs:
       issue_number:
@@ -23,27 +20,11 @@ on:
         type: string
 
 concurrency:
-  group: cursor-triage-finish-${{ github.event_name == 'workflow_dispatch' && inputs.issue_number || 'push' }}
+  group: cursor-triage-finish-${{ inputs.issue_number }}
   cancel-in-progress: false
 
 jobs:
-  close-issue-71:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/cursor/triage-process-investigation-a9ed'
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: Close already-triaged issue 71
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          state=$(gh issue view 71 --repo "${{ github.repository }}" --json state -q '.state')
-          if [ "$state" = "OPEN" ]; then
-            gh issue close 71 --repo "${{ github.repository }}"
-          fi
-
   finish:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       issues: write
