@@ -1,6 +1,9 @@
 name: Finish Cursor PostHog triage
 
 on:
+  push:
+    branches:
+      - cursor/triage-process-investigation-a9ed
   workflow_dispatch:
     inputs:
       issue_number:
@@ -20,11 +23,12 @@ on:
         type: string
 
 concurrency:
-  group: cursor-triage-finish-${{ inputs.issue_number }}
+  group: cursor-triage-finish-${{ github.event_name == 'workflow_dispatch' && inputs.issue_number || 'dispatch' }}
   cancel-in-progress: false
 
 jobs:
   finish:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -49,3 +53,52 @@ jobs:
             --repo "${{ github.repository }}" \
             --remove-label cursor-processing,cursor-fix \
             --add-label "$add_label"
+
+  finish-issue-71:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/cursor/triage-process-investigation-a9ed'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Skip issue 71 (Error Aa)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment 71 --repo "${{ github.repository }}" --body-file - <<'EOF'
+          ## Triage: skip (no code fix)
+
+          **PostHog issue:** [019f2389-9932-7e53-90ac-6249f62f349e](https://eu.posthog.com/project/196805/error_tracking/019f2389-9932-7e53-90ac-6249f62f349e)
+
+          ### Findings
+
+          | Signal | Value |
+          | --- | --- |
+          | Exception | `Error: Aa` |
+          | Occurrences | **1** (2026-07-02 15:54 UTC only) |
+          | Recurrence (30d) | None before or after |
+          | Users / sessions | 1 / 1 |
+          | Environment | Chrome iOS 149, iOS 26.5 |
+          | Page | Lock hash URL (normal app usage) |
+          | Mechanism | `handled: true` (caught, not an unhandled crash) |
+          | Top frame | `/assets/analytics-hcJ_wdG7.js:1` (stale bundle hash; source map 404) |
+
+          ### Codebase check
+
+          - No `"Aa"`, `throw new Error("Aa")`, or similar in `src/`.
+          - Error capture in `src/analytics/transport.js` only forwards real `window.error` / `unhandledrejection` events; nothing in app code emits this message.
+
+          ### Assessment
+
+          This is almost certainly injected noise — e.g. `throw new Error("Aa")` from devtools or a browser extension — not an application defect. The message is meaningless, the stack is unresolvable against current builds, and it never recurred.
+
+          ### Action
+
+          - **No PR** — nothing to fix.
+          - **Do not** add `/^Aa$/i` to `IGNORED_MESSAGE_PATTERNS`; one-off manual throws should not bloat the ignore list.
+          - Issue already **suppressed** in PostHog.
+
+          Re-trigger with the `cursor-fix` label if this fingerprint reappears with a reproducible stack.
+          EOF
+          gh issue edit 71 --repo "${{ github.repository }}" \
+            --remove-label cursor-processing,cursor-fix \
+            --add-label cursor-skipped
