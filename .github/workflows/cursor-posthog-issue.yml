@@ -70,6 +70,7 @@ jobs:
       - name: Trigger Cursor webhook
         if: steps.gate.outputs.skip != 'true' && steps.payload.outputs.missing_id != 'true'
         env:
+          GH_TOKEN: ${{ github.token }}
           CURSOR_WEBHOOK_URL: ${{ secrets.CURSOR_WEBHOOK_URL }}
           CURSOR_AUTOMATION_TOKEN: ${{ secrets.CURSOR_AUTOMATION_TOKEN }}
         run: |
