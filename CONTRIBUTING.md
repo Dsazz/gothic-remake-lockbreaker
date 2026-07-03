@@ -52,3 +52,13 @@ Before merging the workflow PR, POST a test payload to the webhook and confirm t
 ### Manual retry
 
 Add the `cursor-fix` label to an issue to re-trigger (strips `cursor-fixed` / `cursor-skipped` first). Blocked while `cursor-processing` is set.
+
+### Finish triage (comment + labels)
+
+Cloud Agent tokens cannot write GitHub issues. After triage, dispatch [.github/workflows/cursor-triage-finish.yml](.github/workflows/cursor-triage-finish.yml) (**Actions → Finish Cursor PostHog triage → Run workflow**) with:
+
+- `issue_number` — GitHub issue number
+- `verdict` — `skipped` or `fixed`
+- `comment_body` — markdown triage summary
+
+This posts the comment and swaps `cursor-processing` / `cursor-fix` for `cursor-skipped` or `cursor-fixed`.
