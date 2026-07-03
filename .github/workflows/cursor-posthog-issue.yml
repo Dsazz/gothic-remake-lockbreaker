@@ -24,6 +24,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          state=$(gh issue view "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" --json state -q '.state')
+          if [ "$state" = "CLOSED" ]; then
+            gh issue reopen "${{ github.event.issue.number }}" \
+              --repo "${{ github.repository }}"
+          fi
           gh issue edit "${{ github.event.issue.number }}" \
             --repo "${{ github.repository }}" \
             --remove-label cursor-fixed,cursor-skipped 2>/dev/null || true
