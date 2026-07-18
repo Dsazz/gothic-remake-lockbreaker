@@ -111,8 +111,6 @@ test("onCatalogPlace is a plain setter without toggle-off", async () => {
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
               ],
-              k1: null,
-              k2: null,
             },
           ],
         };
@@ -165,8 +163,6 @@ test("onRetryCatalogLoad recovers after a failed open", async () => {
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
               ],
-              k1: null,
-              k2: null,
             },
           ],
         };
@@ -220,8 +216,6 @@ test("applyEntry does not sync URL or track when loadLock fails", async () => {
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
               ],
-              k1: null,
-              k2: null,
             },
           ],
         };

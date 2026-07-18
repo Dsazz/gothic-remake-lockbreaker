@@ -7,7 +7,6 @@ import {
   LINK,
   createRemovedLinks,
 } from "../core/domain.js";
-import { parseFullSetup } from "./notation.js";
 
 /**
  * @typedef {{
@@ -17,8 +16,6 @@ import { parseFullSetup } from "./notation.js";
  *   plateCount: number,
  *   positions: number[],
  *   matrix: number[][],
- *   k1: string | null,
- *   k2: string | null,
  * }} CatalogEntry
  */
 
@@ -60,31 +57,6 @@ export function normalizeCatalogEntries(rawEntries) {
 }
 
 /**
- * @param {{
- *   lockId: string,
- *   name: string,
- *   description: string,
- *   fullSetup: string,
- *   k1?: string,
- *   k2?: string,
- * }} remote
- * @returns {CatalogEntry}
- */
-export function catalogEntryFromRemote(remote) {
-  const parsed = parseFullSetup(remote.fullSetup);
-  return {
-    id: remote.lockId,
-    name: remote.name,
-    place: remote.description,
-    plateCount: parsed.plateCount,
-    positions: parsed.positions,
-    matrix: parsed.matrix,
-    k1: remote.k1 ?? null,
-    k2: remote.k2 ?? null,
-  };
-}
-
-/**
  * @param {CatalogEntry[]} entries
  * @param {{ query?: string, place?: string }} [filters]
  * @returns {CatalogEntry[]}
@@ -118,7 +90,7 @@ export function findCatalogEntry(entries, id) {
 }
 
 /**
- * Lock state for store.loadLock — full couplings; mastery defaults; k1/k2 not applied.
+ * Lock state for store.loadLock — full couplings; mastery defaults.
  * @param {CatalogEntry} entry
  */
 export function catalogEntryToLockState(entry) {
