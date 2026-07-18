@@ -34,7 +34,7 @@ test("isValidVersion accepts X.Y.Z and rejects anything else", () => {
 
 test("returning visitor (earliest baseline) sees every registry badge", () => {
   const ids = visibleBadgeIds({ firstSeenVersion: EARLIEST_BASELINE });
-  assert.deepEqual(ids, [BadgeFeature.HOTKEYS]);
+  assert.deepEqual(ids, [BadgeFeature.HOTKEYS, BadgeFeature.BROWSE_LOCKS]);
 });
 
 test("first-time visitor (baseline at/after every since) sees nothing", () => {
@@ -70,7 +70,10 @@ test("dismissed ids are excluded", () => {
 });
 
 test("missing baseline falls back to earliest (shows badges)", () => {
-  assert.deepEqual(visibleBadgeIds({ firstSeenVersion: null }), [BadgeFeature.HOTKEYS]);
+  assert.deepEqual(visibleBadgeIds({ firstSeenVersion: null }), [
+    BadgeFeature.HOTKEYS,
+    BadgeFeature.BROWSE_LOCKS,
+  ]);
 });
 
 test("attributeBadgeSource credits the badge only on the organic path while active", () => {

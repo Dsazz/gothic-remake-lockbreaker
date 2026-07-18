@@ -32,6 +32,11 @@
   opacity: 0.88;
   pointer-events: none;
   transform-origin: center;
+}
+
+/* Intro pop only on first show (data-badge-animate). Re-applies after controls
+   rebuild must stay quiet — #browse-locks-btn is recreated every render. */
+[data-badge="new"][data-badge-animate="1"]::after {
   animation: whats-new-pop 200ms ease-out;
 }
 
@@ -40,6 +45,13 @@
 #shortcuts-hint[data-badge="new"]::after {
   top: -8px;
   right: 6px;
+}
+
+/* Browse locks: float above the trailing corner so the pill doesn't cover the
+   search icon (icon-only on mobile) or the label (desktop). */
+#browse-locks-btn[data-badge="new"]::after {
+  top: -8px;
+  right: -6px;
 }
 
 @keyframes whats-new-pop {
@@ -52,7 +64,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-badge="new"]::after {
+  [data-badge="new"][data-badge-animate="1"]::after {
     animation: none;
   }
 }

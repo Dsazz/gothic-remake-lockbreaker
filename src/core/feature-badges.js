@@ -7,6 +7,7 @@
 
 export const BadgeFeature = Object.freeze({
   HOTKEYS: "hotkeys",
+  BROWSE_LOCKS: "browse_locks",
 });
 
 // Baseline stamped for users who had already visited before badges existed, so
@@ -18,6 +19,7 @@ export const EARLIEST_BASELINE = "0.0.0";
 // to retire its badge. Invariant (guarded by tests): every `since` <= VERSION.
 export const FEATURE_BADGE_REGISTRY = Object.freeze([
   Object.freeze({ id: BadgeFeature.HOTKEYS, since: "1.34.0" }),
+  Object.freeze({ id: BadgeFeature.BROWSE_LOCKS, since: "1.36.0" }),
 ]);
 
 const SEGMENT_COUNT = 3;
