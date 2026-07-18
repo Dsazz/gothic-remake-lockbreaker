@@ -10,6 +10,7 @@ import { createUiPrefs } from "./storage/prefs.js";
 import { resolveLandingType } from "./bootstrap/landing.js";
 import { createSolveController } from "./controllers/solve.js";
 import { createLockController } from "./controllers/lock.js";
+import { createCatalogController } from "./controllers/catalog.js";
 import { createKeyboardController } from "./controllers/keyboard.js";
 import { createLocaleChromeController } from "./controllers/locale-chrome.js";
 import { createAppRenderer } from "./bootstrap/app-renderer.js";
@@ -24,7 +25,6 @@ import {
 import { applyStaticContent } from "./i18n/static-content.js";
 import { createOnboardingStub } from "./onboarding/stub.js";
 import { createSolveCoachmark } from "./onboarding/solve-coachmark.js";
-import { oldCampExample } from "./core/examples.js";
 import { initCampTheme, createCampSelector } from "./controllers/camp.js";
 import { createWhatsNewBadges } from "./controllers/whats-new.js";
 import { BadgeFeature, attributeBadgeSource } from "./core/feature-badges.js";
@@ -69,6 +69,7 @@ function createApp() {
 
   let locale;
   let solve;
+  let catalog;
   let keyboard;
   let renderer;
   let onboarding;
@@ -159,21 +160,29 @@ function createApp() {
       onRerender: () => bus.all(store.getState()),
     });
 
+    catalog = createCatalogController({
+      store,
+      solve,
+      onRerender: () => bus.all(store.getState()),
+      trackOpened: () => analytics.when((tracker) => tracker.trackCatalogOpened()),
+      trackLoaded: (props) =>
+        analytics.when((tracker) => tracker.trackCatalogLockLoaded(props)),
+    });
+
     keyboard = createKeyboardController({
       solve,
       getHandlers: bus.getHandlers,
       els,
       onRerender: () => bus.all(store.getState()),
       onShortcutsOpened: () => whatsNew?.dismiss(BadgeFeature.HOTKEYS),
+      isCatalogOpen: () => catalog?.isOpen?.() ?? false,
     });
 
     const handlers = {
       ...lock.handlers,
       ...solve.handlers,
       ...locale.handlers,
-      onLoadExampleFromFailure() {
-        lock.handlers.onLoadExampleLock(oldCampExample());
-      },
+      ...catalog.handlers,
       onTutorOptInStart() {
         onboarding.startFromOptIn();
         renderer.renderTutorChip();
@@ -203,6 +212,7 @@ function createApp() {
       store,
       solve,
       onboarding,
+      catalog,
       onRenderLocaleChrome: () => bus.localeChrome(),
       handlers,
       getWipeConfirmVisible: () => lock.isWipeConfirmOpen(),
@@ -225,11 +235,14 @@ function createApp() {
 
   function bindAppEvents() {
     els.solveBtn.addEventListener("click", () => solve.onSolve());
-    els.loadExampleLock?.addEventListener("click", () =>
-      bus.getHandlers().onLoadExampleLock(oldCampExample()),
+    els.browseLocksHowto?.addEventListener("click", () =>
+      bus.getHandlers().onOpenCatalog?.(),
     );
     document.addEventListener("keydown", keyboard.handle);
-    store.subscribe(bus.all);
+    store.subscribe((state) => {
+      catalog?.onLockEdited?.();
+      bus.all(state);
+    });
   }
 
   function applyOnboardingPlan(plan) {
@@ -264,7 +277,7 @@ function createApp() {
     });
   }
 
-  function wireApp() {
+  async function wireApp() {
     if (!eventsWired) {
       eventsWired = true;
       wireHowToMapImage();
@@ -273,15 +286,30 @@ function createApp() {
       bindAppEvents();
     }
 
-    const plan = resolveStartup({
-      landingType,
-      wasLoadedFromHash: store.wasLoadedFromHash,
-      mapped: isLockMapped(store.getState()),
-    });
+    // ?lock= wins over hash/localStorage (catalog deep link).
+    let loadedFromCatalog = false;
+    try {
+      loadedFromCatalog = await catalog.loadFromQuery();
+    } catch (err) {
+      console.error("Catalog deep-link load failed", err);
+    }
 
-    applyOnboardingPlan(plan);
-    bus.all(store.getState());
-    applyAutoSolve(plan);
+    if (!loadedFromCatalog) {
+      const plan = resolveStartup({
+        landingType,
+        wasLoadedFromHash: store.wasLoadedFromHash,
+        mapped: isLockMapped(store.getState()),
+      });
+      applyOnboardingPlan(plan);
+      bus.all(store.getState());
+      applyAutoSolve(plan);
+    } else {
+      bus.all(store.getState());
+      // Catalog deep link already auto-solved; still surface cold-landing tour opt-in.
+      if (landingType === LandingType.COLD) {
+        applyOnboardingPlan({ action: StartupAction.COLD_ENTRY });
+      }
+    }
 
     bus.localeChrome();
 
@@ -336,17 +364,17 @@ function createApp() {
     const localeSource = getLocaleSource();
     locale.setInitialLocale(localeCode);
     onLocaleChange((code, changeSource) => locale.handleLocaleChange(code, changeSource));
-    wireApp();
+    await wireApp();
 
     analytics.deferStartup({ landingType, localeCode, localeSource });
   }
 
-  function recover() {
+  async function recover() {
     if (!onboarding) {
       onboarding = createOnboardingStub();
       initControllers();
     }
-    wireApp();
+    await wireApp();
   }
 
   return { bootstrap, recover };
@@ -355,5 +383,7 @@ function createApp() {
 const app = createApp();
 app.bootstrap().catch((err) => {
   console.error("Gothic Lock Breaker failed to start", err);
-  app.recover();
+  app.recover().catch((recoverErr) => {
+    console.error("Gothic Lock Breaker failed to recover", recoverErr);
+  });
 });

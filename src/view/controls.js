@@ -11,7 +11,7 @@ import {
   isPristineDefault,
 } from "../core/domain.js";
 import { t } from "../i18n/index.js";
-import { el } from "./dom.js";
+import { el, searchSvg, resetSvg } from "./dom.js";
 import { masteryLabel } from "./labels.js";
 
 const MASTERY_TIERS = [MASTERY.UNTRAINED, MASTERY.TRAINED, MASTERY.MASTER];
@@ -98,24 +98,49 @@ export function renderControls(container, state, handlers) {
   }
   const breaksStepper = renderBreaksStepper(state, handlers);
   const showLockActions = !isPristineDefault(state);
+  const actionsBlock = el("div", { class: "controls-actions" }, [
+    el(
+      "button",
+      {
+        id: "browse-locks-btn",
+        class: "pill controls-browse-btn",
+        type: "button",
+        "aria-label": t("catalog.browse"),
+        onClick: () => handlers.onOpenCatalog?.(),
+      },
+      [
+        el("span", { class: "controls-browse-icon", "aria-hidden": "true" }, [searchSvg()]),
+        el("span", { class: "controls-browse-label", text: t("catalog.browse") }),
+      ],
+    ),
+    ...(showLockActions
+      ? [
+          el(
+            "button",
+            {
+              class: "pill pill-ghost controls-wipe-btn",
+              type: "button",
+              "aria-label": t("controls.wipeLock"),
+              onClick: handlers.onClearAll,
+            },
+            [
+              el("span", { class: "controls-wipe-icon", "aria-hidden": "true" }, [resetSvg()]),
+              el("span", { class: "controls-wipe-label", text: t("controls.wipeLock") }),
+            ],
+          ),
+        ]
+      : []),
+  ]);
   const locksBlock = el("div", { class: "locks-block" }, [
     el("span", { class: "field-label", text: t("controls.locksLabel") }),
-    el("div", { class: "pill-row locks-row" }, counts),
-  ]);
-  const actionsBlock = el("div", { class: "controls-actions" }, [
-    el("button", {
-      class: "pill pill-ghost controls-wipe-btn",
-      type: "button",
-      text: t("controls.wipeLock"),
-      onClick: handlers.onClearAll,
-    }),
+    el("div", { class: "controls-locks-row" }, [
+      el("div", { class: "pill-row locks-row" }, counts),
+      actionsBlock,
+    ]),
   ]);
   container.replaceChildren(
     renderMasterySelector(state, handlers),
     ...(breaksStepper ? [breaksStepper] : []),
-    el("div", { class: "controls-footer" }, [
-      locksBlock,
-      ...(showLockActions ? [actionsBlock] : []),
-    ]),
+    locksBlock,
   );
 }

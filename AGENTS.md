@@ -35,11 +35,12 @@ Tests import `src/` directly — never point tests at `dist/`.
 | Controllers | `controllers/*.js` | Orchestration, session UX |
 | i18n | `i18n/*.js` (`index` catalog + `locale-suggest`, `locale-switcher`, `referrer-hints`, `static-content`) | Locale resolution, copy, static-content hydration |
 | Onboarding | `onboarding/*.js` (`tour`, `stub`, `solve-coachmark`, `solve-coachmark-schedule`, `spotlight-ring`) | First-run tour + post-solve coachmark UX |
+| Catalog | `catalog/*.js` (`notation`, `entries`, `load`, `url`, `replace`) | Named lock library (lazy JSON); browse UI in `view/catalog.js` + `controllers/catalog.js` |
 | Bootstrap | `bootstrap/*.js` (`app-renderer`, `app-elements`, `startup`, `landing`, `mapped-transition`, `how-to-map-image`) | App wiring, render loop |
 | Storage | `storage/*.js` (`keys` constants + `prefs` adapter) | localStorage/sessionStorage keys + persistence façade |
 | Root | `app.js` (entry) + cross-cutting primitives (`version`, `keyboard-keys`) | Composition root + shared constants |
 
-Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`.
+Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`. Catalog JSON is first-party at `assets/catalog/locks.json` (built by `scripts/build-catalog.js`); do not call third-party lock APIs at runtime. Catalog identity (`catalogId`/`Name`/`Place`) is session UI only — not in the hash; deep links use `?lock=<id>`, which is rewritten on load and cleared when geometry is edited.
 
 ### Where does new code go?
 
@@ -49,13 +50,13 @@ Decision list (first match wins):
 - Pure `state → DOM` rendering → `view/` (+ the `view/index.js` barrel)
 - Session / UX orchestration → `controllers/*.js`
 - App lifecycle / render wiring → `bootstrap/` (the entry is `app.js` at root)
-- Part of a cohesive cross-feature subsystem → `i18n/` | `analytics/` | `onboarding/` | `solver/` | `storage/`
+- Part of a cohesive cross-feature subsystem → `i18n/` | `analytics/` | `onboarding/` | `solver/` | `storage/` | `catalog/`
 - Cross-cutting primitive/constant used by 3+ layers → `src/` root (`version`, `keyboard-keys`)
 
 Two principles behind that list:
 
 1. **Features are cross-cutting, not folders.** A user-facing feature (camp, walkthrough, locale) lives across its layer homes by design — e.g. camp = `controllers/camp.js` + camp rendering in `view/` + `styles/camp-*.css` + locale keys. Do not create per-feature folders.
-2. **A subsystem earns its own folder** only when it's a cohesive concern reused across features (the bar that `i18n` / `analytics` / `onboarding` / `solver` / `storage` clear). Otherwise it belongs in a layer folder.
+2. **A subsystem earns its own folder** only when it's a cohesive concern reused across features (the bar that `i18n` / `analytics` / `onboarding` / `solver` / `storage` / `catalog` clear). Otherwise it belongs in a layer folder.
 
 `src/view/index.js` is a re-export barrel over per-surface modules in `src/view/` (`dom`, `labels`, `controls`, `tumblers`, `solution`, `banners`, `overlays`, `chrome`); consumers import `view/index.js`. `src/view/links.js` is the external-link registry (changelog, support, issues, press) consumed by the chrome/banner surfaces. `styles.css` is an `@import` entry over cascade-ordered partials in `styles/` — Vite flattens it into one render-blocking stylesheet (keep the import order = the original section order).
 
@@ -78,7 +79,7 @@ Boot-sensitive files:
 Catalog of all PostHog events so you don't have to grep `src/analytics/`. Most events carry `app_version`; gameplay events add `plate_count`; solve/share events add `landing_type`. Enums live in `src/analytics/values.js`.
 
 - **Landing/lifecycle:** `landing` (+ referrer/UTM attribution, registers session props).
-- **Solve & lock:** `lock_solved` (`move_count`, `is_first_solve`), `lock_already_solved`, `lock_no_solution` (`failure_reason`), `lock_became_mappable`, `example_lock_loaded`, `step_mismatch_clicked`, `steps_revealed` (`move_count`, `step_index`; fired at most once per page load on first "Show all steps" expand — usage signal to decide if the toggle earns its keep).
+- **Solve & lock:** `lock_solved` (`move_count`, `is_first_solve`), `lock_already_solved`, `lock_no_solution` (`failure_reason`), `lock_became_mappable`, `example_lock_loaded` (legacy; example CTA removed), `catalog_opened`, `catalog_lock_loaded` (`place`, `plate_count` — no lock id/couplings/hash), `step_mismatch_clicked`, `steps_revealed` (`move_count`, `step_index`; fired at most once per page load on first "Show all steps" expand — usage signal to decide if the toggle earns its keep).
 - **Onboarding/tutor:** `tutor_started`, `tutor_not_shown` (`reason`), `tutor_skipped`, `onboarding_dismissed` (`action`/`completed`).
 - **Guide:** `guide_opened` (`source`).
 - **Prompts:** `prompt_dismissed` (`prompt` = `hash_banner` / `i18n_banner`). Generic dismissal event for inline banners; not share-related.

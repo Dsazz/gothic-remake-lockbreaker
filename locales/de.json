@@ -5,6 +5,24 @@
   "common": {
     "close": "Schließen"
   },
+  "catalog": {
+    "browse": "Schlösser durchsuchen",
+    "title": "Schlösser durchsuchen",
+    "searchPlaceholder": "Nach Name oder Ort suchen",
+    "allPlaces": "Alle Orte",
+    "placeFilterAria": "Nach Ort filtern",
+    "listLabel": "Bekannte Schlösser",
+    "resultCountOne": "1 Schloss",
+    "resultCountMany": "{n} Schlösser",
+    "loading": "Schlosskatalog wird geladen…",
+    "loadError": "Schlosskatalog konnte nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "empty": "Keine Schlösser passen zu dieser Suche.",
+    "clearFilters": "Filter zurücksetzen",
+    "replaceConfirm": "Aktuelles Schloss durch {name} ersetzen?",
+    "replace": "Ersetzen",
+    "badgeAria": "Aus dem Katalog geladen"
+  },
   "seo": {
     "title": "Gothic Remake Schlösser knacken — Lockpicking-Tool und Rechner",
     "description": "Schlösser knacken in Gothic 1 Remake: kostenloser Rechner mit Schritt-für-Schritt-Anleitung. Kantensicher — Dietrich bricht nicht. Old Camp & schwere Türen. Handy, kein Konto.",
@@ -160,7 +178,7 @@
     "noPath": "Kein sicherer Weg mit diesen Kupplungen. Prüfe With/Against auf jedem Chip oder öffne die Anleitung.",
     "noPathHint": "Prüfe jeden With/Against-Chip auf den Zylinderkarten — Kupplungen sind richtungsabhängig.",
     "openGuide": "Anleitung öffnen",
-    "loadExample": "Beispielschloss laden",
+    "browseLocks": "Schlösser durchsuchen",
     "alreadyOpen": "Nichts zu tun — jede Nadel liegt bereits in der Kerbe.",
     "turnCountOne": "1 Drehung",
     "turnCountMany": "{n} Drehungen",
@@ -198,6 +216,10 @@
     "kicker": "{current} / {total}",
     "skip": "Tour überspringen",
     "footnote": "Vollständige Referenz unten unter Schloss abbilden.",
+    "stepBrowse": {
+      "title": "Kennst du die Truhe?",
+      "body": "Durchsuche benannte Schlösser aus Lagern und Minen — lade eines und erhalte die Sequenz ohne manuelles Mapping."
+    },
     "step1": {
       "title": "Schritt 1 · Lockpicking-Stufe",
       "body": "Wähle dein Fingers-Training. Standard Untrained reicht. Training ändert nur das Fehlerbudget — nicht wie Platten sich bewegen."

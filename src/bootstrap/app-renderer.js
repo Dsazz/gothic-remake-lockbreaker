@@ -10,6 +10,7 @@ export function createAppRenderer({
   store,
   solve,
   onboarding,
+  catalog,
   onRenderLocaleChrome,
   handlers,
   getWipeConfirmVisible,
@@ -29,6 +30,8 @@ export function createAppRenderer({
     }
 
     view.renderControls(els.controls, state, handlers);
+    view.renderCatalogBadge(els.catalogBadge, state);
+    view.renderCatalogOverlay(catalog?.getUiState?.() ?? { open: false }, handlers);
     view.renderShortcutsHint(els.shortcutsHint, handlers);
     // The tumbler rebuild blows away keyboard focus; save and reapply it so
     // arrow-key mapping survives the re-render.

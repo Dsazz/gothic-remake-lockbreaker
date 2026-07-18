@@ -56,6 +56,46 @@ export function openLockSvg() {
   return svg;
 }
 
+/** Magnifying glass — Browse locks / catalog search affordance. */
+export function searchSvg() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  const lens = document.createElementNS(ns, "circle");
+  lens.setAttribute("cx", "11");
+  lens.setAttribute("cy", "11");
+  lens.setAttribute("r", "7");
+  const handle = document.createElementNS(ns, "path");
+  handle.setAttribute("d", "M20 20 L16.5 16.5");
+  svg.append(lens, handle);
+  return svg;
+}
+
+/** Circular arrows — Reset lock affordance (mobile icon-only + desktop leading mark). */
+export function resetSvg() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  const arc = document.createElementNS(ns, "path");
+  arc.setAttribute("d", "M3 12a9 9 0 1 0 3-6.7");
+  const tip = document.createElementNS(ns, "path");
+  tip.setAttribute("d", "M3 4v5h5");
+  svg.append(arc, tip);
+  return svg;
+}
+
 export function iconBtn({ label, className = "", onClick, disabled, svg }) {
   return el(
     "button",

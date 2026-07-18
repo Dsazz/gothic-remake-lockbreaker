@@ -144,6 +144,17 @@ export function trackExampleLockLoaded({ plateCount }) {
   send(Events.EXAMPLE_LOCK_LOADED, baseProps(plateCount));
 }
 
+export function trackCatalogOpened() {
+  send(Events.CATALOG_OPENED, { app_version: VERSION });
+}
+
+export function trackCatalogLockLoaded({ place, plateCount }) {
+  send(Events.CATALOG_LOCK_LOADED, {
+    ...baseProps(plateCount),
+    place,
+  });
+}
+
 export function trackGuideOpened({ source }) {
   send(Events.GUIDE_OPENED, { source, app_version: VERSION });
 }

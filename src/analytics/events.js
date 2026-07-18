@@ -5,6 +5,8 @@ export const Events = Object.freeze({
   LOCK_NO_SOLUTION: "lock_no_solution",
   LOCK_BECAME_MAPPABLE: "lock_became_mappable",
   EXAMPLE_LOCK_LOADED: "example_lock_loaded",
+  CATALOG_OPENED: "catalog_opened",
+  CATALOG_LOCK_LOADED: "catalog_lock_loaded",
   GUIDE_OPENED: "guide_opened",
   PROMPT_DISMISSED: "prompt_dismissed",
   ONBOARDING_DISMISSED: "onboarding_dismissed",

@@ -5,6 +5,25 @@
   "common": {
     "close": "Zamknij"
   },
+  "catalog": {
+    "browse": "Przeglądaj zamki",
+    "title": "Przeglądaj zamki",
+    "searchPlaceholder": "Szukaj po nazwie lub miejscu",
+    "allPlaces": "Wszystkie miejsca",
+    "placeFilterAria": "Filtruj według miejsca",
+    "listLabel": "Znane zamki",
+    "resultCountOne": "1 zamek",
+    "resultCountFew": "{n} zamki",
+    "resultCountMany": "{n} zamków",
+    "loading": "Ładowanie katalogu zamków…",
+    "loadError": "Nie udało się załadować katalogu.",
+    "retry": "Spróbuj ponownie",
+    "empty": "Brak zamków pasujących do wyszukiwania.",
+    "clearFilters": "Wyczyść filtry",
+    "replaceConfirm": "Zastąpić bieżący zamek: {name}?",
+    "replace": "Zastąp",
+    "badgeAria": "Wczytano z katalogu"
+  },
   "seo": {
     "title": "Gothic Remake lockpicking — darmowy kalkulator zamków",
     "description": "Jak otworzyć zamek w Gothic 1 Remake: darmowy kalkulator lockpickingu krok po kroku. Bezpieczne sekwencje — wytrych się nie złamie. Na telefonie, bez konta.",
@@ -160,7 +179,7 @@
     "noPath": "Brak bezpiecznej ścieżki przy tych sprzężeniach. Sprawdź With/Against na każdym chipie lub otwórz przewodnik.",
     "noPathHint": "Sprawdź każdy chip With/Against na kartach — sprzężenia mają kierunek.",
     "openGuide": "Otwórz przewodnik",
-    "loadExample": "Wczytaj przykładowy zamek",
+    "browseLocks": "Przeglądaj zamki",
     "alreadyOpen": "Nic do zrobienia — każda szpilka już w wycięciu.",
     "turnCountOne": "1 obrót",
     "turnCountFew": "{n} obroty",
@@ -199,6 +218,10 @@
     "kicker": "{current} / {total}",
     "skip": "Pomiń przewodnik",
     "footnote": "Pełna referencja poniżej w Jak zmapować zamek.",
+    "stepBrowse": {
+      "title": "Znasz skrzynię?",
+      "body": "Przeglądaj nazwane zamki z obozów i kopalń — wczytaj jeden i otrzymaj sekwencję bez ręcznego mapowania."
+    },
     "step1": {
       "title": "Krok 1 · Poziom lockpickingu",
       "body": "Wybierz poziom treningu Fingers. Domyślny Untrained wystarczy. Trening zmienia tylko budżet błędów — nie ruch płytek."

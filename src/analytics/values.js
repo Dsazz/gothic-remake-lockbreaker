@@ -8,6 +8,7 @@ export const SolveSource = Object.freeze({
   MANUAL: "manual",
   HASH: "hash",
   EXAMPLE: "example",
+  CATALOG: "catalog",
 });
 
 export const SolveFailureReason = Object.freeze({
@@ -16,6 +17,7 @@ export const SolveFailureReason = Object.freeze({
 });
 
 export const OnboardingStepId = Object.freeze({
+  BROWSE_LOCKS: "browse_locks",
   MASTERY_TIER: "mastery_tier",
   PLATE_COUNT: "plate_count",
   START_HOLES: "start_holes",

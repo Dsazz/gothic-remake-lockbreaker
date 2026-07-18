@@ -90,7 +90,14 @@ export function resolveChipKeyAction(key) {
   }
 }
 
-export function createKeyboardController({ solve, getHandlers, els, onRerender, onShortcutsOpened }) {
+export function createKeyboardController({
+  solve,
+  getHandlers,
+  els,
+  onRerender,
+  onShortcutsOpened,
+  isCatalogOpen,
+}) {
   let shortcutsOpen = false;
   let preOpenFocus = null;
   let navUsed = false;
@@ -102,7 +109,7 @@ export function createKeyboardController({ solve, getHandlers, els, onRerender, 
   }
 
   function openShortcuts(source) {
-    if (shortcutsOpen) return;
+    if (shortcutsOpen || isCatalogOpen?.()) return;
     preOpenFocus = document.activeElement;
     shortcutsOpen = true;
     trackShortcutsOpened({ source });
@@ -176,8 +183,8 @@ export function createKeyboardController({ solve, getHandlers, els, onRerender, 
 
   function handle(event) {
     if (event.defaultPrevented) return;
-    // While the modal is open it owns Escape + the Tab trap; suppress everything else.
-    if (shortcutsOpen) return;
+    // While a modal is open it owns Escape + the Tab trap; suppress everything else.
+    if (shortcutsOpen || isCatalogOpen?.()) return;
 
     const target = event.target;
     if (isSolveShortcut(event)) {

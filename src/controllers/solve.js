@@ -408,6 +408,9 @@ export function createSolveController({
     getTumblersPulse: () => tumblersPulse,
     getSolveReadyFlash: () => solveReadyFlash,
     getSolving: () => session.solving,
+    hasActiveSolution: () =>
+      session.solveFailed ||
+      (Array.isArray(session.solution) && session.solution.length > 0),
     // Whether `←/→` should step the walkthrough: a non-empty solution is on
     // screen and not collapsed. False while solving (solution is undefined).
     canWalk: () =>
