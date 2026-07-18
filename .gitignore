@@ -3,3 +3,5 @@ node_modules/
 dist/
 .lighthouseci/
 *.log
+promo
+.cursor/mcp.json

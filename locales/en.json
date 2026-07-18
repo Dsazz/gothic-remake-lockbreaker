@@ -5,6 +5,24 @@
   "common": {
     "close": "Close"
   },
+  "catalog": {
+    "browse": "Browse locks",
+    "title": "Browse locks",
+    "searchPlaceholder": "Search by name or place",
+    "allPlaces": "All places",
+    "placeFilterAria": "Filter by place",
+    "listLabel": "Known locks",
+    "resultCountOne": "1 lock",
+    "resultCountMany": "{n} locks",
+    "loading": "Loading lock catalog…",
+    "loadError": "Could not load the lock catalog.",
+    "retry": "Retry",
+    "empty": "No locks match that search.",
+    "clearFilters": "Clear filters",
+    "replaceConfirm": "Replace the current lock with {name}?",
+    "replace": "Replace",
+    "badgeAria": "Loaded from catalog"
+  },
   "seo": {
     "title": "Gothic Remake Lockbreaker — Free Lockpicking Calculator",
     "description": "Free Gothic 1 Remake lockpicking calculator with step-by-step walkthrough. Edge-safe sequences — pick won't snap. Works on phone, no account.",
@@ -185,7 +203,7 @@
     "noPath": "No safe path with these couplings. Re-check With/Against on each chip, or open How to map your lock.",
     "noPathHint": "Check each With/Against chip on the tumbler cards — couplings are directional.",
     "openGuide": "Open guide",
-    "loadExample": "Load example lock",
+    "browseLocks": "Browse locks",
     "alreadyOpen": "Nothing to do — every pin already rests in the notch.",
     "turnCountOne": "1 turn",
     "turnCountMany": "{n} turns",
@@ -223,6 +241,10 @@
     "kicker": "{current} / {total}",
     "skip": "Skip tour",
     "footnote": "Full reference in How to map your lock below.",
+    "stepBrowse": {
+      "title": "Know the chest?",
+      "body": "Browse named locks from the camps and mines — load one and get the sequence without mapping by hand."
+    },
     "step1": {
       "title": "Step 1 · Lockpicking tier",
       "body": "Pick your Fingers training level. Default Untrained is fine. Training changes mistake budget only — not how plates move."

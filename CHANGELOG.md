@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.36.0] - 2026-07-18
+
+### Added
+
+- Browse locks: open a searchable catalog of named in-game locks, filter by place, load one into the solver, and deep-link with `?lock=<id>`.
+- When a catalog lock would replace mapped work or an active solution, confirm before overwriting.
+- After loading from the catalog, The Sequence panel shows the lock name and place.
+
+### Changed
+
+- Browse locks and Reset lock use clear icons; on narrow screens they collapse to icon-only buttons on the same row as the lock-count pills.
+- Catalog place filter is a single dropdown (not a wall of chips), with result count and Clear filters / Retry recovery actions.
+
+### Fixed
+
+- Reset lock now opens its confirm dialog again.
+- Choosing a catalog lock while you already have work no longer looks like a dead tap — the replace confirm was rendering behind the sheet.
+- Minimizing The Sequence no longer shows `[object Object]` in the step counter.
+
 ## [1.35.2] - 2026-07-03
 
 ### Changed

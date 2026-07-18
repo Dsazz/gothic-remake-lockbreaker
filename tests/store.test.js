@@ -21,6 +21,9 @@ function sampleState(overrides = {}) {
     masteryLevel: DEFAULT_MASTERY_ID,
     breaksBudget: 0,
     removedLinks: createRemovedLinks(plateCount),
+    catalogId: null,
+    catalogName: null,
+    catalogPlace: null,
     ...overrides,
   };
 }

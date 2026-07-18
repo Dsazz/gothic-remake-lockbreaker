@@ -8,6 +8,8 @@ export {
   trackSolveResult,
   trackLockBecameMappable,
   trackExampleLockLoaded,
+  trackCatalogOpened,
+  trackCatalogLockLoaded,
   trackGuideOpened,
   trackPromptDismissed,
   trackOnboardingDismissed,

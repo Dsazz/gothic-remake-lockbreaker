@@ -168,10 +168,13 @@ function installOnboardingTestEnv() {
   masteryRow.className = "mastery-row";
   const locksRow = createElement("div");
   locksRow.className = "locks-row";
-  controls.append(masteryRow, locksRow);
+  const browseBtn = createElement("button");
+  browseBtn.className = "controls-browse-btn";
+  controls.append(masteryRow, locksRow, browseBtn);
   body.append(controls);
 
   const registry = new Map([
+    [".controls-browse-btn", browseBtn],
     [".controls .mastery-row", masteryRow],
     [".controls .locks-row", locksRow],
   ]);
@@ -255,6 +258,7 @@ function installOnboardingTestEnv() {
 
   return {
     body,
+    browseBtn,
     masteryRow,
     locksRow,
     flushSpotlightWork,
@@ -297,17 +301,19 @@ test("onboarding step targets are specific and present in view markup", async ()
   }
 });
 
-test("onboarding has five steps ending with solve", () => {
-  assert.equal(ONBOARDING_STEPS.length, 5);
-  assert.equal(ONBOARDING_STEPS[0].id, OnboardingStepId.MASTERY_TIER);
-  assert.equal(ONBOARDING_STEPS[1].id, OnboardingStepId.PLATE_COUNT);
-  assert.equal(ONBOARDING_STEPS[1].target, ".controls .locks-row");
-  assert.equal(ONBOARDING_STEPS[4].id, OnboardingStepId.SOLVE);
-  assert.equal(ONBOARDING_STEPS[4].target, ".panel--sequence .solve-btn");
+test("onboarding has six steps ending with solve", () => {
+  assert.equal(ONBOARDING_STEPS.length, 6);
+  assert.equal(ONBOARDING_STEPS[0].id, OnboardingStepId.BROWSE_LOCKS);
+  assert.equal(ONBOARDING_STEPS[0].target, ".controls-browse-btn");
+  assert.equal(ONBOARDING_STEPS[1].id, OnboardingStepId.MASTERY_TIER);
+  assert.equal(ONBOARDING_STEPS[2].id, OnboardingStepId.PLATE_COUNT);
+  assert.equal(ONBOARDING_STEPS[2].target, ".controls .locks-row");
+  assert.equal(ONBOARDING_STEPS[5].id, OnboardingStepId.SOLVE);
+  assert.equal(ONBOARDING_STEPS[5].target, ".panel--sequence .solve-btn");
 });
 
-test("onboarding dismiss key is v3", () => {
-  assert.equal(StorageKeys.ONBOARDING_DISMISSED_V3, "onboarding_dismissed_v3");
+test("onboarding dismiss key is v4", () => {
+  assert.equal(StorageKeys.ONBOARDING_DISMISSED_V4, "onboarding_dismissed_v4");
 });
 
 test("enterColdLanding shows opt-in chip for fresh cold users", async () => {
@@ -370,7 +376,8 @@ test("applySpotlight ignores stale scroll after step advance", async () => {
 
     await env.flushSpotlightWork();
     assert.equal(onboarding.isActive(), true);
-    assert.equal(env.masteryRow.classList.contains("onboarding-target"), false);
+    assert.equal(env.browseBtn.classList.contains("onboarding-target"), false);
+    assert.equal(env.masteryRow.classList.contains("onboarding-target"), true);
   } finally {
     env.restore();
   }
@@ -378,7 +385,7 @@ test("applySpotlight ignores stale scroll after step advance", async () => {
 
 test("enterColdLanding reports previously dismissed when tour was dismissed", async () => {
   const storage = new Map();
-  storage.set(StorageKeys.ONBOARDING_DISMISSED_V3, StorageFlag.SET);
+  storage.set(StorageKeys.ONBOARDING_DISMISSED_V4, StorageFlag.SET);
   const original = globalThis.localStorage;
   globalThis.localStorage = {
     getItem: (key) => storage.get(key) ?? null,

@@ -6,6 +6,7 @@
 // via arguments, and no import of `store.js`.
 
 export { renderControls } from "./controls.js";
+export { renderCatalogOverlay, renderCatalogBadge } from "./catalog.js";
 export { renderTumblers, renderSolveButton, renderShortcutsHint } from "./tumblers.js";
 export {
   renderLocaleSuggest,

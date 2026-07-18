@@ -252,8 +252,8 @@ test("renderControls hides wipe until lock differs from default; gratitude promp
   const solveText = await readFile(join(root, "src/controllers/solve.js"), "utf8");
   assert.match(viewText, /isPristineDefault/);
   assert.match(viewText, /showLockActions/);
-  assert.match(viewText, /\.\.\.\(showLockActions \? \[actionsBlock\] : \[\]\)/);
   assert.match(viewText, /controls\.wipeLock/);
+  assert.match(viewText, /showLockActions\s*\?\s*\[/);
   assert.doesNotMatch(viewText, /controls-share/);
   // Donation CTA is folded into the solution area, gated by `gratitudeRevealed`,
   // and rendered between the walkthrough and the show-all-steps toggle.
@@ -313,10 +313,37 @@ test("core controls have hover feedback gated for touch", async () => {
   assert.match(css, /\.hole:hover/);
 });
 
-test("no_path failure offers example lock recovery", async () => {
+test("no_path failure offers catalog browse recovery", async () => {
   const viewText = await readViewSource();
-  assert.match(viewText, /solution\.loadExample/);
-  assert.match(viewText, /onLoadExampleFromFailure/);
+  assert.match(viewText, /solution\.browseLocks/);
+  assert.match(viewText, /onOpenCatalog/);
+  assert.match(viewText, /searchSvg/);
+  assert.match(viewText, /solution-browse-btn/);
+});
+
+test("controls browse CTA uses search icon with label", async () => {
+  const controls = await readFile(join(root, "src/view/controls.js"), "utf8");
+  assert.match(controls, /searchSvg/);
+  assert.doesNotMatch(controls, /openLockSvg/);
+  assert.match(controls, /controls-browse-btn/);
+  assert.match(controls, /catalog\.browse/);
+});
+
+test("controls wipe CTA uses reset icon with label for mobile icon-only collapse", async () => {
+  const controls = await readFile(join(root, "src/view/controls.js"), "utf8");
+  const css = await readFile(join(root, "styles/controls.css"), "utf8");
+  assert.match(controls, /resetSvg/);
+  assert.match(controls, /controls-wipe-label/);
+  assert.match(css, /@media\s*\(max-width:\s*640px\)/);
+  assert.match(css, /\.controls-wipe-label/);
+});
+
+test("wipe lock onClearAll re-renders so the confirm overlay can mount", async () => {
+  const lockText = await readFile(join(root, "src/controllers/lock.js"), "utf8");
+  assert.match(
+    lockText,
+    /onClearAll\(\)\s*\{\s*wipeConfirmOpen\s*=\s*true;\s*onRerender\(\);/s,
+  );
 });
 
 test("walkthrough uses tertiary help trigger, not pill mismatch button", async () => {
@@ -344,6 +371,12 @@ test("wipe lock uses in-app confirm modal instead of native confirm", async () =
   assert.match(viewText, /confirm-dialog-actions[\s\S]*text: t\("confirm\.cancel"\)/);
   assert.match(rendererText, /renderWipeConfirmOverlay/);
   assert.match(rendererText, /getWipeConfirmVisible/);
+});
+
+test("ghost pills (Reset lock, Cancel, Clear filters) use full-contrast text, not the dim token", async () => {
+  const css = await readFile(join(root, "styles/controls.css"), "utf8");
+  const block = css.match(/\.pill-ghost\s*\{[^}]+\}/s)?.[0] ?? "";
+  assert.match(block, /color:\s*var\(--parchment\);/, "ghost pill text must not fall back to --parchment-dim");
 });
 
 test("src does not use native confirm dialogs", async () => {

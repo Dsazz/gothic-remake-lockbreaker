@@ -31,6 +31,10 @@ const NEXT_LINK = {
 const LINK_TO_CHAR = { [LINK.NONE]: "0", [LINK.SAME]: "1", [LINK.OPP]: "2" };
 const CHAR_TO_LINK = { "0": LINK.NONE, "1": LINK.SAME, "2": LINK.OPP };
 
+function emptyCatalogMeta() {
+  return { catalogId: null, catalogName: null, catalogPlace: null };
+}
+
 function defaultState() {
   const plateCount = DEFAULT_PLATES;
   return {
@@ -40,7 +44,12 @@ function defaultState() {
     masteryLevel: DEFAULT_MASTERY_ID,
     breaksBudget: 0,
     removedLinks: createRemovedLinks(plateCount),
+    ...emptyCatalogMeta(),
   };
+}
+
+function withoutCatalogMeta(state) {
+  return { ...state, ...emptyCatalogMeta() };
 }
 
 function normalizeState(raw) {
@@ -66,6 +75,9 @@ function normalizeState(raw) {
     masteryLevel,
     breaksBudget,
     removedLinks,
+    catalogId: raw.catalogId ?? null,
+    catalogName: raw.catalogName ?? null,
+    catalogPlace: raw.catalogPlace ?? null,
   };
 }
 
@@ -284,14 +296,16 @@ export function createStore() {
         removedLinks = createRemovedLinks(plateCount);
         breaksBudget = 0;
       }
-      commit({
-        plateCount,
-        matrix: resizeMatrix(state.matrix, oldCount, plateCount),
-        positions: resizePositions(state.positions, plateCount),
-        masteryLevel: state.masteryLevel,
-        breaksBudget,
-        removedLinks,
-      });
+      commit(
+        withoutCatalogMeta({
+          plateCount,
+          matrix: resizeMatrix(state.matrix, oldCount, plateCount),
+          positions: resizePositions(state.positions, plateCount),
+          masteryLevel: state.masteryLevel,
+          breaksBudget,
+          removedLinks,
+        }),
+      );
     },
 
     setMasteryLevel(masteryLevel) {
@@ -321,7 +335,7 @@ export function createStore() {
       matrix[row][col] = NEXT_LINK[matrix[row][col]];
       const removedLinks = state.removedLinks.map((cells) => cells.slice());
       removedLinks[row][col] = false;
-      commit({ ...state, matrix, removedLinks });
+      commit(withoutCatalogMeta({ ...state, matrix, removedLinks }));
     },
 
     toggleLinkRemoved(reactor, turned) {
@@ -332,24 +346,24 @@ export function createStore() {
       const removedLinks = state.removedLinks.map((cells) => cells.slice());
       if (removedLinks[reactor][turned]) {
         removedLinks[reactor][turned] = false;
-        commit({ ...state, removedLinks });
+        commit(withoutCatalogMeta({ ...state, removedLinks }));
         return;
       }
       if (state.matrix[reactor][turned] === LINK.NONE) return;
       if (countRemovedLinks(removedLinks) >= state.breaksBudget) return;
       removedLinks[reactor][turned] = true;
-      commit({ ...state, removedLinks });
+      commit(withoutCatalogMeta({ ...state, removedLinks }));
     },
 
     setPosition(plate, value) {
       if (value < POS_MIN || value > POS_MAX) return;
       const positions = state.positions.slice();
       positions[plate] = value;
-      commit({ ...state, positions });
+      commit(withoutCatalogMeta({ ...state, positions }));
     },
 
     resetPositions() {
-      commit({ ...state, positions: createPositions(state.plateCount) });
+      commit(withoutCatalogMeta({ ...state, positions: createPositions(state.plateCount) }));
     },
 
     clearAll() {
@@ -363,7 +377,9 @@ export function createStore() {
         removedLinks:
           nextState.removedLinks ?? createRemovedLinks(nextState.plateCount ?? DEFAULT_PLATES),
       });
-      if (normalized) commit(normalized);
+      if (!normalized) return false;
+      commit(normalized);
+      return true;
     },
   };
 }

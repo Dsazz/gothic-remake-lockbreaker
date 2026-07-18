@@ -81,7 +81,7 @@ export function applyStaticContent() {
     if (cells[2] && tierEffectKeys[i]) cells[2].textContent = t(tierEffectKeys[i]);
   });
 
-  setText("#load-example-lock", "howto.example");
+  setText("#browse-locks-howto", "catalog.browse");
   const howtoImg = document.querySelector(".how-to-map-figure img");
   if (howtoImg) howtoImg.setAttribute("alt", t("howto.imgAlt"));
 

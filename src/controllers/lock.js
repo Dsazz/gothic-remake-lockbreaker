@@ -1,6 +1,3 @@
-import { SolveSource } from "../analytics/values.js";
-import { trackExampleLockLoaded } from "../analytics/index.js";
-
 export function createLockController({ store, solve, onRerender }) {
   let wipeConfirmOpen = false;
 
@@ -44,12 +41,6 @@ export function createLockController({ store, solve, onRerender }) {
     },
     onCancelWipe() {
       closeWipeConfirm();
-    },
-    onLoadExampleLock(exampleState) {
-      solve.invalidate();
-      store.loadLock(exampleState);
-      trackExampleLockLoaded({ plateCount: exampleState.plateCount });
-      solve.onSolve({ auto: true, solveSource: SolveSource.EXAMPLE });
     },
     onSetMasteryLevel(level) {
       onLockEdit();

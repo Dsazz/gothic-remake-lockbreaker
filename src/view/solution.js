@@ -11,6 +11,7 @@ import {
   iconBtn,
   arrowSvg,
   openLockSvg,
+  searchSvg,
   navChevronSvg,
   toolIconSvg,
 } from "./dom.js";
@@ -101,12 +102,18 @@ export function renderSolution(container, solution, walkthrough, ui, handlers) {
           text: t("solution.openGuide"),
           onClick: () => handlers.onOpenGuide?.(GuideSource.FAILURE_NO_PATH),
         }),
-        el("button", {
-          class: "pill solution-example-btn",
-          type: "button",
-          text: t("solution.loadExample"),
-          onClick: () => handlers.onLoadExampleFromFailure?.(),
-        }),
+        el(
+          "button",
+          {
+            class: "pill solution-example-btn solution-browse-btn",
+            type: "button",
+            onClick: () => handlers.onOpenCatalog?.(),
+          },
+          [
+            el("span", { class: "solution-browse-icon", "aria-hidden": "true" }, [searchSvg()]),
+            el("span", { class: "solution-browse-label", text: t("solution.browseLocks") }),
+          ],
+        ),
       ]),
     );
     container.replaceChildren(el("div", { class: "solution-failure" }, children));
@@ -209,7 +216,7 @@ function renderMinimizedSummary(walkthrough, handlers) {
   const total = states.length - 1;
   const counter = stepCounter(stepIndex, total, !move);
 
-  const arrowColChildren = [el("span", { class: "sequence-min-step", text: counter })];
+  const arrowColChildren = [el("span", { class: "sequence-min-step" }, [counter])];
 
   if (move) {
     const isRight = move.dir === DIR.LEFT;

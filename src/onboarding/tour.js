@@ -13,6 +13,12 @@ const FALLBACK_CARD_HEIGHT = 220;
 
 export const ONBOARDING_STEPS = [
   {
+    id: OnboardingStepId.BROWSE_LOCKS,
+    target: ".controls-browse-btn",
+    titleKey: "onboarding.stepBrowse.title",
+    bodyKey: "onboarding.stepBrowse.body",
+  },
+  {
     id: OnboardingStepId.MASTERY_TIER,
     target: ".controls .mastery-row",
     titleKey: "onboarding.step1.title",
@@ -68,7 +74,7 @@ export function createOnboarding({
 
   function isDismissed() {
     try {
-      return localStorage.getItem(StorageKeys.ONBOARDING_DISMISSED_V3) === StorageFlag.SET;
+      return localStorage.getItem(StorageKeys.ONBOARDING_DISMISSED_V4) === StorageFlag.SET;
     } catch {
       return false;
     }
@@ -76,7 +82,7 @@ export function createOnboarding({
 
   function markDismissed() {
     try {
-      localStorage.setItem(StorageKeys.ONBOARDING_DISMISSED_V3, StorageFlag.SET);
+      localStorage.setItem(StorageKeys.ONBOARDING_DISMISSED_V4, StorageFlag.SET);
     } catch {
       // ignore
     }
