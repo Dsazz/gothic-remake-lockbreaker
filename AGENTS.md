@@ -35,12 +35,12 @@ Tests import `src/` directly — never point tests at `dist/`.
 | Controllers | `controllers/*.js` | Orchestration, session UX |
 | i18n | `i18n/*.js` (`index` catalog + `locale-suggest`, `locale-switcher`, `referrer-hints`, `static-content`) | Locale resolution, copy, static-content hydration |
 | Onboarding | `onboarding/*.js` (`tour`, `stub`, `solve-coachmark`, `solve-coachmark-schedule`, `spotlight-ring`) | First-run tour + post-solve coachmark UX |
-| Catalog | `catalog/*.js` (`notation`, `entries`, `load`, `url`, `replace`) | Named lock library (lazy JSON); browse UI in `view/catalog.js` + `controllers/catalog.js` |
+| Catalog | `catalog/*.js` (`entries`, `load`, `url`, `replace`) | Named lock library (lazy JSON); browse UI in `view/catalog.js` + `controllers/catalog.js` |
 | Bootstrap | `bootstrap/*.js` (`app-renderer`, `app-elements`, `startup`, `landing`, `mapped-transition`, `how-to-map-image`) | App wiring, render loop |
 | Storage | `storage/*.js` (`keys` constants + `prefs` adapter) | localStorage/sessionStorage keys + persistence façade |
 | Root | `app.js` (entry) + cross-cutting primitives (`version`, `keyboard-keys`) | Composition root + shared constants |
 
-Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`. Catalog JSON is first-party at `assets/catalog/locks.json` (built by `scripts/build-catalog.js`); do not call third-party lock APIs at runtime. Catalog identity (`catalogId`/`Name`/`Place`) is session UI only — not in the hash; deep links use `?lock=<id>`, which is rewritten on load and cleared when geometry is edited.
+Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`. Catalog data is the checked-in first-party file `assets/catalog/locks.json` — update it by editing and committing that file; never fetch third-party lock APIs at build or runtime. Catalog identity (`catalogId`/`Name`/`Place`) is session UI only — not in the hash; deep links use `?lock=<id>`, which is rewritten on load and cleared when geometry is edited.
 
 ### Where does new code go?
 

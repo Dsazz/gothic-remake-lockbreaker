@@ -22,8 +22,6 @@ test("loadCatalog fetches once and caches entries", async () => {
           [0, 0, 0, 0],
           [0, 0, 0, 0],
         ],
-        k1: null,
-        k2: null,
       },
     ],
   };
@@ -66,8 +64,6 @@ test("loadCatalog drops invalid entries and rejects all-invalid payloads", async
               [0, 0, 0, 0],
               [0, 0, 0, 0],
             ],
-            k1: null,
-            k2: null,
           },
         ],
       };
@@ -102,8 +98,6 @@ test("catalogEntryToLockState uses default mastery and keeps catalog id", () => 
     plateCount: 5,
     positions: [3, 3, -2, 3, 0],
     matrix: Array.from({ length: 5 }, () => new Array(5).fill(0)),
-    k1: "P4>P5-",
-    k2: "P2>P1-",
   };
   const state = catalogEntryToLockState(entry);
   assert.equal(state.plateCount, 5);
@@ -113,6 +107,4 @@ test("catalogEntryToLockState uses default mastery and keeps catalog id", () => 
   assert.equal(state.catalogId, "OC_Chest_Armory_01_Lock");
   assert.equal(state.catalogName, "Armory 01 Chest");
   assert.equal(state.catalogPlace, "Old Camp");
-  // k1/k2 stay on the entry only — not applied to removedLinks
-  assert.equal(state.k1, undefined);
 });

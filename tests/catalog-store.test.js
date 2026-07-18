@@ -14,8 +14,6 @@ test("loadLock keeps catalog identity until the lock is edited", () => {
     plateCount: 5,
     positions: [3, 3, -2, 3, 0],
     matrix: Array.from({ length: 5 }, () => new Array(5).fill(LINK.NONE)),
-    k1: null,
-    k2: null,
   };
   entry.matrix[0][4] = LINK.OPP;
 
@@ -37,8 +35,6 @@ test("mastery and breaks edits keep catalog identity", () => {
     plateCount: 5,
     positions: [3, 3, -2, 3, 0],
     matrix: Array.from({ length: 5 }, () => new Array(5).fill(LINK.NONE)),
-    k1: null,
-    k2: null,
   };
   entry.matrix[0][4] = LINK.OPP;
 
