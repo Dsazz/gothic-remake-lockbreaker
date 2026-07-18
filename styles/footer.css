@@ -153,6 +153,14 @@
   white-space: nowrap;
 }
 
+.app-foot-updated {
+  flex: 0 1 auto;
+  font-size: 0.68rem;
+  letter-spacing: 0.2px;
+  color: var(--parchment-faint);
+  white-space: nowrap;
+}
+
 .support-strip {
   grid-column: 1;
   justify-self: center;

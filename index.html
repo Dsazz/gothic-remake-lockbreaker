@@ -7,6 +7,7 @@
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <title>Gothic Remake Lockbreaker — Free Lockpick Solver</title>
     <meta
       name="description"
@@ -69,12 +70,15 @@
           "Beginner-friendly three-panel interface",
           "Step-by-step turn walkthrough",
           "Edge-safe lockpicking sequences",
+          "Browseable catalog of named in-game locks",
           "In-app lock mapping guide and presets",
           "Mobile browser support",
           "Free, no account required"
         ],
         "applicationCategory": "GameApplication",
         "operatingSystem": "Any",
+        "datePublished": "2026-07-18",
+        "dateModified": "2026-07-18",
         "inLanguage": ["en", "de", "pl", "uk"],
         "availableLanguage": [
           { "@type": "Language", "name": "English", "alternateName": "en" },
@@ -89,10 +93,14 @@
         },
         "author": {
           "@type": "Person",
-          "name": "Stanislav Stepanenko"
+          "name": "Stanislav Stepanenko",
+          "url": "https://github.com/Dsazz"
         },
         "sameAs": [
-          "https://github.com/Dsazz/gothic-remake-lockbreaker"
+          "https://github.com/Dsazz/gothic-remake-lockbreaker",
+          "https://www.reddit.com/r/worldofgothic/comments/1tz9wwa/i_built_a_lockpicking_solver_for_gothic_1_remake/",
+          "https://www.pcgames.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/",
+          "https://www.buffed.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/"
         ],
         "subjectOf": [
           {
@@ -103,6 +111,16 @@
             "publisher": {
               "@type": "Organization",
               "name": "PC Games"
+            }
+          },
+          {
+            "@type": "NewsArticle",
+            "headline": "Schlösserknacken im Gothic Remake macht euch wahnsinnig? Dieses Tool hilft!",
+            "url": "https://www.buffed.de/Gothic-Remake-Spiel-73829/News/Schloesser-knacken-Tockpick-Tool-1544814/",
+            "inLanguage": "de",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Buffed"
             }
           }
         ]
@@ -287,6 +305,9 @@
               <button type="button" id="browse-locks-howto" class="pill pill-ghost how-to-map-example">
                 Browse known locks
               </button>
+              <p class="how-to-map-locks-index">
+                <a href="/locks/">Full list of known Gothic Remake locks</a>
+              </p>
             </div>
             </div>
           </details>

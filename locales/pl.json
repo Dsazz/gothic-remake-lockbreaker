@@ -280,6 +280,8 @@
   },
   "footer": {
     "issues": "Zgłoś problem",
+    "updated": "Zaktualizowano {date}",
+    "allLocks": "Wszystkie zamki",
     "faqSummary": "O tym narzędziu",
     "faq": {
       "q1": "Czym jest Gothic Remake Lock Breaker?",

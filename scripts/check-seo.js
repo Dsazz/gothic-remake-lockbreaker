@@ -44,9 +44,22 @@ const changelog = read("CHANGELOG.md");
 const sitemap = read("sitemap.xml");
 
 const pressPcGames = pressUrlFromModule(linksSource, "PRESS_PCGAMES_URL");
+const pressBuffed = pressUrlFromModule(linksSource, "PRESS_BUFFED_URL");
+const redditThread = pressUrlFromModule(linksSource, "REDDIT_THREAD_URL");
+const authorUrl = pressUrlFromModule(linksSource, "AUTHOR_URL");
 const { date: changelogDate } = latestChangelogDate(changelog);
+const versionSource = read("src/version.js");
+const releaseDateMatch = versionSource.match(/export const RELEASE_DATE = "([^"]+)"/);
 
 const failures = [];
+
+if (!releaseDateMatch) {
+  failures.push("src/version.js must export RELEASE_DATE");
+} else if (releaseDateMatch[1] !== changelogDate) {
+  failures.push(
+    `src/version.js RELEASE_DATE ${releaseDateMatch[1]} must match changelog date ${changelogDate}`,
+  );
+}
 
 for (const [label, content] of [
   ["index.html", indexHtml],
@@ -55,6 +68,28 @@ for (const [label, content] of [
   if (!content.includes(pressPcGames)) {
     failures.push(`${label} missing PRESS_PCGAMES_URL`);
   }
+}
+
+if (!indexHtml.includes(pressBuffed)) {
+  failures.push("index.html missing PRESS_BUFFED_URL");
+}
+if (!indexHtml.includes(redditThread)) {
+  failures.push("index.html missing REDDIT_THREAD_URL in JSON-LD sameAs");
+}
+if (!indexHtml.includes(authorUrl)) {
+  failures.push("index.html missing AUTHOR_URL on JSON-LD author");
+}
+if (!indexHtml.includes(`"dateModified": "${changelogDate}"`)) {
+  failures.push(`index.html WebApplication JSON-LD must include dateModified ${changelogDate}`);
+}
+if (!indexHtml.includes("/manifest.webmanifest")) {
+  failures.push("index.html must link rel=manifest to /manifest.webmanifest");
+}
+if (!indexHtml.includes('href="/locks/"')) {
+  failures.push("index.html must include internal link to /locks/");
+}
+if (!llmsTxt.includes(`${SITE_ORIGIN}/locks/`)) {
+  failures.push("llms.txt must link the lock catalog at /locks/");
 }
 
 if (indexHtml.includes('"FAQPage"')) {
@@ -204,10 +239,11 @@ const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1
 const expectedSitemapLocs = [
   `${SITE_ORIGIN}/`,
   ...Object.values(LOCALE_PATH).map((path) => `${SITE_ORIGIN}${path}`),
+  `${SITE_ORIGIN}/locks/`,
 ];
 if (sitemapLocs.length !== expectedSitemapLocs.length) {
   failures.push(
-    `sitemap.xml must have exactly ${expectedSitemapLocs.length} loc entries (en + prerendered locales), found ${sitemapLocs.length}`,
+    `sitemap.xml must have exactly ${expectedSitemapLocs.length} loc entries (en + prerendered locales + /locks/), found ${sitemapLocs.length}`,
   );
 }
 for (const loc of expectedSitemapLocs) {

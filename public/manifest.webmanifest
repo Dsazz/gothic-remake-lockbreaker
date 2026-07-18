@@ -1,0 +1,23 @@
+{
+  "name": "Gothic Remake Lock Breaker",
+  "short_name": "Lock Breaker",
+  "description": "Free Gothic 1 Remake lockpicking solver with edge-safe step-by-step walkthrough.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0c0e",
+  "theme_color": "#0b0c0e",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/assets/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -5,10 +5,12 @@
 import {
   CHANGELOG_URL,
   GITHUB_ISSUES_URL,
+  LOCKS_INDEX_URL,
   PRESS_PCGAMES_URL,
   SUPPORT_URL,
 } from "./links.js";
 import { SupportSource } from "../analytics/values.js";
+import { RELEASE_DATE } from "../version.js";
 import { t } from "../i18n/index.js";
 import { el, infoIconSvg } from "./dom.js";
 
@@ -89,6 +91,15 @@ function footerFaq() {
 function footerUtility(version) {
   return el("nav", { class: "app-foot-utility" }, [
     versionLink(version),
+    el("span", {
+      class: "app-foot-updated",
+      text: t("footer.updated", { date: RELEASE_DATE }),
+    }),
+    el("a", {
+      class: "app-version",
+      href: LOCKS_INDEX_URL,
+      text: t("footer.allLocks"),
+    }),
     footerIssuesLink(),
   ]);
 }

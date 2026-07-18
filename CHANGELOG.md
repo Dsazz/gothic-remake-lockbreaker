@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.37.0] - 2026-07-18
+
+### Added
+
+- Crawlable lock catalog at `/locks/` — named in-game locks grouped by place, each linking into the solver via `?lock=`.
+- Web app manifest for home-screen install.
+- JSON-LD freshness (`dateModified`) and stronger authority signals (press, Reddit, author URL).
+- Visible "Updated" date and "All locks" link in the footer.
+
+### Changed
+
+- Sitemap and `llms.txt` now include the lock catalog URL.
+
 ## [1.36.2] - 2026-07-18
 
 ### Added

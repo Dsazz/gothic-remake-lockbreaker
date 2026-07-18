@@ -278,6 +278,8 @@
   },
   "footer": {
     "issues": "Problem melden",
+    "updated": "Aktualisiert {date}",
+    "allLocks": "Alle Schlösser",
     "faqSummary": "Über dieses Tool",
     "faq": {
       "q1": "Was ist Gothic Remake Lock Breaker?",

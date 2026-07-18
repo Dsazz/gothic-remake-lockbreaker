@@ -40,7 +40,7 @@ Tests import `src/` directly — never point tests at `dist/`.
 | Storage | `storage/*.js` (`keys` constants + `prefs` adapter) | localStorage/sessionStorage keys + persistence façade |
 | Root | `app.js` (entry) + cross-cutting primitives (`version`, `keyboard-keys`) | Composition root + shared constants |
 
-Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`. Catalog data is the checked-in first-party file `assets/catalog/locks.json` — update it by editing and committing that file; never fetch third-party lock APIs at build or runtime. Catalog identity (`catalogId`/`Name`/`Place`) is session UI only — not in the hash; deep links use `?lock=<id>`, which is rewritten on load and cleared when geometry is edited.
+Dependency flow: `app.js` → `bootstrap/` + `controllers/` → `view/` / `core/store.js` → `core/domain.js`; `core/solver.js` → `core/domain.js`. Async solving runs off-thread via `solver/worker.js` + `solver/client.js`. Catalog data is the checked-in first-party file `assets/catalog/locks.json` — update it by editing and committing that file; never fetch third-party lock APIs at build or runtime. Catalog identity (`catalogId`/`Name`/`Place`) is session UI only — not in the hash; deep links use `?lock=<id>`, which is rewritten on load and cleared when geometry is edited. Build also prerenders a crawlable English index at `/locks/` via `scripts/prerender-locks.js` (grouped by place; each row links to `/?lock=<id>`).
 
 ### Where does new code go?
 
