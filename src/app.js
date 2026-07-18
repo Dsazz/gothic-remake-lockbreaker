@@ -117,6 +117,9 @@ function createApp() {
       uiPrefs,
       anchors: {
         [BadgeFeature.HOTKEYS]: els.shortcutsHint,
+        // Browse button lives inside #controls, which replaceChildren on every
+        // render — resolve lazily so apply() always hits the live node.
+        [BadgeFeature.BROWSE_LOCKS]: () => els.controls.querySelector("#browse-locks-btn"),
       },
       t,
     });
@@ -183,6 +186,10 @@ function createApp() {
       ...solve.handlers,
       ...locale.handlers,
       ...catalog.handlers,
+      onOpenCatalog: () => {
+        whatsNew?.dismiss(BadgeFeature.BROWSE_LOCKS);
+        return catalog.handlers.onOpenCatalog();
+      },
       onTutorOptInStart() {
         onboarding.startFromOptIn();
         renderer.renderTutorChip();
@@ -214,6 +221,7 @@ function createApp() {
       onboarding,
       catalog,
       onRenderLocaleChrome: () => bus.localeChrome(),
+      onControlsRendered: () => whatsNew?.apply(),
       handlers,
       getWipeConfirmVisible: () => lock.isWipeConfirmOpen(),
       getShortcutsVisible: () => keyboard.isShortcutsOpen(),
@@ -313,8 +321,8 @@ function createApp() {
 
     bus.localeChrome();
 
-    // Passive "NEW" badges on freshly shipped features. Static decoration, so
-    // unlike the camp hint they need no deferral and don't compete with onboarding.
+    // Feature badges: apply after first paint (and again via onControlsRendered
+    // for anchors that live inside replaceChildren hosts like #browse-locks-btn).
     whatsNew?.apply();
 
     // Return visitors get no tour and no solve coachmark on paint, so this is the

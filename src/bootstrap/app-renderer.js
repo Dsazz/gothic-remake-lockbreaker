@@ -12,6 +12,7 @@ export function createAppRenderer({
   onboarding,
   catalog,
   onRenderLocaleChrome,
+  onControlsRendered,
   handlers,
   getWipeConfirmVisible,
   getShortcutsVisible,
@@ -30,6 +31,9 @@ export function createAppRenderer({
     }
 
     view.renderControls(els.controls, state, handlers);
+    // Controls fully replaceChildren; badges on #browse-locks-btn must re-apply
+    // against the live node after every rebuild.
+    onControlsRendered?.();
     view.renderCatalogBadge(els.catalogBadge, state);
     view.renderCatalogOverlay(catalog?.getUiState?.() ?? { open: false }, handlers);
     view.renderShortcutsHint(els.shortcutsHint, handlers);
