@@ -446,7 +446,13 @@ test("index.html includes SEO metadata", async () => {
   assert.doesNotMatch(html, /"FAQPage"/);
   assert.doesNotMatch(html, /panel--faq/);
   assert.doesNotMatch(html, /app-faq/);
-  assert.doesNotMatch(html, /reddit\.com/);
+  // Reddit belongs in JSON-LD sameAs / docs — not in visible body chrome.
+  const withoutJsonLd = html.replace(
+    /<script type="application\/ld\+json">[\s\S]*?<\/script>/g,
+    "",
+  );
+  assert.doesNotMatch(withoutJsonLd, /reddit\.com/);
+  assert.match(html, /reddit\.com\/r\/worldofgothic/);
   assert.match(css, /\.app-foot-press,\s*\n\.app-foot-press-static/);
 });
 

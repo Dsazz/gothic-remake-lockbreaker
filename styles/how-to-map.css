@@ -153,6 +153,15 @@
   font-weight: 600;
 }
 
+.how-to-map-locks-index {
+  margin: 0.65rem 0 0;
+  font-size: 0.85rem;
+}
+
+.how-to-map-locks-index a {
+  color: var(--bronze);
+}
+
 .how-to-map-example {
   margin-top: 12px;
 }

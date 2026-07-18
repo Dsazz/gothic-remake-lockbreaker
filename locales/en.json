@@ -309,6 +309,8 @@
   },
   "footer": {
     "issues": "Report an issue",
+    "updated": "Updated {date}",
+    "allLocks": "All locks",
     "faqSummary": "About this tool",
     "faq": {
       "q1": "What is Gothic Remake Lock Breaker?",

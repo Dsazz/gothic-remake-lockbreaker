@@ -280,6 +280,8 @@
   },
   "footer": {
     "issues": "Повідомити про проблему",
+    "updated": "Оновлено {date}",
+    "allLocks": "Усі замки",
     "faqSummary": "Про цей інструмент",
     "faq": {
       "q1": "Що таке Gothic Remake Lock Breaker?",
