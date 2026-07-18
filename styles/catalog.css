@@ -9,6 +9,10 @@ body.catalog-open {
   inset: 0;
   z-index: 80;
   display: grid;
+  /* auto (default) sizes the implicit column to the sheet's max-content width, so its
+     `width: min(36rem, 100%)` resolves 100% against that oversized track instead of the
+     viewport — the filters row then clips off-screen on every phone width. */
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
   padding: 1rem;
 }

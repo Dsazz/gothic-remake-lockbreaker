@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.37.1] - 2026-07-18
+
+### Fixed
+
+- Browse locks: the search + place-filter row clipped off-screen on phone-width viewports (the filter dropdown was partly unreachable) — the overlay's grid track now resolves to the real viewport width instead of the sheet's own content width.
+
 ## [1.37.0] - 2026-07-18
 
 ### Added
