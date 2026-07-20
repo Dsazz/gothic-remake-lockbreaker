@@ -130,6 +130,8 @@
   line-height: 1.45;
 }
 
+/* Same full-band pill size as .app-foot-action-link — whole row is one
+   changelog link (version + updated), not a pill wrapping a smaller link. */
 .app-foot-utility {
   display: flex;
   flex-wrap: wrap;
@@ -140,14 +142,35 @@
   width: 0;
   min-width: 100%;
   margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--iron-light);
+  background: var(--stone-sunken);
+  color: var(--parchment-dim);
+  text-decoration: none;
   box-sizing: border-box;
+  transition: border-color 0.12s, color 0.12s;
 }
 
-.app-foot-utility .app-version {
+.app-foot-utility:hover,
+.app-foot-utility:focus-visible {
+  border-color: var(--bronze-deep);
+  color: var(--bronze);
+  outline: none;
+}
+
+.app-foot-utility:hover .app-foot-updated,
+.app-foot-utility:focus-visible .app-foot-updated {
+  color: var(--bronze);
+}
+
+.app-foot-version {
   flex: 0 1 auto;
   max-width: 100%;
+  color: inherit;
+  font-family: var(--display);
   font-size: 0.68rem;
-  padding: 2px 8px;
+  font-weight: 700;
   letter-spacing: 0.35px;
   line-height: 1.2;
   white-space: nowrap;
@@ -159,6 +182,52 @@
   letter-spacing: 0.2px;
   color: var(--parchment-faint);
   white-space: nowrap;
+  transition: color 0.12s;
+}
+
+/* Full-width stacked rows, not a wrapping inline row (see footerActionLinks
+   in chrome.js) — every row's edges align regardless of label length. */
+.app-foot-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  grid-column: 1;
+  width: 0;
+  min-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.app-foot-action-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--iron-light);
+  background: var(--stone-sunken);
+  color: var(--parchment-dim);
+  text-decoration: none;
+  font-family: var(--display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  box-sizing: border-box;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.app-foot-action-link:hover,
+.app-foot-action-link:focus-visible {
+  border-color: var(--bronze-deep);
+  color: var(--bronze);
+  outline: none;
+}
+
+.app-foot-action-link svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
 }
 
 .support-strip {

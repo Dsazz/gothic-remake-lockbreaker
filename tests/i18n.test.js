@@ -176,10 +176,14 @@ test("Slavic plural forms follow CLDR one/few/many", () => {
   assert.equal(pluralForm(Locale.DE, 2), "many");
 });
 
-test("locale catalogs expose footer issues link and FAQ strings", async () => {
+test("locale catalogs expose footer issues/reddit links and FAQ strings", async () => {
   for (const code of SUPPORTED_LOCALES) {
     const catalog = await loadLocale(code);
     assert.ok(catalog.footer?.issues, `${code}.json missing footer.issues`);
+    assert.ok(catalog.footer?.reddit, `${code}.json missing footer.reddit`);
+    assert.ok(catalog.footer?.changelogAria, `${code}.json missing footer.changelogAria`);
+    assert.match(catalog.footer.changelogAria, /\{version\}/, `${code}.json footer.changelogAria missing {version}`);
+    assert.match(catalog.footer.changelogAria, /\{date\}/, `${code}.json footer.changelogAria missing {date}`);
     assert.ok(catalog.footer?.faqSummary, `${code}.json missing footer.faqSummary`);
     assert.ok(catalog.footer?.faq?.q1, `${code}.json missing footer.faq.q1`);
   }

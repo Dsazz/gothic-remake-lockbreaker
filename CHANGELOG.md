@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Release rule:** bump `VERSION` in `src/version.js`, add a dated entry below,
 and update the `Current release` line in `README.md` — one commit, one deploy.
 
+## [1.38.0] - 2026-07-20
+
+### Added
+
+- Footer **Discuss on Reddit** link back to the r/worldofgothic launch thread (community channel for updates), with a monochrome Snoo icon.
+- Stacked full-width footer action rows: **All locks**, **Report an issue**, and **Discuss on Reddit**.
+
+### Changed
+
+- Version + last-updated footer row is one changelog link (whole pill clickable) with an explicit accessible name.
+
 ## [1.37.1] - 2026-07-18
 
 ### Fixed

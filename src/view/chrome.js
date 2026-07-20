@@ -7,12 +7,13 @@ import {
   GITHUB_ISSUES_URL,
   LOCKS_INDEX_URL,
   PRESS_PCGAMES_URL,
+  REDDIT_THREAD_URL,
   SUPPORT_URL,
 } from "./links.js";
 import { SupportSource } from "../analytics/values.js";
 import { RELEASE_DATE } from "../version.js";
 import { t } from "../i18n/index.js";
-import { el, infoIconSvg } from "./dom.js";
+import { el, infoIconSvg, redditIconSvg } from "./dom.js";
 
 function versionLink(version) {
   return el("a", {
@@ -48,14 +49,26 @@ const FOOTER_FAQ_KEYS = [
   ["footer.faq.q4", "footer.faq.a4"],
 ];
 
-function footerIssuesLink() {
+function footerActionLink(href, labelKey, { external = true, icon } = {}) {
+  const children = icon ? [icon, el("span", { text: t(labelKey) })] : [el("span", { text: t(labelKey) })];
   return el("a", {
-    class: "app-version",
-    href: GITHUB_ISSUES_URL,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    text: t("footer.issues"),
-  });
+    class: "app-foot-action-link",
+    href,
+    ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  }, children);
+}
+
+// Stacked full-width rows (not a wrapping inline row): with three links of very
+// different label lengths, flex-wrap centers each wrapped line independently,
+// so a 2-then-1 wrap leaves the lone third link visually unaligned with the
+// pair above it. Equal-width stacked rows keep every edge aligned regardless
+// of label length or how many links this list grows to.
+function footerActionLinks() {
+  return el("nav", { class: "app-foot-actions" }, [
+    footerActionLink(LOCKS_INDEX_URL, "footer.allLocks", { external: false }),
+    footerActionLink(GITHUB_ISSUES_URL, "footer.issues"),
+    footerActionLink(REDDIT_THREAD_URL, "footer.reddit", { icon: redditIconSvg() }),
+  ]);
 }
 
 function infoModalHead(titleKey) {
@@ -89,18 +102,19 @@ function footerFaq() {
 }
 
 function footerUtility(version) {
-  return el("nav", { class: "app-foot-utility" }, [
-    versionLink(version),
+  return el("a", {
+    class: "app-foot-utility",
+    href: CHANGELOG_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    "aria-label": t("footer.changelogAria", { version, date: RELEASE_DATE }),
+  }, [
+    el("span", { class: "app-foot-version", text: `v${version}`, "aria-hidden": "true" }),
     el("span", {
       class: "app-foot-updated",
       text: t("footer.updated", { date: RELEASE_DATE }),
+      "aria-hidden": "true",
     }),
-    el("a", {
-      class: "app-version",
-      href: LOCKS_INDEX_URL,
-      text: t("footer.allLocks"),
-    }),
-    footerIssuesLink(),
   ]);
 }
 
@@ -295,6 +309,7 @@ export function renderFooter(container, version, handlers) {
         pressMentionsLine(),
         footerFaq(),
         footerUtility(version),
+        footerActionLinks(),
       ]),
     ]),
   );

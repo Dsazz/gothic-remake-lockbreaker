@@ -280,6 +280,8 @@
   },
   "footer": {
     "issues": "Zgłoś problem",
+    "reddit": "Dyskutuj na Reddicie",
+    "changelogAria": "Otwórz changelog — v{version}, zaktualizowano {date}",
     "updated": "Zaktualizowano {date}",
     "allLocks": "Wszystkie zamki",
     "faqSummary": "O tym narzędziu",

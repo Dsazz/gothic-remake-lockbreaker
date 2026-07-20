@@ -84,25 +84,50 @@ test("browser modules parse without syntax errors", async () => {
   await import("../src/breakpoints.js");
 });
 
-test("footer links to GitHub issues and press coverage", async () => {
+test("footer links to GitHub issues, Reddit thread, and press coverage", async () => {
   const viewText = await readViewSource();
   const linksText = await readFile(join(root, "src/view/links.js"), "utf8");
+  const domText = await readFile(join(root, "src/view/dom.js"), "utf8");
+  const css = await readStyles();
   assert.match(viewText, /GITHUB_ISSUES_URL/);
   assert.match(linksText, /issues\/new\/choose/);
   assert.match(viewText, /GITHUB_TRANSLATION_ISSUE_URL/);
   assert.match(linksText, /template=translation\.yml/);
   assert.match(viewText, /PRESS_PCGAMES_URL/);
-  assert.doesNotMatch(viewText, /REDDIT_DISCUSS_URL/);
-  assert.match(viewText, /footerIssuesLink/);
+  // Reddit footer link was removed in v1.12.0 (replaced by "Report an issue") and
+  // re-added here as an active community/update channel — not the same historical
+  // link that v1.13.1 demoted to llms.txt-only. Reuses REDDIT_THREAD_URL (JSON-LD
+  // sameAs since v1.37.0), not the retired REDDIT_DISCUSS_URL constant.
+  assert.match(viewText, /REDDIT_THREAD_URL/);
+  assert.match(viewText, /footerActionLinks/);
   assert.match(viewText, /footerUtility/);
   assert.match(viewText, /app-foot-stack/);
   assert.match(viewText, /app-foot-band/);
   assert.match(viewText, /app-foot-utility/);
+  assert.match(viewText, /app-foot-actions/);
   assert.match(viewText, /pressMentionsLine/);
   assert.match(viewText, /footerFaq/);
   assert.match(viewText, /footer\.faq\.q1/);
   assert.match(viewText, /footer\.issues/);
+  assert.match(viewText, /footer\.reddit/);
+  assert.match(viewText, /footer\.changelogAria/);
   assert.match(viewText, /press\.pcgames/);
+  // Whole utility pill is one changelog <a>, not a pill wrapping a smaller version link.
+  const utilityStart = viewText.indexOf("function footerUtility");
+  const utilityEnd = viewText.indexOf("function supportOreImg");
+  const utilityBody = viewText.slice(utilityStart, utilityEnd);
+  assert.match(utilityBody, /class:\s*"app-foot-utility"/);
+  assert.match(utilityBody, /href:\s*CHANGELOG_URL/);
+  assert.match(utilityBody, /footer\.changelogAria/);
+  assert.match(utilityBody, /app-foot-version/);
+  assert.doesNotMatch(utilityBody, /app-version/);
+  // /locks/ stays same-tab; issues + Reddit open externally.
+  assert.match(viewText, /footerActionLink\(LOCKS_INDEX_URL,\s*"footer\.allLocks",\s*\{\s*external:\s*false\s*\}\)/);
+  assert.match(viewText, /footerActionLink\(GITHUB_ISSUES_URL,\s*"footer\.issues"\)/);
+  assert.match(viewText, /footerActionLink\(REDDIT_THREAD_URL,\s*"footer\.reddit"/);
+  assert.match(domText, /export function redditIconSvg/);
+  assert.match(viewText, /redditIconSvg\(\)/);
+  assert.match(css, /\.app-foot-actions\s*\{[^}]*flex-direction:\s*column/s);
 });
 
 test("tour opt-in start does not re-render controls and orphan step 1 spotlight", async () => {

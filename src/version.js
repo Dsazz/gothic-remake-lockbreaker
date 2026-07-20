@@ -1,4 +1,4 @@
-export const VERSION = "1.37.1";
+export const VERSION = "1.38.0";
 
 /** ISO date of the current release — keep in sync with CHANGELOG heading date. */
-export const RELEASE_DATE = "2026-07-18";
+export const RELEASE_DATE = "2026-07-20";
