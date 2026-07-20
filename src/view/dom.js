@@ -198,6 +198,52 @@ export function infoIconSvg() {
   return svg;
 }
 
+export function redditIconSvg() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.5");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  const head = document.createElementNS(ns, "ellipse");
+  head.setAttribute("cx", "11.5");
+  head.setAttribute("cy", "13.8");
+  head.setAttribute("rx", "7.3");
+  head.setAttribute("ry", "6.2");
+  const earLeft = document.createElementNS(ns, "circle");
+  earLeft.setAttribute("cx", "4.7");
+  earLeft.setAttribute("cy", "11.8");
+  earLeft.setAttribute("r", "2.1");
+  const earRight = document.createElementNS(ns, "circle");
+  earRight.setAttribute("cx", "18.3");
+  earRight.setAttribute("cy", "11.8");
+  earRight.setAttribute("r", "2.1");
+  const antenna = document.createElementNS(ns, "path");
+  antenna.setAttribute("d", "M13.6 8.4 C14 5.7 15.9 4 17.9 4.1");
+  const antennaTip = document.createElementNS(ns, "circle");
+  antennaTip.setAttribute("cx", "19.2");
+  antennaTip.setAttribute("cy", "3.9");
+  antennaTip.setAttribute("r", "1.5");
+  antennaTip.setAttribute("fill", "currentColor");
+  const eyeLeft = document.createElementNS(ns, "circle");
+  eyeLeft.setAttribute("cx", "8.8");
+  eyeLeft.setAttribute("cy", "13.4");
+  eyeLeft.setAttribute("r", "1.15");
+  eyeLeft.setAttribute("fill", "currentColor");
+  const eyeRight = document.createElementNS(ns, "circle");
+  eyeRight.setAttribute("cx", "14.6");
+  eyeRight.setAttribute("cy", "13.4");
+  eyeRight.setAttribute("r", "1.15");
+  eyeRight.setAttribute("fill", "currentColor");
+  const smile = document.createElementNS(ns, "path");
+  smile.setAttribute("d", "M8.8 17 Q11.7 19.3 14.6 17");
+  svg.append(head, earLeft, earRight, antenna, antennaTip, eyeLeft, eyeRight, smile);
+  return svg;
+}
+
 export function dismissCrossSvg() {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24");

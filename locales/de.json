@@ -279,6 +279,7 @@
   "footer": {
     "issues": "Problem melden",
     "reddit": "Auf Reddit diskutieren",
+    "changelogAria": "Changelog öffnen — v{version}, aktualisiert {date}",
     "updated": "Aktualisiert {date}",
     "allLocks": "Alle Schlösser",
     "faqSummary": "Über dieses Tool",

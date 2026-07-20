@@ -281,6 +281,7 @@
   "footer": {
     "issues": "Повідомити про проблему",
     "reddit": "Обговорити на Reddit",
+    "changelogAria": "Відкрити changelog — v{version}, оновлено {date}",
     "updated": "Оновлено {date}",
     "allLocks": "Усі замки",
     "faqSummary": "Про цей інструмент",

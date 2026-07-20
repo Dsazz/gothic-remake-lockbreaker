@@ -310,6 +310,7 @@
   "footer": {
     "issues": "Report an issue",
     "reddit": "Discuss on Reddit",
+    "changelogAria": "Open changelog — v{version}, updated {date}",
     "updated": "Updated {date}",
     "allLocks": "All locks",
     "faqSummary": "About this tool",
