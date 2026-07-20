@@ -278,6 +278,7 @@
   },
   "footer": {
     "issues": "Problem melden",
+    "reddit": "Auf Reddit diskutieren",
     "updated": "Aktualisiert {date}",
     "allLocks": "Alle Schlösser",
     "faqSummary": "Über dieses Tool",

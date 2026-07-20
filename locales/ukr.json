@@ -280,6 +280,7 @@
   },
   "footer": {
     "issues": "Повідомити про проблему",
+    "reddit": "Обговорити на Reddit",
     "updated": "Оновлено {date}",
     "allLocks": "Усі замки",
     "faqSummary": "Про цей інструмент",

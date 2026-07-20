@@ -280,6 +280,7 @@
   },
   "footer": {
     "issues": "Zgłoś problem",
+    "reddit": "Dyskutuj na Reddicie",
     "updated": "Zaktualizowano {date}",
     "allLocks": "Wszystkie zamki",
     "faqSummary": "O tym narzędziu",

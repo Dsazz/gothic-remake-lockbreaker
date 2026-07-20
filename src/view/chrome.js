@@ -7,6 +7,7 @@ import {
   GITHUB_ISSUES_URL,
   LOCKS_INDEX_URL,
   PRESS_PCGAMES_URL,
+  REDDIT_THREAD_URL,
   SUPPORT_URL,
 } from "./links.js";
 import { SupportSource } from "../analytics/values.js";
@@ -58,6 +59,16 @@ function footerIssuesLink() {
   });
 }
 
+function footerRedditLink() {
+  return el("a", {
+    class: "app-version",
+    href: REDDIT_THREAD_URL,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    text: t("footer.reddit"),
+  });
+}
+
 function infoModalHead(titleKey) {
   return el("div", { class: "info-modal-head" }, [
     el("span", { class: "info-modal-title", text: t(titleKey) }),
@@ -101,6 +112,7 @@ function footerUtility(version) {
       text: t("footer.allLocks"),
     }),
     footerIssuesLink(),
+    footerRedditLink(),
   ]);
 }
 

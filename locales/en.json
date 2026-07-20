@@ -309,6 +309,7 @@
   },
   "footer": {
     "issues": "Report an issue",
+    "reddit": "Discuss on Reddit",
     "updated": "Updated {date}",
     "allLocks": "All locks",
     "faqSummary": "About this tool",
